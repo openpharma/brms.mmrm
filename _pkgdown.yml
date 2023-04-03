@@ -1,0 +1,20 @@
+destination: docs/
+reference:
+- title: Help
+  contents:
+  - '`brms.mmrm-package`'
+- title: Data
+  contents:
+  - '`brm_data_preprocess`'
+  - '`brm_data_validate`'
+- title: Simulation
+  contents:
+  - '`brm_sim`'
+- title: MCMC
+  contents:
+  - '`brm_model`'
+- title: Results
+  contents:
+  - '`brm_convergence`'
+  - '`brm_summary`'
+  - '`brm_plot`'
