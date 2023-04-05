@@ -46,7 +46,12 @@ Authors@R: c(
 Depends:
   R (>= 4.0.0)
 Imports:
-  brms
+  brms,
+  MASS,
+  stats,
+  tibble,
+  tidyr,
+  trialr
 Suggests:
   knitr (>= 1.30),
   markdown (>= 1.1),

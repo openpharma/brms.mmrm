@@ -83,7 +83,7 @@ Same as `brm_data_preprocess()`.
 
 If there are no problems with the data, this function should invisibly return `NULL`. If problems are detected, the function should return an informative classed error, i.e. `rlang::abort(message = "something informative", class = "<PACKAGE_NAME>_error")`.
 
-## `brm_sim()`
+## `brm_simulate()`
 
 Simulate a dataset from the prior predictive distribution of a basic MMRM with random effects marginalized out. Use `brms` to do this. This function corresponds to the `brm_model()` discussed later.
 

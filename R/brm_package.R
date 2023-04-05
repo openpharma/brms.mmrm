@@ -20,4 +20,9 @@
 #'     doi:10.1177/009286150804200402
 #' @family help
 #' @importFrom brms brm
+#' @importFrom MASS mvrnorm
+#' @importFrom stats rnorm runif
+#' @importFrom tibble tibble
+#' @importFrom tidyr expand_grid
+#' @importFrom trialr rlkjcorr
 NULL

@@ -9,7 +9,7 @@ reference:
   - '`brm_data_validate`'
 - title: Simulation
   contents:
-  - '`brm_sim`'
+  - '`brm_simulate`'
 - title: MCMC
   contents:
   - '`brm_model`'
