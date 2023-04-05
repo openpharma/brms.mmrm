@@ -8,9 +8,9 @@ brm_simulate(
   n_group = 2L,
   n_patient = 100L,
   n_time = 4L,
-  s_beta = 1,
-  s_epsilon = 1,
-  zeta = 1
+  hyper_beta = 1,
+  hyper_sigma = 1,
+  hyper_correlation = 1
 )
 }
 \arguments{
@@ -21,6 +21,17 @@ per treatment group.}
 
 \item{n_time}{Positive integer of length 1, number of discrete
 time points (e.g. scheduled study visits) per patient.}
+
+\item{hyper_beta}{Positive numeric of length 1, hyperparameter.
+Prior standard deviation of the fixed effect parameters.}
+
+\item{hyper_sigma}{Positive numeric of length 1, hyperparameter.
+Uniform prior upper bound of the time-specific residual
+standard deviation parameters.}
+
+\item{hyper_correlation}{Positive numeric of length 1, hyperparameter.
+LKJ shape parameter of the correlation matrix among repeated
+measures within each patient.}
 }
 \value{
 A list of three objects:

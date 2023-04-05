@@ -20,6 +20,14 @@
 #'   per treatment group.
 #' @param n_time Positive integer of length 1, number of discrete
 #'   time points (e.g. scheduled study visits) per patient.
+#' @param hyper_beta Positive numeric of length 1, hyperparameter.
+#'   Prior standard deviation of the fixed effect parameters.
+#' @param hyper_sigma Positive numeric of length 1, hyperparameter.
+#'   Uniform prior upper bound of the time-specific residual
+#'   standard deviation parameters.
+#' @param hyper_correlation Positive numeric of length 1, hyperparameter.
+#'   LKJ shape parameter of the correlation matrix among repeated
+#'   measures within each patient.
 #' @examples
 #' simulation <- brm_simulate()
 #' simulation$data
@@ -27,9 +35,9 @@ brm_simulate <- function(
   n_group = 2L,
   n_patient = 100L,
   n_time = 4L,
-  s_beta = 1,
-  s_epsilon = 1,
-  zeta = 1
+  hyper_beta = 1,
+  hyper_sigma = 1,
+  hyper_correlation = 1
 ) {
   patients <- tibble::tibble(
     group = rep(seq_len(n_group), each = n_patient),
@@ -37,10 +45,10 @@ brm_simulate <- function(
   )
   grid <- tidyr::expand_grid(patients, time = seq_len(n_time))
   model_matrix <- model.matrix(~ 0 + group + time, data = grid)
-  beta <- stats::rnorm(n = ncol(model_matrix), mean = 0, sd = s_beta)
+  beta <- stats::rnorm(n = ncol(model_matrix), mean = 0, sd = hyper_beta)
   mean <- as.numeric(model_matrix %*% beta)
-  sigma <- stats::runif(n = n_time, min = 0, max = s_epsilon)
-  correlation <- trialr::rlkjcorr(n = 1L, K = n_time, eta = zeta)
+  sigma <- stats::runif(n = n_time, min = 0, max = hyper_sigma)
+  correlation <- trialr::rlkjcorr(n = 1L, K = n_time, eta = hyper_correlation)
   covariance <- diag(sigma) %*% correlation %*% diag(sigma)
   response <- tapply(
     X = mean,

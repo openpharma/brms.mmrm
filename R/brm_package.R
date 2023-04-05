@@ -21,7 +21,7 @@
 #' @family help
 #' @importFrom brms brm
 #' @importFrom MASS mvrnorm
-#' @importFrom stats rnorm runif
+#' @importFrom stats model.matrix rnorm runif
 #' @importFrom tibble tibble
 #' @importFrom tidyr expand_grid
 #' @importFrom trialr rlkjcorr
