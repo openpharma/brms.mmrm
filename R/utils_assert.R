@@ -1,0 +1,30 @@
+true <- function(
+  value = NULL,
+  ...,
+  message = NULL,
+  envir = parent.frame()
+) {
+  expr <- match.call(expand.dots = FALSE)$...
+  if (!length(expr)) {
+    expr <- list(quote(.))
+  }
+  conditions <- lapply(
+    expr,
+    function(expr) all(eval(expr, envir = list(. = value), enclos = envir))
+  )
+  if (!all(unlist(conditions))) {
+    chr_expr <- lapply(expr, function(x) sprintf("all(%s)", deparse(x)))
+    chr_expr <- paste(unlist(chr_expr), collapse = " && ")
+    chr_value <- deparse(substitute(value))
+    out <- sprintf("%s is not true on . = %s", chr_expr, chr_value)
+    brm_error(message %|||% out)
+  }
+}
+
+brm_error <- function(message) {
+  rlang::abort(message = message, class = "brm_error", .frame = emptyenv())
+}
+
+brm_warn <- function(message) {
+  rlang::warn(message = message, class = "brm_warn")
+}
