@@ -29,6 +29,7 @@
 #'   LKJ shape parameter of the correlation matrix among repeated
 #'   measures within each patient.
 #' @examples
+#' set.seed(0L)
 #' simulation <- brm_simulate()
 #' simulation$data
 brm_simulate <- function(
@@ -49,10 +50,10 @@ brm_simulate <- function(
     message = "hyper_correlation must be 1 positive number"
   )
   patients <- tibble::tibble(
-    group = rep(seq_len(n_group), each = n_patient),
-    patient = seq_len(n_group * n_patient)
+    group = factor(rep(seq_len(n_group), each = n_patient)),
+    patient = factor(seq_len(n_group * n_patient))
   )
-  grid <- tidyr::expand_grid(patients, time = seq_len(n_time))
+  grid <- tidyr::expand_grid(patients, time = factor(seq_len(n_time)))
   model_matrix <- model.matrix(~ 0 + group + time, data = grid)
   beta <- stats::rnorm(n = ncol(model_matrix), mean = 0, sd = hyper_beta)
   mean <- as.numeric(model_matrix %*% beta)

@@ -56,6 +56,7 @@ there are no dropouts, and the
 parameterization is not the same as that of \code{brms}.
 }
 \examples{
+set.seed(0L)
 simulation <- brm_simulate()
 simulation$data
 }
