@@ -21,6 +21,7 @@
 #' @family help
 #' @importFrom brms brm
 #' @importFrom MASS mvrnorm
+#' @importFrom rlang warn
 #' @importFrom stats model.matrix rnorm runif
 #' @importFrom tibble tibble
 #' @importFrom tidyr expand_grid
