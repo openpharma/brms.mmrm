@@ -1,4 +1,4 @@
-true <- function(
+assert <- function(
   value = NULL,
   ...,
   message = NULL,
@@ -19,6 +19,15 @@ true <- function(
     out <- sprintf("%s is not true on . = %s", chr_expr, chr_value)
     brm_error(message %|||% out)
   }
+}
+
+assert_num <- function(value, message = NULL) {
+  assert(value, is.numeric(.), !anyNA(.), length(.) == 1L, message = message)
+}
+
+assert_pos <- function(value, message = NULL) {
+  assert_num(value, message = message)
+  assert(value, . > 0, message = message)
 }
 
 brm_error <- function(message) {

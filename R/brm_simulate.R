@@ -39,6 +39,15 @@ brm_simulate <- function(
   hyper_sigma = 1,
   hyper_correlation = 1
 ) {
+  assert_pos(n_group, message = "n_group must be 1 positive number")
+  assert_pos(n_patient, message = "n_patient must be 1 positive number")
+  assert_pos(n_time, message = "n_time must be 1 positive number")
+  assert_pos(hyper_beta, message = "hyper_beta must be 1 positive number")
+  assert_pos(hyper_sigma, message = "hyper_sigma must be 1 positive number")
+  assert_pos(
+    hyper_correlation,
+    message = "hyper_correlation must be 1 positive number"
+  )
   patients <- tibble::tibble(
     group = rep(seq_len(n_group), each = n_patient),
     patient = seq_len(n_group * n_patient)
