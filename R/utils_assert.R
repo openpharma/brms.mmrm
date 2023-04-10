@@ -22,7 +22,13 @@ assert <- function(
 }
 
 assert_chr_vec <- function(value, message = NULL) {
-  assert(value, is.character(.), !anyNA(.), nzchar(.), message = message)
+  assert(
+    value,
+    is.character(.),
+    !anyNA(.),
+    nzchar(.),
+    message = message
+  )
 }
 
 assert_chr <- function(value, message = NULL) {

@@ -5,22 +5,48 @@ test_that("assert()", {
   expect_error(assert(2, . < 1), class = "brm_error")
 })
 
+test_that("assert_chr_vec()", {
+  expect_silent(assert_chr_vec(letters))
+  expect_silent(assert_chr_vec(character(0L)))
+  expect_error(assert_chr_vec(""), class = "brm_error")
+  expect_error(assert_chr_vec(1), class = "brm_error")
+  expect_error(assert_chr_vec(c(2L, 3L)), class = "brm_error")
+})
+
+test_that("assert_chr()", {
+  expect_silent(assert_chr("abc"))
+  expect_error(assert_chr(letters), class = "brm_error")
+  expect_error(assert_chr(character(0L)), class = "brm_error")
+  expect_error(assert_chr(""), class = "brm_error")
+  expect_error(assert_chr(1), class = "brm_error")
+  expect_error(assert_chr(c(2L, 3L)), class = "brm_error")
+})
+
+test_that("assert_lgl()", {
+  expect_silent(assert_lgl(TRUE))
+  expect_silent(assert_lgl(FALSE))
+  expect_error(assert_lgl(c(TRUE, FALSE)), class = "brm_error")
+  expect_error(assert_lgl(logical(0L)), class = "brm_error")
+  expect_error(assert_lgl(123.321), class = "brm_error")
+  expect_error(assert_lgl(c(1L, 2L)), class = "brm_error")
+})
+
 test_that("assert_num()", {
   expect_silent(assert_num(1.1))
   expect_silent(assert_num(-1L))
-  expect_error(assert_num(c(1.1, 2.2)))
-  expect_error(assert_num(numeric(0L)))
-  expect_error(assert_num(NA_real_))
-  expect_error(assert_num("1"))
+  expect_error(assert_num(c(1.1, 2.2)), class = "brm_error")
+  expect_error(assert_num(numeric(0L)), class = "brm_error")
+  expect_error(assert_num(NA_real_), class = "brm_error")
+  expect_error(assert_num("1"), class = "brm_error")
 })
 
 test_that("assert_pos()", {
   expect_silent(assert_pos(1.1))
-  expect_error(assert_pos(-1L))
-  expect_error(assert_pos(c(1.1, 2.2)))
-  expect_error(assert_pos(numeric(0L)))
-  expect_error(assert_pos(NA_real_))
-  expect_error(assert_pos("1"))
+  expect_error(assert_pos(-1L), class = "brm_error")
+  expect_error(assert_pos(c(1.1, 2.2)), class = "brm_error")
+  expect_error(assert_pos(numeric(0L)), class = "brm_error")
+  expect_error(assert_pos(NA_real_), class = "brm_error")
+  expect_error(assert_pos("1"), class = "brm_error")
 })
 
 test_that("brm_error()", {
