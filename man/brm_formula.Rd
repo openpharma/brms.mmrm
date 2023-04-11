@@ -59,3 +59,8 @@ brm_formula(
   interaction_group = FALSE
 )
 }
+\seealso{
+Other model: 
+\code{\link{brm_model}()}
+}
+\concept{model}

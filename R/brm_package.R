@@ -26,7 +26,7 @@
 #' @importFrom tibble tibble
 #' @importFrom tidyr expand_grid
 #' @importFrom trialr rlkjcorr
-#' @importFrom utils globalVariables
+#' @importFrom utils capture.output globalVariables
 NULL
 
 globalVariables(
