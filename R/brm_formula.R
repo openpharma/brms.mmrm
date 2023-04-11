@@ -55,10 +55,11 @@ brm_formula <- function(
     term(base, effect_base),
     term(paste0(base, ":", time), interaction_base),
     term(group, effect_group),
-    term(paste0(group, ":", time), interaction_group)
+    term(paste0(group, ":", time), interaction_group),
+    covariates
   )
   right <- paste(terms, collapse = " + ")
-  paste(response, "~", right)
+  stats::as.formula(paste(response, "~", right))
 }
 
 term <- function(name, condition) {

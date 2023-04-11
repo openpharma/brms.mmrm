@@ -38,7 +38,7 @@ assert_chr <- function(value, message = NULL) {
 
 assert_lgl <- function(value, message = NULL) {
   assert(value, isTRUE(.) || isFALSE(.), message = message)
-} 
+}
 
 assert_num <- function(value, message = NULL) {
   assert(value, is.numeric(.), !anyNA(.), length(.) == 1L, message = message)

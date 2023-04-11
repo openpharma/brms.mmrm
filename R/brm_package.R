@@ -22,7 +22,7 @@
 #' @importFrom brms brm
 #' @importFrom MASS mvrnorm
 #' @importFrom rlang warn
-#' @importFrom stats model.matrix rnorm runif
+#' @importFrom stats as.formula model.matrix rnorm runif
 #' @importFrom tibble tibble
 #' @importFrom tidyr expand_grid
 #' @importFrom trialr rlkjcorr
