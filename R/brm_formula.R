@@ -3,16 +3,22 @@
 #' @family model
 #' @description Build a model formula for an MMRM.
 #' @return A formula to specify an MMRM.
-#' @param response Character of length 1, name of the response variable.
-#' @param base Character of length 1, name of the baseline response variable.
-#' @param time Character of length 1, name of the discrete time variable.
+#' @param response Character of length 1, name of the response variable
+#'   in the data.
+#' @param base Character of length 1, name of the baseline response variable
+#'   in the data.
+#' @param time Character of length 1, name of the discrete time variable
+#'   in the data.
 #' @param group Character of length 1, name of the treatment group
-#'   variable.
-#' @param covariates Character vector of names of other covariates.
-#' @param effect_group `TRUE` to include an additive effect for treatment
-#'   group, `FALSE` to omit.
-#' @param effect_time `TRUE` to include an additive effect for discrete
-#'   time, `FALSE` to omit.
+#'   variable in the data.
+#' @param covariates Character vector of names of other covariates
+#'   in the data.
+#' @param effect_group `TRUE` to include an additive effects for treatment
+#'   groups, `FALSE` to omit.
+#' @param effect_time `TRUE` to include a additive effect for discrete
+#'   time points, `FALSE` to omit.
+#' @param effect_base `TRUE` to include an additive effect for baseline
+#'   response, `FALSE` to omit.
 #' @param intercept `TRUE` to include an intercept, `FALSE` to omit.
 #' @param interaction_base `TRUE` to include baseline-by-time interaction,
 #'   `FALSE` to omit.

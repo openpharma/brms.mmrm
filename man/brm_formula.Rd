@@ -19,24 +19,31 @@ brm_formula(
 )
 }
 \arguments{
-\item{response}{Character of length 1, name of the response variable.}
+\item{response}{Character of length 1, name of the response variable
+in the data.}
 
 \item{group}{Character of length 1, name of the treatment group
-variable.}
+variable in the data.}
 
-\item{time}{Character of length 1, name of the discrete time variable.}
+\item{time}{Character of length 1, name of the discrete time variable
+in the data.}
 
-\item{base}{Character of length 1, name of the baseline response variable.}
+\item{base}{Character of length 1, name of the baseline response variable
+in the data.}
 
-\item{covariates}{Character vector of names of other covariates.}
+\item{covariates}{Character vector of names of other covariates
+in the data.}
 
 \item{intercept}{\code{TRUE} to include an intercept, \code{FALSE} to omit.}
 
-\item{effect_group}{\code{TRUE} to include an additive effect for treatment
-group, \code{FALSE} to omit.}
+\item{effect_group}{\code{TRUE} to include an additive effects for treatment
+groups, \code{FALSE} to omit.}
 
-\item{effect_time}{\code{TRUE} to include an additive effect for discrete
-time, \code{FALSE} to omit.}
+\item{effect_time}{\code{TRUE} to include a additive effect for discrete
+time points, \code{FALSE} to omit.}
+
+\item{effect_base}{\code{TRUE} to include an additive effect for baseline
+response, \code{FALSE} to omit.}
 
 \item{interaction_base}{\code{TRUE} to include baseline-by-time interaction,
 \code{FALSE} to omit.}

@@ -27,6 +27,12 @@ Use \code{\link[=brm_formula]{brm_formula()}} to help.}
 \item{correlation}{Character of length 1, name of the correlation
 structure. Only \code{"unstructured"} is currently supported.}
 
+\item{time}{Character of length 1, name of the discrete time variable
+in the data.}
+
+\item{patient}{Character of length 1, name of the patient ID
+variable in the data.}
+
 \item{sd_intercept}{Positive numeric of length 1, prior standard deviation
 of the "intercept" class of parameters.}
 

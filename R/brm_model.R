@@ -5,6 +5,10 @@
 #' @return A fitted model object from `brms`.
 #' @param data A tidy data frame with one row per patient per discrete
 #'   time point.
+#' @param time Character of length 1, name of the discrete time variable
+#'   in the data.
+#' @param patient Character of length 1, name of the patient ID
+#'   variable in the data.
 #' @param formula An R formula to represent the fixed effect parameterization.
 #'   Use [brm_formula()] to help.
 #' @param correlation Character of length 1, name of the correlation
