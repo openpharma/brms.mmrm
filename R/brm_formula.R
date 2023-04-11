@@ -1,5 +1,6 @@
 #' @title Model formula
 #' @export
+#' @family model
 #' @description Build a model formula for an MMRM.
 #' @return A formula to specify an MMRM.
 #' @param response Character of length 1, name of the response variable.

@@ -19,11 +19,22 @@
 #'     Ther Innov Regul Sci 42, 303–319 (2008).
 #'     doi:10.1177/009286150804200402
 #' @family help
-#' @importFrom brms brm
+#' @importFrom brms brm brmsformula prior unstr
 #' @importFrom MASS mvrnorm
 #' @importFrom rlang warn
 #' @importFrom stats as.formula model.matrix rnorm runif
 #' @importFrom tibble tibble
 #' @importFrom tidyr expand_grid
 #' @importFrom trialr rlkjcorr
+#' @importFrom utils globalVariables
 NULL
+
+globalVariables(
+  c(
+    "b",
+    "Intercept",
+    "normal",
+    "sigma"
+  ),
+  package = "brms.mmrm"
+)
