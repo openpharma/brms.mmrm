@@ -109,9 +109,9 @@ brm_model <- function(
     brms::set_prior(prior_0_sigma, class = "Intercept", dpar = "sigma") +
     brms::set_prior(prior_b_sigma, class = "b", dpar = "sigma")
   brms::brm(
+    data = data,
     formula = brms_formula,
     prior = brms_prior,
-    data = data,
     ...
   )
 }
