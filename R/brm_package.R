@@ -31,6 +31,7 @@ NULL
 
 globalVariables(
   c(
+    ".",
     "b",
     "Intercept",
     "normal",
