@@ -6,20 +6,25 @@
 \usage{
 brm_formula(
   response = "CHG",
+  base = "BASE",
   group = "TRT01P",
   time = "AVISIT",
-  base = "BASE",
+  patient = "USUBJID",
   covariates = character(0),
   intercept = TRUE,
+  effect_base = TRUE,
   effect_group = TRUE,
   effect_time = TRUE,
-  effect_base = TRUE,
   interaction_base = TRUE,
-  interaction_group = TRUE
+  interaction_group = TRUE,
+  correlation = "unstructured"
 )
 }
 \arguments{
 \item{response}{Character of length 1, name of the response variable
+in the data.}
+
+\item{base}{Character of length 1, name of the baseline response variable
 in the data.}
 
 \item{group}{Character of length 1, name of the treatment group
@@ -28,7 +33,7 @@ variable in the data.}
 \item{time}{Character of length 1, name of the discrete time variable
 in the data.}
 
-\item{base}{Character of length 1, name of the baseline response variable
+\item{patient}{Character of length 1, name of the patient ID variable
 in the data.}
 
 \item{covariates}{Character vector of names of other covariates
@@ -36,23 +41,28 @@ in the data.}
 
 \item{intercept}{\code{TRUE} to include an intercept, \code{FALSE} to omit.}
 
+\item{effect_base}{\code{TRUE} to include an additive effect for baseline
+response, \code{FALSE} to omit.}
+
 \item{effect_group}{\code{TRUE} to include an additive effects for treatment
 groups, \code{FALSE} to omit.}
 
 \item{effect_time}{\code{TRUE} to include a additive effect for discrete
 time points, \code{FALSE} to omit.}
 
-\item{effect_base}{\code{TRUE} to include an additive effect for baseline
-response, \code{FALSE} to omit.}
-
 \item{interaction_base}{\code{TRUE} to include baseline-by-time interaction,
 \code{FALSE} to omit.}
 
 \item{interaction_group}{\code{TRUE} to include treatment-group-by-time
 interaction, \code{FALSE} to omit.}
+
+\item{correlation}{Character of length 1, name of the correlation
+structure. Only \code{"unstructured"} is currently supported.}
 }
 \value{
-A formula to specify an MMRM.
+An object of class \code{"brmsformula"} returned from
+\code{brms::brmsformula()}. It contains the fixed effect parameterization,
+correlation structure, and residual variance structure.
 }
 \description{
 Build a model formula for an MMRM.
