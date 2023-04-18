@@ -69,8 +69,6 @@ tmp <- utils::capture.output(
       model <- brm_model(
         data = data,
         formula = formula,
-        time = "time",
-        patient = "patient",
         chains = 1,
         iter = 100,
         refresh = 0
