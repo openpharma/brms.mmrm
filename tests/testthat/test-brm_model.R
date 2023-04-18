@@ -5,6 +5,7 @@ test_that("brm_model() runs", {
     response = "response",
     group = "group",
     time = "time",
+    patient = "patient",
     effect_base = FALSE,
     interaction_base = FALSE
   )
@@ -14,8 +15,6 @@ test_that("brm_model() runs", {
         model <- brm_model(
           data = data,
           formula = formula,
-          time = "time",
-          patient = "patient",
           chains = 1,
           iter = 100,
           refresh = 0

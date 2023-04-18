@@ -7,11 +7,19 @@ test_that("brm_formula() with default names and all terms", {
     interaction_base = TRUE,
     interaction_group = TRUE
   )
-  expect_s3_class(out, "formula")
-  out <- deparse(out, width.cutoff = 500L)
+  expect_s3_class(out, "brmsformula")
   expect_equal(
-    out,
-    "CHG ~ AVISIT + BASE + BASE:AVISIT + TRT01P + TRT01P:AVISIT"
+    deparse(out[[1L]], width.cutoff = 500L),
+    paste(
+      "CHG ~ AVISIT + BASE + BASE:AVISIT + TRT01P + TRT01P:AVISIT",
+      "+ unstr(time = AVISIT, gr = USUBJID)"
+    )
+  )
+  expect_equal(
+    deparse(out[[2L]][[1L]], width.cutoff = 500L),
+    paste(
+      "sigma ~ AVISIT"
+    )
   )
 })
 
@@ -21,6 +29,7 @@ test_that("brm_formula() with all user-supplied columns and all terms", {
     group = "g",
     time = "t",
     base = "b",
+    patient = "p",
     covariates = c("a", "b"),
     intercept = TRUE,
     effect_group = TRUE,
@@ -30,8 +39,14 @@ test_that("brm_formula() with all user-supplied columns and all terms", {
     interaction_group = TRUE
   )
   expect_equal(
-    deparse(out, width.cutoff = 500L),
-    "y ~ t + b + b:t + g + g:t + a + b"
+    deparse(out[[1L]], width.cutoff = 500L),
+    "y ~ t + b + b:t + g + g:t + a + b + unstr(time = t, gr = p)"
+  )
+  expect_equal(
+    deparse(out[[2L]][[1L]], width.cutoff = 500L),
+    paste(
+      "sigma ~ t"
+    )
   )
 })
 
@@ -45,8 +60,17 @@ test_that("brm_formula() without intercept", {
     interaction_group = TRUE
   )
   expect_equal(
-    deparse(out, width.cutoff = 500L),
-    "CHG ~ 0 + AVISIT + BASE + BASE:AVISIT + TRT01P + TRT01P:AVISIT"
+    deparse(out[[1L]], width.cutoff = 500L),
+    paste(
+      "CHG ~ 0 + AVISIT + BASE + BASE:AVISIT + TRT01P + TRT01P:AVISIT",
+      "+ unstr(time = AVISIT, gr = USUBJID)"
+    )
+  )
+  expect_equal(
+    deparse(out[[2L]][[1L]], width.cutoff = 500L),
+    paste(
+      "sigma ~ AVISIT"
+    )
   )
 })
 
@@ -60,8 +84,17 @@ test_that("brm_formula() without group effect", {
     interaction_group = TRUE
   )
   expect_equal(
-    deparse(out, width.cutoff = 500L),
-    "CHG ~ AVISIT + BASE + BASE:AVISIT + TRT01P:AVISIT"
+    deparse(out[[1L]], width.cutoff = 500L),
+    paste(
+      "CHG ~ AVISIT + BASE + BASE:AVISIT + TRT01P:AVISIT",
+      "+ unstr(time = AVISIT, gr = USUBJID)"
+    )
+  )
+  expect_equal(
+    deparse(out[[2L]][[1L]], width.cutoff = 500L),
+    paste(
+      "sigma ~ AVISIT"
+    )
   )
 })
 
@@ -75,8 +108,17 @@ test_that("brm_formula() without time effect", {
     interaction_group = TRUE
   )
   expect_equal(
-    deparse(out, width.cutoff = 500L),
-    "CHG ~ BASE + BASE:AVISIT + TRT01P + TRT01P:AVISIT"
+    deparse(out[[1L]], width.cutoff = 500L),
+    paste(
+      "CHG ~ BASE + BASE:AVISIT + TRT01P + TRT01P:AVISIT",
+      "+ unstr(time = AVISIT, gr = USUBJID)"
+    )
+  )
+  expect_equal(
+    deparse(out[[2L]][[1L]], width.cutoff = 500L),
+    paste(
+      "sigma ~ AVISIT"
+    )
   )
 })
 
@@ -90,8 +132,17 @@ test_that("brm_formula() without baseline effect", {
     interaction_group = TRUE
   )
   expect_equal(
-    deparse(out, width.cutoff = 500L),
-    "CHG ~ AVISIT + BASE:AVISIT + TRT01P + TRT01P:AVISIT"
+    deparse(out[[1L]], width.cutoff = 500L),
+    paste(
+      "CHG ~ AVISIT + BASE:AVISIT + TRT01P + TRT01P:AVISIT",
+      "+ unstr(time = AVISIT, gr = USUBJID)"
+    )
+  )
+  expect_equal(
+    deparse(out[[2L]][[1L]], width.cutoff = 500L),
+    paste(
+      "sigma ~ AVISIT"
+    )
   )
 })
 
@@ -105,8 +156,17 @@ test_that("brm_formula() without baseline interaction", {
     interaction_group = TRUE
   )
   expect_equal(
-    deparse(out, width.cutoff = 500L),
-    "CHG ~ AVISIT + BASE + TRT01P + TRT01P:AVISIT"
+    deparse(out[[1L]], width.cutoff = 500L),
+    paste(
+      "CHG ~ AVISIT + BASE + TRT01P + TRT01P:AVISIT",
+      "+ unstr(time = AVISIT, gr = USUBJID)"
+    )
+  )
+  expect_equal(
+    deparse(out[[2L]][[1L]], width.cutoff = 500L),
+    paste(
+      "sigma ~ AVISIT"
+    )
   )
 })
 
@@ -120,7 +180,16 @@ test_that("brm_formula() without group interaction", {
     interaction_group = FALSE
   )
   expect_equal(
-    deparse(out, width.cutoff = 500L),
-    "CHG ~ AVISIT + BASE + BASE:AVISIT + TRT01P"
+    deparse(out[[1L]], width.cutoff = 500L),
+    paste(
+      "CHG ~ AVISIT + BASE + BASE:AVISIT + TRT01P",
+      "+ unstr(time = AVISIT, gr = USUBJID)"
+    )
+  )
+  expect_equal(
+    deparse(out[[2L]][[1L]], width.cutoff = 500L),
+    paste(
+      "sigma ~ AVISIT"
+    )
   )
 })

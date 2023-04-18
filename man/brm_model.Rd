@@ -7,13 +7,11 @@
 brm_model(
   data,
   formula = brm_formula(),
-  correlation = "unstructured",
-  time = "AVISIT",
-  patient = "USUBJID",
   sd_intercept = 100,
   sd_b = 100,
   sd_intercept_sigma = 100,
   sd_b_sigma = 100,
+  shape_cor = 1,
   ...
 )
 }
@@ -21,17 +19,11 @@ brm_model(
 \item{data}{A tidy data frame with one row per patient per discrete
 time point.}
 
-\item{formula}{An R formula to represent the fixed effect parameterization.
-Use \code{\link[=brm_formula]{brm_formula()}} to help.}
-
-\item{correlation}{Character of length 1, name of the correlation
-structure. Only \code{"unstructured"} is currently supported.}
-
-\item{time}{Character of length 1, name of the discrete time variable
-in the data.}
-
-\item{patient}{Character of length 1, name of the patient ID
-variable in the data.}
+\item{formula}{An object of class \code{"brmsformula"} from \code{\link[=brm_formula]{brm_formula()}}
+or \code{brms::brmsformula()}. Should include the full parameterization
+of the model, including fixed effects, residual correlation,
+and heterogeneity in the discrete-time-specific residual variance
+components.}
 
 \item{sd_intercept}{Positive numeric of length 1, prior standard deviation
 of the "intercept" class of parameters.}
@@ -47,6 +39,9 @@ of the "intercept" class of parameters with \code{dpar = "sigma"}.}
 prior standard deviation
 of the "b" class of parameters with \code{dpar = "sigma"}.}
 
+\item{shape_cor}{Positive numeric of length 1. For unstructured
+correlation, this is the LKJ shape parameter.}
+
 \item{...}{Arguments to \code{brms::brm()} other than \code{data}, \code{formula},
 and \code{prior}.}
 }
@@ -58,11 +53,13 @@ Fit a basic MMRM model using \code{brms}.
 }
 \examples{
 set.seed(0L)
-data <- brm_simulate()$data
+sim <- brm_simulate()
+data <- sim$data
 formula <- brm_formula(
   response = "response",
   group = "group",
   time = "time",
+  patient = "patient",
   effect_base = FALSE,
   interaction_base = FALSE
 )
@@ -72,8 +69,6 @@ tmp <- utils::capture.output(
       model <- brm_model(
         data = data,
         formula = formula,
-        time = "time",
-        patient = "patient",
         chains = 1,
         iter = 100,
         refresh = 0
