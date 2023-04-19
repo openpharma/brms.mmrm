@@ -25,7 +25,8 @@ Authors@R: c(
     given = "Kevin",
     family = "Kunzmann",
     role = "aut",
-    email = "kevin.kunzmann@boehringer-ingelheim.com"
+    email = "kevin.kunzmann@boehringer-ingelheim.com",
+    comment = c(ORCID = "0000-0002-1140-7143")
   ),
   person(
     given = "Yoni",
@@ -37,12 +38,18 @@ Authors@R: c(
     given = "Christian",
     family = "Stock",
     role = "aut",
-    email = "christian.stock@boehringer-ingelheim.com"
+    email = "christian.stock@boehringer-ingelheim.com",
+    comment = c(ORCID = "0000-0002-3493-3234")
   ),
   person(
     family = "Eli Lilly and Company",
-    role = "cph"
-  ))
+    role = c("cph", "fnd")
+  ),
+  person(
+  "Boehringer Ingelheim Pharma GmbH & Co. KG",
+  role = c("cph", "fnd")
+  )
+  )
 Depends:
   R (>= 4.0.0)
 Imports:
