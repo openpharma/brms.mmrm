@@ -18,7 +18,7 @@ test_that("brm_formula() with default names and all terms", {
   expect_equal(
     deparse(out[[2L]][[1L]], width.cutoff = 500L),
     paste(
-      "sigma ~ AVISIT"
+      "sigma ~ 0 + AVISIT"
     )
   )
 })
@@ -45,7 +45,7 @@ test_that("brm_formula() with all user-supplied columns and all terms", {
   expect_equal(
     deparse(out[[2L]][[1L]], width.cutoff = 500L),
     paste(
-      "sigma ~ t"
+      "sigma ~ 0 + t"
     )
   )
 })
@@ -69,7 +69,7 @@ test_that("brm_formula() without intercept", {
   expect_equal(
     deparse(out[[2L]][[1L]], width.cutoff = 500L),
     paste(
-      "sigma ~ AVISIT"
+      "sigma ~ 0 + AVISIT"
     )
   )
 })
@@ -93,7 +93,7 @@ test_that("brm_formula() without group effect", {
   expect_equal(
     deparse(out[[2L]][[1L]], width.cutoff = 500L),
     paste(
-      "sigma ~ AVISIT"
+      "sigma ~ 0 + AVISIT"
     )
   )
 })
@@ -117,7 +117,7 @@ test_that("brm_formula() without time effect", {
   expect_equal(
     deparse(out[[2L]][[1L]], width.cutoff = 500L),
     paste(
-      "sigma ~ AVISIT"
+      "sigma ~ 0 + AVISIT"
     )
   )
 })
@@ -141,7 +141,7 @@ test_that("brm_formula() without baseline effect", {
   expect_equal(
     deparse(out[[2L]][[1L]], width.cutoff = 500L),
     paste(
-      "sigma ~ AVISIT"
+      "sigma ~ 0 + AVISIT"
     )
   )
 })
@@ -165,7 +165,7 @@ test_that("brm_formula() without baseline interaction", {
   expect_equal(
     deparse(out[[2L]][[1L]], width.cutoff = 500L),
     paste(
-      "sigma ~ AVISIT"
+      "sigma ~ 0 + AVISIT"
     )
   )
 })
@@ -189,7 +189,7 @@ test_that("brm_formula() without group interaction", {
   expect_equal(
     deparse(out[[2L]][[1L]], width.cutoff = 500L),
     paste(
-      "sigma ~ AVISIT"
+      "sigma ~ 0 + AVISIT"
     )
   )
 })

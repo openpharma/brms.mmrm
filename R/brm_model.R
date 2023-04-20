@@ -14,10 +14,7 @@
 #'   of the "intercept" class of parameters.
 #' @param sd_b Positive numeric of length 1, prior standard deviation
 #'   of the "b" class of parameters.
-#' @param sd_intercept_sigma Positive numeric of length 1,
-#'   prior standard deviation
-#'   of the "intercept" class of parameters with `dpar = "sigma"`.
-#' @param sd_b_sigma Positive numeric of length 1,
+#' @param sd_sigma Positive numeric of length 1,
 #'   prior standard deviation
 #'   of the "b" class of parameters with `dpar = "sigma"`.
 #' @param shape_cor Positive numeric of length 1. For unstructured
@@ -56,8 +53,7 @@ brm_model <- function(
   formula = brm_formula(),
   sd_intercept = 100,
   sd_b = 100,
-  sd_intercept_sigma = 100,
-  sd_b_sigma = 100,
+  sd_sigma = 100,
   shape_cor = 1,
   ...
 ) {
@@ -68,17 +64,17 @@ brm_model <- function(
   )
   assert_pos(sd_intercept)
   assert_pos(sd_b)
-  assert_pos(sd_intercept_sigma)
-  assert_pos(sd_b_sigma)
+  assert_pos(sd_sigma)
   prior_0 <- sprintf("normal(0, %s)", sd_intercept)
   prior_b <- sprintf("normal(0, %s)", sd_b)
-  prior_0_sigma <- sprintf("normal(0, %s)", sd_intercept_sigma)
-  prior_b_sigma <- sprintf("normal(0, %s)", sd_b_sigma)
+  prior_sigma <- sprintf("normal(0, %s)", sd_sigma)
   prior_cor <- sprintf("lkj_corr_cholesky(%s)", shape_cor)
-  prior <- brms::set_prior(prior = prior_0, class = "Intercept") +
-    brms::set_prior(prior = prior_b, class = "b") +
-    brms::set_prior(prior_0_sigma, class = "Intercept", dpar = "sigma") +
-    brms::set_prior(prior_b_sigma, class = "b", dpar = "sigma") +
+  prior <- brms::set_prior(prior = prior_b, class = "b") +
+    brms::set_prior(prior_sigma, class = "b", dpar = "sigma") +
     brms::set_prior(prior_cor, class = "Lcortime")
+  prior_classes <- brms::get_prior(formula = formula, data = data)$class
+  if ("Intercept" %in% prior_classes) {
+    prior <- prior + brms::set_prior(prior = prior_0, class = "Intercept")
+  }
   brms::brm(data = data, formula = formula, prior = prior, ...)
 }

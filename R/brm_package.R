@@ -19,7 +19,7 @@
 #'     Ther Innov Regul Sci 42, 303–319 (2008).
 #'     doi:10.1177/009286150804200402
 #' @family help
-#' @importFrom brms brm brmsformula prior unstr
+#' @importFrom brms brm brmsformula get_prior prior unstr
 #' @importFrom MASS mvrnorm
 #' @importFrom rlang warn
 #' @importFrom stats as.formula model.matrix rnorm runif
