@@ -46,10 +46,9 @@ Authors@R: c(
     role = c("cph", "fnd")
   ),
   person(
-  "Boehringer Ingelheim Pharma GmbH & Co. KG",
-  role = c("cph", "fnd")
-  )
-  )
+    "Boehringer Ingelheim Pharma GmbH & Co. KG",
+    role = c("cph", "fnd")
+  ))
 Depends:
   R (>= 4.0.0)
 Imports:
