@@ -9,8 +9,7 @@ brm_model(
   formula = brm_formula(),
   sd_intercept = 100,
   sd_b = 100,
-  sd_intercept_sigma = 100,
-  sd_b_sigma = 100,
+  sd_sigma = 100,
   shape_cor = 1,
   ...
 )
@@ -31,11 +30,7 @@ of the "intercept" class of parameters.}
 \item{sd_b}{Positive numeric of length 1, prior standard deviation
 of the "b" class of parameters.}
 
-\item{sd_intercept_sigma}{Positive numeric of length 1,
-prior standard deviation
-of the "intercept" class of parameters with \code{dpar = "sigma"}.}
-
-\item{sd_b_sigma}{Positive numeric of length 1,
+\item{sd_sigma}{Positive numeric of length 1,
 prior standard deviation
 of the "b" class of parameters with \code{dpar = "sigma"}.}
 

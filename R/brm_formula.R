@@ -89,7 +89,7 @@ brm_formula <- function(
   )
   right <- paste(terms, collapse = " + ")
   formula <- stats::as.formula(paste(response, "~", right))
-  formula_sigma <- stats::as.formula(paste("sigma ~", time))
+  formula_sigma <- stats::as.formula(paste("sigma ~ 0 +", time))
   brms::brmsformula(formula = formula, formula_sigma)
 }
 
