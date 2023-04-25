@@ -77,7 +77,7 @@ brm_formula(
 )
 }
 \seealso{
-Other model: 
+Other models: 
 \code{\link{brm_model}()}
 }
-\concept{model}
+\concept{models}

@@ -1,6 +1,6 @@
 #' @title Model formula
 #' @export
-#' @family model
+#' @family models
 #' @description Build a model formula for an MMRM.
 #' @return An object of class `"brmsformula"` returned from
 #'   `brms::brmsformula()`. It contains the fixed effect parameterization,
@@ -58,7 +58,7 @@ brm_formula <- function(
   assert_chr(group, "group arg must be a nonempty character string")
   assert_chr(time, "time arg must be a nonempty character string")
   assert_chr(patient, "patient arg must be a nonempty character string")
-  assert_chr_vec(covariates, "covariates arg must be a nonempty chr vector")
+  assert_chr_vec(covariates, "covariates arg must be a character vector")
   assert_lgl(intercept)
   assert_lgl(effect_group)
   assert_lgl(effect_time)
