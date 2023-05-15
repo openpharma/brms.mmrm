@@ -38,6 +38,10 @@ A \code{tibble} with summary statistics of the marginal posterior.
 \description{
 Summarize a basic MMRM model fit.
 }
+\details{
+Currently assumes the response variable is \code{CHG}
+(change from baseline) and not \code{AVAL} (raw response).
+}
 \examples{
 set.seed(0L)
 sim <- brm_simulate()

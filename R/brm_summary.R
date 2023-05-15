@@ -2,6 +2,8 @@
 #' @export
 #' @family results
 #' @description Summarize a basic MMRM model fit.
+#' @details Currently assumes the response variable is `CHG`
+#'   (change from baseline) and not `AVAL` (raw response).
 #' @return A `tibble` with summary statistics of the marginal posterior.
 #' @inheritParams brm_formula
 #' @param model Fitted `brms` model object from [brm_model()]
@@ -91,7 +93,7 @@ brm_summary <- function(
     data = data,
     emmeans_response = emmeans_response
   )
-  table_diff <- brm_summary_diff_change(
+  table_diff <- brm_summary_diff(
     data = data,
     emmeans_response = emmeans_response,
     group = group,
@@ -117,7 +119,7 @@ brm_summary_response <- function(data, emmeans_response) {
   out
 }
 
-brm_summary_diff_change <- function(
+brm_summary_diff <- function(
   data,
   emmeans_response,
   group,
@@ -125,15 +127,17 @@ brm_summary_diff_change <- function(
   nuisance,
   control
 ) {
-  contrasts_diff <- list()
   reference <- tibble::as_tibble(emmeans_response)
+  contrasts_diff <- list()
   for (level_group in setdiff(sort(unique(reference[[group]])), control)) {
     for (level_time in sort(unique(reference[[time]]))) {
       contrast_treatment <- as.integer(
-        reference[[group]] == group & reference[[time]] == level_time
+        (reference[[group]] == level_group) &
+          (reference[[time]] == level_time)
       )
       contrast_control <- as.integer(
-        reference[[group]] == control & reference[[time]] == level_time
+        (reference[[group]] == control) & 
+          (reference[[time]] == level_time)
       )
       contrast <- contrast_treatment - contrast_control
       contrasts_diff[[length(contrasts_diff) + 1L]] <- contrast
