@@ -136,7 +136,7 @@ brm_summary_diff <- function(
           (reference[[time]] == level_time)
       )
       contrast_control <- as.integer(
-        (reference[[group]] == control) & 
+        (reference[[group]] == control) &
           (reference[[time]] == level_time)
       )
       contrast <- contrast_treatment - contrast_control

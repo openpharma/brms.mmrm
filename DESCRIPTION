@@ -53,6 +53,8 @@ Depends:
   R (>= 4.0.0)
 Imports:
   brms,
+  dplyr,
+  emmeans,
   MASS,
   rlang,
   stats,
