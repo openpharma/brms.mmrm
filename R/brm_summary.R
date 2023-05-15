@@ -6,7 +6,9 @@
 #'   (change from baseline) and not `AVAL` (raw response).
 #' @return A `tibble` with summary statistics of the marginal posterior.
 #' @inheritParams brm_formula
-#' @param model Fitted `brms` model object from [brm_model()]
+#' @param model Fitted `brms` model object from [brm_model()].
+#' @param control Character of length 1, name of the control arm
+#'   in the `group` column in the data.
 #' @examples
 #' set.seed(0L)
 #' sim <- brm_simulate()

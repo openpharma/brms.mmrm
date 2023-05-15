@@ -15,7 +15,7 @@ brm_summary(
 )
 }
 \arguments{
-\item{model}{Fitted \code{brms} model object from \code{\link[=brm_model]{brm_model()}}}
+\item{model}{Fitted \code{brms} model object from \code{\link[=brm_model]{brm_model()}}.}
 
 \item{base}{Character of length 1, name of the baseline response variable
 in the data.}
@@ -31,6 +31,9 @@ in the data.}
 
 \item{covariates}{Character vector of names of other covariates
 in the data.}
+
+\item{control}{Character of length 1, name of the control arm
+in the \code{group} column in the data.}
 }
 \value{
 A \code{tibble} with summary statistics of the marginal posterior.

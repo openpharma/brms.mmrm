@@ -49,14 +49,15 @@ test_that("brm_summary()", {
   )
   expect_equal(sort(colnames(out)), sort(cols))
   expect_equal(nrow(out), 8L)
-  expect_equal(as.integer(out$time), rep(seq_len(4), each = 2))
-  expect_equal(as.integer(out$group), rep(seq_len(2), times = 4))
+  expect_equal(as.integer(out$time), rep(seq_len(4), times = 2))
+  expect_equal(as.integer(out$group), rep(seq_len(2), each = 4))
   expect_true(all(out$response_mean > out$response_lower))
-  expect_true(all(out$response_mean > out$response_upper))
-  expect_true(all(out$diff_mean > out$diff_lower))
-  expect_true(all(out$diff_mean > out$diff_upper))
+  expect_true(all(out$response_mean < out$response_upper))
+  expect_true(all(out$diff_mean > out$diff_lower, na.rm = TRUE))
+  expect_true(all(out$diff_mean < out$diff_upper, na.rm = TRUE))
   expect_equal(
-    out$diff_mean[seq_len(4)],
-    out$response_mean[out$group == 2] - out$response_mean[out$group == 1]
+    out$diff_mean[seq(5, 8)],
+    out$response_mean[out$group == 2] - out$response_mean[out$group == 1],
+    tolerance = 0.01
   )
 })
