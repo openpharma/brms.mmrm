@@ -1,6 +1,6 @@
 #' @title Basic MMRM
 #' @export
-#' @family model
+#' @family models
 #' @description Fit a basic MMRM model using `brms`.
 #' @return A fitted model object from `brms`.
 #' @param data A tidy data frame with one row per patient per discrete

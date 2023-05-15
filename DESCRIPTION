@@ -53,6 +53,8 @@ Depends:
   R (>= 4.0.0)
 Imports:
   brms,
+  dplyr,
+  emmeans,
   MASS,
   rlang,
   stats,
@@ -65,6 +67,13 @@ Suggests:
   markdown (>= 1.1),
   rmarkdown (>= 2.4),
   testthat (>= 3.0.0)
+LinkingTo: 
+  BH,
+  Rcpp,
+  RcppEigen,
+  RcppParallel,
+  rstan,
+  StanHeaders
 Encoding: UTF-8
 Language: en-US
 VignetteBuilder: knitr

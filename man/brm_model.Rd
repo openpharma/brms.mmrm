@@ -75,7 +75,7 @@ model
 brms::prior_summary(model)
 }
 \seealso{
-Other model: 
+Other models: 
 \code{\link{brm_formula}()}
 }
-\concept{model}
+\concept{models}
