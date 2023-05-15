@@ -63,6 +63,7 @@ Imports:
   trialr,
   utils
 Suggests:
+  BH,
   knitr (>= 1.30),
   markdown (>= 1.1),
   rmarkdown (>= 2.4),
