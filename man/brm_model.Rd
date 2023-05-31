@@ -6,11 +6,8 @@
 \usage{
 brm_model(
   data,
-  formula = brm_formula(),
-  sd_intercept = 100,
-  sd_b = 100,
-  sd_sigma = 100,
-  shape_cor = 1,
+  formula = brms.mmrm::brm_formula(),
+  prior = brms::prior("lkj_corr_cholesky(1)", class = "Lcortime"),
   ...
 )
 }
@@ -24,18 +21,7 @@ of the model, including fixed effects, residual correlation,
 and heterogeneity in the discrete-time-specific residual variance
 components.}
 
-\item{sd_intercept}{Positive numeric of length 1, prior standard deviation
-of the "intercept" class of parameters.}
-
-\item{sd_b}{Positive numeric of length 1, prior standard deviation
-of the "b" class of parameters.}
-
-\item{sd_sigma}{Positive numeric of length 1,
-prior standard deviation
-of the "b" class of parameters with \code{dpar = "sigma"}.}
-
-\item{shape_cor}{Positive numeric of length 1. For unstructured
-correlation, this is the LKJ shape parameter.}
+\item{prior}{Either \code{NULL} or a \code{"brmsprior"} object from \code{brms::prior()}.}
 
 \item{...}{Arguments to \code{brms::brm()} other than \code{data}, \code{formula},
 and \code{prior}.}

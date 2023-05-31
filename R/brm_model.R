@@ -10,15 +10,7 @@
 #'   of the model, including fixed effects, residual correlation,
 #'   and heterogeneity in the discrete-time-specific residual variance
 #'   components.
-#' @param sd_intercept Positive numeric of length 1, prior standard deviation
-#'   of the "intercept" class of parameters.
-#' @param sd_b Positive numeric of length 1, prior standard deviation
-#'   of the "b" class of parameters.
-#' @param sd_sigma Positive numeric of length 1,
-#'   prior standard deviation
-#'   of the "b" class of parameters with `dpar = "sigma"`.
-#' @param shape_cor Positive numeric of length 1. For unstructured
-#'   correlation, this is the LKJ shape parameter.
+#' @param prior Either `NULL` or a `"brmsprior"` object from `brms::prior()`.
 #' @param ... Arguments to `brms::brm()` other than `data`, `formula`,
 #'   and `prior`.
 #' @examples
@@ -50,11 +42,8 @@
 #' brms::prior_summary(model)
 brm_model <- function(
   data,
-  formula = brm_formula(),
-  sd_intercept = 100,
-  sd_b = 100,
-  sd_sigma = 100,
-  shape_cor = 1,
+  formula = brms.mmrm::brm_formula(),
+  prior = brms::prior("lkj_corr_cholesky(1)", class = "Lcortime"),
   ...
 ) {
   assert(is.data.frame(data), message = "data arg must be a data frame.")
@@ -62,19 +51,11 @@ brm_model <- function(
     inherits(formula, "brmsformula"),
     message = "formula arg must be a \"brmsformula\" object."
   )
-  assert_pos(sd_intercept)
-  assert_pos(sd_b)
-  assert_pos(sd_sigma)
-  prior_0 <- sprintf("normal(0, %s)", sd_intercept)
-  prior_b <- sprintf("normal(0, %s)", sd_b)
-  prior_sigma <- sprintf("normal(0, %s)", sd_sigma)
-  prior_cor <- sprintf("lkj_corr_cholesky(%s)", shape_cor)
-  prior <- brms::set_prior(prior = prior_b, class = "b") +
-    brms::set_prior(prior_sigma, class = "b", dpar = "sigma") +
-    brms::set_prior(prior_cor, class = "Lcortime")
-  prior_classes <- brms::get_prior(formula = formula, data = data)$class
-  if ("Intercept" %in% prior_classes) {
-    prior <- prior + brms::set_prior(prior = prior_0, class = "Intercept")
+  if (!is.null(prior)) {
+    assert(
+      inherits(prior, "brmsprior"),
+      message = "prior arg must be a \"brmsprior\" object or NULL."
+    )
   }
   brms::brm(data = data, formula = formula, prior = prior, ...)
 }
