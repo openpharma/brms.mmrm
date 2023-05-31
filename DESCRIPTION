@@ -63,17 +63,16 @@ Imports:
   trialr,
   utils
 Suggests:
+  BH,
   knitr (>= 1.30),
   markdown (>= 1.1),
-  rmarkdown (>= 2.4),
-  testthat (>= 3.0.0)
-LinkingTo: 
-  BH,
   Rcpp,
   RcppEigen,
   RcppParallel,
+  rmarkdown (>= 2.4),
   rstan,
-  StanHeaders
+  StanHeaders,
+  testthat (>= 3.0.0)
 Encoding: UTF-8
 Language: en-US
 VignetteBuilder: knitr
