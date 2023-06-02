@@ -11,7 +11,9 @@ brm_summary(
   time = "AVISIT",
   patient = "USUBJID",
   covariates = character(0),
-  control = "Placebo"
+  control = "Placebo",
+  baseline = "Baseline",
+  response_type = "change"
 )
 }
 \arguments{
@@ -32,8 +34,17 @@ in the data.}
 \item{covariates}{Character vector of names of other covariates
 in the data.}
 
-\item{control}{Character of length 1, name of the control arm
-in the \code{group} column in the data.}
+\item{control}{Element of the \code{group} column in the data which indicates
+the control group for the purposes of calculating treatment differences.}
+
+\item{baseline}{Element of the \code{time} column in the data
+which indicates the baseline time for the purposes of calculating
+change from baseline. Ignored if \code{response_type = "change"}.}
+
+\item{response_type}{Character of length 1, \code{"response"} if the
+response variable is the raw outcome variable (such as AVAL)
+or \code{"change"} if the response variable is change from baseline
+(e.g. CHG).}
 }
 \value{
 A \code{tibble} with summary statistics of the marginal posterior.
@@ -49,6 +60,8 @@ Currently assumes the response variable is \code{CHG}
 set.seed(0L)
 sim <- brm_simulate()
 data <- sim$data
+data$group <- paste("treatment", data$group)
+data$time <- paste("visit", data$time)
 formula <- brm_formula(
   response = "response",
   group = "group",
@@ -75,7 +88,9 @@ brm_summary(
   group = "group",
   time = "time",
   patient = "patient",
-  control = 1
+  control = "treatment 1",
+  baseline = "visit 1",
+  response_type = "response"
 )
 }
 \concept{results}
