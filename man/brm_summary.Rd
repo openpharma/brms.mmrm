@@ -11,10 +11,12 @@ brm_summary(
   time = "AVISIT",
   patient = "USUBJID",
   covariates = character(0),
+  outcome = "change",
   control = "Placebo",
   baseline = "Baseline",
-  response_type = "change",
-  level = 0.95
+  level = 0.95,
+  direction = "greater",
+  threshold = 0
 )
 }
 \arguments{
@@ -35,23 +37,38 @@ in the data.}
 \item{covariates}{Character vector of names of other covariates
 in the data.}
 
+\item{outcome}{Character of length 1, \code{"response"} if the
+response variable is the raw outcome variable (such as AVAL)
+or \code{"change"} if the response variable is change from baseline
+(e.g. CHG).}
+
 \item{control}{Element of the \code{group} column in the data which indicates
 the control group for the purposes of calculating treatment differences.}
 
 \item{baseline}{Element of the \code{time} column in the data
 which indicates the baseline time for the purposes of calculating
-change from baseline. Ignored if \code{response_type = "change"}.}
-
-\item{response_type}{Character of length 1, \code{"response"} if the
-response variable is the raw outcome variable (such as AVAL)
-or \code{"change"} if the response variable is change from baseline
-(e.g. CHG).}
+change from baseline.}
 
 \item{level}{Numeric of length 1 between 0 and 1, credible level
-for the credible intervals in the output.}
+for the credible intervals. Only relevant when \code{return = "marginals"}.}
+
+\item{direction}{Character vector of the same length as \code{threshold}.
+\code{"greater"} to compute the marginal posterior probability that the
+treatment effect is greater than the threshold,
+\code{"less"} to compute the marginal posterior probability that the
+treatment effect is less than the threshold.
+Each element \code{direction[i]} corresponds to \code{threshold[i]}
+for all \code{i} from 1 to \code{length(direction)}.}
+
+\item{threshold}{Numeric vector of the same length as \code{direction},
+treatment effect threshold for computing posterior probabilities.
+Each element \code{direction[i]} corresponds to \code{threshold[i]} for
+all \code{i} from 1 to \code{length(direction)}.}
 }
 \value{
-A \code{tibble} with summary statistics of the marginal posterior.
+A list of two data frames, one with summary statistics on the
+marginal posterior and another with posterior probabilities
+on the treatment effects.
 }
 \description{
 Summarize a basic MMRM model fit.
@@ -94,7 +111,7 @@ brm_summary(
   patient = "patient",
   control = "treatment 1",
   baseline = "visit 1",
-  response_type = "response"
+  outcome = "response"
 )
 }
 \concept{results}
