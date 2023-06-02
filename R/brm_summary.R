@@ -16,6 +16,8 @@
 #'   response variable is the raw outcome variable (such as AVAL)
 #'   or `"change"` if the response variable is change from baseline
 #'   (e.g. CHG).
+#' @param level Numeric of length 1 between 0 and 1, credible level
+#'   for the credible intervals in the output.
 #' @examples
 #' set.seed(0L)
 #' sim <- brm_simulate()
@@ -61,7 +63,8 @@ brm_summary <- function(
   covariates = character(0),
   control = "Placebo",
   baseline = "Baseline",
-  response_type = "change"
+  response_type = "change",
+  level = 0.95
 ) {
   assert_chr(base, "base arg must be a nonempty character string")
   assert_chr(group, "group arg must be a nonempty character string")
@@ -90,6 +93,8 @@ brm_summary <- function(
     !anyNA(.),
     message = "baseline arg must be a length-1 non-missing atomic value"
   )
+  assert_num(level, "level arg must be a length-1 numeric between 0 and 1")
+  assert(level, . >= 0, . <= 1, message = "level arg must be between 0 and 1")
   assert(is.data.frame(model$data))
   data <- model$data
   assert(
@@ -182,9 +187,19 @@ brm_summary <- function(
       control = control
     )
   }
-  
-  browser()
-  
+  table_response <- summarize_marginals(draws_response, level)
+  table_change <- if_any(
+    response_type == "response",
+    summarize_marginals(draws_change, level),
+    NULL
+  )
+  table_diff <- summarize_marginals(draws_diff, level)
+  dplyr::bind_rows(
+    response = table_response,
+    change = table_change,
+    difference = table_diff,
+    .id = "marginal"
+  )
 }
 
 subtract_baseline <- function(draws, groups, times, baseline) {
@@ -213,4 +228,47 @@ subtract_control <- function(draws, groups, times, control) {
 
 marginal_name <- function(group, time) {
   sprintf("%s, %s", group , time)
+}
+
+summarize_marginals <- function(draws, level) {
+  level_lower <- (1 - level) / 2
+  level_upper <- 1 - level_lower
+  draws[[".chain"]] <- NULL
+  draws[[".iteration"]] <- NULL
+  draws[[".draw"]] <- NULL
+  value <- tibble::tibble(
+    group = gsub(",.*$", "", colnames(draws)),
+    time = gsub("^.*, ", "", colnames(draws)),
+    mean = purrr::map_dbl(draws, mean),
+    median = purrr::map_dbl(draws, median),
+    sd = purrr::map_dbl(draws, sd),
+    lower = purrr::map_dbl(draws, ~quantile(.x, level_lower)),
+    upper = purrr::map_dbl(draws, ~quantile(.x, level_upper))
+  )
+  mcse <- tibble::tibble(
+    group = gsub(",.*$", "", colnames(draws)),
+    time = gsub("^.*, ", "", colnames(draws)),
+    mean = purrr::map_dbl(draws, posterior::mcse_mean),
+    median = purrr::map_dbl(draws, posterior::mcse_median),
+    sd = purrr::map_dbl(draws, posterior::mcse_sd),
+    lower = purrr::map_dbl(draws, ~posterior::mcse_quantile(.x, level_lower)),
+    upper = purrr::map_dbl(draws, ~posterior::mcse_quantile(.x, level_upper))
+  )
+  value <- tidyr::pivot_longer(
+    data = value,
+    cols = -any_of(c("group", "time")),
+    names_to = "statistic",
+    values_to = "value"
+  )
+  mcse <- tidyr::pivot_longer(
+    data = mcse,
+    cols = -any_of(c("group", "time")),
+    names_to = "statistic",
+    values_to = "mcse"
+  )
+  dplyr::left_join(
+    x = value,
+    y = mcse,
+    by = c("group", "time", "statistic")
+  )
 }

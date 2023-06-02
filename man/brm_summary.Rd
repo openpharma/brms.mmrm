@@ -13,7 +13,8 @@ brm_summary(
   covariates = character(0),
   control = "Placebo",
   baseline = "Baseline",
-  response_type = "change"
+  response_type = "change",
+  level = 0.95
 )
 }
 \arguments{
@@ -45,6 +46,9 @@ change from baseline. Ignored if \code{response_type = "change"}.}
 response variable is the raw outcome variable (such as AVAL)
 or \code{"change"} if the response variable is change from baseline
 (e.g. CHG).}
+
+\item{level}{Numeric of length 1 between 0 and 1, credible level
+for the credible intervals in the output.}
 }
 \value{
 A \code{tibble} with summary statistics of the marginal posterior.
