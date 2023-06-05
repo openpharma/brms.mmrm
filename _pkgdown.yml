@@ -3,10 +3,6 @@ reference:
 - title: Help
   contents:
   - '`brms.mmrm-package`'
-- title: Data
-  contents:
-  - '`brm_data_preprocess`'
-  - '`brm_data_validate`'
 - title: Simulation
   contents:
   - '`brm_simulate`'

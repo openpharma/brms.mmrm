@@ -57,6 +57,7 @@ Imports:
   dplyr,
   emmeans,
   ggplot2,
+  ggridges,
   MASS,
   posterior,
   purrr,
