@@ -126,9 +126,7 @@ brm_summary <- function(
 summarize_marginals <- function(draws, level) {
   level_lower <- (1 - level) / 2
   level_upper <- 1 - level_lower
-  draws[[".chain"]] <- NULL
-  draws[[".iteration"]] <- NULL
-  draws[[".draw"]] <- NULL
+  draws[names_mcmc] <- NULL
   value <- tibble::tibble(
     group = names_group(draws),
     time = names_time(draws),
@@ -167,9 +165,7 @@ summarize_marginals <- function(draws, level) {
 }
 
 summarize_probabilities <- function(draws, direction, threshold) {
-  draws[[".chain"]] <- NULL
-  draws[[".iteration"]] <- NULL
-  draws[[".draw"]] <- NULL
+  draws[names_mcmc] <- NULL
   tibble::tibble(
     group = names_group(draws),
     time = names_time(draws),
