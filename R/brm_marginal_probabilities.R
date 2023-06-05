@@ -103,7 +103,7 @@ brm_marginal_probabilities <- function(
   )
   columns <- c("direction", "threshold", "group", "time", "value")
   out <- out[, columns]
-  args <- lapply(columns, as.symbol)
+  args <- lapply(setdiff(columns, "value"), as.symbol)
   args$.data <- out
   do.call(what = dplyr::arrange, args = args)
 }

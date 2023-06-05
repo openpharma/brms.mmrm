@@ -23,6 +23,8 @@
 #' @importFrom coda as.mcmc
 #' @importFrom dplyr left_join
 #' @importFrom emmeans emmeans
+#' @importFrom ggplot2 aes facet_wrap geom_point geom_errorbar ggplot
+#'   position_dodge theme_gray xlab ylab
 #' @importFrom MASS mvrnorm
 #' @importFrom posterior as_draws_df mcse_mean mcse_median mcse_quantile
 #'   mcse_sd
@@ -30,7 +32,7 @@
 #' @importFrom rlang warn
 #' @importFrom stats as.formula median model.matrix rnorm runif sd
 #' @importFrom tibble tibble
-#' @importFrom tidyr expand_grid
+#' @importFrom tidyr expand_grid pivot_longer pivot_wider
 #' @importFrom tidyselect any_of
 #' @importFrom trialr rlkjcorr
 #' @importFrom utils capture.output globalVariables
@@ -42,7 +44,13 @@ globalVariables(
     "b",
     "Intercept",
     "normal",
-    "sigma"
+    "sigma",
+    "n_observed",
+    "lower",
+    "upper",
+    "source",
+    "group",
+    "time"
   ),
   package = "brms.mmrm"
 )

@@ -24,11 +24,20 @@ change from baseline, and \code{"difference"} for treatment difference
 in terms of change from baseline. If \code{outcome} was \code{"change"},
 then possible values include \code{"response"} for the response one the
 change from baseline scale and \code{"difference"} for treatment difference.
+\item \code{statistic}: type of summary statistic. \code{"lower"} and \code{"upper"}
+are bounds of an equal-tailed quantile-based credible interval.
 \item \code{group}: treatment group.
 \item \code{time}: discrete time point.
-\item \code{statistic}: type of summary statistic.
 \item \code{value}: numeric value of the estimate.
 \item \code{mcse}: Monte Carlo standard error of the estimate.
+The \code{statistic} column has the following possible values:
+\item \code{mean}: posterior mean.
+\item \code{median}: posterior median.
+\item \code{sd}: posterior standard deviation of the mean.
+\item \code{lower}: lower bound of an equal-tailed credible interval of the mean,
+with credible level determined by the \code{level} argument.
+\item \code{upper}: upper bound of an equal-tailed credible interval
+with credible level determined by the \code{level} argument.
 }
 }
 \description{
@@ -74,6 +83,7 @@ suppressWarnings(brm_marginal_summaries(draws))
 }
 \seealso{
 Other marginals: 
+\code{\link{brm_marginal_data}()},
 \code{\link{brm_marginal_draws}()},
 \code{\link{brm_marginal_probabilities}()}
 }

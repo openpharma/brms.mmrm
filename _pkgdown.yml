@@ -16,6 +16,10 @@ reference:
   - '`brm_model`'
 - title: Marginals
   contents:
+  - '`brm_marginal_data`'
   - '`brm_marginal_draws`'
   - '`brm_marginal_summaries`'
   - '`brm_marginal_probabilities`'
+- title: Visualization
+  contents:
+  - '`brm_plot_compare`'

@@ -105,6 +105,7 @@ brm_marginal_draws(
 }
 \seealso{
 Other marginals: 
+\code{\link{brm_marginal_data}()},
 \code{\link{brm_marginal_probabilities}()},
 \code{\link{brm_marginal_summaries}()}
 }

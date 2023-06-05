@@ -11,11 +11,20 @@
 #'      in terms of change from baseline. If `outcome` was `"change"`,
 #'      then possible values include `"response"` for the response one the
 #'      change from baseline scale and `"difference"` for treatment difference.
+#'    * `statistic`: type of summary statistic. `"lower"` and `"upper"`
+#'      are bounds of an equal-tailed quantile-based credible interval.
 #'    * `group`: treatment group.
 #'    * `time`: discrete time point.
-#'    * `statistic`: type of summary statistic.
 #'    * `value`: numeric value of the estimate.
 #'    * `mcse`: Monte Carlo standard error of the estimate.
+#'   The `statistic` column has the following possible values:
+#'    * `mean`: posterior mean.
+#'    * `median`: posterior median.
+#'    * `sd`: posterior standard deviation of the mean.
+#'    * `lower`: lower bound of an equal-tailed credible interval of the mean,
+#'      with credible level determined by the `level` argument.
+#'    * `upper`: upper bound of an equal-tailed credible interval
+#'      with credible level determined by the `level` argument.
 #' @param draws Posterior draws of the marginal posterior
 #'   obtained from [brm_marginal_draws()].
 #' @param level Numeric of length 1 between 0 and 1, credible level
@@ -74,12 +83,17 @@ brm_marginal_summaries <- function(
     NULL
   )
   table_difference <- summarize_marginals(draws$difference, level)
-  dplyr::bind_rows(
+  out <- dplyr::bind_rows(
     response = table_response,
     change = table_change,
     difference = table_difference,
     .id = "marginal"
   )
+  columns <- c("marginal", "statistic", "group", "time", "value", "mcse")
+  out <- out[, columns]
+  args <- lapply(setdiff(columns, c("value", "mcse")), as.symbol)
+  args$.data <- out
+  do.call(what = dplyr::arrange, args = args)
 }
 
 summarize_marginals <- function(draws, level) {
@@ -106,13 +120,13 @@ summarize_marginals <- function(draws, level) {
   )
   value <- tidyr::pivot_longer(
     data = value,
-    cols = -any_of(c("group", "time")),
+    cols = -tidyselect::any_of(c("group", "time")),
     names_to = "statistic",
     values_to = "value"
   )
   mcse <- tidyr::pivot_longer(
     data = mcse,
-    cols = -any_of(c("group", "time")),
+    cols = -tidyselect::any_of(c("group", "time")),
     names_to = "statistic",
     values_to = "mcse"
   )

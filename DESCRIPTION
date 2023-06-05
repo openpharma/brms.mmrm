@@ -56,6 +56,7 @@ Imports:
   coda,
   dplyr,
   emmeans,
+  ggplot2,
   MASS,
   posterior,
   purrr,
