@@ -3,7 +3,7 @@
 #' @family visualization
 #' @description Visually compare the marginals of models and datasets.
 #' @return A `ggplot` object.
-#' @param ... Named data frames of marginals posterior summaries 
+#' @param ... Named data frames of marginals posterior summaries
 #'   from [brm_marginal_summaries()] and/or [brm_marginal_data()].
 #' @param marginal Character of length 1, which kind of marginal
 #'   to visualize: either `"response"`, `"change"`, or `"difference"`.
