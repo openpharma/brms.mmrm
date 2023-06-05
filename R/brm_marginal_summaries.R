@@ -69,7 +69,7 @@ brm_marginal_summaries <- function(
   assert(level, . >= 0, . <= 1, message = "level arg must be between 0 and 1")
   table_response <- summarize_marginals(draws$response, level)
   table_change <- if_any(
-    "change" %in% names(marginals),
+    "change" %in% names(draws),
     summarize_marginals(draws$change, level),
     NULL
   )
