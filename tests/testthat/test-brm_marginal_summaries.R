@@ -158,7 +158,7 @@ test_that("brm_marginal_summaries() on change", {
   suppressWarnings(
     x <- brm_marginal_summaries(
       draws,
-      level = 0.95
+      level = 0.9
     )
   )
   expect_equal(
@@ -194,11 +194,11 @@ test_that("brm_marginal_summaries() on change", {
         )
         expect_equal(
           unname(subset$value[subset$statistic == "lower"]),
-          unname(quantile(draws$response[[name]], probs = 0.025))
+          unname(quantile(draws$response[[name]], probs = 0.05))
         )
         expect_equal(
           unname(subset$value[subset$statistic == "upper"]),
-          unname(quantile(draws$response[[name]], probs = 0.975))
+          unname(quantile(draws$response[[name]], probs = 0.95))
         )
         suppressWarnings({
           expect_equal(
@@ -218,7 +218,7 @@ test_that("brm_marginal_summaries() on change", {
             unname(
               posterior::mcse_quantile(
                 draws$response[[name]],
-                probs = 0.025
+                probs = 0.05
               )
             )
           )
@@ -227,7 +227,7 @@ test_that("brm_marginal_summaries() on change", {
             unname(
               posterior::mcse_quantile(
                 draws$response[[name]],
-                probs = 0.975
+                probs = 0.95
               )
             )
           )

@@ -1,4 +1,4 @@
-test_that("brm_summary() on response", {
+test_that("brm_marginal_probabilities() on response", {
   set.seed(0L)
   sim <- brm_simulate()
   data <- sim$data
@@ -25,7 +25,7 @@ test_that("brm_summary() on response", {
       )
     )
   )
-  marginals <- brm_marginal_draws(
+  draws <- brm_marginal_draws(
     model = model,
     group = "group",
     time = "time",
@@ -34,95 +34,11 @@ test_that("brm_summary() on response", {
     baseline = "visit 1",
     outcome = "response"
   )
-  suppressWarnings(
-    out <- brm_summary(
-      marginals,
-      level = 0.95,
-      threshold = 0,
-      direction = "greater"
-    )
+  x <- brm_marginal_probabilities(
+    draws,
+    threshold = 0,
+    direction = "greater"
   )
-  expect_equal(sort(names(out)), sort(c("means", "probabilities")))
-  for (field in names(out)) {
-    x <- out[[field]]
-    expect_true(tibble::is_tibble(x))
-    expect_false(any(unlist(lapply(x, anyNA))))
-  }
-  x <- out$means
-  expect_equal(
-    sort(colnames(x)),
-    sort(c("marginal", "group", "time", "statistic", "value", "mcse"))
-  )
-  for (marginal in c("response", "change", "difference")) {
-    groups <- unique(data$group)
-    times <- unique(data$time)
-    if (marginal %in% c("change", "difference")) {
-      times <- setdiff(times, "visit 1")
-    }
-    if (identical(marginal, "difference")) {
-      groups <- setdiff(groups, "difference")
-    }
-    for (group in groups) {
-      for (time in times) {
-        name <- paste(group, time, sep = ", ")
-        index <- x$marginal == "response" & x$group == group & x$time == time
-        subset <- x[index, ]
-        expect_equal(
-          unname(subset$value[subset$statistic == "mean"]),
-          mean(marginals$response[[name]])
-        )
-        expect_equal(
-          unname(subset$value[subset$statistic == "median"]),
-          median(marginals$response[[name]])
-        )
-        expect_equal(
-          unname(subset$value[subset$statistic == "sd"]),
-          sd(marginals$response[[name]])
-        )
-        expect_equal(
-          unname(subset$value[subset$statistic == "lower"]),
-          unname(quantile(marginals$response[[name]], probs = 0.025))
-        )
-        expect_equal(
-          unname(subset$value[subset$statistic == "upper"]),
-          unname(quantile(marginals$response[[name]], probs = 0.975))
-        )
-        suppressWarnings({
-          expect_equal(
-            unname(subset$mcse[subset$statistic == "mean"]),
-            posterior::mcse_mean(marginals$response[[name]])
-          )
-          expect_equal(
-            unname(subset$mcse[subset$statistic == "median"]),
-            posterior::mcse_median(marginals$response[[name]])
-          )
-          expect_equal(
-            unname(subset$mcse[subset$statistic == "sd"]),
-            posterior::mcse_sd(marginals$response[[name]])
-          )
-          expect_equal(
-            unname(subset$mcse[subset$statistic == "lower"]),
-            unname(
-              posterior::mcse_quantile(
-                marginals$response[[name]],
-                probs = 0.025
-              )
-            )
-          )
-          expect_equal(
-            unname(subset$mcse[subset$statistic == "upper"]),
-            unname(
-              posterior::mcse_quantile(
-                marginals$response[[name]],
-                probs = 0.975
-              )
-            )
-          )
-        })
-      }
-    }
-  }
-  x <- out$probabilities
   expect_equal(
     sort(colnames(x)),
     sort(c("group", "time", "direction", "threshold", "value"))
@@ -133,14 +49,98 @@ test_that("brm_summary() on response", {
   expect_equal(x$threshold, rep(0, 3))
   expect_equal(
     x$value[1L],
-    mean(marginals$difference[["treatment 2, visit 2"]] > 0)
+    mean(draws$difference[["treatment 2, visit 2"]] > 0)
   )
   expect_equal(
     x$value[2L],
-    mean(marginals$difference[["treatment 2, visit 3"]] > 0)
+    mean(draws$difference[["treatment 2, visit 3"]] > 0)
   )
   expect_equal(
     x$value[3L],
-    mean(marginals$difference[["treatment 2, visit 4"]] > 0)
+    mean(draws$difference[["treatment 2, visit 4"]] > 0)
+  )
+})
+
+test_that("brm_marginal_probabilities() on change and multiple probs", {
+  set.seed(0L)
+  sim <- brm_simulate()
+  data <- sim$data
+  data$group <- paste("treatment", data$group)
+  data$time <- paste("visit", data$time)
+  formula <- brm_formula(
+    response = "response",
+    group = "group",
+    time = "time",
+    patient = "patient",
+    effect_base = FALSE,
+    interaction_base = FALSE
+  )
+  tmp <- utils::capture.output(
+    suppressMessages(
+      suppressWarnings(
+        model <- brm_model(
+          data = data,
+          formula = formula,
+          chains = 1,
+          iter = 100,
+          refresh = 0
+        )
+      )
+    )
+  )
+  draws <- brm_marginal_draws(
+    model = model,
+    group = "group",
+    time = "time",
+    patient = "patient",
+    control = "treatment 1",
+    baseline = "visit 1",
+    outcome = "change"
+  )
+  x <- brm_marginal_probabilities(
+    draws,
+    direction = c("less", "greater"),
+    threshold = c(-1.55, -1.7)
+  )
+  expect_equal(
+    sort(colnames(x)),
+    sort(c("group", "time", "direction", "threshold", "value"))
+  )
+  expect_equal(x$group, rep("treatment 2", 8))
+  expect_equal(x$time, rep(paste("visit", seq(1, 4)), times = 2))
+  expect_equal(x$direction, rep(c("greater", "less"), each = 4))
+  expect_equal(x$threshold, c(rep(-1.7, 4), rep(-1.55, 4)))
+  expect_equal(
+    x$value[1L],
+    mean(draws$difference[["treatment 2, visit 1"]] > -1.7)
+  )
+  expect_equal(
+    x$value[2L],
+    mean(draws$difference[["treatment 2, visit 2"]] > -1.7)
+  )
+  expect_equal(
+    x$value[3L],
+    mean(draws$difference[["treatment 2, visit 3"]] > -1.7)
+  )
+  expect_equal(
+    x$value[4L],
+    mean(draws$difference[["treatment 2, visit 4"]] > -1.7)
+  )
+  
+  expect_equal(
+    x$value[5L],
+    mean(draws$difference[["treatment 2, visit 1"]] < -1.55)
+  )
+  expect_equal(
+    x$value[6L],
+    mean(draws$difference[["treatment 2, visit 2"]] < -1.55)
+  )
+  expect_equal(
+    x$value[7L],
+    mean(draws$difference[["treatment 2, visit 3"]] < -1.55)
+  )
+  expect_equal(
+    x$value[8L],
+    mean(draws$difference[["treatment 2, visit 4"]] < -1.55)
   )
 })

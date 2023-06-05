@@ -60,7 +60,7 @@
 #'   baseline = "visit 1",
 #'   outcome = "response"
 #' )
-#' brm_marginal_probabilities(draws)
+#' brm_marginal_probabilities(draws, direction = "greater", threshold = 0)
 brm_marginal_probabilities <- function(
   draws,
   direction = "greater",
@@ -88,26 +88,39 @@ brm_marginal_probabilities <- function(
     length(direction) == length(threshold),
     message = "direction and threshold must have the same length"
   )
-  summarize_probabilities(
-    draws = draws$difference,
-    direction = direction,
-    threshold = threshold
+  draws <- tibble::as_tibble(draws$difference)
+  for (name in names_mcmc) {
+    draws[[name]] <- NULL
+  }
+  out <- purrr::map2_df(
+    .x = direction,
+    .y = threshold,
+    .f = ~summarize_probabilities(
+      draws = draws,
+      direction = .x,
+      threshold = .y
+    )
   )
+  columns <- c("direction", "threshold", "group", "time", "value")
+  out <- out[, columns]
+  args <- lapply(columns, as.symbol)
+  args$.data <- out
+  do.call(what = dplyr::arrange, args = args)
 }
 
 summarize_probabilities <- function(draws, direction, threshold) {
-  draws[names_mcmc] <- NULL
+  values <- purrr::map_dbl(
+    draws,
+    ~marginal_probability(.x, direction, threshold)
+  )
   out <- tibble::tibble(
     group = names_group(draws),
     time = names_time(draws),
     direction = direction,
     threshold = threshold,
-    value = purrr::map_dbl(
-      draws,
-      ~marginal_probability(.x, direction, threshold)
-    )
+    value = values
   )
-  unname_df(out)
+  out <- unname_df(out)
 }
 
 marginal_probability <- function(difference, direction, threshold) {

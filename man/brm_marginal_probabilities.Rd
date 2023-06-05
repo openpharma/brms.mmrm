@@ -74,7 +74,7 @@ draws <- brm_marginal_draws(
   baseline = "visit 1",
   outcome = "response"
 )
-brm_marginal_probabilities(draws)
+brm_marginal_probabilities(draws, direction = "greater", threshold = 0)
 }
 \seealso{
 Other marginals: 

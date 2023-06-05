@@ -4,6 +4,8 @@
 #' @description Summary statistics of the marginal posterior of an MMRM.
 #' @return A data frame with one row per summary statistic and the following
 #'   columns:
+#'    * `group`: treatment group.
+#'    * `time`: discrete time point.
 #'    * `marginal`: type of marginal distribution. If `outcome` was `"response"`
 #'      in [brm_marginal_draws()], then possible values include
 #'      `"response"` for the response on the raw scale, `"change"` for
@@ -11,8 +13,6 @@
 #'      in terms of change from baseline. If `outcome` was `"change"`,
 #'      then possible values include `"response"` for the respons one the
 #'      change from baseline scale and `"difference"` for treatment difference.
-#'    * `group`: treatment group.
-#'    * `time`: discrete time point.
 #'    * `statistic`: type of summary statistic.
 #'    * `value`: numeric value of the estimate.
 #'    * `mcse`: Monte Carlo standard error of the estimate.
@@ -74,18 +74,26 @@ brm_marginal_summaries <- function(
     NULL
   )
   table_difference <- summarize_marginals(draws$difference, level)
-  dplyr::bind_rows(
+  out <- dplyr::bind_rows(
     response = table_response,
     change = table_change,
     difference = table_difference,
     .id = "marginal"
   )
+  columns <- c("marginal", "statistic", "group", "time", "value", "mcse")
+  out <- out[, columns]
+  args <- lapply(columns, as.symbol)
+  args$.data <- out
+  do.call(what = dplyr::arrange, args = args)
 }
 
 summarize_marginals <- function(draws, level) {
+  draws <- tibble::as_tibble(draws)
+  for (name in names_mcmc) {
+    draws[[name]] <- NULL
+  }
   level_lower <- (1 - level) / 2
   level_upper <- 1 - level_lower
-  draws[names_mcmc] <- NULL
   value <- tibble::tibble(
     group = names_group(draws),
     time = names_time(draws),

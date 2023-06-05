@@ -17,6 +17,8 @@ for the credible intervals.}
 A data frame with one row per summary statistic and the following
 columns:
 \itemize{
+\item \code{group}: treatment group.
+\item \code{time}: discrete time point.
 \item \code{marginal}: type of marginal distribution. If \code{outcome} was \code{"response"}
 in \code{\link[=brm_marginal_draws]{brm_marginal_draws()}}, then possible values include
 \code{"response"} for the response on the raw scale, \code{"change"} for
@@ -24,8 +26,6 @@ change from baseline, and \code{"difference"} for treatment difference
 in terms of change from baseline. If \code{outcome} was \code{"change"},
 then possible values include \code{"response"} for the respons one the
 change from baseline scale and \code{"difference"} for treatment difference.
-\item \code{group}: treatment group.
-\item \code{time}: discrete time point.
 \item \code{statistic}: type of summary statistic.
 \item \code{value}: numeric value of the estimate.
 \item \code{mcse}: Monte Carlo standard error of the estimate.
