@@ -14,8 +14,8 @@ reference:
   contents:
   - '`brm_formula`'
   - '`brm_model`'
-- title: Results
+- title: Marginals
   contents:
-  - '`brm_convergence`'
-  - '`brm_plot`'
-  - '`brm_summary`'
+  - '`brm_marginal_draws`'
+  - '`brm_marginal_summaries`'
+  - '`brm_marginal_probabilities`'

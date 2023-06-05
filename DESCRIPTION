@@ -53,13 +53,17 @@ Depends:
   R (>= 4.0.0)
 Imports:
   brms,
+  coda,
   dplyr,
   emmeans,
   MASS,
+  posterior,
+  purrr,
   rlang,
   stats,
   tibble,
   tidyr,
+  tidyselect,
   trialr,
   utils
 Suggests:

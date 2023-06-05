@@ -1,6 +1,10 @@
 test_that("brm_model() runs", {
   set.seed(0L)
-  data <- brm_simulate()$data
+  data <- brm_simulate(
+    n_group = 2L,
+    n_patient = 100L,
+    n_time = 4L
+  )$data
   formula <- brm_formula(
     response = "response",
     group = "group",

@@ -33,7 +33,7 @@ assert_chr_vec <- function(value, message = NULL) {
 
 assert_chr <- function(value, message = NULL) {
   assert_chr_vec(value, message = message)
-  assert(value, length(.) == 1L)
+  assert(value, length(.) == 1L, message = message)
 }
 
 assert_lgl <- function(value, message = NULL) {
