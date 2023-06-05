@@ -19,7 +19,7 @@
 #'      with confidence level determined by the `level` argument.
 #'    * `n_observe`: number of non-missing values in the response.
 #'    * `n_total`: number of total records in the data for the given
-#'      group/time combination, including both observed and missing values. 
+#'      group/time combination, including both observed and missing values.
 #' @inheritParams brm_formula
 #' @inheritParams brm_model
 #' @param level Numeric of length 1 from 0 to 1, level of the confidence
