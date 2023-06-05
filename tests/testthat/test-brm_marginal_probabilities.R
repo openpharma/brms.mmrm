@@ -25,7 +25,7 @@ test_that("brm_summary() on response", {
       )
     )
   )
-  marginals <- brm_marginals(
+  marginals <- brm_marginal_draws(
     model = model,
     group = "group",
     time = "time",

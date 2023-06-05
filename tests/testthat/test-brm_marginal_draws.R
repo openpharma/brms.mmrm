@@ -1,4 +1,4 @@
-test_that("brm_marginals() on response", {
+test_that("brm_marginal_draws() on response", {
   set.seed(0L)
   sim <- brm_simulate()
   data <- sim$data
@@ -25,7 +25,7 @@ test_that("brm_marginals() on response", {
       )
     )
   )
-  out <- brm_marginals(
+  out <- brm_marginal_draws(
     model = model,
     group = "group",
     time = "time",
@@ -87,7 +87,7 @@ test_that("brm_marginals() on response", {
   }
 })
 
-test_that("brm_marginals() on change", {
+test_that("brm_marginal_draws() on change", {
   set.seed(0L)
   sim <- brm_simulate()
   data <- sim$data
@@ -114,7 +114,7 @@ test_that("brm_marginals() on change", {
       )
     )
   )
-  out <- brm_marginals(
+  out <- brm_marginal_draws(
     model = model,
     group = "group",
     time = "time",

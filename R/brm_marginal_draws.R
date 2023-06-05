@@ -1,10 +1,8 @@
-#' @title MMRM marginal posterior samples.
+#' @title MCMC draws from the marginal posterior of an MMRM
 #' @export
-#' @family results
-#' @description Get marginal posteior samples from a fitted MMRM.
-#' @details Currently assumes the response variable is `CHG`
-#'   (change from baseline) and not `AVAL` (raw response).
-#' @return A named list of tibbles of MCMC samples of the marginal posterior
+#' @family marginals
+#' @description Get marginal posterior draws from a fitted MMRM.
+#' @return A named list of tibbles of MCMC draws of the marginal posterior
 #'   distribution of each treatment group and time point:
 #'   * `response`: on the scale of the response variable.
 #'   * `change`: change from baseline, where the `baseline` argument determines
@@ -55,7 +53,7 @@
 #'     )
 #'   )
 #' )
-#' brm_marginals(
+#' brm_marginal_draws(
 #'   model = model,
 #'   group = "group",
 #'   time = "time",
@@ -64,7 +62,7 @@
 #'   baseline = "visit 1",
 #'   outcome = "response"
 #' )
-brm_marginals <- function(
+brm_marginal_draws <- function(
   model,
   base = "BASE",
   group = "TRT01P",
@@ -208,7 +206,7 @@ subtract_control <- function(draws, groups, times, control) {
 }
 
 name_marginal <- function(group, time) {
-  sprintf("%s, %s", group, time)
+  sprintf("%s, %s", group , time)
 }
 
 names_group <- function(draws) {
