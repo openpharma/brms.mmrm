@@ -25,6 +25,7 @@
 #' @importFrom emmeans emmeans
 #' @importFrom ggplot2 aes facet_wrap geom_point geom_errorbar ggplot
 #'   position_dodge theme_gray xlab ylab
+#' @importFrom ggridges geom_density_ridges2
 #' @importFrom MASS mvrnorm
 #' @importFrom posterior as_draws_df mcse_mean mcse_median mcse_quantile
 #'   mcse_sd
@@ -50,7 +51,8 @@ globalVariables(
     "upper",
     "source",
     "group",
-    "time"
+    "time",
+    "value"
   ),
   package = "brms.mmrm"
 )
