@@ -210,12 +210,18 @@ name_marginal <- function(group, time) {
 }
 
 names_group <- function(draws) {
-  names <- setdiff(colnames(draws), names_mcmc)
-  gsub(",.*$", "", names)
+  gsub_group(setdiff(colnames(draws), names_mcmc))
 }
 
 names_time <- function(draws) {
-  names <- setdiff(colnames(draws), names_mcmc)
+  gsub_time(setdiff(colnames(draws), names_mcmc))
+}
+
+gsub_group <- function(names) {
+  gsub(",.*$", "", names)
+}
+
+gsub_time <- function(names) {
   gsub("^.*, ", "", names)
 }
 

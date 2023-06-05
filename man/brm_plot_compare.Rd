@@ -75,4 +75,8 @@ brm_plot_compare(
   marginal = "difference"
 )
 }
+\seealso{
+Other visualization: 
+\code{\link{brm_plot_draws}()}
+}
 \concept{visualization}

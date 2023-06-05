@@ -91,8 +91,7 @@ brm_plot_compare <- function(..., marginal = "response") {
       position = ggplot2::position_dodge(width = 0.5)
     ) +
     ggplot2::facet_wrap(~ group) +
-    ggplot2::xlab("time") +
-    ggplot2::ylab("response") +
+    ggplot2::ylab(marginal) +
     ggplot2::theme_gray(16)
 }
 

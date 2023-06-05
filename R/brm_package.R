@@ -33,7 +33,7 @@
 #' @importFrom stats as.formula median model.matrix rnorm runif sd
 #' @importFrom tibble tibble
 #' @importFrom tidyr expand_grid pivot_longer pivot_wider
-#' @importFrom tidyselect any_of
+#' @importFrom tidyselect any_of everything
 #' @importFrom trialr rlkjcorr
 #' @importFrom utils capture.output globalVariables
 NULL
