@@ -2,22 +2,24 @@
 % Please edit documentation in R/brm_plot_compare.R
 \name{brm_plot_compare}
 \alias{brm_plot_compare}
-\title{Visualize the model against the data.}
+\title{Visually compare the marginals of models and datasets.}
 \usage{
-brm_plot_compare(summaries_draws, summaries_data)
+brm_plot_compare(..., marginal = "response")
 }
 \arguments{
-\item{summaries_draws}{Posterior summaries of marginal MCMC draws
-from \code{\link[=brm_marginal_summaries]{brm_marginal_summaries()}}.}
+\item{...}{Named data frames of marginals posterior summaries
+from \code{\link[=brm_marginal_summaries]{brm_marginal_summaries()}} and/or \code{\link[=brm_marginal_data]{brm_marginal_data()}}.}
 
-\item{summaries_data}{Posterior summaries of the data
-from \code{\link[=brm_marginal_data]{brm_marginal_data()}}.}
+\item{marginal}{Character of length 1, which kind of marginal
+to visualize: either \code{"response"}, \code{"change"}, or \code{"difference"}.
+Only applies to MCMC output, the data is always on the scale of the
+response variable.}
 }
 \value{
 A \code{ggplot} object.
 }
 \description{
-Visualize the model against the data.
+Visually compare the marginals of models and datasets.
 }
 \examples{
 set.seed(0L)
@@ -62,6 +64,15 @@ summaries_data <- brm_marginal_data(
   group = "group",
   time = "time"
 )
-brm_plot_compare(summaries_draws, summaries_data)
+brm_plot_compare(
+  model1 = summaries_draws,
+  model2 = summaries_draws,
+  data = summaries_data
+)
+brm_plot_compare(
+  model1 = summaries_draws,
+  model2 = summaries_draws,
+  marginal = "difference"
+)
 }
 \concept{visualization}

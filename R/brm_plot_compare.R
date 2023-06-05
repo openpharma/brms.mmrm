@@ -1,12 +1,14 @@
-#' @title Visualize the model against the data.
+#' @title Visually compare the marginals of models and datasets.
 #' @export
 #' @family visualization
-#' @description Visualize the model against the data.
+#' @description Visually compare the marginals of models and datasets.
 #' @return A `ggplot` object.
-#' @param summaries_draws Posterior summaries of marginal MCMC draws
-#'   from [brm_marginal_summaries()].
-#' @param summaries_data Posterior summaries of the data
-#'   from [brm_marginal_data()].
+#' @param ... Named data frames of marginals posterior summaries 
+#'   from [brm_marginal_summaries()] and/or [brm_marginal_data()].
+#' @param marginal Character of length 1, which kind of marginal
+#'   to visualize: either `"response"`, `"change"`, or `"difference"`.
+#'   Only applies to MCMC output, the data is always on the scale of the
+#'   response variable.
 #' @examples
 #' set.seed(0L)
 #' sim <- brm_simulate()
@@ -50,15 +52,29 @@
 #'   group = "group",
 #'   time = "time"
 #' )
-#' brm_plot_compare(summaries_draws, summaries_data)
-brm_plot_compare <- function(summaries_draws, summaries_data) {
-  summaries_data$source <- "data"
-  summaries_draws <- summaries_draws[summaries_draws$marginal == "response", ]
-  summaries_draws$source <- summaries_draws$marginal
-  summaries_draws$marginal <- NULL
-  data <- dplyr::bind_rows(summaries_draws, summaries_data)
-  columns <- c("statistic", "group", "time", "value", "source")
-  data <- data[data$statistic %in% c("mean", "lower", "upper"), columns]
+#' brm_plot_compare(
+#'   model1 = summaries_draws,
+#'   model2 = summaries_draws,
+#'   data = summaries_data
+#' )
+#' brm_plot_compare(
+#'   model1 = summaries_draws,
+#'   model2 = summaries_draws,
+#'   marginal = "difference"
+#' )
+brm_plot_compare <- function(..., marginal = "response") {
+  data <- list(...)
+  assert_chr(marginal, "marginal arg must be a nonempty character string.")
+  assert(
+    marginal %in% c("response", "change", "difference"),
+    message =
+      "marginal arg must be one of \"response\", \"change\", or \"difference\""
+  )
+  assert_chr_vec(names(data), message = "arguments must be named.")
+  for (name in names(data)) {
+    data[[name]] <- data_compare_clean(data[[name]], marginal = marginal)
+  }
+  data <- dplyr::bind_rows(data, .id = "source")
   data <- tidyr::pivot_wider(
     data = data,
     id_cols = c("source", "group", "time"),
@@ -78,4 +94,12 @@ brm_plot_compare <- function(summaries_draws, summaries_data) {
     ggplot2::xlab("time") +
     ggplot2::ylab("response") +
     ggplot2::theme_gray(16)
+}
+
+data_compare_clean <- function(data, marginal) {
+  if ("marginal" %in% colnames(data)) {
+    data <- data[data$marginal == marginal, ]
+  }
+  data <- data[data$statistic %in% c("mean", "lower", "upper"), ]
+  data[, c("statistic", "group", "time", "value")]
 }
