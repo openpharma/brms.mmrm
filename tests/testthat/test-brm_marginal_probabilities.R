@@ -1,6 +1,10 @@
 test_that("brm_marginal_probabilities() on response", {
   set.seed(0L)
-  sim <- brm_simulate()
+  sim <- brm_simulate(
+    n_group = 2L,
+    n_patient = 100L,
+    n_time = 4L
+  )
   data <- sim$data
   data$group <- paste("treatment", data$group)
   data$time <- paste("visit", data$time)
@@ -63,7 +67,11 @@ test_that("brm_marginal_probabilities() on response", {
 
 test_that("brm_marginal_probabilities() on change and multiple probs", {
   set.seed(0L)
-  sim <- brm_simulate()
+  sim <- brm_simulate(
+    n_group = 2L,
+    n_patient = 100L,
+    n_time = 4L
+  )
   data <- sim$data
   data$group <- paste("treatment", data$group)
   data$time <- paste("visit", data$time)

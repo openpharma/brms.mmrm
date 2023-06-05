@@ -20,13 +20,18 @@
 #'     doi:10.1177/009286150804200402
 #' @family help
 #' @importFrom brms brm brmsformula get_prior prior unstr
+#' @importFrom coda as.mcmc
 #' @importFrom dplyr left_join
 #' @importFrom emmeans emmeans
 #' @importFrom MASS mvrnorm
+#' @importFrom posterior as_draws_df mcse_mean mcse_median mcse_quantile
+#'   mcse_sd
+#' @importFrom purrr map_dbl map_df map2_df
 #' @importFrom rlang warn
-#' @importFrom stats as.formula model.matrix rnorm runif
+#' @importFrom stats as.formula median model.matrix rnorm runif sd
 #' @importFrom tibble tibble
 #' @importFrom tidyr expand_grid
+#' @importFrom tidyselect any_of
 #' @importFrom trialr rlkjcorr
 #' @importFrom utils capture.output globalVariables
 NULL

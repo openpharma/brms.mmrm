@@ -1,6 +1,10 @@
 test_that("brm_marginal_summaries() on response", {
   set.seed(0L)
-  sim <- brm_simulate()
+  sim <- brm_simulate(
+    n_group = 2L,
+    n_patient = 100L,
+    n_time = 4L
+  )
   data <- sim$data
   data$group <- paste("treatment", data$group)
   data$time <- paste("visit", data$time)
@@ -121,7 +125,11 @@ test_that("brm_marginal_summaries() on response", {
 
 test_that("brm_marginal_summaries() on change", {
   set.seed(0L)
-  sim <- brm_simulate()
+  sim <- brm_simulate(
+    n_group = 2L,
+    n_patient = 100L,
+    n_time = 4L
+  )
   data <- sim$data
   data$group <- paste("treatment", data$group)
   data$time <- paste("visit", data$time)
