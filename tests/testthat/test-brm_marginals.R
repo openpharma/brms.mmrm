@@ -25,16 +25,14 @@ test_that("brm_marginals() on response", {
       )
     )
   )
-  suppressWarnings(
-    out <- brm_marginals(
-      model = model,
-      group = "group",
-      time = "time",
-      patient = "patient",
-      control = "treatment 1",
-      baseline = "visit 1",
-      outcome = "response"
-    )
+  out <- brm_marginals(
+    model = model,
+    group = "group",
+    time = "time",
+    patient = "patient",
+    control = "treatment 1",
+    baseline = "visit 1",
+    outcome = "response"
   )
   fields <- c("response", "change", "difference")
   columns_df <- expand.grid(
@@ -116,16 +114,14 @@ test_that("brm_marginals() on change", {
       )
     )
   )
-  suppressWarnings(
-    out <- brm_marginals(
-      model = model,
-      group = "group",
-      time = "time",
-      patient = "patient",
-      control = "treatment 1",
-      baseline = "visit 1",
-      outcome = "change"
-    )
+  out <- brm_marginals(
+    model = model,
+    group = "group",
+    time = "time",
+    patient = "patient",
+    control = "treatment 1",
+    baseline = "visit 1",
+    outcome = "change"
   )
   fields <- c("response", "difference")
   columns_df <- expand.grid(

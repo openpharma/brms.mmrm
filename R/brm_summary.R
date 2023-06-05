@@ -157,25 +157,27 @@ summarize_marginals <- function(draws, level) {
     names_to = "statistic",
     values_to = "mcse"
   )
-  dplyr::left_join(
+  out <- dplyr::left_join(
     x = value,
     y = mcse,
     by = c("group", "time", "statistic")
   )
+  unname_df(out)
 }
 
 summarize_probabilities <- function(draws, direction, threshold) {
   draws[names_mcmc] <- NULL
-  tibble::tibble(
+  out <- tibble::tibble(
     group = names_group(draws),
     time = names_time(draws),
     direction = direction,
-    theshold = threshold,
+    threshold = threshold,
     value = purrr::map_dbl(
       draws,
       ~marginal_probability(.x, direction, threshold)
     )
   )
+  unname_df(out)
 }
 
 marginal_probability <- function(difference, direction, threshold) {
