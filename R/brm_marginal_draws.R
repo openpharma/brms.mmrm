@@ -206,7 +206,7 @@ subtract_control <- function(draws, groups, times, control) {
 }
 
 name_marginal <- function(group, time) {
-  sprintf("%s, %s", group , time)
+  sprintf("%s, %s", group, time)
 }
 
 names_group <- function(draws) {

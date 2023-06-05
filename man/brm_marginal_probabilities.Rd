@@ -24,7 +24,7 @@ Each element \code{direction[i]} corresponds to \code{threshold[i]} for
 all \code{i} from 1 to \code{length(direction)}.}
 }
 \value{
-A data frame of probabilities of the form
+A tibble of probabilities of the form
 \verb{Prob(treatment effect > threshold | data)} and/or
 \verb{Prob(treatment effect < threshold | data)}. It has one row per
 probability and the following columns:

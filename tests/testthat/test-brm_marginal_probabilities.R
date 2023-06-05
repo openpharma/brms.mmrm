@@ -126,7 +126,6 @@ test_that("brm_marginal_probabilities() on change and multiple probs", {
     x$value[4L],
     mean(draws$difference[["treatment 2, visit 4"]] > -1.7)
   )
-  
   expect_equal(
     x$value[5L],
     mean(draws$difference[["treatment 2, visit 1"]] < -1.55)

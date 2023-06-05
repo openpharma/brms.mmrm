@@ -2,7 +2,7 @@
 #' @export
 #' @family marginals
 #' @description Marginal probabilities on the treatment effect for an MMRM.
-#' @return A data frame of probabilities of the form
+#' @return A tibble of probabilities of the form
 #'   `Prob(treatment effect > threshold | data)` and/or
 #'   `Prob(treatment effect < threshold | data)`. It has one row per
 #'   probability and the following columns:
