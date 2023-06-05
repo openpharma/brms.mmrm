@@ -21,7 +21,7 @@
 #' @family help
 #' @importFrom brms brm brmsformula get_prior prior unstr
 #' @importFrom dplyr left_join
-#' @importFrom emmeans contrast emmeans
+#' @importFrom emmeans emmeans
 #' @importFrom MASS mvrnorm
 #' @importFrom rlang warn
 #' @importFrom stats as.formula model.matrix rnorm runif

@@ -56,7 +56,7 @@
 #'   baseline = "visit 1",
 #'   outcome = "response"
 #' )
-#' brm_marginal_summaries(draws)
+#' suppressWarnings(brm_marginal_summaries(draws))
 brm_marginal_summaries <- function(
   draws,
   level = 0.95

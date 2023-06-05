@@ -70,7 +70,7 @@ draws <- brm_marginal_draws(
   baseline = "visit 1",
   outcome = "response"
 )
-brm_marginal_summaries(draws)
+suppressWarnings(brm_marginal_summaries(draws))
 }
 \seealso{
 Other marginals: 
