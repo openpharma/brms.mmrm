@@ -4,50 +4,11 @@
 \alias{brm_summary}
 \title{Summarize an MMRM.}
 \usage{
-brm_summary(
-  model,
-  base = "BASE",
-  group = "TRT01P",
-  time = "AVISIT",
-  patient = "USUBJID",
-  covariates = character(0),
-  outcome = "change",
-  control = "Placebo",
-  baseline = "Baseline",
-  level = 0.95,
-  direction = "greater",
-  threshold = 0
-)
+brm_summary(marginals, level = 0.95, direction = "greater", threshold = 0)
 }
 \arguments{
-\item{model}{Fitted \code{brms} model object from \code{\link[=brm_model]{brm_model()}}.}
-
-\item{base}{Character of length 1, name of the baseline response variable
-in the data.}
-
-\item{group}{Character of length 1, name of the treatment group
-variable in the data.}
-
-\item{time}{Character of length 1, name of the discrete time variable
-in the data.}
-
-\item{patient}{Character of length 1, name of the patient ID variable
-in the data.}
-
-\item{covariates}{Character vector of names of other covariates
-in the data.}
-
-\item{outcome}{Character of length 1, \code{"response"} if the
-response variable is the raw outcome variable (such as AVAL)
-or \code{"change"} if the response variable is change from baseline
-(e.g. CHG).}
-
-\item{control}{Element of the \code{group} column in the data which indicates
-the control group for the purposes of calculating treatment differences.}
-
-\item{baseline}{Element of the \code{time} column in the data
-which indicates the baseline time for the purposes of calculating
-change from baseline.}
+\item{marginals}{Posterior draws of the marginal posterior
+obtained from \code{\link[=brm_marginals]{brm_marginals()}}.}
 
 \item{level}{Numeric of length 1 between 0 and 1, credible level
 for the credible intervals. Only relevant when \code{return = "marginals"}.}
@@ -66,16 +27,29 @@ Each element \code{direction[i]} corresponds to \code{threshold[i]} for
 all \code{i} from 1 to \code{length(direction)}.}
 }
 \value{
-A list of two data frames, one with summary statistics on the
-marginal posterior and another with posterior probabilities
-on the treatment effects.
+A named list of two data frames with one row per summary
+statistic:
+\itemize{
+\item \code{means}: summary statistics of the marginal posterior mean of
+each treatment group and time point. Columns include \code{marginal}
+for the type of marginal distribution (see the "Value" section of
+the \code{\link[=brm_marginals]{brm_marginals()}} help file for details), \code{group} for treatment
+group, \code{time} for discrete time point, \code{statistic} for the type of
+summary statistic, \code{value} for the numeric value of the estimate,
+and \code{mcse} for the Monte Carlo standard error of the estimate.
+\item \code{probabilities}: marginal posterior probabilities of the form
+\verb{Prob(treatment effect > threshold | data)} and/or
+\verb{Prob(treatment effect < threshold | data)}. Columns include
+\code{group} for the treatment group, \code{time} for the discrete time point,
+\code{direction} to indicate the direction of the comparison
+(\code{"greater"} for \code{>}, \code{"less"} for \code{<}), \code{threshold} for the
+treatment effect threshold in the probability statement,
+and \code{value} for the numberic value of the estimate of the
+probability.
+}
 }
 \description{
 Summarize a basic MMRM model fit.
-}
-\details{
-Currently assumes the response variable is \code{CHG}
-(change from baseline) and not \code{AVAL} (raw response).
 }
 \examples{
 set.seed(0L)
@@ -104,7 +78,7 @@ tmp <- utils::capture.output(
     )
   )
 )
-brm_summary(
+marginals <- brm_marginals(
   model = model,
   group = "group",
   time = "time",
@@ -113,5 +87,10 @@ brm_summary(
   baseline = "visit 1",
   outcome = "response"
 )
+brm_summary(marginals)
+}
+\seealso{
+Other results: 
+\code{\link{brm_marginals}()}
 }
 \concept{results}

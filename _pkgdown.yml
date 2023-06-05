@@ -17,5 +17,5 @@ reference:
 - title: Results
   contents:
   - '`brm_convergence`'
-  - '`brm_plot`'
+  - '`brm_marginals`'
   - '`brm_summary`'
