@@ -10,7 +10,9 @@ vignette: >
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 5
 )
 library(brms.mmrm)
 library(dplyr)
@@ -98,7 +100,11 @@ formula
 
 To run an MMRM, use the `brm_model()` function. This function calls `brms::brm()` behind the scenes, using the formula and prior you set in the `formula` and `prior` arguments.
 
-```{r, message = FALSE, warning = FALSE, output = FALSE}
+```{r, eval = FALSE}
+model <- brm_model(data = data, formula = formula, refresh = 0)
+```
+
+```{r, include = FALSE}
 model <- brm_model(data = data, formula = formula, refresh = 0)
 ```
 
