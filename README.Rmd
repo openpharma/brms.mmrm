@@ -37,10 +37,6 @@ The documentation website at <https://RConsortium.github.io/brms.mmrm> has a com
 
 Please report questions and problems as [GitHub discussions](https://github.com/RConsortium/brms.mmrm) and [GitHub issues](https://github.com/RConsortium/brms.mmrm), respectively.
 
-## Usage
-
-TBD
-
 ## Thanks
 
 Thanks to the [ASA Biopharmaceutical Section Software Engineering Working Group](https://rconsortium.github.io/asa-biop-swe-wg/) and [R Consortium](https://www.r-consortium.org/) for providing professional networks to recruit skilled statisticians and developers. Thanks also to [Björn Holzhauer](https://github.com/bjoernholzhauer), [Sebastian Weber](https://github.com/weberse2), and [Andrew Bean](https://github.com/andrew-bean) for providing extensive tutorial vignettes demonstrating how to run MMRMs with [`brms`](https://paul-buerkner.github.io/brms/).

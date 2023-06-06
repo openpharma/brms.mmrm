@@ -37,10 +37,6 @@ Please report questions and problems as [GitHub
 discussions](https://github.com/RConsortium/brms.mmrm) and [GitHub
 issues](https://github.com/RConsortium/brms.mmrm), respectively.
 
-## Usage
-
-TBD
-
 ## Thanks
 
 Thanks to the [ASA Biopharmaceutical Section Software Engineering
@@ -61,7 +57,6 @@ Conduct](https://contributor-covenant.org/version/2/1/CODE_OF_CONDUCT.html).
 By contributing to this project, you agree to abide by its terms.
 
 ## Citation
-
 
     To cite package 'brms.mmrm' in publications use:
 

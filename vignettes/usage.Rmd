@@ -1,0 +1,198 @@
+---
+title: "usage"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{usage}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(brms.mmrm)
+library(dplyr)
+```
+
+A mixed model of repeated measures (MMRM) analyzes longitudinal clinical trial data. In a longitudinal dataset, there are multiple patients, and each patient has multiple observations at a common set of discrete points in time.
+
+## Data
+
+To use the `brms.mmrm` package, begin with a longitudinal dataset with one row per patient observation and columns for the response variable, treatment group indicator, discrete time point indicator, patient ID variable, and optional baseline covariates such as age and region. You can simulate one from the package. The following dataset has the raw response variable and only the most essential factor variables. In general, the outcome variable can either be the raw response or change from baseline.
+
+```{r}
+library(brms.mmrm)
+library(dplyr)
+set.seed(0L)
+data <- brm_simulate(
+  n_group = 3,
+  n_patient = 100,
+  n_time = 4
+)$data %>%
+  mutate(
+    group = paste("group", group),
+    patient = paste("patient", patient),
+    time = paste("time", time)
+  )
+data
+```
+
+## Formula
+
+Next, choose a `brms` model formula for the fixed effect and variance parameters. The `brm_formula()` function from `brms.mmrm` makes this process easier. A cell means parameterization for this particular model can be expressed as follows. It specifies one fixed effect parameter for each combination of treatment group and time point, and it makes the specification of informative priors straightforward through the `prior` argument of `brm_model()`.
+
+```{r}
+brm_formula(
+  response = "response",
+  group = "group",
+  patient = "patient",
+  time = "time",
+  intercept = FALSE,
+  effect_base = FALSE,
+  effect_group = FALSE,
+  effect_time = FALSE,
+  interaction_base = FALSE,
+  interaction_group = TRUE
+)
+```
+
+If the outcome were change from baseline and you instead desire a fully parameterized formula, you could use something like this.
+
+```{r}
+brm_formula(
+  response = "change_from_baseline", # assumed to be a column in the data
+  group = "group",
+  patient = "patient",
+  time = "time",
+  intercept = TRUE,
+  effect_base = TRUE,
+  effect_group = TRUE,
+  effect_time = TRUE,
+  interaction_base = TRUE,
+  interaction_group = TRUE
+)
+```
+
+For the purposes of our example, we choose a fully parameterized analysis of the raw response.
+
+```{r}
+formula <- brm_formula(
+  response = "response",
+  group = "group",
+  patient = "patient",
+  time = "time",
+  intercept = TRUE,
+  effect_base = FALSE,
+  effect_group = TRUE,
+  effect_time = TRUE,
+  interaction_base = FALSE,
+  interaction_group = TRUE
+)
+
+formula
+```
+
+## Model
+
+To run an MMRM, use the `brm_model()` function. This function calls `brms::brm()` behind the scenes, using the formula and prior you set in the `formula` and `prior` arguments.
+
+```{r, message = FALSE, warning = FALSE, output = FALSE}
+model <- brm_model(data = data, formula = formula, refresh = 0)
+```
+
+The result is a `brms` model object.
+
+```{r}
+model
+```
+
+## Marginals
+
+Regardless of the choice of fixed effects formula, `brms.mmrm` performs inference on the marginal distributions at each treatment group and time point: the mean response, mean change from baseline, and mean treatment effect in terms of change from baseline. To derive posterior draws of these marginals, use the `brm_marginal_draws()` function.
+
+```{r, paged.print = FALSE}
+draws <- brm_marginal_draws(
+  model = model,
+  group = "group",
+  time = "time",
+  patient = "patient",
+  outcome = "response",
+  control = "group 1",
+  baseline = "time 1"
+)
+
+draws
+```
+
+The `brm_marginal_summaries()` function produces posterior summaries of these marginals, and it includes the Monte Carlo standard error (MCSE) of each estimate.
+
+```{r, paged.print = FALSE}
+summaries <- brm_marginal_summaries(draws, level = 0.95)
+
+summaries
+```
+
+The `brm_marginal_probabilities()` function shows posterior probabilities of the form, 
+
+\begin{aligned}
+\text{Prob}(\text{treatment effect} > \text{threshold})
+\end{aligned}
+
+or 
+
+\begin{aligned}
+\text{Prob}(\text{treatment effect} < \text{threshold})
+\end{aligned}
+
+```{r}
+brm_marginal_probabilities(
+  draws = draws,
+  threshold = c(-0.1, 0.1),
+  direction = c("greater", "less")
+)
+```
+
+Finally, the `brm_marignals_data()` computes marginal means and confidence intervals on the response variable in the data, along with other summary statistics.
+
+```{r, paged.print = FALSE}
+summaries_data <- brm_marginal_data(
+  data = data,
+  response = "response",
+  group = "group",
+  time = "time",
+  level = 0.95
+)
+
+summaries_data
+```
+
+
+## Visualization
+
+The `brm_plot_compare()` function compares means and intervals from many different models and data sources in the same plot. First, we need the marginals of the data.
+
+```{r}
+brm_plot_compare(
+  data = summaries_data,
+  model1 = summaries,
+  model2 = summaries
+)
+```
+
+If you omit the marginals of the data, you can show inference on change from baseline or the treatment effect.
+
+```{r}
+brm_plot_compare(
+  model1 = summaries,
+  model2 = summaries,
+  marginal = "difference" # treatment effect
+)
+```
+
+Finally, `brm_plot_draws()` can plot the posterior draws of the response, change from baseline, or treatment difference.
+
+```{r}
+brm_plot_draws(draws = draws$difference)
+```
