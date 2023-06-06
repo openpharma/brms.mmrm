@@ -136,15 +136,19 @@ summaries
 
 The `brm_marginal_probabilities()` function shows posterior probabilities of the form, 
 
+$$
 \begin{aligned}
 \text{Prob}(\text{treatment effect} > \text{threshold})
 \end{aligned}
+$$
 
 or 
 
+$$
 \begin{aligned}
 \text{Prob}(\text{treatment effect} < \text{threshold})
 \end{aligned}
+$$
 
 ```{r}
 brm_marginal_probabilities(
