@@ -107,6 +107,14 @@ brm_data_validate <- function(data) {
   assert_col(patient, data)
   assert_col(covariates, data)
   assert(
+    !any(grepl(",", as.character(data[[group]]))),
+    message = "group variable cannot contain commas"
+  )
+  assert(
+    !any(grepl(",", as.character(data[[time]]))),
+    message = "time variable cannot contain commas"
+  )
+  assert(
     is.numeric(data[[outcome]]),
     message = "outcome variable in the data must be numeric."
   )

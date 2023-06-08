@@ -41,7 +41,7 @@ raw_data <- brm_simulate(
 raw_data
 ```
 
-Next, create a special classed dataset that the package will recognize. The classed data object contains a preprocessed verison of the data, along with attributes to declare the outcome variable, whether the outcome is response or change from baseline, the treatment group variable, the discrete time point variable, and other details.
+Next, create a special classed dataset that the package will recognize. The classed data object contains a pre-processed version of the data, along with attributes to declare the outcome variable, whether the outcome is response or change from baseline, the treatment group variable, the discrete time point variable, and other details.
 
 ```{r}
 data <- brm_data(
