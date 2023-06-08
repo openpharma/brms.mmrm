@@ -4,25 +4,12 @@
 \alias{brm_marginal_draws}
 \title{MCMC draws from the marginal posterior of an MMRM}
 \usage{
-brm_marginal_draws(
-  model,
-  base = "BASE",
-  group = "TRT01P",
-  time = "AVISIT",
-  patient = "USUBJID",
-  covariates = character(0),
-  outcome = "change",
-  control = "Placebo",
-  baseline = "Baseline"
-)
+brm_marginal_draws(model, data, control = "Placebo", baseline = "Baseline")
 }
 \arguments{
 \item{model}{Fitted \code{brms} model object from \code{\link[=brm_model]{brm_model()}}.}
 
-\item{outcome}{Character of length 1, \code{"response"} if the
-response variable is the raw outcome variable (such as AVAL)
-or \code{"change"} if the response variable is change from baseline
-(e.g. CHG).}
+\item{data}{Classed tibble from \code{\link[=brm_data]{brm_data()}}.}
 
 \item{control}{Element of the \code{group} column in the data which indicates
 the control group for the purposes of calculating treatment differences.}
@@ -37,8 +24,8 @@ distribution of each treatment group and time point:
 \itemize{
 \item \code{response}: on the scale of the response variable.
 \item \code{change}: change from baseline, where the \code{baseline} argument determines
-the time point at baseline. Only returned if the \code{outcome} argument is
-\code{"response"}. (If \code{outcome} is \code{"change"}, then \code{response} already
+the time point at baseline. Only returned if the \code{role} argument is
+\code{"response"}. (If \code{role} is \code{"change"}, then \code{response} already
 represents change from baseline.)
 \item \code{difference}: treatment effect of change from baseline, where the
 \code{control} argument identifies the placebo or active control group.
@@ -53,15 +40,18 @@ Get marginal posterior draws from a fitted MMRM.
 }
 \examples{
 set.seed(0L)
-sim <- brm_simulate()
-data <- sim$data
+data <- brm_data(
+  data = tibble::as_tibble(brm_simulate()$data),
+  outcome = "response",
+  role = "response",
+  group = "group",
+  time = "time",
+  patient = "patient"
+)
 data$group <- paste("treatment", data$group)
 data$time <- paste("visit", data$time)
 formula <- brm_formula(
-  response = "response",
-  group = "group",
-  time = "time",
-  patient = "patient",
+  data = data,
   effect_base = FALSE,
   interaction_base = FALSE
 )
@@ -80,12 +70,9 @@ tmp <- utils::capture.output(
 )
 brm_marginal_draws(
   model = model,
-  group = "group",
-  time = "time",
-  patient = "patient",
+  data = data,
   control = "treatment 1",
-  baseline = "visit 1",
-  outcome = "response"
+  baseline = "visit 1"
 )
 }
 \seealso{

@@ -6,8 +6,8 @@
 #'   distribution of each treatment group and time point:
 #'   * `response`: on the scale of the response variable.
 #'   * `change`: change from baseline, where the `baseline` argument determines
-#'     the time point at baseline. Only returned if the `outcome` argument is
-#'     `"response"`. (If `outcome` is `"change"`, then `response` already
+#'     the time point at baseline. Only returned if the `role` argument is
+#'     `"response"`. (If `role` is `"change"`, then `response` already
 #'     represents change from baseline.)
 #'   * `difference`: treatment effect of change from baseline, where the
 #'     `control` argument identifies the placebo or active control group.
@@ -15,12 +15,8 @@
 #'   each type of marginal distribution (i.e. each combination of treatment
 #'   group and discrete time point.
 #'   Treatment and time are comma-delimited in the column names.
-#' @inheritParams brm_formula
 #' @param model Fitted `brms` model object from [brm_model()].
-#' @param outcome Character of length 1, `"response"` if the
-#'   response variable is the raw outcome variable (such as AVAL)
-#'   or `"change"` if the response variable is change from baseline
-#'   (e.g. CHG).
+#' @param data Classed tibble from [brm_data()].
 #' @param control Element of the `group` column in the data which indicates
 #'   the control group for the purposes of calculating treatment differences.
 #' @param baseline Element of the `time` column in the data
@@ -28,15 +24,18 @@
 #'   change from baseline.
 #' @examples
 #' set.seed(0L)
-#' sim <- brm_simulate()
-#' data <- sim$data
+#' data <- brm_data(
+#'   data = tibble::as_tibble(brm_simulate()$data),
+#'   outcome = "response",
+#'   role = "response",
+#'   group = "group",
+#'   time = "time",
+#'   patient = "patient"
+#' )
 #' data$group <- paste("treatment", data$group)
 #' data$time <- paste("visit", data$time)
 #' formula <- brm_formula(
-#'   response = "response",
-#'   group = "group",
-#'   time = "time",
-#'   patient = "patient",
+#'   data = data,
 #'   effect_base = FALSE,
 #'   interaction_base = FALSE
 #' )
@@ -55,37 +54,23 @@
 #' )
 #' brm_marginal_draws(
 #'   model = model,
-#'   group = "group",
-#'   time = "time",
-#'   patient = "patient",
+#'   data = data,
 #'   control = "treatment 1",
-#'   baseline = "visit 1",
-#'   outcome = "response"
+#'   baseline = "visit 1"
 #' )
 brm_marginal_draws <- function(
   model,
-  base = "BASE",
-  group = "TRT01P",
-  time = "AVISIT",
-  patient = "USUBJID",
-  covariates = character(0),
-  outcome = "change",
+  data,
   control = "Placebo",
   baseline = "Baseline"
 ) {
-  assert_chr(base, "base arg must be a nonempty character string")
-  assert_chr(group, "group arg must be a nonempty character string")
-  assert_chr(time, "time arg must be a nonempty character string")
-  assert_chr(patient, "patient arg must be a nonempty character string")
-  assert_chr(
-    outcome,
-    "outcome arg must be a nonempty character string"
-  )
-  assert(
-    outcome %in% c("response", "change"),
-    message = "outcome must be either \"response\" or \"change\""
-  )
-  assert_chr_vec(covariates, "covariates arg must be a character vector")
+  brm_data_validate(data)
+  role <- attr(data, "role")
+  base <- attr(data, "base")
+  group <- attr(data, "group")
+  time <- attr(data, "time")
+  patient <- attr(data, "patient")
+  covariates <- attr(data, "covariates")
   assert(
     control,
     is.atomic(.),
@@ -100,28 +85,16 @@ brm_marginal_draws <- function(
     !anyNA(.),
     message = "baseline arg must be a length-1 non-missing atomic value"
   )
-  assert(is.data.frame(model$data))
-  data <- model$data
-  assert(
-    group %in% colnames(data),
-    message = "group arg must be a data column name"
-  )
-  assert(
-    time %in% colnames(data),
-    message = "time arg must be a data column name"
-  )
-  assert(
-    patient %in% colnames(data),
-    message = "patient arg must be a data column name"
-  )
-  assert(
-    covariates %in% colnames(data),
-    message = "all covariates must be data column names"
-  )
   assert(
     control %in% data[[group]],
-    message = "control arg must be in data[[group]]"
+    message = "control arg must be a treatment group level in the data"
   )
+  if (identical(role, "response")) {
+    assert(
+      baseline %in% data[[time]],
+      message = "control arg must be a discrete time level in the data"
+    )
+  }
   nuisance <- c(base, patient, covariates)
   emmeans <- emmeans::emmeans(
     object = model,
@@ -143,7 +116,7 @@ brm_marginal_draws <- function(
       paste(groups, collapse = ", ")
     )
   )
-  if (identical(outcome, "response")) {
+  if (identical(role, "response")) {
     assert(
       baseline %in% times,
       message = sprintf(
@@ -174,7 +147,7 @@ brm_marginal_draws <- function(
   }
   out <- list()
   out$response <- draws_response
-  if (identical(outcome, "response")) {
+  if (identical(role, "response")) {
     out$change <- draws_change
   }
   out$difference <- draws_difference
