@@ -1,15 +1,15 @@
 test_that("brm_model() runs", {
   set.seed(0L)
-  data <- brm_simulate(
-    n_group = 2L,
-    n_patient = 100L,
-    n_time = 4L
-  )$data
-  formula <- brm_formula(
-    response = "response",
+  data <- brm_data(
+    data = tibble::as_tibble(brm_simulate()$data),
+    outcome = "response",
+    role = "response",
     group = "group",
     time = "time",
-    patient = "patient",
+    patient = "patient"
+  )
+  formula <- brm_formula(
+    data = data,
     effect_base = FALSE,
     interaction_base = FALSE
   )
