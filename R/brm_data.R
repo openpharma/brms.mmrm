@@ -91,7 +91,7 @@ brm_data_validate <- function(data) {
   assert(inherits(data, "brm_data"), message = "data not from brm_data()")
   assert_chr(outcome, "outcome of data must be a nonempty character string")
   assert_chr(role, "role of data must be a nonempty character string")
-  assert_chr(base %|||% "x", "base of data must NULL or character")
+  assert_chr(base %|||% "base", "base of data must NULL or character")
   assert_chr(group, "group of data must be a nonempty character string")
   assert_chr(time, "time of data must be a nonempty character string")
   assert_chr(patient, "patient of data must be a nonempty character string")
