@@ -1,18 +1,17 @@
 test_that("brm_marginal_probabilities() on response", {
   set.seed(0L)
-  sim <- brm_simulate(
-    n_group = 2L,
-    n_patient = 100L,
-    n_time = 4L
+  data <- brm_data(
+    data = tibble::as_tibble(brm_simulate()$data),
+    outcome = "response",
+    role = "response",
+    group = "group",
+    time = "time",
+    patient = "patient"
   )
-  data <- sim$data
   data$group <- paste("treatment", data$group)
   data$time <- paste("visit", data$time)
   formula <- brm_formula(
-    response = "response",
-    group = "group",
-    time = "time",
-    patient = "patient",
+    data = data,
     effect_base = FALSE,
     interaction_base = FALSE
   )
@@ -31,12 +30,9 @@ test_that("brm_marginal_probabilities() on response", {
   )
   draws <- brm_marginal_draws(
     model = model,
-    group = "group",
-    time = "time",
-    patient = "patient",
+    data = data,
     control = "treatment 1",
-    baseline = "visit 1",
-    outcome = "response"
+    baseline = "visit 1"
   )
   x <- brm_marginal_probabilities(
     draws,
@@ -67,19 +63,18 @@ test_that("brm_marginal_probabilities() on response", {
 
 test_that("brm_marginal_probabilities() on change and multiple probs", {
   set.seed(0L)
-  sim <- brm_simulate(
-    n_group = 2L,
-    n_patient = 100L,
-    n_time = 4L
+  data <- brm_data(
+    data = tibble::as_tibble(brm_simulate()$data),
+    outcome = "response",
+    role = "change",
+    group = "group",
+    time = "time",
+    patient = "patient"
   )
-  data <- sim$data
   data$group <- paste("treatment", data$group)
   data$time <- paste("visit", data$time)
   formula <- brm_formula(
-    response = "response",
-    group = "group",
-    time = "time",
-    patient = "patient",
+    data = data,
     effect_base = FALSE,
     interaction_base = FALSE
   )
@@ -98,12 +93,9 @@ test_that("brm_marginal_probabilities() on change and multiple probs", {
   )
   draws <- brm_marginal_draws(
     model = model,
-    group = "group",
-    time = "time",
-    patient = "patient",
+    data = data,
     control = "treatment 1",
-    baseline = "visit 1",
-    outcome = "change"
+    baseline = "visit 1"
   )
   x <- brm_marginal_probabilities(
     draws,
