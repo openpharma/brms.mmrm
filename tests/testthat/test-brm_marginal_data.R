@@ -1,19 +1,18 @@
 test_that("brm_marginal_data()", {
   set.seed(0L)
-  sim <- brm_simulate(
-    n_group = 2L,
-    n_patient = 100L,
-    n_time = 4L
+  data <- brm_data(
+    data = tibble::as_tibble(brm_simulate()$data),
+    outcome = "response",
+    role = "response",
+    group = "group",
+    time = "time",
+    patient = "patient"
   )
-  data <- sim$data
   data$group <- paste("treatment", data$group)
   data$time <- paste("visit", data$time)
   data$response[1L] <- NA_real_
   out <- brm_marginal_data(
     data = data,
-    response = "response",
-    group = "group",
-    time = "time",
     level = 0.9
   )
   expect_equal(nrow(out), 56L)

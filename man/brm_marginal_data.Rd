@@ -4,13 +4,7 @@
 \alias{brm_marginal_data}
 \title{Marginal summaries of the data.}
 \usage{
-brm_marginal_data(
-  data,
-  response = "CHG",
-  group = "TRT01P",
-  time = "AVISIT",
-  level = 0.95
-)
+brm_marginal_data(data, level = 0.95)
 }
 \arguments{
 \item{data}{A classed data frame from \code{\link[=brm_data]{brm_data()}}.}
@@ -45,16 +39,9 @@ Marginal summaries of the data.
 }
 \examples{
 set.seed(0L)
-sim <- brm_simulate()
-data <- sim$data
 data$group <- paste("treatment", data$group)
 data$time <- paste("visit", data$time)
-brm_marginal_data(
-  data = data,
-  response = "response",
-  group = "group",
-  time = "time"
-)
+brm_marginal_data(data = data)
 }
 \seealso{
 Other marginals: 
