@@ -22,6 +22,7 @@ A \code{ggplot} object.
 Visually compare the marginals of models and datasets.
 }
 \examples{
+if (identical(Sys.getenv("BRM_EXAMPLES", unset = ""), "true")) {
 set.seed(0L)
 data <- brm_data(
   data = tibble::as_tibble(brm_simulate()$data),
@@ -69,6 +70,7 @@ brm_plot_compare(
   model2 = summaries_draws,
   marginal = "difference"
 )
+}
 }
 \seealso{
 Other visualization: 

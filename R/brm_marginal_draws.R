@@ -23,6 +23,7 @@
 #'   which indicates the baseline time for the purposes of calculating
 #'   change from baseline.
 #' @examples
+#' if (identical(Sys.getenv("BRM_EXAMPLES", unset = ""), "true")) {
 #' set.seed(0L)
 #' data <- brm_data(
 #'   data = tibble::as_tibble(brm_simulate()$data),
@@ -58,6 +59,7 @@
 #'   control = "treatment 1",
 #'   baseline = "visit 1"
 #' )
+#' }
 brm_marginal_draws <- function(
   model,
   data,

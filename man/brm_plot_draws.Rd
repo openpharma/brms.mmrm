@@ -17,6 +17,7 @@ A \code{ggplot} object.
 Visualize posterior draws of marginals.
 }
 \examples{
+if (identical(Sys.getenv("BRM_EXAMPLES", unset = ""), "true")) {
 set.seed(0L)
 data <- brm_data(
   data = tibble::as_tibble(brm_simulate()$data),
@@ -53,6 +54,7 @@ draws <- brm_marginal_draws(
   baseline = "visit 1"
 )
 brm_plot_draws(draws = draws$change)
+}
 }
 \seealso{
 Other visualization: 

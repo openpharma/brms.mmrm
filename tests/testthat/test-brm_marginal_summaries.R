@@ -1,4 +1,5 @@
 test_that("brm_marginal_summaries() on response", {
+  skip_on_cran()
   set.seed(0L)
   data <- brm_data(
     data = tibble::as_tibble(brm_simulate()$data),
@@ -120,6 +121,7 @@ test_that("brm_marginal_summaries() on response", {
 })
 
 test_that("brm_marginal_summaries() on change", {
+  skip_on_cran()
   set.seed(0L)
   data <- brm_data(
     data = tibble::as_tibble(brm_simulate()$data),

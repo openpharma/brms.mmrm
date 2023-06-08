@@ -1,4 +1,5 @@
 test_that("brm_plot_draws()", {
+  skip_on_cran()
   set.seed(0L)
   data <- brm_data(
     data = tibble::as_tibble(brm_simulate()$data),

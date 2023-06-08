@@ -10,6 +10,7 @@
 #'   Only applies to MCMC output, the data is always on the scale of the
 #'   response variable.
 #' @examples
+#' if (identical(Sys.getenv("BRM_EXAMPLES", unset = ""), "true")) {
 #' set.seed(0L)
 #' data <- brm_data(
 #'   data = tibble::as_tibble(brm_simulate()$data),
@@ -57,6 +58,7 @@
 #'   model2 = summaries_draws,
 #'   marginal = "difference"
 #' )
+#' }
 brm_plot_compare <- function(..., marginal = "response") {
   data <- list(...)
   assert_chr(marginal, "marginal arg must be a nonempty character string.")

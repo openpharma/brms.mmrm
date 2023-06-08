@@ -33,6 +33,7 @@ A fitted model object from \code{brms}.
 Fit a basic MMRM model using \code{brms}.
 }
 \examples{
+if (identical(Sys.getenv("BRM_EXAMPLES", unset = ""), "true")) {
 set.seed(0L)
 data <- brm_data(
   data = tibble::as_tibble(brm_simulate()$data),
@@ -62,6 +63,7 @@ tmp <- utils::capture.output(
 )
 model
 brms::prior_summary(model)
+}
 }
 \seealso{
 Other models: 

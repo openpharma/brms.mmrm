@@ -44,6 +44,7 @@ with credible level determined by the \code{level} argument.
 Summary statistics of the marginal posterior of an MMRM.
 }
 \examples{
+if (identical(Sys.getenv("BRM_EXAMPLES", unset = ""), "true")) {
 set.seed(0L)
 data <- brm_data(
   data = tibble::as_tibble(brm_simulate()$data),
@@ -80,6 +81,7 @@ draws <- brm_marginal_draws(
   baseline = "visit 1"
 )
 suppressWarnings(brm_marginal_summaries(draws))
+}
 }
 \seealso{
 Other marginals: 

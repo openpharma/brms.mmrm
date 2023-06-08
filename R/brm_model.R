@@ -14,6 +14,7 @@
 #' @param ... Arguments to `brms::brm()` other than `data`, `formula`,
 #'   and `prior`.
 #' @examples
+#' if (identical(Sys.getenv("BRM_EXAMPLES", unset = ""), "true")) {
 #' set.seed(0L)
 #' data <- brm_data(
 #'   data = tibble::as_tibble(brm_simulate()$data),
@@ -43,6 +44,7 @@
 #' )
 #' model
 #' brms::prior_summary(model)
+#' }
 brm_model <- function(
   data,
   formula = brms.mmrm::brm_formula(),

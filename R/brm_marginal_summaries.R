@@ -30,6 +30,7 @@
 #' @param level Numeric of length 1 between 0 and 1, credible level
 #'   for the credible intervals.
 #' @examples
+#' if (identical(Sys.getenv("BRM_EXAMPLES", unset = ""), "true")) {
 #' set.seed(0L)
 #' data <- brm_data(
 #'   data = tibble::as_tibble(brm_simulate()$data),
@@ -66,6 +67,7 @@
 #'   baseline = "visit 1"
 #' )
 #' suppressWarnings(brm_marginal_summaries(draws))
+#' }
 brm_marginal_summaries <- function(
   draws,
   level = 0.95

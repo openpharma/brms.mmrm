@@ -25,6 +25,7 @@
 #'   Each element `direction[i]` corresponds to `threshold[i]` for
 #'   all `i` from 1 to `length(direction)`.
 #' @examples
+#' if (identical(Sys.getenv("BRM_EXAMPLES", unset = ""), "true")) {
 #' set.seed(0L)
 #' data <- brm_data(
 #'   data = tibble::as_tibble(brm_simulate()$data),
@@ -61,6 +62,7 @@
 #'   baseline = "visit 1"
 #' )
 #' brm_marginal_probabilities(draws, direction = "greater", threshold = 0)
+#' }
 brm_marginal_probabilities <- function(
   draws,
   direction = "greater",

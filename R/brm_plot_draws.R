@@ -6,6 +6,7 @@
 #' @param draws A data frame of draws from an element of
 #'   the output list of [brm_marginal_summaries()].
 #' @examples
+#' if (identical(Sys.getenv("BRM_EXAMPLES", unset = ""), "true")) {
 #' set.seed(0L)
 #' data <- brm_data(
 #'   data = tibble::as_tibble(brm_simulate()$data),
@@ -42,6 +43,7 @@
 #'   baseline = "visit 1"
 #' )
 #' brm_plot_draws(draws = draws$change)
+#' }
 brm_plot_draws <- function(draws) {
   assert(is.data.frame(draws), message = "draws argument must be a data frame.")
   draws <- tibble::as_tibble(draws)

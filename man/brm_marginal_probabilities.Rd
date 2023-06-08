@@ -39,6 +39,7 @@ probability and the following columns:
 Marginal probabilities on the treatment effect for an MMRM.
 }
 \examples{
+if (identical(Sys.getenv("BRM_EXAMPLES", unset = ""), "true")) {
 set.seed(0L)
 data <- brm_data(
   data = tibble::as_tibble(brm_simulate()$data),
@@ -75,6 +76,7 @@ draws <- brm_marginal_draws(
   baseline = "visit 1"
 )
 brm_marginal_probabilities(draws, direction = "greater", threshold = 0)
+}
 }
 \seealso{
 Other marginals: 

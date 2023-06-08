@@ -39,6 +39,7 @@ Treatment and time are comma-delimited in the column names.
 Get marginal posterior draws from a fitted MMRM.
 }
 \examples{
+if (identical(Sys.getenv("BRM_EXAMPLES", unset = ""), "true")) {
 set.seed(0L)
 data <- brm_data(
   data = tibble::as_tibble(brm_simulate()$data),
@@ -74,6 +75,7 @@ brm_marginal_draws(
   control = "treatment 1",
   baseline = "visit 1"
 )
+}
 }
 \seealso{
 Other marginals: 
