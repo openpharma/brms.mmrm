@@ -1,18 +1,18 @@
 test_that("brm_marginal_draws() on response", {
+  skip_on_cran()
   set.seed(0L)
-  sim <- brm_simulate(
-    n_group = 2L,
-    n_patient = 100L,
-    n_time = 4L
+  data <- brm_data(
+    data = tibble::as_tibble(brm_simulate()$data),
+    outcome = "response",
+    role = "response",
+    group = "group",
+    time = "time",
+    patient = "patient"
   )
-  data <- sim$data
   data$group <- paste("treatment", data$group)
   data$time <- paste("visit", data$time)
   formula <- brm_formula(
-    response = "response",
-    group = "group",
-    time = "time",
-    patient = "patient",
+    data = data,
     effect_base = FALSE,
     interaction_base = FALSE
   )
@@ -31,12 +31,9 @@ test_that("brm_marginal_draws() on response", {
   )
   out <- brm_marginal_draws(
     model = model,
-    group = "group",
-    time = "time",
-    patient = "patient",
+    data = data,
     control = "treatment 1",
-    baseline = "visit 1",
-    outcome = "response"
+    baseline = "visit 1"
   )
   fields <- c("response", "change", "difference")
   columns_df <- expand.grid(
@@ -92,20 +89,20 @@ test_that("brm_marginal_draws() on response", {
 })
 
 test_that("brm_marginal_draws() on change", {
+  skip_on_cran()
   set.seed(0L)
-  sim <- brm_simulate(
-    n_group = 2L,
-    n_patient = 100L,
-    n_time = 4L
+  data <- brm_data(
+    data = tibble::as_tibble(brm_simulate()$data),
+    outcome = "response",
+    role = "change",
+    group = "group",
+    time = "time",
+    patient = "patient"
   )
-  data <- sim$data
   data$group <- paste("treatment", data$group)
   data$time <- paste("visit", data$time)
   formula <- brm_formula(
-    response = "response",
-    group = "group",
-    time = "time",
-    patient = "patient",
+    data = data,
     effect_base = FALSE,
     interaction_base = FALSE
   )
@@ -124,12 +121,9 @@ test_that("brm_marginal_draws() on change", {
   )
   out <- brm_marginal_draws(
     model = model,
-    group = "group",
-    time = "time",
-    patient = "patient",
+    data = data,
     control = "treatment 1",
-    baseline = "visit 1",
-    outcome = "change"
+    baseline = "visit 1"
   )
   fields <- c("response", "difference")
   columns_df <- expand.grid(

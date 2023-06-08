@@ -26,48 +26,34 @@
 #'   intervals.
 #' @examples
 #' set.seed(0L)
-#' sim <- brm_simulate()
-#' data <- sim$data
+#'  data <- brm_data(
+#'    data = tibble::as_tibble(brm_simulate()$data),
+#'    outcome = "response",
+#'    role = "response",
+#'    group = "group",
+#'    time = "time",
+#'    patient = "patient"
+#'  )
 #' data$group <- paste("treatment", data$group)
 #' data$time <- paste("visit", data$time)
-#' brm_marginal_data(
-#'   data = data,
-#'   response = "response",
-#'   group = "group",
-#'   time = "time"
-#' )
-brm_marginal_data <- function(
-  data,
-  response = "CHG",
-  group = "TRT01P",
-  time = "AVISIT",
-  level = 0.95
-) {
-  assert_chr(response, "response arg must be a nonempty character string")
-  assert_chr(group, "group arg must be a nonempty character string")
-  assert_chr(time, "time arg must be a nonempty character string")
-  assert_num(level, "level arg must be a length-1 numeric between 0 and 1")
-  for (field in c(response, group, time)) {
-    assert(
-      field %in% colnames(data),
-      message = sprintf("\"%s\" is not a column in the data.", field)
-    )
-  }
+#' brm_marginal_data(data = data)
+brm_marginal_data <- function(data, level = 0.95) {
+  brm_data_validate(data)
   assert(level, . >= 0, . <= 1, message = "level arg must be between 0 and 1")
   z <- stats::qnorm(p = (1 - level) / 2)
   data <- tibble::tibble(
-    response = data[[response]],
-    group = data[[group]],
-    time = data[[time]]
+    outcome = data[[attr(data, "outcome")]],
+    group = data[[attr(data, "group")]],
+    time = data[[attr(data, "time")]]
   )
   data <- dplyr::group_by(data, group, time)
   out <- dplyr::summarize(
     .data = data,
-    mean = mean(response, na.rm = TRUE),
-    median = median(response, na.rm = TRUE),
-    sd = sd(response, na.rm = TRUE),
-    n_observed = sum(!is.na(response)),
-    n_total = length(response),
+    mean = mean(outcome, na.rm = TRUE),
+    median = median(outcome, na.rm = TRUE),
+    sd = sd(outcome, na.rm = TRUE),
+    n_observed = sum(!is.na(outcome)),
+    n_total = length(outcome),
     lower = mean - z * sd / sqrt(n_observed),
     upper = mean + z * sd / sqrt(n_observed),
     .groups = "drop"

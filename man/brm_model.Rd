@@ -33,14 +33,18 @@ A fitted model object from \code{brms}.
 Fit a basic MMRM model using \code{brms}.
 }
 \examples{
+if (identical(Sys.getenv("BRM_EXAMPLES", unset = ""), "true")) {
 set.seed(0L)
-sim <- brm_simulate()
-data <- sim$data
-formula <- brm_formula(
-  response = "response",
+data <- brm_data(
+  data = tibble::as_tibble(brm_simulate()$data),
+  outcome = "response",
+  role = "response",
   group = "group",
   time = "time",
-  patient = "patient",
+  patient = "patient"
+)
+formula <- brm_formula(
+  data = data,
   effect_base = FALSE,
   interaction_base = FALSE
 )
@@ -59,6 +63,7 @@ tmp <- utils::capture.output(
 )
 model
 brms::prior_summary(model)
+}
 }
 \seealso{
 Other models: 

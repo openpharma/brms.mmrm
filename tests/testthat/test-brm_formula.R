@@ -1,5 +1,21 @@
 test_that("brm_formula() with default names and all terms", {
+  data <- brm_data(
+    data = tibble::tibble(
+      CHG = 1,
+      AVISIT = "x",
+      BASE = 2,
+      TRT01P = "x",
+      USUBJID = "x"
+    ),
+    outcome = "CHG",
+    role = "change",
+    group = "TRT01P",
+    time = "AVISIT",
+    base = "BASE",
+    patient = "USUBJID"
+  )
   out <- brm_formula(
+    data = data,
     intercept = TRUE,
     effect_group = TRUE,
     effect_time = TRUE,
@@ -24,13 +40,25 @@ test_that("brm_formula() with default names and all terms", {
 })
 
 test_that("brm_formula() with all user-supplied columns and all terms", {
-  out <- brm_formula(
-    response = "y",
+  data <- brm_data(
+    data = tibble::tibble(
+      y = 1,
+      t = "x",
+      b = 2,
+      g = "x",
+      p = "x",
+      a = 1
+    ),
+    outcome = "y",
+    role = "change",
     group = "g",
     time = "t",
     base = "b",
     patient = "p",
-    covariates = c("a", "b"),
+    covariates = c("a", "b")
+  )
+  out <- brm_formula(
+    data = data,
     intercept = TRUE,
     effect_group = TRUE,
     effect_time = TRUE,
@@ -51,7 +79,23 @@ test_that("brm_formula() with all user-supplied columns and all terms", {
 })
 
 test_that("brm_formula() without intercept", {
+  data <- brm_data(
+    data = tibble::tibble(
+      CHG = 1,
+      AVISIT = "x",
+      BASE = 2,
+      TRT01P = "x",
+      USUBJID = "x"
+    ),
+    outcome = "CHG",
+    role = "change",
+    group = "TRT01P",
+    time = "AVISIT",
+    base = "BASE",
+    patient = "USUBJID"
+  )
   out <- brm_formula(
+    data = data,
     intercept = FALSE,
     effect_group = TRUE,
     effect_time = TRUE,
@@ -75,7 +119,23 @@ test_that("brm_formula() without intercept", {
 })
 
 test_that("brm_formula() without group effect", {
+  data <- brm_data(
+    data = tibble::tibble(
+      CHG = 1,
+      AVISIT = "x",
+      BASE = 2,
+      TRT01P = "x",
+      USUBJID = "x"
+    ),
+    outcome = "CHG",
+    role = "change",
+    group = "TRT01P",
+    time = "AVISIT",
+    base = "BASE",
+    patient = "USUBJID"
+  )
   out <- brm_formula(
+    data = data,
     intercept = TRUE,
     effect_group = FALSE,
     effect_time = TRUE,
@@ -99,7 +159,23 @@ test_that("brm_formula() without group effect", {
 })
 
 test_that("brm_formula() without time effect", {
+  data <- brm_data(
+    data = tibble::tibble(
+      CHG = 1,
+      AVISIT = "x",
+      BASE = 2,
+      TRT01P = "x",
+      USUBJID = "x"
+    ),
+    outcome = "CHG",
+    role = "change",
+    group = "TRT01P",
+    time = "AVISIT",
+    base = "BASE",
+    patient = "USUBJID"
+  )
   out <- brm_formula(
+    data = data,
     intercept = TRUE,
     effect_group = TRUE,
     effect_time = FALSE,
@@ -123,7 +199,23 @@ test_that("brm_formula() without time effect", {
 })
 
 test_that("brm_formula() without baseline effect", {
+  data <- brm_data(
+    data = tibble::tibble(
+      CHG = 1,
+      AVISIT = "x",
+      BASE = 2,
+      TRT01P = "x",
+      USUBJID = "x"
+    ),
+    outcome = "CHG",
+    role = "change",
+    group = "TRT01P",
+    time = "AVISIT",
+    base = "BASE",
+    patient = "USUBJID"
+  )
   out <- brm_formula(
+    data = data,
     intercept = TRUE,
     effect_group = TRUE,
     effect_time = TRUE,
@@ -147,7 +239,23 @@ test_that("brm_formula() without baseline effect", {
 })
 
 test_that("brm_formula() without baseline interaction", {
+  data <- brm_data(
+    data = tibble::tibble(
+      CHG = 1,
+      AVISIT = "x",
+      BASE = 2,
+      TRT01P = "x",
+      USUBJID = "x"
+    ),
+    outcome = "CHG",
+    role = "change",
+    group = "TRT01P",
+    time = "AVISIT",
+    base = "BASE",
+    patient = "USUBJID"
+  )
   out <- brm_formula(
+    data = data,
     intercept = TRUE,
     effect_group = TRUE,
     effect_time = TRUE,
@@ -171,7 +279,23 @@ test_that("brm_formula() without baseline interaction", {
 })
 
 test_that("brm_formula() without group interaction", {
+  data <- brm_data(
+    data = tibble::tibble(
+      CHG = 1,
+      AVISIT = "x",
+      BASE = 2,
+      TRT01P = "x",
+      USUBJID = "x"
+    ),
+    outcome = "CHG",
+    role = "change",
+    group = "TRT01P",
+    time = "AVISIT",
+    base = "BASE",
+    patient = "USUBJID"
+  )
   out <- brm_formula(
+    data = data,
     intercept = TRUE,
     effect_group = TRUE,
     effect_time = TRUE,

@@ -14,14 +14,18 @@
 #' @param ... Arguments to `brms::brm()` other than `data`, `formula`,
 #'   and `prior`.
 #' @examples
+#' if (identical(Sys.getenv("BRM_EXAMPLES", unset = ""), "true")) {
 #' set.seed(0L)
-#' sim <- brm_simulate()
-#' data <- sim$data
-#' formula <- brm_formula(
-#'   response = "response",
+#' data <- brm_data(
+#'   data = tibble::as_tibble(brm_simulate()$data),
+#'   outcome = "response",
+#'   role = "response",
 #'   group = "group",
 #'   time = "time",
-#'   patient = "patient",
+#'   patient = "patient"
+#' )
+#' formula <- brm_formula(
+#'   data = data,
 #'   effect_base = FALSE,
 #'   interaction_base = FALSE
 #' )
@@ -40,13 +44,14 @@
 #' )
 #' model
 #' brms::prior_summary(model)
+#' }
 brm_model <- function(
   data,
   formula = brms.mmrm::brm_formula(),
   prior = brms::prior("lkj_corr_cholesky(1)", class = "Lcortime"),
   ...
 ) {
-  assert(is.data.frame(data), message = "data arg must be a data frame.")
+  brm_data_validate(data = data)
   assert(
     inherits(formula, "brmsformula"),
     message = "formula arg must be a \"brmsformula\" object."
