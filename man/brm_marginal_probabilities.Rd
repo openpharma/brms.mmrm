@@ -40,15 +40,18 @@ Marginal probabilities on the treatment effect for an MMRM.
 }
 \examples{
 set.seed(0L)
-sim <- brm_simulate()
-data <- sim$data
+data <- brm_data(
+  data = tibble::as_tibble(brm_simulate()$data),
+  outcome = "response",
+  role = "response",
+  group = "group",
+  time = "time",
+  patient = "patient"
+)
 data$group <- paste("treatment", data$group)
 data$time <- paste("visit", data$time)
 formula <- brm_formula(
-  response = "response",
-  group = "group",
-  time = "time",
-  patient = "patient",
+  data = data,
   effect_base = FALSE,
   interaction_base = FALSE
 )
@@ -67,12 +70,9 @@ tmp <- utils::capture.output(
 )
 draws <- brm_marginal_draws(
   model = model,
-  group = "group",
-  time = "time",
-  patient = "patient",
+  data = data,
   control = "treatment 1",
-  baseline = "visit 1",
-  outcome = "response"
+  baseline = "visit 1"
 )
 brm_marginal_probabilities(draws, direction = "greater", threshold = 0)
 }
