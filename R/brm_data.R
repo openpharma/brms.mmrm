@@ -106,6 +106,10 @@ brm_data_validate <- function(data) {
   assert_col(time, data)
   assert_col(patient, data)
   assert_col(covariates, data)
+  assert(
+    is.numeric(data[[outcome]]),
+    message = "outcome variable in the data must be numeric."
+  )
   for (column in c(base, group, time, patient, covariates)) {
     assert(
       !anyNA(data[[column]]),

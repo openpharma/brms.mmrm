@@ -13,17 +13,7 @@ brm_marginal_data(
 )
 }
 \arguments{
-\item{data}{A tidy data frame with one row per patient per discrete
-time point.}
-
-\item{response}{Character of length 1, name of the response variable
-in the data.}
-
-\item{group}{Character of length 1, name of the treatment group
-variable in the data.}
-
-\item{time}{Character of length 1, name of the discrete time variable
-in the data.}
+\item{data}{A classed data frame from \code{\link[=brm_data]{brm_data()}}.}
 
 \item{level}{Numeric of length 1 from 0 to 1, level of the confidence
 intervals.}

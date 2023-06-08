@@ -19,21 +19,6 @@ brm_marginal_draws(
 \arguments{
 \item{model}{Fitted \code{brms} model object from \code{\link[=brm_model]{brm_model()}}.}
 
-\item{base}{Character of length 1, name of the baseline response variable
-in the data.}
-
-\item{group}{Character of length 1, name of the treatment group
-variable in the data.}
-
-\item{time}{Character of length 1, name of the discrete time variable
-in the data.}
-
-\item{patient}{Character of length 1, name of the patient ID variable
-in the data.}
-
-\item{covariates}{Character vector of names of other covariates
-in the data.}
-
 \item{outcome}{Character of length 1, \code{"response"} if the
 response variable is the raw outcome variable (such as AVAL)
 or \code{"change"} if the response variable is change from baseline

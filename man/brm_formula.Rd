@@ -5,12 +5,7 @@
 \title{Model formula}
 \usage{
 brm_formula(
-  response = "CHG",
-  base = "BASE",
-  group = "TRT01P",
-  time = "AVISIT",
-  patient = "USUBJID",
-  covariates = character(0),
+  data,
   intercept = TRUE,
   effect_base = TRUE,
   effect_group = TRUE,
@@ -21,23 +16,7 @@ brm_formula(
 )
 }
 \arguments{
-\item{response}{Character of length 1, name of the response variable
-in the data.}
-
-\item{base}{Character of length 1, name of the baseline response variable
-in the data.}
-
-\item{group}{Character of length 1, name of the treatment group
-variable in the data.}
-
-\item{time}{Character of length 1, name of the discrete time variable
-in the data.}
-
-\item{patient}{Character of length 1, name of the patient ID variable
-in the data.}
-
-\item{covariates}{Character vector of names of other covariates
-in the data.}
+\item{data}{A classed data frame from \code{\link[=brm_data]{brm_data()}}.}
 
 \item{intercept}{\code{TRUE} to include an intercept, \code{FALSE} to omit.}
 
@@ -68,9 +47,19 @@ correlation structure, and residual variance structure.
 Build a model formula for an MMRM.
 }
 \examples{
-brm_formula()
-brm_formula(intercept = FALSE, effect_base = FALSE)
+set.seed(0)
+data <- brm_data(
+  data = tibble::as_tibble(brm_simulate()$data),
+  outcome = "response",
+  role = "response",
+  group = "group",
+  time = "time",
+  patient = "patient"
+)
+brm_formula(data)
+brm_formula(data = data, intercept = FALSE, effect_base = FALSE)
 brm_formula(
+  data = data,
   intercept = FALSE,
   effect_base = FALSE,
   interaction_group = FALSE
