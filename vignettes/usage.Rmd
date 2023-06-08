@@ -22,13 +22,13 @@ A mixed model of repeated measures (MMRM) analyzes longitudinal clinical trial d
 
 ## Data
 
-To use the `brms.mmrm` package, begin with a longitudinal dataset with one row per patient observation and columns for the response variable, treatment group indicator, discrete time point indicator, patient ID variable, and optional baseline covariates such as age and region. You can simulate one from the package. The following dataset has the raw response variable and only the most essential factor variables. In general, the outcome variable can either be the raw response or change from baseline.
+To use the `brms.mmrm` package, begin with a longitudinal dataset with one row per patient observation and columns for the response variable, treatment group indicator, discrete time point indicator, patient ID variable, and optional baseline covariates such as age and region. If you do not have a real dataset of your own, you can simulate one from the package. The following dataset has the raw response variable and only the most essential factor variables. In general, the outcome variable can either be the raw response or change from baseline.
 
 ```{r}
 library(brms.mmrm)
 library(dplyr)
 set.seed(0L)
-data <- brm_simulate(
+raw_data <- brm_simulate(
   n_group = 3,
   n_patient = 100,
   n_time = 4
@@ -38,7 +38,28 @@ data <- brm_simulate(
     patient = paste("patient", patient),
     time = paste("time", time)
   )
+raw_data
+```
+
+Next, create a special classed dataset that the package will recognize. The classed data object contains a preprocessed verison of the data, along with attributes to declare the outcome variable, whether the outcome is response or change from baseline, the treatment group variable, the discrete time point variable, and other details.
+
+```{r}
+data <- brm_data(
+  data = raw_data,
+  outcome = "response",
+  role = "response",
+  group = "group",
+  patient = "patient",
+  time = "time"
+)
+
 data
+
+class(data)
+
+attributes <- attributes(data)
+attributes$rownames <- NULL
+attributes
 ```
 
 ## Formula
@@ -47,10 +68,7 @@ Next, choose a `brms` model formula for the fixed effect and variance parameters
 
 ```{r}
 brm_formula(
-  response = "response",
-  group = "group",
-  patient = "patient",
-  time = "time",
+  data = data,
   intercept = FALSE,
   effect_base = FALSE,
   effect_group = FALSE,
@@ -60,31 +78,11 @@ brm_formula(
 )
 ```
 
-If the outcome were change from baseline and you instead desire a fully parameterized formula, you could use something like this.
-
-```{r}
-brm_formula(
-  response = "change_from_baseline", # assumed to be a column in the data
-  group = "group",
-  patient = "patient",
-  time = "time",
-  intercept = TRUE,
-  effect_base = TRUE,
-  effect_group = TRUE,
-  effect_time = TRUE,
-  interaction_base = TRUE,
-  interaction_group = TRUE
-)
-```
-
 For the purposes of our example, we choose a fully parameterized analysis of the raw response.
 
 ```{r}
 formula <- brm_formula(
-  response = "response",
-  group = "group",
-  patient = "patient",
-  time = "time",
+  data = data,
   intercept = TRUE,
   effect_base = FALSE,
   effect_group = TRUE,
@@ -121,10 +119,7 @@ Regardless of the choice of fixed effects formula, `brms.mmrm` performs inferenc
 ```{r, paged.print = FALSE}
 draws <- brm_marginal_draws(
   model = model,
-  group = "group",
-  time = "time",
-  patient = "patient",
-  outcome = "response",
+  data = data,
   control = "group 1",
   baseline = "time 1"
 )
