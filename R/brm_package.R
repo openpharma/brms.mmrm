@@ -37,6 +37,7 @@
 #' @importFrom tidyselect any_of everything
 #' @importFrom trialr rlkjcorr
 #' @importFrom utils capture.output globalVariables
+#' @importFrom zoo na.locf
 NULL
 
 globalVariables(
@@ -52,7 +53,8 @@ globalVariables(
     "source",
     "group",
     "time",
-    "value"
+    "value",
+    "outcome"
   ),
   package = "brms.mmrm"
 )

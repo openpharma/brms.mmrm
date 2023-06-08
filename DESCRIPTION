@@ -67,7 +67,8 @@ Imports:
   tidyr,
   tidyselect,
   trialr,
-  utils
+  utils,
+  zoo
 Suggests:
   BH,
   knitr (>= 1.30),

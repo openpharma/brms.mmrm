@@ -57,9 +57,9 @@ data
 
 class(data)
 
-attributes <- attributes(data)
-attributes$rownames <- NULL
-attributes
+roles <- attributes(data)
+roles$row.names <- NULL
+str(roles)
 ```
 
 ## Formula
