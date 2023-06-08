@@ -26,14 +26,14 @@
 #'   intervals.
 #' @examples
 #' set.seed(0L)
-#  data <- brm_data(
-#    data = tibble::as_tibble(brm_simulate()$data),
-#    outcome = "response",
-#    role = "response",
-#    group = "group",
-#    time = "time",
-#    patient = "patient"
-#  )
+#'  data <- brm_data(
+#'    data = tibble::as_tibble(brm_simulate()$data),
+#'    outcome = "response",
+#'    role = "response",
+#'    group = "group",
+#'    time = "time",
+#'    patient = "patient"
+#'  )
 #' data$group <- paste("treatment", data$group)
 #' data$time <- paste("visit", data$time)
 #' brm_marginal_data(data = data)
