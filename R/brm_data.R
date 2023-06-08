@@ -51,8 +51,8 @@ brm_data <- function(
     covariates = as.character(covariates)
   )
   brm_data_validate(data = out)
-  out <- brm_data_select(data = out)
   out <- brm_data_fill(out)
+  out <- brm_data_select(data = out)
   out
 }
 
@@ -157,6 +157,13 @@ brm_data_fill <- function(data) {
   for (column in c(base, group, covariates)) {
     data[[column]] <- brm_data_fill_column(data[[column]], data[[patient]])
   }
+  args <- list(
+    .data = data,
+    as.symbol(group),
+    as.symbol(patient),
+    as.symbol(time)
+  )
+  data <- do.call(what = dplyr::arrange, args = args)
   brm_data_new(
     data = data,
     outcome = outcome,
