@@ -38,6 +38,16 @@ Treatment and time are comma-delimited in the column names.
 \description{
 Get marginal posterior draws from a fitted MMRM.
 }
+\section{Separation string}{
+
+Post-processing in \code{\link[=brm_marginal_draws]{brm_marginal_draws()}} names each of the
+group-by-time marginal means with the delimiting character string
+from \code{Sys.getenv("BRM_SEP", unset = "|")}. Neither the column names
+nor element names of the group and time variables can contain
+this string. To set a custom string yourself, use
+\code{Sys.setenv(BRM_SEP = "YOUR_CUSTOM_STRING")}.
+}
+
 \examples{
 if (identical(Sys.getenv("BRM_EXAMPLES", unset = ""), "true")) {
 set.seed(0L)

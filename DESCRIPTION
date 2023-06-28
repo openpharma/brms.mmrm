@@ -55,7 +55,7 @@ Imports:
   brms,
   coda,
   dplyr,
-  emmeans,
+  emmeans (>= 1.8.7),
   ggplot2,
   ggridges,
   MASS,

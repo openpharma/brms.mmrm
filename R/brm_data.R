@@ -2,6 +2,13 @@
 #' @export
 #' @family data
 #' @description Create a dataset to analyze with an MMRM.
+#' @section Separation string:
+#'   Post-processing in [brm_marginal_draws()] names each of the
+#'   group-by-time marginal means with the delimiting character string
+#'   from `Sys.getenv("BRM_SEP", unset = "|")`. Neither the column names
+#'   nor element names of the group and time variables can contain
+#'   this string. To set a custom string yourself, use
+#'   `Sys.setenv(BRM_SEP = "YOUR_CUSTOM_STRING")`.
 #' @return A classed tibble with attributes which denote features of
 #'   the data such as the treatment group and discrete time variables.
 #' @param data Data frame or tibble with longitudinal data.
@@ -106,13 +113,19 @@ brm_data_validate <- function(data) {
   assert_col(time, data)
   assert_col(patient, data)
   assert_col(covariates, data)
+  sep <- brm_sep()
+  elements <- c(group, time, unique(data[[group]]), unique(data[[time]]))
   assert(
-    !any(grepl(",", as.character(data[[group]]))),
-    message = "group variable cannot contain commas"
-  )
-  assert(
-    !any(grepl(",", as.character(data[[time]]))),
-    message = "time variable cannot contain commas"
+    !any(grepl(pattern = sep, x = elements, fixed = TRUE)),
+    message = sprintf(
+      paste(
+        "The separation string \"%s\" must not be contained in",
+        "the names or elements of the group or time columns in the data.",
+        "Either remove this string or set a different separation string",
+        "with Sys.setenv(BRM_SEP = \"YOUR_SEPARATION_STRING\")."
+      ),
+      sep
+    )
   )
   assert(
     is.numeric(data[[outcome]]),
@@ -201,4 +214,8 @@ brm_data_locf <- function(x) {
   x <- zoo::na.locf(x, fromLast = FALSE, na.rm = FALSE)
   x <- zoo::na.locf(x, fromLast = TRUE, na.rm = FALSE)
   x
+}
+
+brm_sep <- function() {
+  Sys.getenv("BRM_SEP", unset = "|")
 }

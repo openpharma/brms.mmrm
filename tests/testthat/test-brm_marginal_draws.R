@@ -29,19 +29,21 @@ test_that("brm_marginal_draws() on response", {
       )
     )
   )
+  old_sep <- emmeans::get_emm_option("sep")
   out <- brm_marginal_draws(
     model = model,
     data = data,
     control = "treatment 1",
     baseline = "visit 1"
   )
+  expect_equal(emmeans::get_emm_option("sep"), old_sep)
   fields <- c("response", "change", "difference")
   columns_df <- expand.grid(
     group = sort(unique(data$group)),
     time = sort(unique(data$time)),
     stringsAsFactors = FALSE
   )
-  columns <- paste(columns_df$group, columns_df$time, sep = ", ")
+  columns <- paste(columns_df$group, columns_df$time, sep = brm_sep())
   expect_equal(sort(names(out)), sort(fields))
   for (field in fields) {
     x <- out[[field]]
@@ -55,21 +57,21 @@ test_that("brm_marginal_draws() on response", {
     sort(c(columns, names_mcmc))
   )
   columns_df <- columns_df[columns_df$time != "visit 1", ]
-  columns <- paste(columns_df$group, columns_df$time, sep = ", ")
+  columns <- paste(columns_df$group, columns_df$time, sep = brm_sep())
   expect_equal(
     sort(colnames(out$change)),
     sort(c(columns, names_mcmc))
   )
   columns_df <- columns_df[columns_df$group != "treatment 1", ]
-  columns <- paste(columns_df$group, columns_df$time, sep = ", ")
+  columns <- paste(columns_df$group, columns_df$time, sep = brm_sep())
   expect_equal(
     sort(colnames(out$difference)),
     sort(c(columns, names_mcmc))
   )
   for (group in setdiff(unique(data$group), "treatment 1")) {
     for (time in setdiff(unique(data$time), "visit 1")) {
-      name1 <- paste("treatment 1", time, sep = ", ")
-      name2 <- paste(group, time, sep = ", ")
+      name1 <- paste("treatment 1", time, sep = brm_sep())
+      name2 <- paste(group, time, sep = brm_sep())
       expect_equal(
         out$difference[[name2]],
         out$change[[name2]] - out$change[[name1]]
@@ -78,8 +80,8 @@ test_that("brm_marginal_draws() on response", {
   }
   for (group in unique(data$group)) {
     for (time in setdiff(unique(data$time), "visit 1")) {
-      name1 <- paste(group, "visit 1", sep = ", ")
-      name2 <- paste(group, time, sep = ", ")
+      name1 <- paste(group, "visit 1", sep = brm_sep())
+      name2 <- paste(group, time, sep = brm_sep())
       expect_equal(
         out$change[[name2]],
         out$response[[name2]] - out$response[[name1]]
@@ -131,7 +133,7 @@ test_that("brm_marginal_draws() on change", {
     time = sort(unique(data$time)),
     stringsAsFactors = FALSE
   )
-  columns <- paste(columns_df$group, columns_df$time, sep = ", ")
+  columns <- paste(columns_df$group, columns_df$time, sep = brm_sep())
   expect_equal(sort(names(out)), sort(fields))
   for (field in fields) {
     x <- out[[field]]
@@ -145,15 +147,15 @@ test_that("brm_marginal_draws() on change", {
     sort(c(columns, names_mcmc))
   )
   columns_df <- columns_df[columns_df$group != "treatment 1", ]
-  columns <- paste(columns_df$group, columns_df$time, sep = ", ")
+  columns <- paste(columns_df$group, columns_df$time, sep = brm_sep())
   expect_equal(
     sort(colnames(out$difference)),
     sort(c(columns, names_mcmc))
   )
   for (group in setdiff(unique(data$group), "treatment 1")) {
     for (time in unique(data$time)) {
-      name1 <- paste("treatment 1", time, sep = ", ")
-      name2 <- paste(group, time, sep = ", ")
+      name1 <- paste("treatment 1", time, sep = brm_sep())
+      name2 <- paste(group, time, sep = brm_sep())
       expect_equal(
         out$difference[[name2]],
         out$response[[name2]] - out$response[[name1]]

@@ -42,6 +42,16 @@ the data such as the treatment group and discrete time variables.
 \description{
 Create a dataset to analyze with an MMRM.
 }
+\section{Separation string}{
+
+Post-processing in \code{\link[=brm_marginal_draws]{brm_marginal_draws()}} names each of the
+group-by-time marginal means with the delimiting character string
+from \code{Sys.getenv("BRM_SEP", unset = "|")}. Neither the column names
+nor element names of the group and time variables can contain
+this string. To set a custom string yourself, use
+\code{Sys.setenv(BRM_SEP = "YOUR_CUSTOM_STRING")}.
+}
+
 \examples{
 set.seed(0)
 sim <- brm_simulate()

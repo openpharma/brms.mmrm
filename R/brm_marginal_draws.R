@@ -2,6 +2,7 @@
 #' @export
 #' @family marginals
 #' @description Get marginal posterior draws from a fitted MMRM.
+#' @inheritSection brm_data Separation string
 #' @return A named list of tibbles of MCMC draws of the marginal posterior
 #'   distribution of each treatment group and time point:
 #'   * `response`: on the scale of the response variable.
@@ -104,6 +105,9 @@ brm_marginal_draws <- function(
     weights = "proportional",
     nuisance = nuisance
   )
+  old_sep <- emmeans::get_emm_option("sep")
+  on.exit(emmeans::emm_options(sep = old_sep))
+  emmeans::emm_options(sep = brm_sep())
   mcmc <- coda::as.mcmc(emmeans, fixed = TRUE, names = FALSE)
   draws_response <- posterior::as_draws_df(mcmc)
   groups <- unique(names_group(draws_response))
@@ -181,7 +185,7 @@ subtract_control <- function(draws, groups, times, control) {
 }
 
 name_marginal <- function(group, time) {
-  sprintf("%s, %s", group, time)
+  sprintf("%s%s%s", group, brm_sep(), time)
 }
 
 names_group <- function(draws) {
@@ -193,11 +197,13 @@ names_time <- function(draws) {
 }
 
 gsub_group <- function(names) {
-  gsub(",.*$", "", names)
+  out <- strsplit(names, split = "|", fixed = TRUE)
+  as.character(lapply(out, function(x) x[[1L]]))
 }
 
 gsub_time <- function(names) {
-  gsub("^.*, ", "", names)
+  out <- strsplit(names, split = "|", fixed = TRUE)
+  as.character(lapply(out, function(x) x[[2L]]))
 }
 
 names_mcmc <- c(".chain", ".draw", ".iteration")

@@ -22,7 +22,7 @@
 #' @importFrom brms brm brmsformula get_prior prior unstr
 #' @importFrom coda as.mcmc
 #' @importFrom dplyr bind_rows left_join
-#' @importFrom emmeans emmeans
+#' @importFrom emmeans emm_options emmeans get_emm_option
 #' @importFrom ggplot2 aes facet_wrap geom_point geom_errorbar ggplot
 #'   position_dodge theme_gray xlab ylab
 #' @importFrom ggridges geom_density_ridges2

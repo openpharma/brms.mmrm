@@ -48,17 +48,20 @@ test_that("brm_marginal_probabilities() on response", {
   expect_equal(x$time, paste("visit", seq(2, 4)))
   expect_equal(x$direction, rep("greater", 3))
   expect_equal(x$threshold, rep(0, 3))
+  column <- function(group, time) {
+    sprintf("treatment %s%svisit %s", group, brm_sep(), time)
+  }
   expect_equal(
     x$value[1L],
-    mean(draws$difference[["treatment 2, visit 2"]] > 0)
+    mean(draws$difference[[column(2L, 2L)]] > 0)
   )
   expect_equal(
     x$value[2L],
-    mean(draws$difference[["treatment 2, visit 3"]] > 0)
+    mean(draws$difference[[column(2L, 3L)]] > 0)
   )
   expect_equal(
     x$value[3L],
-    mean(draws$difference[["treatment 2, visit 4"]] > 0)
+    mean(draws$difference[[column(2L, 4L)]] > 0)
   )
 })
 
@@ -99,10 +102,13 @@ test_that("brm_marginal_probabilities() on change and multiple probs", {
     control = "treatment 1",
     baseline = "visit 1"
   )
+  for (index in seq_along(draws$difference)) {
+    draws$difference[[index]] <- seq_len(nrow(draws$difference))
+  }
   x <- brm_marginal_probabilities(
     draws,
     direction = c("less", "greater"),
-    threshold = c(-1.55, -1.7)
+    threshold = c(15, 30)
   )
   expect_equal(
     sort(colnames(x)),
@@ -111,37 +117,6 @@ test_that("brm_marginal_probabilities() on change and multiple probs", {
   expect_equal(x$group, rep("treatment 2", 8))
   expect_equal(x$time, rep(paste("visit", seq(1, 4)), times = 2))
   expect_equal(x$direction, rep(c("greater", "less"), each = 4))
-  expect_equal(x$threshold, c(rep(-1.7, 4), rep(-1.55, 4)))
-  expect_equal(
-    x$value[1L],
-    mean(draws$difference[["treatment 2, visit 1"]] > -1.7)
-  )
-  expect_equal(
-    x$value[2L],
-    mean(draws$difference[["treatment 2, visit 2"]] > -1.7)
-  )
-  expect_equal(
-    x$value[3L],
-    mean(draws$difference[["treatment 2, visit 3"]] > -1.7)
-  )
-  expect_equal(
-    x$value[4L],
-    mean(draws$difference[["treatment 2, visit 4"]] > -1.7)
-  )
-  expect_equal(
-    x$value[5L],
-    mean(draws$difference[["treatment 2, visit 1"]] < -1.55)
-  )
-  expect_equal(
-    x$value[6L],
-    mean(draws$difference[["treatment 2, visit 2"]] < -1.55)
-  )
-  expect_equal(
-    x$value[7L],
-    mean(draws$difference[["treatment 2, visit 3"]] < -1.55)
-  )
-  expect_equal(
-    x$value[8L],
-    mean(draws$difference[["treatment 2, visit 4"]] < -1.55)
-  )
+  expect_equal(x$threshold, c(rep(30, 4), rep(15, 4)))
+  expect_equal(x$value, rep(c(0.4, 0.28), each = 4L))
 })

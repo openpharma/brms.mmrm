@@ -60,7 +60,7 @@ test_that("brm_marginal_summaries() on response", {
     }
     for (group in groups) {
       for (time in times) {
-        name <- paste(group, time, sep = ", ")
+        name <- paste(group, time, sep = brm_sep())
         index <- x$marginal == "response" & x$group == group & x$time == time
         subset <- x[index, ]
         expect_equal(
@@ -179,7 +179,7 @@ test_that("brm_marginal_summaries() on change", {
     }
     for (group in groups) {
       for (time in times) {
-        name <- paste(group, time, sep = ", ")
+        name <- paste(group, time, sep = brm_sep())
         index <- x$marginal == "response" & x$group == group & x$time == time
         subset <- x[index, ]
         expect_equal(
