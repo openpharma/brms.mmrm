@@ -42,12 +42,7 @@ issues](https://github.com/RConsortium/brms.mmrm), respectively.
 Thanks to the [ASA Biopharmaceutical Section Software Engineering
 Working Group](https://rconsortium.github.io/asa-biop-swe-wg/) and [R
 Consortium](https://www.r-consortium.org/) for providing professional
-networks to recruit skilled statisticians and developers. Thanks also to
-[Björn Holzhauer](https://github.com/bjoernholzhauer), [Sebastian
-Weber](https://github.com/weberse2), and [Andrew
-Bean](https://github.com/andrew-bean) for providing extensive tutorial
-vignettes demonstrating how to run MMRMs with
-[`brms`](https://paul-buerkner.github.io/brms/).
+networks to recruit skilled statisticians and developers.
 
 ## Code of conduct
 
@@ -61,7 +56,7 @@ By contributing to this project, you agree to abide by its terms.
     To cite package 'brms.mmrm' in publications use:
 
       Landau WM, Kunzmann K, Sidi Y, Stock C (????). _brms.mmrm: Bayesian
-      MMRMs using 'brms'_. R package version 0.0.0.9000,
+      MMRMs using 'brms'_. R package version 0.0.0.9001,
       <https://github.com/RConsortium/brms.mmrm>.
 
     A BibTeX entry for LaTeX users is
@@ -69,7 +64,7 @@ By contributing to this project, you agree to abide by its terms.
       @Manual{,
         title = {brms.mmrm: Bayesian MMRMs using 'brms'},
         author = {William Michael Landau and Kevin Kunzmann and Yoni Sidi and Christian Stock},
-        note = {R package version 0.0.0.9000},
+        note = {R package version 0.0.0.9001},
         url = {https://github.com/RConsortium/brms.mmrm},
       }
 
