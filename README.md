@@ -31,6 +31,11 @@ with best practices for the life sciences.
 The documentation website at <https://RConsortium.github.io/brms.mmrm>
 has a complete function reference and tutorial vignettes.
 
+## Disclaimer
+
+This package is still in its development phase, and it has not been
+validated for use in serious analyses.
+
 ## Help
 
 Please report questions and problems as [GitHub
