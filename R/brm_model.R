@@ -62,5 +62,10 @@ brm_model <- function(
       message = "prior arg must be a \"brmsprior\" object or NULL."
     )
   }
-  brms::brm(data = data, formula = formula, prior = prior, ...)
+  brms::brm(
+    data = data,
+    formula = formula,
+    prior = prior,
+    ...
+  )
 }
