@@ -9,8 +9,6 @@ test_that("brm_plot_compare()", {
     time = "time",
     patient = "patient"
   )
-  data$group <- paste("treatment", data$group)
-  data$time <- paste("visit", data$time)
   formula <- brm_formula(
     data = data,
     effect_base = FALSE,
@@ -32,8 +30,8 @@ test_that("brm_plot_compare()", {
   draws <- brm_marginal_draws(
     model = model,
     data = data,
-    control = "treatment 1",
-    baseline = "visit 1"
+    control = "group.1",
+    baseline = "time.1"
   )
   suppressWarnings(summaries_draws <- brm_marginal_summaries(draws))
   summaries_data <- brm_marginal_data(data)

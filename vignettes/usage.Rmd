@@ -32,12 +32,8 @@ raw_data <- brm_simulate(
   n_group = 3,
   n_patient = 100,
   n_time = 4
-)$data %>%
-  mutate(
-    group = paste("group", group),
-    patient = paste("patient", patient),
-    time = paste("time", time)
-  )
+)$data
+
 raw_data
 ```
 
@@ -61,6 +57,8 @@ roles <- attributes(data)
 roles$row.names <- NULL
 str(roles)
 ```
+
+Above, the levels of the `group` and `time` columns are automatically cleaned with `make.names()` to ensure alignment between the data and `brms` output. Whenever `brms.mmrm` calls `make.names()`, it always sets `unique = FALSE` and `allow_ = TRUE`.
 
 ## Formula
 
@@ -120,8 +118,8 @@ Regardless of the choice of fixed effects formula, `brms.mmrm` performs inferenc
 draws <- brm_marginal_draws(
   model = model,
   data = data,
-  control = "group 1",
-  baseline = "time 1"
+  control = "group 1", # automatically cleaned with make.names()
+  baseline = "time 1" # also cleaned with make.names()
 )
 
 draws

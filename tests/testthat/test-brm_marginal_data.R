@@ -8,8 +8,6 @@ test_that("brm_marginal_data()", {
     time = "time",
     patient = "patient"
   )
-  data$group <- paste("treatment", data$group)
-  data$time <- paste("visit", data$time)
   data$response[1L] <- NA_real_
   out <- brm_marginal_data(
     data = data,

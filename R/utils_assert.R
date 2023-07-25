@@ -21,6 +21,21 @@ assert <- function(
   }
 }
 
+assert_chr <- function(value, message = NULL) {
+  assert_chr_vec(value, message = message)
+  assert(value, length(.) == 1L, message = message)
+}
+
+assert_chr_vec <- function(value, message = NULL) {
+  assert(
+    value,
+    is.character(.),
+    !anyNA(.),
+    nzchar(.),
+    message = message
+  )
+}
+
 assert_col <- function(value, data, message = NULL) {
   message <- message %|||% paste(
     paste(value, collapse = ", "),
@@ -33,24 +48,22 @@ assert_col <- function(value, data, message = NULL) {
   )
 }
 
-
-assert_chr_vec <- function(value, message = NULL) {
-  assert(
-    value,
-    is.character(.),
-    !anyNA(.),
-    nzchar(.),
-    message = message
-  )
-}
-
-assert_chr <- function(value, message = NULL) {
-  assert_chr_vec(value, message = message)
-  assert(value, length(.) == 1L, message = message)
-}
-
 assert_lgl <- function(value, message = NULL) {
   assert(value, isTRUE(.) || isFALSE(.), message = message)
+}
+
+assert_machine_names <- function(value, message = NULL) {
+  name <- deparse(substitute(value))
+  value_string <- paste(value, collapse = ", ")
+  pattern <- paste(
+    "Ill-formatted character strings in %s: %s.",
+    "%s must equal make.names(%s, unique = FALSE, allow_ = TRUE)"
+  )
+  message <- message %|||% sprintf(pattern, name, value_string, name, name)
+  assert(
+    all(value == make.names(value, unique = FALSE, allow_ = TRUE)),
+    message = message
+  )
 }
 
 assert_num <- function(value, message = NULL) {

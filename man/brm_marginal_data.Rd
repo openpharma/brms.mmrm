@@ -39,16 +39,14 @@ Marginal summaries of the data.
 }
 \examples{
 set.seed(0L)
- data <- brm_data(
-   data = tibble::as_tibble(brm_simulate()$data),
-   outcome = "response",
-   role = "response",
-   group = "group",
-   time = "time",
-   patient = "patient"
- )
-data$group <- paste("treatment", data$group)
-data$time <- paste("visit", data$time)
+data <- brm_data(
+  data = brm_simulate()$data,
+  outcome = "response",
+  role = "response",
+  group = "group",
+  time = "time",
+  patient = "patient"
+)
 brm_marginal_data(data = data)
 }
 \seealso{

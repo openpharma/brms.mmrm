@@ -9,14 +9,20 @@ brm_marginal_draws(model, data, control = "Placebo", baseline = "Baseline")
 \arguments{
 \item{model}{Fitted \code{brms} model object from \code{\link[=brm_model]{brm_model()}}.}
 
-\item{data}{Classed tibble from \code{\link[=brm_data]{brm_data()}}.}
+\item{data}{Classed tibble with preprocessed data from \code{\link[=brm_data]{brm_data()}}.}
 
 \item{control}{Element of the \code{group} column in the data which indicates
-the control group for the purposes of calculating treatment differences.}
+the control group for the purposes of calculating treatment differences.
+Elements in \code{data[[group]]} are already pre-processed by \code{\link[=brm_data]{brm_data()}},
+so \code{control} is automatically sanitized accordingly using
+\code{make.names(control, unique = FALSE, allow_ = TRUE)}.}
 
 \item{baseline}{Element of the \code{time} column in the data
 which indicates the baseline time for the purposes of calculating
-change from baseline.}
+change from baseline.
+Elements in \code{data[[group]]} are already pre-processed by \code{\link[=brm_data]{brm_data()}},
+so \code{control} is automatically sanitized accordingly using
+\code{make.names(control, unique = FALSE, allow_ = TRUE)}.}
 }
 \value{
 A named list of tibbles of MCMC draws of the marginal posterior
@@ -52,15 +58,13 @@ this string. To set a custom string yourself, use
 if (identical(Sys.getenv("BRM_EXAMPLES", unset = ""), "true")) {
 set.seed(0L)
 data <- brm_data(
-  data = tibble::as_tibble(brm_simulate()$data),
+  data = brm_simulate()$data,
   outcome = "response",
   role = "response",
   group = "group",
   time = "time",
   patient = "patient"
 )
-data$group <- paste("treatment", data$group)
-data$time <- paste("visit", data$time)
 formula <- brm_formula(
   data = data,
   effect_base = FALSE,
@@ -82,8 +86,8 @@ tmp <- utils::capture.output(
 brm_marginal_draws(
   model = model,
   data = data,
-  control = "treatment 1",
-  baseline = "visit 1"
+  control = "group 1",
+  baseline = "time 1"
 )
 }
 }

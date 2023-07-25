@@ -26,25 +26,23 @@
 #'   intervals.
 #' @examples
 #' set.seed(0L)
-#'  data <- brm_data(
-#'    data = tibble::as_tibble(brm_simulate()$data),
-#'    outcome = "response",
-#'    role = "response",
-#'    group = "group",
-#'    time = "time",
-#'    patient = "patient"
-#'  )
-#' data$group <- paste("treatment", data$group)
-#' data$time <- paste("visit", data$time)
+#' data <- brm_data(
+#'   data = brm_simulate()$data,
+#'   outcome = "response",
+#'   role = "response",
+#'   group = "group",
+#'   time = "time",
+#'   patient = "patient"
+#' )
 #' brm_marginal_data(data = data)
 brm_marginal_data <- function(data, level = 0.95) {
   brm_data_validate(data)
   assert(level, . >= 0, . <= 1, message = "level arg must be between 0 and 1")
   z <- stats::qnorm(p = (1 - level) / 2)
   data <- tibble::tibble(
-    outcome = data[[attr(data, "outcome")]],
-    group = data[[attr(data, "group")]],
-    time = data[[attr(data, "time")]]
+    outcome = data[[attr(data, "brm_outcome")]],
+    group = data[[attr(data, "brm_group")]],
+    time = data[[attr(data, "brm_time")]]
   )
   data <- dplyr::group_by(data, group, time)
   out <- dplyr::summarize(

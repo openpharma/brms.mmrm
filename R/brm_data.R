@@ -1,7 +1,19 @@
-#' @title Create an MMRM dataset.
+#' @title Create and preprocess an MMRM dataset.
 #' @export
 #' @family data
 #' @description Create a dataset to analyze with an MMRM.
+#' @section Preprocessing:
+#'   The preprocessing steps in `brm_data()` are as follows:
+#'   * Perform basic assertions to make sure the data and other arguments
+#'     are properly formatted.
+#'   * Convert the group and time columns to character vectors.
+#'   * Sanitize the levels of the group and time columns using
+#'     `make.names(unique = FALSE, allow_ = TRUE)` to ensure agreement
+#'     between the data and the output of `brms`.
+#'   * For each implicitly missing outcome observation, add explicit row
+#'     with the outcome variable equal to `NA_real_`.
+#'   * Arrange the rows of the data by group, then patient, then discrete time.
+#'   * Select only the columns of the data relevant to an MMRM analysis.
 #' @section Separation string:
 #'   Post-processing in [brm_marginal_draws()] names each of the
 #'   group-by-time marginal means with the delimiting character string
@@ -17,15 +29,18 @@
 #'   is the raw response variable (e.g. AVAL) or `"change"` if `outcome`
 #'   is change from baseline (e.g. CHG).
 #' @param group Character of length 1, name of the treatment group variable.
+#'   Must point to a character vector in the data. Factors are converted
+#'   to characters.
 #' @param base Character of length 1, name of the baseline response variable.
 #'   Supply `NULL` to ignore or omit.
 #' @param time Character of length 1, name of the discrete time variable.
+#'   Must point to a character vector in the data. Factors are converted
+#'   to characters.
 #' @param patient Character of length 1, name of the patient ID variable.
 #' @param covariates Character vector of names of other covariates.
 #' @examples
 #' set.seed(0)
-#' sim <- brm_simulate()
-#' data <- tibble::as_tibble(sim$data)
+#' data <- brm_simulate()$data
 #' colnames(data) <- paste0("col_", colnames(data))
 #' data
 #' brm_data(
@@ -49,51 +64,66 @@ brm_data <- function(
   assert(is.data.frame(data), message = "data arg must be a data frame.")
   out <- brm_data_new(
     data = data,
-    outcome = as.character(outcome),
-    role = as.character(role),
-    base = base,
-    group = as.character(group),
-    time = as.character(time),
-    patient = as.character(patient),
-    covariates = as.character(covariates)
+    brm_outcome = as.character(outcome),
+    brm_role = as.character(role),
+    brm_base = base,
+    brm_group = as.character(group),
+    brm_time = as.character(time),
+    brm_patient = as.character(patient),
+    brm_covariates = as.character(covariates)
   )
   brm_data_validate(data = out)
-  out <- brm_data_fill(out)
-  out <- brm_data_select(data = out)
-  out
+  brm_data_preprocess(out)
 }
 
 brm_data_new <- function(
   data,
-  outcome,
-  role,
-  base,
-  group,
-  time,
-  patient,
-  covariates
+  brm_outcome,
+  brm_role,
+  brm_base = NULL,
+  brm_group,
+  brm_time,
+  brm_patient,
+  brm_covariates,
+  brm_levels_group = NULL,
+  brm_levels_time = NULL,
+  brm_labels_group = NULL,
+  brm_labels_time = NULL
 ) {
   out <- tibble::new_tibble(x = data, class = "brm_data")
   structure(
     out,
-    outcome = outcome,
-    role = role,
-    base = base,
-    group = group,
-    time = time,
-    patient = patient,
-    covariates = covariates
+    brm_outcome = brm_outcome,
+    brm_role = brm_role,
+    brm_base = brm_base,
+    brm_group = brm_group,
+    brm_time = brm_time,
+    brm_patient = brm_patient,
+    brm_covariates = brm_covariates,
+    brm_levels_group = brm_levels_group,
+    brm_levels_time = brm_levels_time,
+    brm_labels_group = brm_labels_group,
+    brm_labels_time = brm_labels_time
   )
 }
 
+brm_data_preprocess <- function(out) {
+  out <- brm_data_level(out)
+  out <- brm_data_fill(out)
+  out <- brm_data_select(out)
+  out
+}
+
 brm_data_validate <- function(data) {
-  outcome <- attr(data, "outcome")
-  role <- attr(data, "role")
-  base <- attr(data, "base")
-  group <- attr(data, "group")
-  time <- attr(data, "time")
-  patient <- attr(data, "patient")
-  covariates <- attr(data, "covariates")
+  outcome <- attr(data, "brm_outcome")
+  role <- attr(data, "brm_role")
+  base <- attr(data, "brm_base")
+  group <- attr(data, "brm_group")
+  time <- attr(data, "brm_time")
+  patient <- attr(data, "brm_patient")
+  covariates <- attr(data, "brm_covariates")
+  levels_group <- attr(data, "brm_levels_group")
+  levels_time <- attr(data, "brm_levels_time")
   assert(is.data.frame(data), message = "data must be a data frame")
   assert(inherits(data, "brm_data"), message = "data not from brm_data()")
   assert_chr(outcome, "outcome of data must be a nonempty character string")
@@ -103,16 +133,30 @@ brm_data_validate <- function(data) {
   assert_chr(time, "time of data must be a nonempty character string")
   assert_chr(patient, "patient of data must be a nonempty character string")
   assert_chr_vec(covariates, "covariates of data must be a character vector")
-  assert_col(outcome, data)
   assert(
     role %in% c("response", "change"),
     message = "role must be either \"response\" or \"change\""
   )
+  assert_col(outcome, data)
   assert_col(base, data)
   assert_col(group, data)
   assert_col(time, data)
   assert_col(patient, data)
   assert_col(covariates, data)
+  assert_machine_names(outcome)
+  assert_machine_names(base %|||% "base")
+  assert_machine_names(group)
+  assert_machine_names(time)
+  assert_machine_names(patient)
+  assert_machine_names(covariates)
+  assert(
+    all(levels_group %in% data[[group]]),
+    message = "all group levels must be in data[[group]]"
+  )
+  assert(
+    all(levels_time %in% data[[time]]),
+    message = "all time levels must be in data[[time]]"
+  )
   sep <- brm_sep()
   elements <- c(group, time, unique(data[[group]]), unique(data[[time]]))
   assert(
@@ -142,13 +186,10 @@ brm_data_validate <- function(data) {
   }
   for (column in c(group, time)) {
     assert(
-      !is.numeric(data[[column]]),
-      message = sprintf(
-        paste(
-          "%s column in the data must not be numeric.",
-          "Should be character or factor."
-        ),
-        column
+      is.character(data[[column]]) || is.factor(data[[column]]),
+      message = paste(
+        column,
+        "column in the data must be a character vector."
       )
     )
   }
@@ -156,25 +197,46 @@ brm_data_validate <- function(data) {
 
 brm_data_select <- function(data) {
   columns <- c(
-    attr(data, "outcome"),
-    attr(data, "base"),
-    attr(data, "group"),
-    attr(data, "time"),
-    attr(data, "patient"),
-    attr(data, "covariates")
+    attr(data, "brm_outcome"),
+    attr(data, "brm_base"),
+    attr(data, "brm_group"),
+    attr(data, "brm_time"),
+    attr(data, "brm_patient"),
+    attr(data, "brm_covariates")
   )
   columns <- as.character(columns)
   data[, columns, drop = FALSE]
 }
 
+brm_data_level <- function(data) {
+  group <- attr(data, "brm_group")
+  time <- attr(data, "brm_time")
+  names_group <- brm_names(data[[group]])
+  names_time <- brm_names(data[[time]])
+  all_group <- tibble::tibble(label = data[[group]], level = names_group)
+  all_time <- tibble::tibble(label = data[[time]], level = names_time)
+  data[[group]] <- as.character(names_group)
+  data[[time]] <- as.character(names_time)
+  meta_group <- dplyr::arrange(dplyr::distinct(all_group), level)
+  meta_time <- dplyr::arrange(dplyr::distinct(all_time), level)
+  attr(data, "brm_levels_group") <- as.character(meta_group$level)
+  attr(data, "brm_levels_time") <- as.character(meta_time$level)
+  attr(data, "brm_labels_group") <- as.character(meta_group$label)
+  attr(data, "brm_labels_time") <- as.character(meta_time$label)
+  data
+}
+
+brm_names <- function(x) {
+  make.names(as.character(x), unique = FALSE, allow_ = TRUE)
+}
+
 brm_data_fill <- function(data) {
-  outcome <- attr(data, "outcome")
-  role <- attr(data, "role")
-  base <- attr(data, "base")
-  group <- attr(data, "group")
-  time <- attr(data, "time")
-  patient <- attr(data, "patient")
-  covariates <- attr(data, "covariates")
+  attributes <- brm_data_attributes(data)
+  base <- attr(data, "brm_base")
+  group <- attr(data, "brm_group")
+  time <- attr(data, "brm_time")
+  patient <- attr(data, "brm_patient")
+  covariates <- attr(data, "brm_covariates")
   args <- list(data = data, as.symbol(patient), as.symbol(time))
   data <- do.call(what = tidyr::complete, args = args)
   args <- list(.data = data, as.symbol(patient), as.symbol(time))
@@ -188,17 +250,8 @@ brm_data_fill <- function(data) {
     as.symbol(patient),
     as.symbol(time)
   )
-  data <- do.call(what = dplyr::arrange, args = args)
-  brm_data_new(
-    data = data,
-    outcome = outcome,
-    role = role,
-    base = base,
-    group = group,
-    time = time,
-    patient = patient,
-    covariates = covariates
-  )
+  attributes$data <- do.call(what = dplyr::arrange, args = args)
+  do.call(what = brm_data_new, args = attributes)
 }
 
 brm_data_fill_column <- function(x, index) {
@@ -216,6 +269,8 @@ brm_data_locf <- function(x) {
   x
 }
 
-brm_sep <- function() {
-  Sys.getenv("BRM_SEP", unset = "|")
+brm_data_attributes <- function(data) {
+  out <- attributes(data)
+  out <- out[grep("^brm_", names(out), value = TRUE)]
+  out
 }
