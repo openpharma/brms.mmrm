@@ -72,6 +72,10 @@ brm_data <- function(
     levels_time = NULL
   )
   brm_data_validate(data = out)
+  brm_data_preprocess(out)
+}
+
+brm_data_preprocess <- function(out) {
   out <- brm_data_level(out)
   out <- brm_data_fill(out)
   out <- brm_data_select(out)
