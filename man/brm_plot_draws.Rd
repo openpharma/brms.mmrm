@@ -20,15 +20,13 @@ Visualize posterior draws of marginals.
 if (identical(Sys.getenv("BRM_EXAMPLES", unset = ""), "true")) {
 set.seed(0L)
 data <- brm_data(
-  data = tibble::as_tibble(brm_simulate()$data),
+  data = brm_simulate()$data,
   outcome = "response",
   role = "response",
   group = "group",
   time = "time",
   patient = "patient"
 )
-data$group <- paste("treatment", data$group)
-data$time <- paste("visit", data$time)
 formula <- brm_formula(
   data = data,
   effect_base = FALSE,
@@ -50,8 +48,8 @@ tmp <- utils::capture.output(
 draws <- brm_marginal_draws(
   model = model,
   data = data,
-  control = "treatment 1",
-  baseline = "visit 1"
+  control = "group 1",
+  baseline = "time 1"
 )
 brm_plot_draws(draws = draws$change)
 }

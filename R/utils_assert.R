@@ -54,7 +54,7 @@ assert_lgl <- function(value, message = NULL) {
 
 assert_machine_names <- function(value, message = NULL) {
   name <- deparse(substitute(value))
-  value_string <- paste(value, collapse = ", ") 
+  value_string <- paste(value, collapse = ", ")
   pattern <- paste(
     "Ill-formatted character strings in %s: %s.",
     "%s must equal make.names(%s, unique = FALSE, allow_ = TRUE)"
