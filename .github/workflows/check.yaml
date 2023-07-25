@@ -38,14 +38,14 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
-      - name: Install rstand and StanHeaders from source
-        shell: Rscript {0}
-        run: install.packages(c("StanHeaders", "rstan"), type = "source")
-
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: any::rcmdcheck, local::.
           needs: check
+
+      - name: Install rstand and StanHeaders from source
+        shell: Rscript {0}
+        run: install.packages(c("StanHeaders", "rstan"), type = "source")
 
       - uses: r-lib/actions/check-r-package@v2
         with:
