@@ -9,8 +9,6 @@ test_that("brm_plot_draws()", {
     time = "time",
     patient = "patient"
   )
-  data$group <- paste("treatment", data$group)
-  data$time <- paste("visit", data$time)
   formula <- brm_formula(
     data = data,
     effect_base = FALSE,
@@ -32,8 +30,8 @@ test_that("brm_plot_draws()", {
   draws <- brm_marginal_draws(
     model = model,
     data = data,
-    control = "treatment 1",
-    baseline = "visit 1"
+    control = "group.1",
+    baseline = "time.1"
   )
   out <- brm_plot_draws(draws = draws$change)
   expect_s3_class(out, "ggplot")

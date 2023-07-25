@@ -9,8 +9,6 @@ test_that("brm_marginal_summaries() on response", {
     time = "time",
     patient = "patient"
   )
-  data$group <- paste("treatment", data$group)
-  data$time <- paste("visit", data$time)
   formula <- brm_formula(
     data = data,
     effect_base = FALSE,
@@ -32,8 +30,8 @@ test_that("brm_marginal_summaries() on response", {
   draws <- brm_marginal_draws(
     model = model,
     data = data,
-    control = "treatment 1",
-    baseline = "visit 1"
+    control = "group.1",
+    baseline = "time.1"
   )
   suppressWarnings(
     x <- brm_marginal_summaries(
@@ -53,7 +51,7 @@ test_that("brm_marginal_summaries() on response", {
     groups <- unique(data$group)
     times <- unique(data$time)
     if (marginal %in% c("change", "difference")) {
-      times <- setdiff(times, "visit 1")
+      times <- setdiff(times, "time.1")
     }
     if (identical(marginal, "difference")) {
       groups <- setdiff(groups, "difference")
@@ -131,8 +129,6 @@ test_that("brm_marginal_summaries() on change", {
     time = "time",
     patient = "patient"
   )
-  data$group <- paste("treatment", data$group)
-  data$time <- paste("visit", data$time)
   formula <- brm_formula(
     data = data,
     effect_base = FALSE,
@@ -154,8 +150,8 @@ test_that("brm_marginal_summaries() on change", {
   draws <- brm_marginal_draws(
     model = model,
     data = data,
-    control = "treatment 1",
-    baseline = "visit 1"
+    control = "group.1",
+    baseline = "time.1"
   )
   suppressWarnings(
     x <- brm_marginal_summaries(
