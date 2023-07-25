@@ -55,7 +55,6 @@ brm_simulate <- function(
   )
   levels_time <- paste("time", seq_len(n_time))
   grid <- tidyr::expand_grid(patients, time = levels_time)
-  grid$time <- ordered(grid$time, levels = levels_time)
   model_matrix <- model.matrix(~ 0 + group + time, data = grid)
   beta <- stats::rnorm(n = ncol(model_matrix), mean = 0, sd = hyper_beta)
   mean <- as.numeric(model_matrix %*% beta)

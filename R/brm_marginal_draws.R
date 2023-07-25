@@ -61,8 +61,8 @@
 #' brm_marginal_draws(
 #'   model = model,
 #'   data = data,
-#'   control = "group.1",
-#'   baseline = "time.1"
+#'   control = "group 1",
+#'   baseline = "time 1"
 #' )
 #' }
 brm_marginal_draws <- function(
@@ -72,14 +72,14 @@ brm_marginal_draws <- function(
   baseline = "Baseline"
 ) {
   brm_data_validate(data)
-  role <- attr(data, "role")
-  base <- attr(data, "base")
-  group <- attr(data, "group")
-  time <- attr(data, "time")
-  patient <- attr(data, "patient")
-  covariates <- attr(data, "covariates")
-  levels_group <- attr(data, "levels_group")
-  levels_time <- attr(data, "levels_time")
+  role <- attr(data, "brm_role")
+  base <- attr(data, "brm_base")
+  group <- attr(data, "brm_group")
+  time <- attr(data, "brm_time")
+  patient <- attr(data, "brm_patient")
+  covariates <- attr(data, "brm_covariates")
+  levels_group <- attr(data, "brm_levels_group")
+  levels_time <- attr(data, "brm_levels_time")
   assert(
     control,
     is.atomic(.),
@@ -94,8 +94,8 @@ brm_marginal_draws <- function(
     !anyNA(.),
     message = "baseline arg must be a length-1 non-missing atomic value"
   )
-  control <- brm_data_sanitize_level(control)
-  baseline <- brm_data_sanitize_level(baseline)
+  control <- brm_names(control)
+  baseline <- brm_names(baseline)
   assert(
     control %in% as.character(data[[group]]),
     message = "control arg must be a treatment group level in the data"
@@ -187,9 +187,3 @@ subtract_control <- function(draws, levels_group, levels_time, control) {
   }
   out
 }
-
-name_marginal <- function(group, time) {
-  sprintf("%s%s%s", group, brm_sep(), time)
-}
-
-names_mcmc <- c(".chain", ".draw", ".iteration")

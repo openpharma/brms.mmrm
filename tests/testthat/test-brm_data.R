@@ -2,6 +2,7 @@ test_that("brm_data() good", {
   set.seed(0)
   sim <- brm_simulate()
   data <- tibble::as_tibble(sim$data)
+  data$group <- as.factor(data$group)
   data$factor1 <- data$patient
   data$factor2 <- data$patient
   data$factor3 <- data$patient
@@ -42,10 +43,7 @@ test_that("brm_data() good", {
   )
   expect_equal(
     out$col_time,
-    ordered(
-      rep(paste0("time.", seq_len(4L)), times = 200L),
-      levels = paste0("time.", seq_len(4L))
-    )
+    rep(paste0("time.", seq_len(4L)), times = 200L)
   )
   expect_equal(
     sort(out$col_response[- c(2L, 3L)]),

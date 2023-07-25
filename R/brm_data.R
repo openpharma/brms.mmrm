@@ -6,6 +6,7 @@
 #'   The preprocessing steps in `brm_data()` are as follows:
 #'   * Perform basic assertions to make sure the data and other arguments
 #'     are properly formatted.
+#'   * Convert the group and time columns to character vectors.
 #'   * Sanitize the levels of the group and time columns using
 #'     `make.names(unique = FALSE, allow_ = TRUE)` to ensure agreement
 #'     between the data and the output of `brms`.
@@ -28,11 +29,13 @@
 #'   is the raw response variable (e.g. AVAL) or `"change"` if `outcome`
 #'   is change from baseline (e.g. CHG).
 #' @param group Character of length 1, name of the treatment group variable.
-#'   Must point to a character vector or factor in the data.
+#'   Must point to a character vector in the data. Factors are converted
+#'   to characters.
 #' @param base Character of length 1, name of the baseline response variable.
 #'   Supply `NULL` to ignore or omit.
 #' @param time Character of length 1, name of the discrete time variable.
-#'   Must point to a character vector or factor in the data.
+#'   Must point to a character vector in the data. Factors are converted
+#'   to characters.
 #' @param patient Character of length 1, name of the patient ID variable.
 #' @param covariates Character vector of names of other covariates.
 #' @examples
@@ -186,7 +189,7 @@ brm_data_validate <- function(data) {
       is.character(data[[column]]) || is.factor(data[[column]]),
       message = paste(
         column,
-        "column in the data must be a character vector or factor."
+        "column in the data must be a character vector."
       )
     )
   }
@@ -212,8 +215,8 @@ brm_data_level <- function(data) {
   names_time <- brm_names(data[[time]])
   all_group <- tibble::tibble(label = data[[group]], level = names_group)
   all_time <- tibble::tibble(label = data[[time]], level = names_time)
-  data[[group]] <- names_group
-  data[[time]] <- names_time
+  data[[group]] <- as.character(names_group)
+  data[[time]] <- as.character(names_time)
   meta_group <- dplyr::arrange(dplyr::distinct(all_group), level)
   meta_time <- dplyr::arrange(dplyr::distinct(all_time), level)
   attr(data, "brm_levels_group") <- as.character(meta_group$level)
@@ -224,19 +227,6 @@ brm_data_level <- function(data) {
 }
 
 brm_names <- function(x) {
-  UseMethod("brm_names")
-}
-
-brm_names.character <- function(x) {
-  brm_name(x)
-}
-
-brm_names.factor <- function(x) {
-  levels(x) <- brm_name(levels(x))
-  x
-}
-
-brm_name <- function(x) {
   make.names(as.character(x), unique = FALSE, allow_ = TRUE)
 }
 
@@ -283,8 +273,4 @@ brm_data_attributes <- function(data) {
   out <- attributes(data)
   out <- out[grep("^brm_", names(out), value = TRUE)]
   out
-}
-
-brm_sep <- function() {
-  Sys.getenv("BRM_SEP", unset = "|")
 }

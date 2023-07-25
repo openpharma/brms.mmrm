@@ -86,8 +86,8 @@ tmp <- utils::capture.output(
 brm_marginal_draws(
   model = model,
   data = data,
-  control = "group.1",
-  baseline = "time.1"
+  control = "group 1",
+  baseline = "time 1"
 )
 }
 }

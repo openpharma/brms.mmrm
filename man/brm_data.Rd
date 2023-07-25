@@ -28,10 +28,12 @@ is change from baseline (e.g. CHG).}
 Supply \code{NULL} to ignore or omit.}
 
 \item{group}{Character of length 1, name of the treatment group variable.
-Must point to a character vector or factor in the data.}
+Must point to a character vector in the data. Factors are converted
+to characters.}
 
 \item{time}{Character of length 1, name of the discrete time variable.
-Must point to a character vector or factor in the data.}
+Must point to a character vector in the data. Factors are converted
+to characters.}
 
 \item{patient}{Character of length 1, name of the patient ID variable.}
 
@@ -50,6 +52,7 @@ The preprocessing steps in \code{brm_data()} are as follows:
 \itemize{
 \item Perform basic assertions to make sure the data and other arguments
 are properly formatted.
+\item Convert the group and time columns to character vectors.
 \item Sanitize the levels of the group and time columns using
 \code{make.names(unique = FALSE, allow_ = TRUE)} to ensure agreement
 between the data and the output of \code{brms}.

@@ -22,7 +22,7 @@
 #' @examples
 #' set.seed(0)
 #' data <- brm_data(
-#'   data = tibble::as_tibble(brm_simulate()$data),
+#'   data = brm_simulate()$data,
 #'   outcome = "response",
 #'   role = "response",
 #'   group = "group",
@@ -66,13 +66,13 @@ brm_formula <- function(
       paste(correlations, collapse = ", ")
     )
   )
-  outcome <- attr(data, "outcome")
-  role <- attr(data, "role")
-  base <- attr(data, "base")
-  group <- attr(data, "group")
-  time <- attr(data, "time")
-  patient <- attr(data, "patient")
-  covariates <- attr(data, "covariates")
+  outcome <- attr(data, "brm_outcome")
+  role <- attr(data, "brm_role")
+  base <- attr(data, "brm_base")
+  group <- attr(data, "brm_group")
+  time <- attr(data, "brm_time")
+  patient <- attr(data, "brm_patient")
+  covariates <- attr(data, "brm_covariates")
   terms <- c(
     term("0", !intercept),
     term(time, effect_time),
