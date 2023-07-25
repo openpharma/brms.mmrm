@@ -2,7 +2,7 @@
 % Please edit documentation in R/brm_data.R
 \name{brm_data}
 \alias{brm_data}
-\title{Create an MMRM dataset.}
+\title{Create and preprocess an MMRM dataset.}
 \usage{
 brm_data(
   data,
@@ -27,9 +27,11 @@ is change from baseline (e.g. CHG).}
 \item{base}{Character of length 1, name of the baseline response variable.
 Supply \code{NULL} to ignore or omit.}
 
-\item{group}{Character of length 1, name of the treatment group variable.}
+\item{group}{Character of length 1, name of the treatment group variable.
+Must point to a character vector or factor in the data.}
 
-\item{time}{Character of length 1, name of the discrete time variable.}
+\item{time}{Character of length 1, name of the discrete time variable.
+Must point to a character vector or factor in the data.}
 
 \item{patient}{Character of length 1, name of the patient ID variable.}
 
@@ -42,6 +44,22 @@ the data such as the treatment group and discrete time variables.
 \description{
 Create a dataset to analyze with an MMRM.
 }
+\section{Preprocessing}{
+
+The preprocessing steps in \code{brm_data()} are as follows:
+\itemize{
+\item Perform basic assertions to make sure the data and other arguments
+are properly formatted.
+\item Sanitize the levels of the group and time columns using
+\code{make.names(unique = FALSE, allow_ = TRUE)} to ensure agreement
+between the data and the output of \code{brms}.
+\item For each implicitly missing outcome observation, add explicit row
+with the outcome variable equal to \code{NA_real_}.
+\item Arrange the rows of the data by group, then patient, then discrete time.
+\item Select only the columns of the data relevant to an MMRM analysis.
+}
+}
+
 \section{Separation string}{
 
 Post-processing in \code{\link[=brm_marginal_draws]{brm_marginal_draws()}} names each of the
@@ -54,8 +72,7 @@ this string. To set a custom string yourself, use
 
 \examples{
 set.seed(0)
-sim <- brm_simulate()
-data <- tibble::as_tibble(sim$data)
+data <- brm_simulate()$data
 colnames(data) <- paste0("col_", colnames(data))
 data
 brm_data(

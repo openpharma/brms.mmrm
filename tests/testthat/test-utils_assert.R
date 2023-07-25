@@ -22,6 +22,12 @@ test_that("assert_chr()", {
   expect_error(assert_chr(c(2L, 3L)), class = "brm_error")
 })
 
+test_that("assert_col()", {
+  data <- data.frame(x = 1)
+  expect_silent(assert_col("x", data))
+  expect_error(assert_col("y", data), class = "brm_error")
+})
+
 test_that("assert_lgl()", {
   expect_silent(assert_lgl(TRUE))
   expect_silent(assert_lgl(FALSE))
@@ -29,6 +35,11 @@ test_that("assert_lgl()", {
   expect_error(assert_lgl(logical(0L)), class = "brm_error")
   expect_error(assert_lgl(123.321), class = "brm_error")
   expect_error(assert_lgl(c(1L, 2L)), class = "brm_error")
+})
+
+test_that("assert_machine_names()", {
+  expect_silent(assert_machine_names("x"))
+  expect_error(assert_machine_names("_x"), class = "brm_error")
 })
 
 test_that("assert_num()", {

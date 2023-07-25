@@ -38,11 +38,14 @@ test_that("brm_data() good", {
   )
   expect_equal(
     out$col_group,
-    as.factor(rep(c(1L, 2L), each = 400L))
+    rep(paste0("group.", c(1L, 2L)), each = 400L)
   )
   expect_equal(
     out$col_time,
-    as.factor(rep(seq_len(4L), times = 200L))
+    ordered(
+      rep(paste0("time.", seq_len(4L)), times = 200L),
+      levels = paste0("time.", seq_len(4L))
+    )
   )
   expect_equal(
     sort(out$col_response[- c(2L, 3L)]),
@@ -50,6 +53,18 @@ test_that("brm_data() good", {
   )
   expect_equal(out$col_patient, out$col_factor2)
   expect_equal(out$col_patient, out$col_factor3)
+  expect_equal(attr(out, "outcome"), "col_response")
+  expect_equal(attr(out, "role"), "response")
+  expect_equal(attr(out, "group"), "col_group")
+  expect_equal(attr(out, "time"), "col_time")
+  expect_equal(attr(out, "patient"), "col_patient")
+  expect_equal(attr(out, "covariates"), c("col_factor2", "col_factor3"))
+  expect_equal(
+    sort(attr(out, "levels_group")), c("group.1", "group.2")
+  )
+  expect_equal(
+    sort(attr(out, "levels_time")), paste0("time.", seq_len(4L))
+  )
 })
 
 test_that("brm_data() bad role", {
@@ -77,6 +92,30 @@ test_that("brm_data() bad role", {
 })
 
 test_that("brm_data() bad group", {
+  set.seed(0)
+  sim <- brm_simulate()
+  data <- tibble::as_tibble(sim$data)
+  data$factor1 <- data$patient
+  data$factor2 <- data$patient
+  data$factor3 <- data$patient
+  colnames(data) <- paste0("col_", colnames(data))
+  data <- data[- c(2L, 3L), ]
+  data <- data[sample.int(n = nrow(data)), ]
+  expect_error(
+    brm_data(
+      data = data,
+      outcome = "col_response",
+      role = "response",
+      group = "nope",
+      time = "col_time",
+      patient = "col_patient",
+      covariates = c("col_factor2", "col_factor3")
+    ),
+    class = "brm_error"
+  )
+})
+
+test_that("brm_data() levels ", {
   set.seed(0)
   sim <- brm_simulate()
   data <- tibble::as_tibble(sim$data)
