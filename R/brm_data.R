@@ -75,13 +75,6 @@ brm_data <- function(
   brm_data_preprocess(out)
 }
 
-brm_data_preprocess <- function(out) {
-  out <- brm_data_level(out)
-  out <- brm_data_fill(out)
-  out <- brm_data_select(out)
-  out
-}
-
 brm_data_new <- function(
   data,
   outcome,
@@ -107,6 +100,13 @@ brm_data_new <- function(
     levels_group = levels_group,
     levels_time = levels_time
   )
+}
+
+brm_data_preprocess <- function(out) {
+  out <- brm_data_level(out)
+  out <- brm_data_fill(out)
+  out <- brm_data_select(out)
+  out
 }
 
 brm_data_validate <- function(data) {
