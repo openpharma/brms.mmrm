@@ -53,17 +53,23 @@ test_that("brm_data() good", {
   )
   expect_equal(out$col_patient, out$col_factor2)
   expect_equal(out$col_patient, out$col_factor3)
-  expect_equal(attr(out, "outcome"), "col_response")
-  expect_equal(attr(out, "role"), "response")
-  expect_equal(attr(out, "group"), "col_group")
-  expect_equal(attr(out, "time"), "col_time")
-  expect_equal(attr(out, "patient"), "col_patient")
-  expect_equal(attr(out, "covariates"), c("col_factor2", "col_factor3"))
+  expect_equal(attr(out, "brm_outcome"), "col_response")
+  expect_equal(attr(out, "brm_role"), "response")
+  expect_equal(attr(out, "brm_group"), "col_group")
+  expect_equal(attr(out, "brm_time"), "col_time")
+  expect_equal(attr(out, "brm_patient"), "col_patient")
+  expect_equal(attr(out, "brm_covariates"), c("col_factor2", "col_factor3"))
   expect_equal(
-    sort(attr(out, "levels_group")), c("group.1", "group.2")
+    sort(attr(out, "brm_levels_group")), c("group.1", "group.2")
   )
   expect_equal(
-    sort(attr(out, "levels_time")), paste0("time.", seq_len(4L))
+    sort(attr(out, "brm_levels_time")), paste0("time.", seq_len(4L))
+  )
+  expect_equal(
+    sort(attr(out, "brm_labels_group")), c("group 1", "group 2")
+  )
+  expect_equal(
+    sort(attr(out, "brm_labels_time")), paste("time", seq_len(4L))
   )
 })
 

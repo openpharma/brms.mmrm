@@ -17,25 +17,29 @@
 #'   group and discrete time point.
 #'   Treatment and time are comma-delimited in the column names.
 #' @param model Fitted `brms` model object from [brm_model()].
-#' @param data Classed tibble from [brm_data()].
+#' @param data Classed tibble with preprocessed data from [brm_data()].
 #' @param control Element of the `group` column in the data which indicates
 #'   the control group for the purposes of calculating treatment differences.
+#'   Elements in `data[[group]]` are already pre-processed by [brms_data()],
+#'   so `control` is automatically sanitized accordingly using
+#'   `make.names(control, unique = FALSE, allow_ = TRUE)`.
 #' @param baseline Element of the `time` column in the data
 #'   which indicates the baseline time for the purposes of calculating
 #'   change from baseline.
+#'   Elements in `data[[group]]` are already pre-processed by [brms_data()],
+#'   so `control` is automatically sanitized accordingly using
+#'   `make.names(control, unique = FALSE, allow_ = TRUE)`.
 #' @examples
 #' if (identical(Sys.getenv("BRM_EXAMPLES", unset = ""), "true")) {
 #' set.seed(0L)
 #' data <- brm_data(
-#'   data = tibble::as_tibble(brm_simulate()$data),
+#'   data = brm_simulate()$data,
 #'   outcome = "response",
 #'   role = "response",
 #'   group = "group",
 #'   time = "time",
 #'   patient = "patient"
 #' )
-#' data$group <- paste("treatment", data$group)
-#' data$time <- paste("visit", data$time)
 #' formula <- brm_formula(
 #'   data = data,
 #'   effect_base = FALSE,
@@ -57,8 +61,8 @@
 #' brm_marginal_draws(
 #'   model = model,
 #'   data = data,
-#'   control = "treatment 1",
-#'   baseline = "visit 1"
+#'   control = "group.1",
+#'   baseline = "time.1"
 #' )
 #' }
 brm_marginal_draws <- function(
@@ -74,6 +78,8 @@ brm_marginal_draws <- function(
   time <- attr(data, "time")
   patient <- attr(data, "patient")
   covariates <- attr(data, "covariates")
+  levels_group <- attr(data, "levels_group")
+  levels_time <- attr(data, "levels_time")
   assert(
     control,
     is.atomic(.),
@@ -88,14 +94,16 @@ brm_marginal_draws <- function(
     !anyNA(.),
     message = "baseline arg must be a length-1 non-missing atomic value"
   )
+  control <- brm_data_sanitize_level(control)
+  baseline <- brm_data_sanitize_level(baseline)
   assert(
-    control %in% data[[group]],
+    control %in% as.character(data[[group]]),
     message = "control arg must be a treatment group level in the data"
   )
   if (identical(role, "response")) {
     assert(
-      baseline %in% data[[time]],
-      message = "control arg must be a discrete time level in the data"
+      baseline %in% as.character(data[[time]]),
+      message = "baseline arg must be a discrete time level in the data"
     )
   }
   nuisance <- c(base, patient, covariates)
@@ -110,44 +118,40 @@ brm_marginal_draws <- function(
   emmeans::emm_options(sep = brm_sep())
   mcmc <- coda::as.mcmc(emmeans, fixed = TRUE, names = FALSE)
   draws_response <- posterior::as_draws_df(mcmc)
-  groups <- unique(names_group(draws_response))
-  times <- unique(names_time(draws_response))
-  control <- as.character(control)
-  time <- as.character(time)
   assert(
-    control %in% groups,
+    control %in% levels_group,
     message = sprintf(
       "control argument \"%s\" is not in one of the treatment groups: %s",
       control,
-      paste(groups, collapse = ", ")
+      paste(levels_group, collapse = ", ")
     )
   )
   if (identical(role, "response")) {
     assert(
-      baseline %in% times,
+      baseline %in% levels_time,
       message = sprintf(
         "baseline argument \"%s\" is not in one of the time points: %s",
         baseline,
-        paste(times, collapse = ", ")
+        paste(levels_time, collapse = ", ")
       )
     )
     draws_change <- subtract_baseline(
       draws = draws_response,
-      groups = groups,
-      times = times,
+      levels_group = levels_group,
+      levels_time = levels_time,
       baseline = baseline
     )
     draws_difference <- subtract_control(
       draws = draws_change,
-      groups = groups,
-      times = setdiff(times, baseline),
+      levels_group = levels_group,
+      levels_time = setdiff(levels_time, baseline),
       control = control
     )
   } else {
     draws_difference <- subtract_control(
       draws = draws_response,
-      groups = groups,
-      times = times,
+      levels_group = levels_group,
+      levels_time = levels_time,
       control = control
     )
   }
@@ -160,10 +164,10 @@ brm_marginal_draws <- function(
   out
 }
 
-subtract_baseline <- function(draws, groups, times, baseline) {
+subtract_baseline <- function(draws, levels_group, levels_time, baseline) {
   out <- draws[, names_mcmc]
-  for (group in groups) {
-    for (time in setdiff(times, baseline)) {
+  for (group in levels_group) {
+    for (time in setdiff(levels_time, baseline)) {
       name1 <- name_marginal(group, baseline)
       name2 <- name_marginal(group, time)
       out[[name2]] <- draws[[name2]] - draws[[name1]]
@@ -172,10 +176,10 @@ subtract_baseline <- function(draws, groups, times, baseline) {
   out
 }
 
-subtract_control <- function(draws, groups, times, control) {
+subtract_control <- function(draws, levels_group, levels_time, control) {
   out <- draws[, names_mcmc]
-  for (group in setdiff(groups, control)) {
-    for (time in times) {
+  for (group in setdiff(levels_group, control)) {
+    for (time in levels_time) {
       name1 <- name_marginal(control, time)
       name2 <- name_marginal(group, time)
       out[[name2]] <- draws[[name2]] - draws[[name1]]
@@ -186,24 +190,6 @@ subtract_control <- function(draws, groups, times, control) {
 
 name_marginal <- function(group, time) {
   sprintf("%s%s%s", group, brm_sep(), time)
-}
-
-names_group <- function(draws) {
-  gsub_group(setdiff(colnames(draws), names_mcmc))
-}
-
-names_time <- function(draws) {
-  gsub_time(setdiff(colnames(draws), names_mcmc))
-}
-
-gsub_group <- function(names) {
-  out <- strsplit(names, split = "|", fixed = TRUE)
-  as.character(lapply(out, function(x) x[[1L]]))
-}
-
-gsub_time <- function(names) {
-  out <- strsplit(names, split = "|", fixed = TRUE)
-  as.character(lapply(out, function(x) x[[2L]]))
 }
 
 names_mcmc <- c(".chain", ".draw", ".iteration")
