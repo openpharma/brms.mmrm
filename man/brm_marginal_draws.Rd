@@ -13,14 +13,14 @@ brm_marginal_draws(model, data, control = "Placebo", baseline = "Baseline")
 
 \item{control}{Element of the \code{group} column in the data which indicates
 the control group for the purposes of calculating treatment differences.
-Elements in \code{data[[group]]} are already pre-processed by \code{\link[=brms_data]{brms_data()}},
+Elements in \code{data[[group]]} are already pre-processed by \code{\link[=brm_data]{brm_data()}},
 so \code{control} is automatically sanitized accordingly using
 \code{make.names(control, unique = FALSE, allow_ = TRUE)}.}
 
 \item{baseline}{Element of the \code{time} column in the data
 which indicates the baseline time for the purposes of calculating
 change from baseline.
-Elements in \code{data[[group]]} are already pre-processed by \code{\link[=brms_data]{brms_data()}},
+Elements in \code{data[[group]]} are already pre-processed by \code{\link[=brm_data]{brm_data()}},
 so \code{control} is automatically sanitized accordingly using
 \code{make.names(control, unique = FALSE, allow_ = TRUE)}.}
 }

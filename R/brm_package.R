@@ -54,7 +54,8 @@ globalVariables(
     "group",
     "time",
     "value",
-    "outcome"
+    "outcome",
+    "level"
   ),
   package = "brms.mmrm"
 )

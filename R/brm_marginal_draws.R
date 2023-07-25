@@ -20,13 +20,13 @@
 #' @param data Classed tibble with preprocessed data from [brm_data()].
 #' @param control Element of the `group` column in the data which indicates
 #'   the control group for the purposes of calculating treatment differences.
-#'   Elements in `data[[group]]` are already pre-processed by [brms_data()],
+#'   Elements in `data[[group]]` are already pre-processed by [brm_data()],
 #'   so `control` is automatically sanitized accordingly using
 #'   `make.names(control, unique = FALSE, allow_ = TRUE)`.
 #' @param baseline Element of the `time` column in the data
 #'   which indicates the baseline time for the purposes of calculating
 #'   change from baseline.
-#'   Elements in `data[[group]]` are already pre-processed by [brms_data()],
+#'   Elements in `data[[group]]` are already pre-processed by [brm_data()],
 #'   so `control` is automatically sanitized accordingly using
 #'   `make.names(control, unique = FALSE, allow_ = TRUE)`.
 #' @examples
