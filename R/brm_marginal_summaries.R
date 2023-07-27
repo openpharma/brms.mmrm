@@ -83,10 +83,12 @@ brm_marginal_summaries <- function(
     NULL
   )
   table_difference <- summarize_marginals(draws$difference, level)
+  table_effect <- summarize_marginals(draws$effect, level)
   out <- dplyr::bind_rows(
     response = table_response,
     change = table_change,
     difference = table_difference,
+    effect = table_effect,
     .id = "marginal"
   )
   columns <- c("marginal", "statistic", "group", "time", "value", "mcse")
