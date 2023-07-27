@@ -211,8 +211,8 @@ brm_data_select <- function(data) {
 brm_data_level <- function(data) {
   group <- attr(data, "brm_group")
   time <- attr(data, "brm_time")
-  names_group <- brm_names(data[[group]])
-  names_time <- brm_names(data[[time]])
+  names_group <- brm_levels(data[[group]])
+  names_time <- brm_levels(data[[time]])
   all_group <- tibble::tibble(label = data[[group]], level = names_group)
   all_time <- tibble::tibble(label = data[[time]], level = names_time)
   data[[group]] <- as.character(names_group)
@@ -226,8 +226,26 @@ brm_data_level <- function(data) {
   data
 }
 
-brm_names <- function(x) {
-  make.names(as.character(x), unique = FALSE, allow_ = TRUE)
+brm_levels <- function(x) {
+  x <- as.character(x)
+  out <- make.names(x, unique = FALSE, allow_ = TRUE)
+  assert(
+    all(duplicated(x) == duplicated(out)),
+    message = paste0(
+      "Levels collapsed while trying to create valid variable names. Input: ",
+      brm_chr_head_unique(x),
+      ". Output: ",
+      brm_chr_head_unique(out),
+      ". Please make sure the elements of the treatment group and discrete ",
+      "time columns of the data still indicate the correct groupings ",
+      "even after make.names(unique = FALSE, allow_ = TRUE)."
+    )
+  )
+  out
+}
+
+brm_chr_head_unique <- function(x, n = 30L) {
+  paste(utils::head(unique(x), n = n), collapse = ", ")
 }
 
 brm_data_fill <- function(data) {

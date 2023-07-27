@@ -94,8 +94,8 @@ brm_marginal_draws <- function(
     !anyNA(.),
     message = "baseline arg must be a length-1 non-missing atomic value"
   )
-  control <- brm_names(control)
-  baseline <- brm_names(baseline)
+  control <- brm_levels(control)
+  baseline <- brm_levels(baseline)
   assert(
     control %in% as.character(data[[group]]),
     message = "control arg must be a treatment group level in the data"

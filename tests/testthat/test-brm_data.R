@@ -142,3 +142,8 @@ test_that("brm_data() levels ", {
     class = "brm_error"
   )
 })
+
+test_that("brm_levels()", {
+  expect_equal(brm_levels(c("a 1", "a 1", "b 2")), c("a.1", "a.1", "b.2"))
+  expect_error(brm_levels(c("a 1", "a.1")), class = "brm_error")
+})

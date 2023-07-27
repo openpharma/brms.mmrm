@@ -36,7 +36,7 @@
 #' @importFrom tidyr expand_grid pivot_longer pivot_wider
 #' @importFrom tidyselect any_of everything
 #' @importFrom trialr rlkjcorr
-#' @importFrom utils capture.output globalVariables
+#' @importFrom utils capture.output globalVariables head
 #' @importFrom zoo na.locf
 NULL
 
