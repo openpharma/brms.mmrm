@@ -15,6 +15,7 @@ reference:
   contents:
   - '`brm_marginal_data`'
   - '`brm_marginal_draws`'
+  - '`brm_marginal_draws_average`'
   - '`brm_marginal_summaries`'
   - '`brm_marginal_probabilities`'
 - title: Visualization

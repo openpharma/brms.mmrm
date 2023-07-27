@@ -51,6 +51,7 @@ brm_marginal_data(data = data)
 }
 \seealso{
 Other marginals: 
+\code{\link{brm_marginal_draws_average}()},
 \code{\link{brm_marginal_draws}()},
 \code{\link{brm_marginal_probabilities}()},
 \code{\link{brm_marginal_summaries}()}

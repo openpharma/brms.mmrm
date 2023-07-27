@@ -132,6 +132,12 @@ draws <- brm_marginal_draws(
 draws
 ```
 
+If you need samples from these marginals averaged across time points, e.g. an "overall effect size", `brm_marginal_draws_average()` can average the draws above across discrete time points (either all or a user-defined subset).
+
+```{r, paged.print = FALSE}
+brm_marginal_draws_average(draws = draws, data = data)
+```
+
 The `brm_marginal_summaries()` function produces posterior summaries of these marginals, and it includes the Monte Carlo standard error (MCSE) of each estimate.
 
 ```{r, paged.print = FALSE}
