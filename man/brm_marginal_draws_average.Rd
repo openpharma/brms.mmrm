@@ -4,7 +4,7 @@
 \alias{brm_marginal_draws_average}
 \title{Average marginal MCMC draws across time points.}
 \usage{
-brm_marginal_draws_average(draws, data, times = NULL)
+brm_marginal_draws_average(draws, data, times = NULL, label = "average")
 }
 \arguments{
 \item{draws}{Fitted \code{brms} model object from \code{\link[=brm_model]{brm_model()}}.}
@@ -16,10 +16,15 @@ over which to average the MCMC samples within treatment group levels.
 Set to \code{NULL} to average across all time points. Levels are automatically
 sanitized with \code{make.names(unique = FALSE, allow_ = TRUE)} to ensure
 agreement with \code{brms} variable names in downstream computations.}
+
+\item{label}{Character of length 1, time point label for the averages.
+Automatically sanitized with \code{make.names(unique = FALSE, allow_ = TRUE)}.
+Must not conflict with any existing time point labels in the data
+after the label and time points are sanitized.}
 }
 \value{
 A named list of tibbles of MCMC draws of the marginal posterior
-distribution of each treatment group:
+distribution of each treatment group.
 \itemize{
 \item \code{response}: on the scale of the response variable.
 \item \code{change}: change from baseline, where the \code{baseline} argument determines
@@ -29,11 +34,13 @@ represents change from baseline.)
 \item \code{difference}: treatment effect of change from baseline, where the
 \code{control} argument identifies the placebo or active control group.
 In each tibble, there is 1 row per posterior sample and one column for
-each treatment group.
+each treatment group. There is a time point label which is called
+\code{"average"} by default.
 }
 }
 \description{
-Average marginal MCMC draws across time points.
+Simple un-weighted arithmetic mean of
+marginal MCMC draws across time points.
 }
 \section{Separation string}{
 
@@ -84,7 +91,8 @@ brm_marginal_draws_average(draws = draws, data = data)
 brm_marginal_draws_average(
   draws = draws,
   data = data,
-  times = c("time 1", "time 2")
+  times = c("time 1", "time 2"),
+  label = "mean"
 )
 }
 }
