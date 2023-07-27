@@ -112,7 +112,14 @@ model
 
 ## Marginals
 
-Regardless of the choice of fixed effects formula, `brms.mmrm` performs inference on the marginal distributions at each treatment group and time point: the mean response, mean change from baseline, and mean treatment effect in terms of change from baseline. To derive posterior draws of these marginals, use the `brm_marginal_draws()` function.
+Regardless of the choice of fixed effects formula, `brms.mmrm` performs inference on the marginal distributions at each treatment group and time point of the mean of the following quantities:
+
+1. Response.
+2. Change from baseline, if you set `role` to `"change"` in `brm_data()`.
+3. Treatment difference, in terms of change from baseline.
+4. Effect size: treatment difference divided by the residual standard deviation.
+
+To derive posterior draws of these marginals, use the `brm_marginal_draws()` function.
 
 ```{r, paged.print = FALSE}
 draws <- brm_marginal_draws(

@@ -155,12 +155,46 @@ brm_marginal_draws <- function(
       control = control
     )
   }
+  draws_sigma <- get_draws_sigma(model = model, time = time)
+  draws_effect <- get_draws_effect(
+    draws_difference = draws_difference,
+    draws_sigma = draws_sigma,
+    levels_group = levels_group,
+    levels_time = levels_time
+  )
   out <- list()
   out$response <- draws_response
   if (identical(role, "response")) {
     out$change <- draws_change
   }
   out$difference <- draws_difference
+  out$effect <- draws_effect
+  out
+}
+
+get_draws_sigma <- function(model, time) {
+  draws <- tibble::as_tibble(posterior::as_draws_df(model))
+  draws <- draws[, grep("^b_sigma_", colnames(draws), value = TRUE)]
+  colnames(draws) <- gsub("^b_sigma_", "", colnames(draws))
+  colnames(draws) <- gsub(paste0("^", time), "", x = colnames(draws))
+  exp(draws)
+}
+
+get_draws_effect <- function(
+  draws_difference,
+  draws_sigma,
+  levels_group,
+  levels_time
+) {
+  out <- draws_difference
+  for (group in levels_group) {
+    for (time in levels_time) {
+      name <- name_marginal(group = group, time = time)
+      if (name %in% colnames(draws_difference)) {
+        out[[name]] <- draws_difference[[name]] / draws_sigma[[time]]
+      }
+    }
+  }
   out
 }
 

@@ -45,9 +45,9 @@ test_that("brm_marginal_summaries() on response", {
   )
   expect_equal(
     sort(unique(x$marginal)),
-    sort(c("response", "change", "difference"))
+    sort(c("response", "change", "difference", "effect"))
   )
-  for (marginal in c("response", "change", "difference")) {
+  for (marginal in c("response", "change", "difference", "effect")) {
     groups <- unique(data$group)
     times <- unique(data$time)
     if (marginal %in% c("change", "difference")) {
@@ -165,9 +165,9 @@ test_that("brm_marginal_summaries() on change", {
   )
   expect_equal(
     sort(unique(x$marginal)),
-    sort(c("response", "difference"))
+    sort(c("response", "difference", "effect"))
   )
-  for (marginal in c("response", "difference")) {
+  for (marginal in c("response", "difference", "effect")) {
     groups <- unique(data$group)
     times <- unique(data$time)
     if (identical(marginal, "difference")) {
