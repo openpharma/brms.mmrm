@@ -132,7 +132,7 @@ test_that("brm_marginal_draws() on change", {
     control = "group.1",
     baseline = "time.1"
   )
-  fields <- c("response", "difference")
+  fields <- c("response", "difference", "effect")
   columns_df <- expand.grid(
     group = sort(unique(data$group)),
     time = sort(unique(data$time)),
