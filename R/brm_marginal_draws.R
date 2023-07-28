@@ -15,7 +15,6 @@
 #'   In each tibble, there is 1 row per posterior sample and one column for
 #'   each type of marginal distribution (i.e. each combination of treatment
 #'   group and discrete time point.
-#'   Treatment and time are comma-delimited in the column names.
 #' @param model Fitted `brms` model object from [brm_model()].
 #' @param data Classed tibble with preprocessed data from [brm_data()].
 #' @param control Element of the `group` column in the data which indicates
