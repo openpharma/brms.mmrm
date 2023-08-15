@@ -1,6 +1,9 @@
 ---
-title: "usage"
-output: rmarkdown::html_vignette
+title: "Usage"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    number_sections: true
 vignette: >
   %\VignetteIndexEntry{usage}
   %\VignetteEngine{knitr::rmarkdown}
@@ -20,7 +23,7 @@ library(dplyr)
 
 A mixed model of repeated measures (MMRM) analyzes longitudinal clinical trial data. In a longitudinal dataset, there are multiple patients, and each patient has multiple observations at a common set of discrete points in time.
 
-## Data
+# Data
 
 To use the `brms.mmrm` package, begin with a longitudinal dataset with one row per patient observation and columns for the response variable, treatment group indicator, discrete time point indicator, patient ID variable, and optional baseline covariates such as age and region. If you do not have a real dataset of your own, you can simulate one from the package. The following dataset has the raw response variable and only the most essential factor variables. In general, the outcome variable can either be the raw response or change from baseline.
 
@@ -60,7 +63,7 @@ str(roles)
 
 Above, the levels of the `group` and `time` columns are automatically cleaned with `make.names()` to ensure alignment between the data and `brms` output. Whenever `brms.mmrm` calls `make.names()`, it always sets `unique = FALSE` and `allow_ = TRUE`.
 
-## Formula
+# Formula
 
 Next, choose a `brms` model formula for the fixed effect and variance parameters. The `brm_formula()` function from `brms.mmrm` makes this process easier. A cell means parameterization for this particular model can be expressed as follows. It specifies one fixed effect parameter for each combination of treatment group and time point, and it makes the specification of informative priors straightforward through the `prior` argument of `brm_model()`.
 
@@ -92,7 +95,15 @@ formula <- brm_formula(
 formula
 ```
 
-## Model
+# Priors
+
+Some analyses require informative priors, others require non-informative ones. Please use [`brms`](https://paul-buerkner.github.io/brms/) to construct a prior suitable for your analysis. The [`brms`](https://paul-buerkner.github.io/brms/) package has documentation on how its default priors are constructed and how to set your own priors. Once you have an R object that represents the joint prior distribution of your model, you can pass it to the `brm_model()` function described below. The `get_prior()` function shows the default priors for a given dataset and model formula.
+
+```{r, paged.print = FALSE}
+brms::get_prior(data = data, formula = formula)
+```
+
+# Model
 
 To run an MMRM, use the `brm_model()` function. This function calls `brms::brm()` behind the scenes, using the formula and prior you set in the `formula` and `prior` arguments.
 
@@ -110,7 +121,7 @@ The result is a `brms` model object.
 model
 ```
 
-## Marginals
+# Marginals
 
 Regardless of the choice of fixed effects formula, `brms.mmrm` performs inference on the marginal distributions at each treatment group and time point of the mean of the following quantities:
 
@@ -178,8 +189,7 @@ summaries_data <- brm_marginal_data(data = data, level = 0.95)
 summaries_data
 ```
 
-
-## Visualization
+# Visualization
 
 The `brm_plot_compare()` function compares means and intervals from many different models and data sources in the same plot. First, we need the marginals of the data.
 
