@@ -34,7 +34,7 @@ $$
 * $p$: positive integer index of a model coefficient parameter $\beta_p$.
 * $\theta_j \stackrel{\text{ind}}{\sim} f()$: assuming $j$ is a positive integer index that ranges from 1 to positive integer $J$, this notation declares that parameters $\theta_1, \ldots, \theta_J$ are independent and each follow the prior distribution with a common probability density function $f()$.
 * $\theta_j \stackrel{\text{ind}}{\sim} f_j()$: same as above, except each $\theta_j$ parameter follows its own separate prior distribution with probability density function $p_j()$. $p_i()$ and $f_j()$ may differ if $i \ne j$.
-* $\diag(\theta)$: diagonal matrix with the scalar elements of vector $\theta$ on the diagonal and off-diagonal elements equal to 0. The number of rows and number of columns in this matrix are both equal to the number of elements in vector $\theta$.
+* $\text{diag}(\theta)$: diagonal matrix with the scalar elements of vector $\theta$ on the diagonal and off-diagonal elements equal to 0. The number of rows and number of columns in this matrix are both equal to the number of elements in vector $\theta$.
 
 # Data
 
