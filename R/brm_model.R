@@ -57,12 +57,10 @@ brm_model <- function(
     inherits(formula, "brmsformula"),
     message = "formula arg must be a \"brmsformula\" object."
   )
-  if (!is.null(prior)) {
-    assert(
-      inherits(prior, "brmsprior"),
-      message = "prior arg must be a \"brmsprior\" object or NULL."
-    )
-  }
+  assert(
+    inherits(prior %|||% brms::prior("normal(0, 1)"), "brmsprior"),
+    message = "prior arg must be a \"brmsprior\" object or NULL."
+  )
   brms::brm(
     data = data,
     formula = formula,
