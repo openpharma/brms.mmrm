@@ -109,7 +109,7 @@ brm_marginal_draws <- function(
   emmeans <- emmeans::emmeans(
     object = model,
     specs = as.formula(sprintf("~%s:%s", group, time)),
-    weights = "proportional",
+    wt.nuis = "proportional",
     nuisance = nuisance
   )
   old_sep <- emmeans::get_emm_option("sep")

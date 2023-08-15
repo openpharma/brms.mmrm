@@ -62,7 +62,7 @@ The priors on the parameters depend on the `prior` argument of `brm_model()` and
 
 # Inference
 
-Inference in `brms.mmrm`, uses the estimated marginal posterior distribution of the mean response at each combination of study arm and time point. The [`emmeans`](https://github.com/rvlenth/emmeans) package [@lenth2016] derives these marginal posteriors while averaging over other covariates as nuisance parameters. During this averaging process, the levels of categorical nuisance parameters are weighted equally (according to the default `wt.nuis = "equal"` argument of `emmeans::ref_grid()`).
+Inference in `brms.mmrm`, uses the estimated marginal posterior distribution of the mean response at each combination of study arm and time point. The [`emmeans`](https://github.com/rvlenth/emmeans) package [@lenth2016] derives these marginal posteriors while averaging over other covariates as nuisance parameters. During this averaging process, the levels of categorical nuisance parameters are weighted proportionally to their frequencies in the dataset (with `wt.nuis = "proportional"` in `emmeans::ref_grid()`).
 
 The `brm_marginal_draws()` function, described in the usage vignette, derives posterior draws of the marginals using posterior draws of the model coefficients $\beta_p$. Then, downstream functions like `brm_marginal_probabilities()` compute numerical summaries of these marginal draws.
 
