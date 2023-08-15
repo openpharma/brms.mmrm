@@ -1,0 +1,69 @@
+---
+title: "Methods"
+bibliography: bibliography.bib
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    number_sections: true
+vignette: >
+  %\VignetteIndexEntry{methods}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+The `brms.mmrm` R package implements a mixed model of repeated measures (MMRM) [@mallinckrodt2008], a popular and flexible model to analyze continuous longitudinal outcomes. `brms.mmrm` focuses on marginal MMRMs for randomized controlled parallel studies with discrete time points, where each subject shares the same set of time points. Whereas the [`mmrm`](https://openpharma.github.io/mmrm/) package is frequentist, `brms.mmrm` fits models in Bayesian fashion using [`brms`](https://paul-buerkner.github.io/brms/) [@burkner2017].
+
+# Model
+
+The MMRM in `brms.mmrm` is mathematically expressed as follows. Subsequent sections define notation, data, parameters, and priors.
+
+$$
+\begin{aligned}
+&y_i \stackrel{\text{ind}}{\sim} \text{Multivariate-Normal} \left (\text{mean} = X_{i} \beta, \ \text{covariance} = \text{diag}(\sigma) \cdot \Lambda \cdot \text{diag}(\sigma) \right ) \\
+&\qquad \beta_p \stackrel{\text{ind}}{\sim} q_p() \\
+&\qquad \Lambda \sim r() \\
+&\qquad \tau = \log(\sigma) \\
+&\qquad \qquad \tau_t \stackrel{\text{ind}}{\sim} s_t()
+\end{aligned}
+$$
+
+# Notation
+
+* $i$: positive integer index of a subject or patient in the study.
+* $t$: positive integer index of a discrete time point in the study.
+* $p$: positive integer index of a model coefficient parameter $\beta_p$.
+* $\theta_j \stackrel{\text{ind}}{\sim} f()$: assuming $j$ is a positive integer index that ranges from 1 to positive integer $J$, this notation declares that parameters $\theta_1, \ldots, \theta_J$ are independent and each follow the prior distribution with a common probability density function $f()$.
+* $\theta_j \stackrel{\text{ind}}{\sim} f_j()$: same as above, except each $\theta_j$ parameter follows its own separate prior distribution with probability density function $p_j()$. $p_i()$ and $f_j()$ may differ if $i \ne j$.
+* $\diag(\theta)$: diagonal matrix with the scalar elements of vector $\theta$ on the diagonal and off-diagonal elements equal to 0. The number of rows and number of columns in this matrix are both equal to the number of elements in vector $\theta$.
+
+# Data
+
+* $y_i$: numeric vector of outcome observations for subject $i$. The number of elements in the vector equals the number of discrete time points in the study, and for the purposes of this model specification, they are sorted chronologically with the first element of $y_i$ observed first in the study. One or more elements of each $y_i$ may be missing due to dropout, discontinuation, etc. The likelihood of the model assumes $y_i$ is independent of $y_j$ for $i \ne j$.
+* $X_i$: a matrix containing the rows of the model matrix that correspond to subject $i$. The rows of $X_i$ correspond to the elements of the vector $y_i$ (equivalently, the discrete time points of the study), and the columns of $X_i$ correspond to the model coefficient parameters $\beta_p$. The composition of $X_i$ is determined by the covariates in the input dataset and the choice of model formula supplied by the user (via `brm_formula()`).
+
+# Parameters
+
+* $\beta$: vector of model coefficients. $\beta_p$ is scalar element $p$ of $\beta$.
+* $\Lambda$: matrix of pairwise correlations among each pair of time points within subjects. Outcomes measured from different subjects are assumed to be independent, and outcomes observed at different time points for the same subject are assumed to be correlated according to this matrix. $\Lambda$ is positive-definite and symmetric, and the number of rows and columns is equal to the number of discrete time points of the study. 
+* $\sigma$: vector of time-point-specific standard deviations of the residuals on the linear scale. $\sigma_t$ is scalar element $t$ of $\sigma$.
+* $\tau$: same as $\sigma$, but on the natural logarithmic scale. Each scalar element $\tau_t$ of $\tau$ is defined as the natural logarithm of $\sigma_t$.
+
+# Priors
+
+The priors on the parameters depend on the `prior` argument of `brm_model()` and related functions. If priors are not specified by the user, then the [`brms`](https://paul-buerkner.github.io/brms/) package sets defaults. You can view the default priors using the [`get_prior()`](http://paul-buerkner.github.io/brms/reference/get_prior.html) function in [`brms`](https://paul-buerkner.github.io/brms/). See the [`brms`](https://paul-buerkner.github.io/brms/) for information on how [`brms`](https://paul-buerkner.github.io/brms/) sets default priors.
+
+* $q_p()$: univariate prior on the model coefficient $\beta_p$.
+* $r()$: matrix prior on the within-subject residual correlation matrix parameter $\Lambda$.
+* $s_t()$: univariate prior on the natural-log-standard-deviation parameter $\tau_t$ of discrete time point $t$.
+
+# Sampling
+
+`brms.mmrm`, through [`brms`](https://paul-buerkner.github.io/brms/), fits the model to the data using the Markov chain Monte Carlo (MCMC) capabilities of [Stan](https://mc-stan.org/) [@stan2023]. Please read <https://mc-stan.org/users/documentation/> for more details on the methodology of [Stan](https://mc-stan.org/). The result of MCMC is a collection of draws from the full joint posterior distribution of the parameters given the data. Individual draws of scalar parameters such as $\beta_3$ are considered draws from the marginal posterior distribution of e.g. $\beta_3$ given the data.
+
+# Inference
+
+Inference in `brms.mmrm`, uses the estimated marginal posterior distribution of the mean response at each combination of study arm and time point. The [`emmeans`](https://github.com/rvlenth/emmeans) package [@lenth2016] derives these marginal posteriors while averaging over other covariates as nuisance parameters. During this averaging process, the levels of categorical nuisance parameters are weighted equally (according to the default `wt.nuis = "equal"` argument of `emmeans::ref_grid()`).
+
+The `brm_marginal_draws()` function, described in the usage vignette, derives posterior draws of the marginals using posterior draws of the model coefficients $\beta_p$. Then, downstream functions like `brm_marginal_probabilities()` compute numerical summaries of these marginal draws.
+
+# References
