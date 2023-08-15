@@ -1,8 +1,11 @@
 
 # brms.mmrm
 
+<!--
 [![CRAN](https://www.r-pkg.org/badges/version/brms.mmrm)](https://CRAN.R-project.org/package=brms.mmrm)
-[![status](https://www.repostatus.org/badges/latest/WIP.svg)](https://www.repostatus.org/#WIP)
+-->
+
+[![status](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
 [![check](https://github.com/RConsortium/brms.mmrm/workflows/check/badge.svg)](https://github.com/RConsortium/brms.mmrm/actions?query=workflow%3Acheck)
 [![cover](https://github.com/RConsortium/brms.mmrm/workflows/cover/badge.svg)](https://github.com/RConsortium/brms.mmrm/actions?query=workflow%3Acover)
 [![lint](https://github.com/RConsortium/brms.mmrm/workflows/lint/badge.svg)](https://github.com/RConsortium/brms.mmrm/actions?query=workflow%3Alint)
@@ -61,7 +64,7 @@ By contributing to this project, you agree to abide by its terms.
     To cite package 'brms.mmrm' in publications use:
 
       Landau WM, Kunzmann K, Sidi Y, Stock C (????). _brms.mmrm: Bayesian
-      MMRMs using 'brms'_. R package version 0.0.0.9001,
+      MMRMs using 'brms'_. R package version 0.0.0.9002,
       <https://github.com/RConsortium/brms.mmrm>.
 
     A BibTeX entry for LaTeX users is
@@ -69,7 +72,7 @@ By contributing to this project, you agree to abide by its terms.
       @Manual{,
         title = {brms.mmrm: Bayesian MMRMs using 'brms'},
         author = {William Michael Landau and Kevin Kunzmann and Yoni Sidi and Christian Stock},
-        note = {R package version 0.0.0.9001},
+        note = {R package version 0.0.0.9002},
         url = {https://github.com/RConsortium/brms.mmrm},
       }
 

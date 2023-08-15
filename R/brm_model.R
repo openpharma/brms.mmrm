@@ -10,7 +10,8 @@
 #'   of the model, including fixed effects, residual correlation,
 #'   and heterogeneity in the discrete-time-specific residual variance
 #'   components.
-#' @param prior Either `NULL` or a `"brmsprior"` object from `brms::prior()`.
+#' @param prior Either `NULL` for default priors
+#'   or a `"brmsprior"` object from `brms::prior()`.
 #' @param ... Arguments to `brms::brm()` other than `data`, `formula`,
 #'   and `prior`.
 #' @examples
@@ -48,7 +49,7 @@
 brm_model <- function(
   data,
   formula = brms.mmrm::brm_formula(),
-  prior = brms::prior("lkj_corr_cholesky(1)", class = "Lcortime"),
+  prior = NULL,
   ...
 ) {
   brm_data_validate(data = data)

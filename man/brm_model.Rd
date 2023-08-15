@@ -4,12 +4,7 @@
 \alias{brm_model}
 \title{Basic MMRM}
 \usage{
-brm_model(
-  data,
-  formula = brms.mmrm::brm_formula(),
-  prior = brms::prior("lkj_corr_cholesky(1)", class = "Lcortime"),
-  ...
-)
+brm_model(data, formula = brms.mmrm::brm_formula(), prior = NULL, ...)
 }
 \arguments{
 \item{data}{A tidy data frame with one row per patient per discrete
@@ -21,7 +16,8 @@ of the model, including fixed effects, residual correlation,
 and heterogeneity in the discrete-time-specific residual variance
 components.}
 
-\item{prior}{Either \code{NULL} or a \code{"brmsprior"} object from \code{brms::prior()}.}
+\item{prior}{Either \code{NULL} for default priors
+or a \code{"brmsprior"} object from \code{brms::prior()}.}
 
 \item{...}{Arguments to \code{brms::brm()} other than \code{data}, \code{formula},
 and \code{prior}.}
