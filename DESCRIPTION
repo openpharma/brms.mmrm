@@ -7,7 +7,7 @@ Description: The mixed model for repeated measures (MMRM) is a
   The 'brms.mmrm' R package leverages 'brms' to run MMRMs, and
   it supports a simplified interfaced to reduce difficulty
   and align with best practices for the life sciences.
-  References: Bürkner (2017) <10.18637/jss.v080.i01>,
+  References: Bürkner (2017) <doi:10.18637/jss.v080.i01>,
   Mallinckrodt (2008) <doi:10.1177/009286150804200402>.
 Version: 0.0.1
 License: MIT + file LICENSE

@@ -83,8 +83,7 @@ By contributing to this project, you agree to abide by its terms.
 
 - Paul-Christian Bürkner (2017). brms: An R Package for Bayesian
   Multilevel Models Using Stan. Journal of Statistical Software, 80(1),
-  1-28. <doi:10.18637/jss.v080.i01>
+  1-28.
 - Mallinckrodt, C.H., Lane, P.W., Schnell, D. et al. Recommendations for
   the Primary Analysis of Continuous Endpoints in Longitudinal Clinical
   Trials. Ther Innov Regul Sci 42, 303–319 (2008).
-  <doi:10.1177/009286150804200402>
