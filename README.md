@@ -6,9 +6,9 @@
 -->
 
 [![status](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
-[![check](https://github.com/RConsortium/brms.mmrm/workflows/check/badge.svg)](https://github.com/RConsortium/brms.mmrm/actions?query=workflow%3Acheck)
-[![cover](https://github.com/RConsortium/brms.mmrm/workflows/cover/badge.svg)](https://github.com/RConsortium/brms.mmrm/actions?query=workflow%3Acover)
-[![lint](https://github.com/RConsortium/brms.mmrm/workflows/lint/badge.svg)](https://github.com/RConsortium/brms.mmrm/actions?query=workflow%3Alint)
+[![check](https://github.com/openpharma/brms.mmrm/workflows/check/badge.svg)](https://github.com/openpharma/brms.mmrm/actions?query=workflow%3Acheck)
+[![cover](https://github.com/openpharma/brms.mmrm/workflows/cover/badge.svg)](https://github.com/openpharma/brms.mmrm/actions?query=workflow%3Acover)
+[![lint](https://github.com/openpharma/brms.mmrm/workflows/lint/badge.svg)](https://github.com/openpharma/brms.mmrm/actions?query=workflow%3Alint)
 
 The [mixed model for repeated measures
 (MMRM)](https://link.springer.com/article/10.1177/009286150804200402) is
@@ -23,15 +23,15 @@ with best practices for the life sciences.
 
 ## Installation
 
-| Type        | Source      | Command                                                                       |
-|-------------|-------------|-------------------------------------------------------------------------------|
-| Release     | CRAN        | `install.packages("brms.mmrm")`                                               |
-| Development | GitHub      | `remotes::install_github("RConsortium/brms.mmrm")`                            |
-| Development | RConsortium | `install.packages("brms.mmrm", repos = "https://RConsortium.r-universe.dev")` |
+| Type        | Source     | Command                                                                      |
+|-------------|------------|------------------------------------------------------------------------------|
+| Release     | CRAN       | `install.packages("brms.mmrm")`                                              |
+| Development | GitHub     | `remotes::install_github("openpharma/brms.mmrm")`                            |
+| Development | openpharma | `install.packages("brms.mmrm", repos = "https://openpharma.r-universe.dev")` |
 
 ## Documentation
 
-The documentation website at <https://RConsortium.github.io/brms.mmrm>
+The documentation website at <https://openpharma.github.io/brms.mmrm>
 has a complete function reference and tutorial vignettes.
 
 ## Disclaimer
@@ -45,13 +45,13 @@ This package is still in its early development phase, which means:
 ## Help
 
 Please report questions and problems as [GitHub
-discussions](https://github.com/RConsortium/brms.mmrm) and [GitHub
-issues](https://github.com/RConsortium/brms.mmrm), respectively.
+discussions](https://github.com/openpharma/brms.mmrm) and [GitHub
+issues](https://github.com/openpharma/brms.mmrm), respectively.
 
 ## Thanks
 
 Thanks to the [ASA Biopharmaceutical Section Software Engineering
-Working Group](https://rconsortium.github.io/asa-biop-swe-wg/) and [R
+Working Group](https://openpharma.github.io/asa-biop-swe-wg/) and [R
 Consortium](https://www.r-consortium.org/) for providing professional
 networks to recruit skilled statisticians and developers.
 
@@ -68,7 +68,7 @@ By contributing to this project, you agree to abide by its terms.
 
       Landau WM, Kunzmann K, Sidi Y, Stock C (????). _brms.mmrm: Bayesian
       MMRMs using 'brms'_. R package version 0.0.0.9002,
-      <https://github.com/RConsortium/brms.mmrm>.
+      <https://github.com/openpharma/brms.mmrm>.
 
     A BibTeX entry for LaTeX users is
 
@@ -76,7 +76,7 @@ By contributing to this project, you agree to abide by its terms.
         title = {brms.mmrm: Bayesian MMRMs using 'brms'},
         author = {William Michael Landau and Kevin Kunzmann and Yoni Sidi and Christian Stock},
         note = {R package version 0.0.0.9002},
-        url = {https://github.com/RConsortium/brms.mmrm},
+        url = {https://github.com/openpharma/brms.mmrm},
       }
 
 ## References
