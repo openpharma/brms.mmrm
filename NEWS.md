@@ -1,3 +1,3 @@
-# brms.mmrm 0.0.0.9002 (development)
+# brms.mmrm 0.0.1
 
 * First version.
