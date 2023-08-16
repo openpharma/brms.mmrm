@@ -51,7 +51,7 @@ issues](https://github.com/openpharma/brms.mmrm), respectively.
 ## Thanks
 
 Thanks to the [ASA Biopharmaceutical Section Software Engineering
-Working Group](https://openpharma.github.io/asa-biop-swe-wg/) and [R
+Working Group](https://rconsortium.github.io/asa-biop-swe-wg/) and [R
 Consortium](https://www.r-consortium.org/) for providing professional
 networks to recruit skilled statisticians and developers.
 
