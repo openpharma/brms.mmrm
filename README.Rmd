@@ -33,7 +33,7 @@ Development | openpharma | `install.packages("brms.mmrm", repos = "https://openp
 
 ## Documentation
 
-The documentation website at <https://openpharma.github.io/brms.mmrm> has a complete function reference and tutorial vignettes.
+The documentation website at <https://openpharma.github.io/brms.mmrm/> has a complete function reference and tutorial vignettes.
 
 ## Disclaimer
 

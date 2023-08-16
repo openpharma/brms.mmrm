@@ -11,7 +11,9 @@ Description: The mixed model for repeated measures (MMRM) is a
   Mallinckrodt (2008) <doi:10.1177/009286150804200402>.
 Version: 0.0.1
 License: MIT + file LICENSE
-URL: https://github.com/openpharma/brms.mmrm
+URL:
+  https://openpharma.github.io/brms.mmrm/,
+  https://github.com/openpharma/brms.mmrm
 BugReports: https://github.com/openpharma/brms.mmrm/issues
 Authors@R: c(
   person(

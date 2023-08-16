@@ -31,7 +31,7 @@ with best practices for the life sciences.
 
 ## Documentation
 
-The documentation website at <https://openpharma.github.io/brms.mmrm>
+The documentation website at <https://openpharma.github.io/brms.mmrm/>
 has a complete function reference and tutorial vignettes.
 
 ## Disclaimer
