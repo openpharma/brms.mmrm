@@ -7,11 +7,11 @@
 \description{
 The mixed model for repeated measures (MMRM) is a
 popular model for longitudinal clinical trial data with
-continuous endpoints, and \code{brms} is powerful and versatile
+continuous endpoints, and \code{brms} a is powerful and versatile
 package for fitting Bayesian regression models.
 The \code{brms.mmrm} R package leverages \code{brms} to run MMRMs, and
 it supports a simplified interfaced to reduce difficulty
-and align with best practices for the life sciences.
+and align with the best practices of the life sciences.
 }
 \references{
 \itemize{

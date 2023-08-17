@@ -3,11 +3,11 @@
 #' @name brms.mmrm-package
 #' @description The mixed model for repeated measures (MMRM) is a
 #'   popular model for longitudinal clinical trial data with
-#'   continuous endpoints, and `brms` is powerful and versatile
+#'   continuous endpoints, and `brms` a is powerful and versatile
 #'   package for fitting Bayesian regression models.
 #'   The `brms.mmrm` R package leverages `brms` to run MMRMs, and
 #'   it supports a simplified interfaced to reduce difficulty
-#'   and align with best practices for the life sciences.
+#'   and align with the best practices of the life sciences.
 #' @references
 #'   * Paul-Christian Bürkner (2017). brms: An R Package for Bayesian
 #'     Multilevel Models Using Stan.

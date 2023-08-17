@@ -2,14 +2,14 @@ Package: brms.mmrm
 Title: Bayesian MMRMs using 'brms'
 Description: The mixed model for repeated measures (MMRM) is a
   popular model for longitudinal clinical trial data with
-  continuous endpoints, and 'brms' is powerful and versatile
+  continuous endpoints, and 'brms' is a powerful and versatile
   package for fitting Bayesian regression models.
   The 'brms.mmrm' R package leverages 'brms' to run MMRMs, and
   it supports a simplified interfaced to reduce difficulty
-  and align with best practices for the life sciences.
+  and align with the best practices of the life sciences.
   References: Bürkner (2017) <doi:10.18637/jss.v080.i01>,
   Mallinckrodt (2008) <doi:10.1177/009286150804200402>.
-Version: 0.0.1.9000
+Version: 0.0.2
 License: MIT + file LICENSE
 URL:
   https://openpharma.github.io/brms.mmrm/,
