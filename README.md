@@ -1,10 +1,7 @@
 
 # brms.mmrm
 
-<!--
 [![CRAN](https://www.r-pkg.org/badges/version/brms.mmrm)](https://CRAN.R-project.org/package=brms.mmrm)
--->
-
 [![status](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
 [![check](https://github.com/openpharma/brms.mmrm/workflows/check/badge.svg)](https://github.com/openpharma/brms.mmrm/actions?query=workflow%3Acheck)
 [![cover](https://github.com/openpharma/brms.mmrm/workflows/cover/badge.svg)](https://github.com/openpharma/brms.mmrm/actions?query=workflow%3Acover)
