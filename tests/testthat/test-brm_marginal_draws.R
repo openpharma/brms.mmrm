@@ -2,7 +2,7 @@ test_that("brm_marginal_draws() on response", {
   skip_on_cran()
   set.seed(0L)
   data <- brm_data(
-    data = brm_simulate()$data,
+    data = brm_simulate_simple()$data,
     outcome = "response",
     role = "response",
     group = "group",
@@ -101,7 +101,7 @@ test_that("brm_marginal_draws() on change", {
   skip_on_cran()
   set.seed(0L)
   data <- brm_data(
-    data = tibble::as_tibble(brm_simulate()$data),
+    data = tibble::as_tibble(brm_simulate_simple()$data),
     outcome = "response",
     role = "change",
     group = "group",

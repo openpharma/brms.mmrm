@@ -6,7 +6,7 @@ reference:
 - title: Data
   contents:
   - '`brm_data`'
-  - '`brm_simulate`'
+  - '`brm_simulate_simple`'
 - title: Models
   contents:
   - '`brm_formula`'

@@ -1,15 +1,12 @@
-test_that("brm_simulate() data", {
+test_that("brm_simulate_simple() data", {
   set.seed(0L)
-  expect_warning(
-    out <- brm_simulate(
-      n_group = 2L,
-      n_patient = 2L,
-      n_time = 3L,
-      hyper_beta = 1,
-      hyper_sigma = 1,
-      hyper_correlation = 1
-    ),
-    class = "brm_deprecate"
+  out <- brm_simulate_simple(
+    n_group = 2L,
+    n_patient = 2L,
+    n_time = 3L,
+    hyper_beta = 1,
+    hyper_tau = 0.1,
+    hyper_lambda = 1
   )
   data <- out$data
   expect_equal(dim(data), c(12L, 4L))
@@ -21,18 +18,15 @@ test_that("brm_simulate() data", {
   expect_equal(data$time, rep(levels_time, times = 4L))
 })
 
-test_that("brm_simulate() model_matrix", {
+test_that("brm_simulate_simple() model_matrix", {
   set.seed(0L)
-  expect_warning(
-    out <- brm_simulate(
-      n_group = 2L,
-      n_patient = 2L,
-      n_time = 3L,
-      hyper_beta = 1,
-      hyper_sigma = 1,
-      hyper_correlation = 1
-    ),
-    class = "brm_deprecate"
+  out <- brm_simulate_simple(
+    n_group = 2L,
+    n_patient = 2L,
+    n_time = 3L,
+    hyper_beta = 1,
+    hyper_tau = 0.1,
+    hyper_lambda = 1
   )
   matrix <- out$model_matrix
   expect_equal(dim(matrix), c(12L, 4L))
@@ -50,30 +44,34 @@ test_that("brm_simulate() model_matrix", {
   )
 })
 
-test_that("brm_simulate() parameters", {
+test_that("brm_simulate_simple() parameters", {
   set.seed(0L)
   set.seed(0L)
-  expect_warning(
-    out <- brm_simulate(
-      n_group = 2L,
-      n_patient = 2L,
-      n_time = 3L,
-      hyper_beta = 1,
-      hyper_sigma = 1,
-      hyper_correlation = 1
-    ),
-    class = "brm_deprecate"
+  out <- brm_simulate_simple(
+    n_group = 2L,
+    n_patient = 2L,
+    n_time = 3L,
+    hyper_beta = 1,
+    hyper_tau = 0.1,
+    hyper_lambda = 1
   )
   params <- out$parameters
   expect_equal(
     sort(names(params)),
-    sort(c("beta", "sigma", "covariance"))
+    sort(c("beta", "sigma", "tau", "lambda", "covariance"))
   )
   expect_equal(length(params$beta), 4L)
   expect_null(dim(params$beta))
   expect_equal(length(params$sigma), 3L)
+  expect_equal(length(params$tau), 3L)
   expect_null(dim(params$sigma))
+  expect_equal(params$tau, log(params$sigma))
+  expect_equal(dim(params$lambda), c(3L, 3L))
   expect_equal(dim(params$covariance), c(3L, 3L))
+  expect_equal(
+    diag(params$sigma) %*% params$lambda %*% diag(params$sigma),
+    params$covariance
+  )
   for (value in params) {
     expect_true(all(is.finite(value)))
   }

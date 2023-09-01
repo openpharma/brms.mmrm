@@ -56,7 +56,7 @@ this string. To set a custom string yourself, use
 if (identical(Sys.getenv("BRM_EXAMPLES", unset = ""), "true")) {
 set.seed(0L)
 data <- brm_data(
-  data = brm_simulate()$data,
+  data = brm_simulate_simple()$data,
   outcome = "response",
   role = "response",
   group = "group",

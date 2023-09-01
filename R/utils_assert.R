@@ -75,10 +75,14 @@ assert_pos <- function(value, message = NULL) {
   assert(value, . > 0, message = message)
 }
 
-brm_error <- function(message) {
-  rlang::abort(message = message, class = "brm_error", .frame = emptyenv())
+brm_error <- function(...) {
+  rlang::abort(message = paste0(...), class = "brm_error", .frame = emptyenv())
 }
 
-brm_warn <- function(message) {
-  rlang::warn(message = message, class = "brm_warn")
+brm_warn <- function(...) {
+  rlang::warn(message = paste0(...), class = "brm_warn")
+}
+
+brm_deprecate <- function(...) {
+  rlang::warn(message = paste0(...), class = c("brm_deprecate", "brm_warn"))
 }

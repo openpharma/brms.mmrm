@@ -75,7 +75,7 @@ this string. To set a custom string yourself, use
 
 \examples{
 set.seed(0)
-data <- brm_simulate()$data
+data <- brm_simulate_simple()$data
 colnames(data) <- paste0("col_", colnames(data))
 data
 brm_data(

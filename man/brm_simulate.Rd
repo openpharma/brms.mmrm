@@ -2,7 +2,7 @@
 % Please edit documentation in R/brm_simulate.R
 \name{brm_simulate}
 \alias{brm_simulate}
-\title{Simulate an MMRM.}
+\title{Deprecated: simulate an MMRM.}
 \usage{
 brm_simulate(
   n_group = 2L,
@@ -44,20 +44,12 @@ that represent levels of the covariates.
 }
 }
 \description{
-Simulate a dataset from a basic MMRM.
-}
-\details{
-First, a sample of parameters is drawn from the prior
-distribution. Then, a set of data is drawn from the data model
-conditional on the sample of parameters.
-In this initial implementation, the simulation is simple. The only
-covariates are treatment group and discrete time,
-there are no dropouts, and the
-parameterization is not the same as that of \code{brms}.
+Deprecated on 2023-09-01 (version 0.0.2.9001). Use
+\code{\link[=brm_simulate_simple]{brm_simulate_simple()}} instead.
 }
 \examples{
 set.seed(0L)
-simulation <- brm_simulate()
+simulation <- suppressWarnings(brm_simulate())
 simulation$data
 }
-\concept{simulation}
+\keyword{internal}

@@ -40,7 +40,7 @@ Marginal summaries of the data.
 \examples{
 set.seed(0L)
 data <- brm_data(
-  data = brm_simulate()$data,
+  data = brm_simulate_simple()$data,
   outcome = "response",
   role = "response",
   group = "group",
