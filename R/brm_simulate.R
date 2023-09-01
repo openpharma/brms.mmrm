@@ -1,14 +1,8 @@
-#' @title Simulate an MMRM.
+#' @title Deprecated: simulate an MMRM.
 #' @export
-#' @family simulation
-#' @description Simulate a dataset from a basic MMRM.
-#' @details First, a sample of parameters is drawn from the prior
-#'   distribution. Then, a set of data is drawn from the data model
-#'   conditional on the sample of parameters.
-#'   In this initial implementation, the simulation is simple. The only
-#'   covariates are treatment group and discrete time,
-#'   there are no dropouts, and the
-#'   parameterization is not the same as that of `brms`.
+#' @keywords internal
+#' @description Deprecated on 2023-09-01 (version 0.0.2.9001). Use
+#'   [brm_simulate_simple()] instead.
 #' @return A list of three objects:
 #'   * `data`: A tidy dataset with one row per patient per discrete
 #'     time point and columns for the response and covariates.
@@ -30,7 +24,7 @@
 #'   measures within each patient.
 #' @examples
 #' set.seed(0L)
-#' simulation <- brm_simulate()
+#' simulation <- suppressWarnings(brm_simulate())
 #' simulation$data
 brm_simulate <- function(
   n_group = 2L,
@@ -40,6 +34,10 @@ brm_simulate <- function(
   hyper_sigma = 1,
   hyper_correlation = 1
 ) {
+  brm_deprecate(
+    "brm_simulate() was deprecated in {brms.mmrm} on 2023-09-01 ",
+    "(version 0.0.2.9001). Use brm_simulate_simple() instead."
+  )
   assert_pos(n_group, message = "n_group must be 1 positive number")
   assert_pos(n_patient, message = "n_patient must be 1 positive number")
   assert_pos(n_time, message = "n_time must be 1 positive number")

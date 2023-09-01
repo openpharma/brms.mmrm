@@ -1,7 +1,7 @@
 test_that("brm_marginal_data()", {
   set.seed(0L)
   data <- brm_data(
-    data = tibble::as_tibble(brm_simulate()$data),
+    data = tibble::as_tibble(brm_simulate_simple()$data),
     outcome = "response",
     role = "response",
     group = "group",

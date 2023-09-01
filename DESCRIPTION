@@ -9,7 +9,7 @@ Description: The mixed model for repeated measures (MMRM) is a
   and align with the best practices of the life sciences.
   References: Bürkner (2017) <doi:10.18637/jss.v080.i01>,
   Mallinckrodt (2008) <doi:10.1177/009286150804200402>.
-Version: 0.0.2.9000
+Version: 0.0.2.9001
 License: MIT + file LICENSE
 URL:
   https://openpharma.github.io/brms.mmrm/,

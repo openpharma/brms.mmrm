@@ -5,7 +5,7 @@ output:
     toc: true
     number_sections: true
 vignette: >
-  %\VignetteIndexEntry{usage}
+  %\VignetteIndexEntry{Usage}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -32,7 +32,7 @@ To use the `brms.mmrm` package, begin with a longitudinal dataset with one row p
 library(brms.mmrm)
 library(dplyr)
 set.seed(0L)
-raw_data <- brm_simulate(
+raw_data <- brm_simulate_simple(
   n_group = 3,
   n_patient = 100,
   n_time = 4

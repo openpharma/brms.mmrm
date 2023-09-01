@@ -67,3 +67,7 @@ test_that("brm_error()", {
 test_that("brm_warn()", {
   expect_warning(brm_warn("message"), class = "brm_warn")
 })
+
+test_that("brm_deprecate()", {
+  expect_warning(brm_deprecate("message"), class = "brm_deprecate")
+})

@@ -1,6 +1,6 @@
 test_that("brm_data() good", {
   set.seed(0)
-  sim <- brm_simulate()
+  sim <- brm_simulate_simple()
   data <- tibble::as_tibble(sim$data)
   data$group <- as.factor(data$group)
   data$factor1 <- data$patient
@@ -73,7 +73,7 @@ test_that("brm_data() good", {
 
 test_that("brm_data() bad role", {
   set.seed(0)
-  sim <- brm_simulate()
+  sim <- brm_simulate_simple()
   data <- tibble::as_tibble(sim$data)
   data$factor1 <- data$patient
   data$factor2 <- data$patient
@@ -97,7 +97,7 @@ test_that("brm_data() bad role", {
 
 test_that("brm_data() bad group", {
   set.seed(0)
-  sim <- brm_simulate()
+  sim <- brm_simulate_simple()
   data <- tibble::as_tibble(sim$data)
   data$factor1 <- data$patient
   data$factor2 <- data$patient
@@ -121,7 +121,7 @@ test_that("brm_data() bad group", {
 
 test_that("brm_data() levels ", {
   set.seed(0)
-  sim <- brm_simulate()
+  sim <- brm_simulate_simple()
   data <- tibble::as_tibble(sim$data)
   data$factor1 <- data$patient
   data$factor2 <- data$patient
