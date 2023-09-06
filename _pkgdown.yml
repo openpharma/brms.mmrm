@@ -9,6 +9,9 @@ reference:
   - '`brm_data_outline`'
 - title: Simulation
   contents:
+  - '`brm_simulate_dropout`'
+  - '`brm_simulate_lapse`'
+  - '`brm_simulate_start`'
   - '`brm_simulate_simple`'
   - '`brm_simulate_prior`'
 - title: Models

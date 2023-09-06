@@ -37,7 +37,7 @@ among discrete time points.}
 A list of three objects:
 \itemize{
 \item \code{data}: A tidy dataset with one row per patient per discrete
-time point and columns for the response and covariates.
+time point and columns for the outcome and ID variables.
 \item \code{model_matrix}: A matrix with one row per row of \code{data} and columns
 that represent levels of the covariates.
 \item \code{parameters}: A named list of parameter draws sampled from the prior:
@@ -80,6 +80,8 @@ simulation$data
 }
 \seealso{
 Other simulation: 
-\code{\link{brm_simulate_outline}()}
+\code{\link{brm_simulate_dropout}()},
+\code{\link{brm_simulate_lapse}()},
+\code{\link{brm_simulate_start}()}
 }
 \concept{simulation}

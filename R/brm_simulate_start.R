@@ -1,7 +1,7 @@
-#' @title Simulation outline
+#' @title Start a simulated dataset
 #' @export
 #' @family simulation
-#' @description Create an outline of a simulated dataset.
+#' @description Begin creating a simulated dataset.
 #' @return A data frame from [brm_data()] with attributes to define roles
 #'   for various columns in the dataset. The data frame has one row per
 #'   patient per time point and the following columns:
@@ -14,15 +14,8 @@
 #' @param n_time Positive integer of length 1, number of discrete
 #'   time points (e.g. scheduled study visits) per patient.
 #' @examples
-#' brm_simulate_outline()
-brm_simulate_outline <- function(
-  n_group = 2L,
-  n_patient = 100L,
-  n_time = 4L,
-  rate_dropout = 0.1,
-  rate_lapse = 0.025,
-  ...
-) {
+#' brm_simulate_start()
+brm_simulate_start <- function(n_group = 2L, n_patient = 100L, n_time = 4L) {
   assert_pos(n_group, message = "n_group must be 1 positive number")
   assert_pos(n_patient, message = "n_patient must be 1 positive number")
   assert_pos(n_time, message = "n_time must be 1 positive number")
