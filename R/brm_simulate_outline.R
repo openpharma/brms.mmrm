@@ -93,7 +93,7 @@ brm_simulate_dropout <- function(data, rate) {
 
 brm_dropout_patient <- function(rate, n_time) {
   if_any(
-    as.logical(rbinom(n = 1L, size = 1L, prob = rate)),
+    as.logical(stats::rbinom(n = 1L, size = 1L, prob = rate)),
     seq_len(n_time) >= sample.int(n = n_time, size = 1L),
     rep(FALSE, n_time)
   )
