@@ -47,7 +47,7 @@ test_that("brm_simulate_outline() miss_lapse with baseline", {
     rate_lapse = 0.57
   )
   expect_false(any(data$time == "time 1" & data$miss_lapse))
-  data <- filter(data, time != "time 1")
+  data <- data[data$time != "time 1", ]
   expect_equal(mean(data$miss_lapse), 0.57, tolerance = 0.01)
   for (level in unique(data$group)) {
     out <- dplyr::filter(data, group == level)
@@ -67,7 +67,7 @@ test_that("brm_simulate_outline() miss_dropout at final time point", {
       rate_dropout = 0.37,
       rate_lapse = 0.57
     )
-    data <- filter(data, time == "time 4")
+    data <- data[data$time == "time 4", ]
     expect_equal(mean(data$miss_dropout), 0.37, tolerance = 0.01)
     for (level in unique(data$group)) {
       out <- dplyr::filter(data, group == level)
@@ -103,7 +103,7 @@ test_that("brm_simulate_outline() correct dropout times", {
   skip_on_cran()
   for (baseline in c(TRUE, FALSE)) {
     set.seed(0L)
-    library(dplyr)
+    suppressPackageStartupMessages(library(dplyr))
     data <- brm_simulate_outline(
       n_group = 2L,
       n_patient = 10000L,
@@ -113,7 +113,7 @@ test_that("brm_simulate_outline() correct dropout times", {
       rate_lapse = 0.57
     )
     if (baseline) {
-      data <- filter(data, time != "time 1")
+      data <- data[data$time != "time 1", ]
     }
     data <- data %>%
       group_by(patient) %>%
