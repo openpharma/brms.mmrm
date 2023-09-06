@@ -80,8 +80,6 @@ simulation$data
 }
 \seealso{
 Other simulation: 
-\code{\link{brm_simulate_dropout}()},
-\code{\link{brm_simulate_lapse}()},
-\code{\link{brm_simulate_start}()}
+\code{\link{brm_simulate_outline}()}
 }
 \concept{simulation}
