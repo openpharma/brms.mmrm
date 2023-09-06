@@ -6,6 +6,8 @@
 #' @details Initialize the simulation with [brm_simulate_start()], then
 #'   use [brm_simulate_lapse()] to simulate a simple missingness pattern that
 #'   introduces independent uniform sporadic lapses in data collection.
+#'   Can be used in conjunction with other simulation functions which accept
+#'   a `data` argument, such as [brm_simulate_lapse()].
 #'   The earliest time point is treated as baseline and has no missing values.
 #' @return The `tibble` from the `data` argument, but with a new or updated
 #'   column called `missing` which reflects the missingness pattern

@@ -26,6 +26,8 @@ Simulate lapsed outcomes in a dataset initialized with
 Initialize the simulation with \code{\link[=brm_simulate_start]{brm_simulate_start()}}, then
 use \code{\link[=brm_simulate_lapse]{brm_simulate_lapse()}} to simulate a simple missingness pattern that
 introduces independent uniform sporadic lapses in data collection.
+Can be used in conjunction with other simulation functions which accept
+a \code{data} argument, such as \code{\link[=brm_simulate_lapse]{brm_simulate_lapse()}}.
 The earliest time point is treated as baseline and has no missing values.
 }
 \examples{

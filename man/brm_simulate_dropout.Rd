@@ -25,8 +25,12 @@ Simulate dropouts in a dataset initialized with
 \details{
 Initialize the simulation with \code{\link[=brm_simulate_start]{brm_simulate_start()}}, then
 use \code{\link[=brm_simulate_dropout]{brm_simulate_dropout()}} to simulate a simple missingness pattern that
-introduces a simple dropout pattern in the data. A dropout is an
-intercurrent event when data collection for a patient stops permanently,
+introduces a simple dropout pattern in the data.
+Can be used in conjunction with other simulation functions which accept
+a \code{data} argument, such as \code{\link[=brm_simulate_lapse]{brm_simulate_lapse()}}.
+
+A dropout is an intercurrent event when data
+collection for a patient stops permanently,
 causing the outcomes for that patient to be missing during and after
 the dropout occurred. The first time point is assumed to be baseline,
 so dropout is there. Dropouts are equally likely to occur at each of
