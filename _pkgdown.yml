@@ -6,7 +6,6 @@ reference:
 - title: Data
   contents:
   - '`brm_data`'
-  - '`brm_data_outline`'
 - title: Simulation
   contents:
   - '`brm_simulate_outline`'
