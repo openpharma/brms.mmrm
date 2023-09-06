@@ -56,19 +56,16 @@ brm_simulate_outline <- function(
   assert_pos(n_time, message = "n_time must be 1 positive number")
   out <- brm_simulate_grid(n_group, n_patient, n_time)
   out <- brm_simulate_miss(out, n_time, baseline, rate_dropout, rate_lapse)
+  out <- brm_simulate_levels(out)
   out
 }
 
 brm_simulate_grid <- function(n_group, n_patient, n_time) {
   patients <- tibble::tibble(
-    group = paste("group", rep(seq_len(n_group), each = n_patient)),
-    patient = paste("patient", seq_len(n_group * n_patient))
+    group = rep(seq_len(n_group), each = n_patient),
+    patient = seq_len(n_group * n_patient)
   )
-  time <- tibble::tibble(
-    time = paste("time", seq_len(n_time)),
-    time_integer = seq_len(n_time)
-  )
-  tidyr::expand_grid(patients, time)
+  tidyr::expand_grid(patients, time = seq_len(n_time))
 }
 
 brm_simulate_miss <- function(
@@ -79,21 +76,23 @@ brm_simulate_miss <- function(
   rate_lapse
 ) {
   if (baseline) {
-    rows_baseline <- dplyr::filter(out, time_integer == 1L)
-    out <- dplyr::filter(out, time_integer > 1L)
+    rows_baseline <- dplyr::filter(out, time == 1L)
+    rows_baseline$miss_lapse <- FALSE
+    rows_baseline$miss_dropout <- FALSE
+    out <- dplyr::filter(out, time > 1L)
   }
-  out <- dplyr::arrange(out, group, patient, time_integer)
+  out <- dplyr::arrange(out, group, patient, time)
   out <- dplyr::group_by(out, patient)
   out <- dplyr::mutate(
     .data = out,
-    miss_dropout = brm_simulate_dropout(rate_dropout, n_time)
+    miss_dropout = brm_simulate_dropout(rate_dropout, n_time - baseline)
   )
   out <- dplyr::ungroup(out)
   miss_lapse <- stats::rbinom(n = nrow(out), size = 1L, prob = rate_lapse)
   out$miss_lapse <- as.logical(miss_lapse)
   if (baseline) {
     out <- dplyr::bind_rows(rows_baseline, out)
-    out <- dplyr::arrange(out, group, patient, time_integer)
+    out <- dplyr::arrange(out, group, patient, time)
   }
   out
 }
@@ -104,4 +103,11 @@ brm_simulate_dropout <- function(rate_dropout, n_time) {
     seq_len(n_time) >= sample.int(n = n_time, size = 1L),
     rep(FALSE, n_time)
   )
+}
+
+brm_simulate_levels <- function(out) {
+  for (field in c("group", "patient", "time")) {
+    out[[field]] <- paste(field, out[[field]])
+  }
+  out
 }

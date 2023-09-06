@@ -78,4 +78,8 @@ set.seed(0L)
 simulation <- brm_simulate_simple()
 simulation$data
 }
+\seealso{
+Other simulation: 
+\code{\link{brm_simulate_outline}()}
+}
 \concept{simulation}
