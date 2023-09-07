@@ -23,7 +23,7 @@ test_that("brm_simulate_outline() compounded missingness", {
     rate_dropout = 0.5,
     rate_lapse = 0.5
   )
-  data <- data[data$time != "time 1", ]
+  data <- data[data$time != "time_1", ]
   expect_true(mean(data$missing) > 0.65)
 })
 
@@ -37,8 +37,8 @@ test_that("brm_simulate_outline() lapsed missing", {
     rate_dropout = 0,
     rate_lapse = 0.57
   )
-  expect_false(any(data$time == "time 1" & data$missing))
-  data <- data[data$time != "time 1", ]
+  expect_false(any(data$time == "time_1" & data$missing))
+  data <- data[data$time != "time_1", ]
   expect_equal(mean(data$missing), 0.57, tolerance = 0.01)
   for (level in unique(data$group)) {
     out <- dplyr::filter(data, group == level)
@@ -56,7 +56,7 @@ test_that("brm_simulate_outline() dropout at final time point", {
     rate_dropout = 0.37,
     rate_lapse = 0
   )
-  data <- data[data$time == "time 4", ]
+  data <- data[data$time == "time_4", ]
   expect_equal(mean(data$missing), 0.37, tolerance = 0.01)
   for (level in unique(data$group)) {
     out <- dplyr::filter(data, group == level)
@@ -95,7 +95,7 @@ test_that("brm_simulate_outline() correct dropout times", {
     rate_dropout = 1,
     rate_lapse = 0
   )
-  data <- data[data$time != "time 1", ]
+  data <- data[data$time != "time_1", ]
   data <- data %>%
     group_by(patient) %>%
     summarize(drop = min(which(missing)), .groups = "drop")

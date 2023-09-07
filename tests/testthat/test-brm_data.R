@@ -2,6 +2,9 @@ test_that("brm_data() response", {
   set.seed(0)
   sim <- brm_simulate_simple()
   data <- tibble::as_tibble(sim$data)
+  for (field in c("group", "time", "patient")) {
+    data[[field]] <- gsub("_", " ", data[[field]])
+  }
   data$group <- as.factor(data$group)
   data$factor1 <- data$patient
   data$factor2 <- data$patient
@@ -83,6 +86,9 @@ test_that("brm_data() change", {
   set.seed(0)
   sim <- brm_simulate_simple()
   data <- tibble::as_tibble(sim$data)
+  for (field in c("group", "time", "patient")) {
+    data[[field]] <- gsub("_", " ", data[[field]])
+  }
   data$group <- as.factor(data$group)
   data$factor1 <- data$patient
   data$factor2 <- data$patient
