@@ -4,25 +4,16 @@
 \alias{brm_marginal_draws}
 \title{MCMC draws from the marginal posterior of an MMRM}
 \usage{
-brm_marginal_draws(model, data, control = "Placebo", baseline = "Baseline")
+brm_marginal_draws(model, data, control = NULL, baseline = NULL)
 }
 \arguments{
 \item{model}{Fitted \code{brms} model object from \code{\link[=brm_model]{brm_model()}}.}
 
 \item{data}{Classed tibble with preprocessed data from \code{\link[=brm_data]{brm_data()}}.}
 
-\item{control}{Element of the \code{group} column in the data which indicates
-the control group for the purposes of calculating treatment differences.
-Elements in \code{data[[group]]} are already pre-processed by \code{\link[=brm_data]{brm_data()}},
-so \code{control} is automatically sanitized accordingly using
-\code{make.names(control, unique = FALSE, allow_ = TRUE)}.}
+\item{control}{Deprecated. Set the control group level in \code{\link[=brm_data]{brm_data()}}.}
 
-\item{baseline}{Element of the \code{time} column in the data
-which indicates the baseline time for the purposes of calculating
-change from baseline.
-Elements in \code{data[[group]]} are already pre-processed by \code{\link[=brm_data]{brm_data()}},
-so \code{control} is automatically sanitized accordingly using
-\code{make.names(control, unique = FALSE, allow_ = TRUE)}.}
+\item{baseline}{Deprecated. Set the control group level in \code{\link[=brm_data]{brm_data()}}.}
 }
 \value{
 A named list of tibbles of MCMC draws of the marginal posterior
@@ -62,12 +53,14 @@ data <- brm_data(
   role = "response",
   group = "group",
   time = "time",
-  patient = "patient"
+  patient = "patient",
+  level_control = "group_1",
+  level_baseline = "time_1"
 )
 formula <- brm_formula(
   data = data,
-  effect_base = FALSE,
-  interaction_base = FALSE
+  effect_baseline = FALSE,
+  interaction_baseline = FALSE
 )
 tmp <- utils::capture.output(
   suppressMessages(
@@ -82,12 +75,7 @@ tmp <- utils::capture.output(
     )
   )
 )
-brm_marginal_draws(
-  model = model,
-  data = data,
-  control = "group 1",
-  baseline = "time 1"
-)
+brm_marginal_draws(model = model, data = data)
 }
 }
 \seealso{

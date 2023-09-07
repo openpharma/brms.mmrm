@@ -12,9 +12,9 @@ test_that("brm_simulate_simple() data", {
   expect_equal(dim(data), c(12L, 4L))
   expect_true(is.numeric(data$response))
   expect_false(anyNA(data$response))
-  expect_equal(data$group, paste("group", rep(seq_len(2L), each = 6L)))
-  expect_equal(data$patient, paste("patient", rep(seq_len(4L), each = 3L)))
-  levels_time <- paste("time", seq_len(3L))
+  expect_equal(data$group, paste0("group_", rep(seq_len(2L), each = 6L)))
+  expect_equal(data$patient, paste0("patient_", rep(seq_len(4L), each = 3L)))
+  levels_time <- paste0("time_", seq_len(3L))
   expect_equal(data$time, rep(levels_time, times = 4L))
 })
 
@@ -32,15 +32,15 @@ test_that("brm_simulate_simple() model_matrix", {
   expect_equal(dim(matrix), c(12L, 4L))
   colnames(matrix) <- gsub("^group", "", colnames(matrix))
   colnames(matrix) <- gsub("^time", "", colnames(matrix))
-  expect_equal(as.integer(matrix[, "group 1"]), rep(c(1L, 0L), each = 6L))
-  expect_equal(as.integer(matrix[, "group 2"]), rep(c(0L, 1L), each = 6L))
+  expect_equal(as.integer(matrix[, "group_1"]), rep(c(1L, 0L), each = 6L))
+  expect_equal(as.integer(matrix[, "group_2"]), rep(c(0L, 1L), each = 6L))
   expect_equal(
-    as.integer(matrix[, "time 2"]),
-    as.integer(out$data$time == "time 2")
+    as.integer(matrix[, "time_2"]),
+    as.integer(out$data$time == "time_2")
   )
   expect_equal(
-    as.integer(matrix[, "time 3"]),
-    as.integer(out$data$time == "time 3")
+    as.integer(matrix[, "time_3"]),
+    as.integer(out$data$time == "time_3")
   )
 })
 

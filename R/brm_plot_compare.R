@@ -18,11 +18,13 @@
 #'   role = "response",
 #'   group = "group",
 #'   time = "time",
-#'   patient = "patient"
+#'   patient = "patient",
+#'   level_control = "group_1",
+#'   level_baseline = "time_1"
 #' )
 #' formula <- brm_formula(
 #'   data = data,
-#'   effect_base = FALSE,
+#'   effect_baseline = FALSE,
 #'   interaction_base = FALSE
 #' )
 #' tmp <- utils::capture.output(
@@ -38,12 +40,7 @@
 #'     )
 #'   )
 #' )
-#' draws <- brm_marginal_draws(
-#'   model = model,
-#'   data = data,
-#'   control = "group 1",
-#'   baseline = "time 1"
-#' )
+#' draws <- brm_marginal_draws(model = model, data = data)
 #' suppressWarnings(summaries_draws <- brm_marginal_summaries(draws))
 #' summaries_data <- brm_marginal_data(data)
 #' brm_plot_compare(

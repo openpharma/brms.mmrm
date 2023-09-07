@@ -17,17 +17,8 @@
 #'   group and discrete time point.
 #' @param model Fitted `brms` model object from [brm_model()].
 #' @param data Classed tibble with preprocessed data from [brm_data()].
-#' @param control Element of the `group` column in the data which indicates
-#'   the control group for the purposes of calculating treatment differences.
-#'   Elements in `data[[group]]` are already pre-processed by [brm_data()],
-#'   so `control` is automatically sanitized accordingly using
-#'   `make.names(control, unique = FALSE, allow_ = TRUE)`.
-#' @param baseline Element of the `time` column in the data
-#'   which indicates the baseline time for the purposes of calculating
-#'   change from baseline.
-#'   Elements in `data[[group]]` are already pre-processed by [brm_data()],
-#'   so `control` is automatically sanitized accordingly using
-#'   `make.names(control, unique = FALSE, allow_ = TRUE)`.
+#' @param control Deprecated. Set the control group level in [brm_data()].
+#' @param baseline Deprecated. Set the control group level in [brm_data()].
 #' @examples
 #' if (identical(Sys.getenv("BRM_EXAMPLES", unset = ""), "true")) {
 #' set.seed(0L)
@@ -37,12 +28,14 @@
 #'   role = "response",
 #'   group = "group",
 #'   time = "time",
-#'   patient = "patient"
+#'   patient = "patient",
+#'   level_control = "group_1",
+#'   level_baseline = "time_1"
 #' )
 #' formula <- brm_formula(
 #'   data = data,
-#'   effect_base = FALSE,
-#'   interaction_base = FALSE
+#'   effect_baseline = FALSE,
+#'   interaction_baseline = FALSE
 #' )
 #' tmp <- utils::capture.output(
 #'   suppressMessages(
@@ -57,19 +50,26 @@
 #'     )
 #'   )
 #' )
-#' brm_marginal_draws(
-#'   model = model,
-#'   data = data,
-#'   control = "group 1",
-#'   baseline = "time 1"
-#' )
+#' brm_marginal_draws(model = model, data = data)
 #' }
 brm_marginal_draws <- function(
   model,
   data,
-  control = "Placebo",
-  baseline = "Baseline"
+  control = NULL,
+  baseline = NULL
 ) {
+  if (!is.null(control)) {
+    brm_deprecate(
+      "The control argument was deprecated on 2023-09-07. ",
+      "Set the level_control argument of brm_data() instead."
+    )
+  }
+  if (!is.null(baseline)) {
+    brm_deprecate(
+      "The baseline argument was deprecated on 2023-09-07. ",
+      "Set the level_baseline argument of brm_data() instead."
+    )
+  }
   brm_data_validate(data)
   role <- attr(data, "brm_role")
   base <- attr(data, "brm_base")
@@ -79,22 +79,8 @@ brm_marginal_draws <- function(
   covariates <- attr(data, "brm_covariates")
   levels_group <- attr(data, "brm_levels_group")
   levels_time <- attr(data, "brm_levels_time")
-  assert(
-    control,
-    is.atomic(.),
-    length(.) == 1L,
-    !anyNA(.),
-    message = "control arg must be a length-1 non-missing atomic value"
-  )
-  assert(
-    baseline,
-    is.atomic(.),
-    length(.) == 1L,
-    !anyNA(.),
-    message = "baseline arg must be a length-1 non-missing atomic value"
-  )
-  control <- brm_levels(control)
-  baseline <- brm_levels(baseline)
+  control <- attr(data, "brm_level_control")
+  baseline <- attr(data, "brm_level_baseline")
   assert(
     control %in% as.character(data[[group]]),
     message = "control arg must be a treatment group level in the data"

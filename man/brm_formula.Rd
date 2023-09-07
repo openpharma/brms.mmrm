@@ -7,10 +7,10 @@
 brm_formula(
   data,
   intercept = TRUE,
-  effect_base = TRUE,
+  effect_baseline = TRUE,
   effect_group = TRUE,
   effect_time = TRUE,
-  interaction_base = TRUE,
+  interaction_baseline = TRUE,
   interaction_group = TRUE,
   correlation = "unstructured"
 )
@@ -20,7 +20,7 @@ brm_formula(
 
 \item{intercept}{\code{TRUE} to include an intercept, \code{FALSE} to omit.}
 
-\item{effect_base}{\code{TRUE} to include an additive effect for baseline
+\item{effect_baseline}{\code{TRUE} to include an additive effect for baseline
 response, \code{FALSE} to omit.}
 
 \item{effect_group}{\code{TRUE} to include an additive effects for treatment
@@ -29,7 +29,7 @@ groups, \code{FALSE} to omit.}
 \item{effect_time}{\code{TRUE} to include a additive effect for discrete
 time points, \code{FALSE} to omit.}
 
-\item{interaction_base}{\code{TRUE} to include baseline-by-time interaction,
+\item{interaction_baseline}{\code{TRUE} to include baseline-by-time interaction,
 \code{FALSE} to omit.}
 
 \item{interaction_group}{\code{TRUE} to include treatment-group-by-time
@@ -54,14 +54,16 @@ data <- brm_data(
   role = "response",
   group = "group",
   time = "time",
-  patient = "patient"
+  patient = "patient",
+  level_control = "group_1",
+  level_baseline = "time_1"
 )
 brm_formula(data)
-brm_formula(data = data, intercept = FALSE, effect_base = FALSE)
+brm_formula(data = data, intercept = FALSE, effect_baseline = FALSE)
 brm_formula(
   data = data,
   intercept = FALSE,
-  effect_base = FALSE,
+  effect_baseline = FALSE,
   interaction_group = FALSE
 )
 }

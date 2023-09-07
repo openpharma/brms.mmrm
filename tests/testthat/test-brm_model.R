@@ -7,7 +7,9 @@ test_that("brm_model() runs", {
     role = "response",
     group = "group",
     time = "time",
-    patient = "patient"
+    patient = "patient",
+    level_control = "group_1",
+    level_baseline = "time_1"
   )
   formula <- brm_formula(
     data = data,

@@ -7,7 +7,9 @@ test_that("brm_marginal_draws_average()", {
     role = "response",
     group = "group",
     time = "time",
-    patient = "patient"
+    patient = "patient",
+    level_control = "group_1",
+    level_baseline = "time_1"
   )
   formula <- brm_formula(
     data = data,
@@ -27,12 +29,7 @@ test_that("brm_marginal_draws_average()", {
       )
     )
   )
-  out <- brm_marginal_draws(
-    model = model,
-    data = data,
-    control = "group.1",
-    baseline = "time.1"
-  )
+  out <- brm_marginal_draws(model = model, data = data)
   averages_all <- brm_marginal_draws_average(
     draws = out,
     data = data,
@@ -41,10 +38,10 @@ test_that("brm_marginal_draws_average()", {
   averages_sub <- brm_marginal_draws_average(
     draws = out,
     data = data,
-    times = c("time 2", "time 3"),
+    times = c("time_2", "time_3"),
     label = "mean"
   )
-  for (group in setdiff(unique(data$group), "group.1")) {
+  for (group in setdiff(unique(data$group), "group_1")) {
     cols_all <- grep(
       pattern = group,
       x = colnames(out$response),
@@ -52,7 +49,7 @@ test_that("brm_marginal_draws_average()", {
       value = TRUE
     )
     cols_sub <- grep(
-      pattern = "time\\.2|time\\.3",
+      pattern = "time_2|time_3",
       x = cols_all,
       fixed = FALSE,
       value = TRUE

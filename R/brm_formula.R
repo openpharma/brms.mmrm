@@ -9,13 +9,13 @@
 #' @param correlation Character of length 1, name of the correlation
 #'   structure. Only `"unstructured"` is currently supported.
 #' @param intercept `TRUE` to include an intercept, `FALSE` to omit.
-#' @param effect_base `TRUE` to include an additive effect for baseline
+#' @param effect_baseline `TRUE` to include an additive effect for baseline
 #'   response, `FALSE` to omit.
 #' @param effect_group `TRUE` to include an additive effects for treatment
 #'   groups, `FALSE` to omit.
 #' @param effect_time `TRUE` to include a additive effect for discrete
 #'   time points, `FALSE` to omit.
-#' @param interaction_base `TRUE` to include baseline-by-time interaction,
+#' @param interaction_baseline `TRUE` to include baseline-by-time interaction,
 #'   `FALSE` to omit.
 #' @param interaction_group `TRUE` to include treatment-group-by-time
 #'   interaction, `FALSE` to omit.
@@ -27,23 +27,25 @@
 #'   role = "response",
 #'   group = "group",
 #'   time = "time",
-#'   patient = "patient"
+#'   patient = "patient",
+#'   level_control = "group_1",
+#'   level_baseline = "time_1"
 #' )
 #' brm_formula(data)
-#' brm_formula(data = data, intercept = FALSE, effect_base = FALSE)
+#' brm_formula(data = data, intercept = FALSE, effect_baseline = FALSE)
 #' brm_formula(
 #'   data = data,
 #'   intercept = FALSE,
-#'   effect_base = FALSE,
+#'   effect_baseline = FALSE,
 #'   interaction_group = FALSE
 #' )
 brm_formula <- function(
   data,
   intercept = TRUE,
-  effect_base = TRUE,
+  effect_baseline = TRUE,
   effect_group = TRUE,
   effect_time = TRUE,
-  interaction_base = TRUE,
+  interaction_baseline = TRUE,
   interaction_group = TRUE,
   correlation = "unstructured"
 ) {
@@ -51,8 +53,8 @@ brm_formula <- function(
   assert_lgl(intercept)
   assert_lgl(effect_group)
   assert_lgl(effect_time)
-  assert_lgl(effect_base)
-  assert_lgl(interaction_base)
+  assert_lgl(effect_baseline)
+  assert_lgl(interaction_baseline)
   assert_lgl(interaction_group)
   assert_chr(
     correlation,
@@ -68,7 +70,7 @@ brm_formula <- function(
   )
   outcome <- attr(data, "brm_outcome")
   role <- attr(data, "brm_role")
-  base <- attr(data, "brm_base")
+  baseline <- attr(data, "brm_baseline")
   group <- attr(data, "brm_group")
   time <- attr(data, "brm_time")
   patient <- attr(data, "brm_patient")
@@ -76,8 +78,11 @@ brm_formula <- function(
   terms <- c(
     term("0", !intercept),
     term(time, effect_time),
-    term(base, effect_base && !is.null(base)),
-    term(paste0(base, ":", time), interaction_base && !is.null(base)),
+    term(baseline, effect_baseline && !is.null(baseline)),
+    term(
+      paste0(baseline, ":", time),
+      interaction_baseline && !is.null(baseline)
+    ),
     term(group, effect_group),
     term(paste0(group, ":", time), interaction_group),
     covariates,

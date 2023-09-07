@@ -63,10 +63,10 @@ brm_simulate_simple <- function(
   assert_pos(hyper_tau, message = "hyper_tau must be 1 positive number")
   assert_pos(hyper_lambda, message = "hyper_lambda must be 1 positive number")
   patients <- tibble::tibble(
-    group = paste("group", rep(seq_len(n_group), each = n_patient)),
-    patient = paste("patient", seq_len(n_group * n_patient))
+    group = paste0("group_", rep(seq_len(n_group), each = n_patient)),
+    patient = paste0("patient_", seq_len(n_group * n_patient))
   )
-  levels_time <- paste("time", seq_len(n_time))
+  levels_time <- paste0("time_", seq_len(n_time))
   grid <- tidyr::expand_grid(patients, time = levels_time)
   model_matrix <- model.matrix(~ 0 + group + time, data = grid)
   beta <- stats::rnorm(n = ncol(model_matrix), mean = 0, sd = hyper_beta)
@@ -83,6 +83,19 @@ brm_simulate_simple <- function(
     Sigma = covariance
   )
   data <- tibble::tibble(response = do.call(what = c, args = response), grid)
+  data <- brm_data(
+    data = data,
+    outcome = "response",
+    role = "response",
+    baseline = NULL,
+    group = "group",
+    time = "time",
+    patient = "patient",
+    covariates = character(0L),
+    missing = NULL,
+    level_control = "group_1",
+    level_baseline = "time_1"
+  )
   parameters <- list(
     beta = beta,
     tau = tau,

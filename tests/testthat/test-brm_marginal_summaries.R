@@ -7,7 +7,9 @@ test_that("brm_marginal_summaries() on response", {
     role = "response",
     group = "group",
     time = "time",
-    patient = "patient"
+    patient = "patient",
+    level_control = "group_1",
+    level_baseline = "time_1"
   )
   formula <- brm_formula(
     data = data,
@@ -29,9 +31,7 @@ test_that("brm_marginal_summaries() on response", {
   )
   draws <- brm_marginal_draws(
     model = model,
-    data = data,
-    control = "group.1",
-    baseline = "time.1"
+    data = data
   )
   suppressWarnings(
     x <- brm_marginal_summaries(
@@ -127,7 +127,8 @@ test_that("brm_marginal_summaries() on change", {
     role = "change",
     group = "group",
     time = "time",
-    patient = "patient"
+    patient = "patient",
+    level_control = "group_1"
   )
   formula <- brm_formula(
     data = data,
@@ -149,9 +150,7 @@ test_that("brm_marginal_summaries() on change", {
   )
   draws <- brm_marginal_draws(
     model = model,
-    data = data,
-    control = "group.1",
-    baseline = "time.1"
+    data = data
   )
   suppressWarnings(
     x <- brm_marginal_summaries(
