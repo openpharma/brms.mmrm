@@ -19,8 +19,8 @@
 #'   group = "group",
 #'   time = "time",
 #'   patient = "patient",
-#'   level_control = "group 1",
-#'   level_baseline = "time 1"
+#'   level_control = "group_1",
+#'   level_baseline = "time_1"
 #' )
 #' formula <- brm_formula(
 #'   data = data,

@@ -27,7 +27,9 @@
 #'   role = "response",
 #'   group = "group",
 #'   time = "time",
-#'   patient = "patient"
+#'   patient = "patient",
+#'   level_control = "group_1",
+#'   level_baseline = "time_1"
 #' )
 #' brm_formula(data)
 #' brm_formula(data = data, intercept = FALSE, effect_baseline = FALSE)

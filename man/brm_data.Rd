@@ -100,8 +100,8 @@ brm_data(
   group = "col_group",
   time = "col_time",
   patient = "col_patient",
-  level_control = "group 1",
-  level_baseline = "time 1"
+  level_control = "group_1",
+  level_baseline = "time_1"
 )
 }
 \concept{data}

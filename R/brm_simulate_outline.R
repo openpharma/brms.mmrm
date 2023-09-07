@@ -48,8 +48,8 @@ brm_simulate_outline <- function(
     patient = "patient",
     covariates = character(0L),
     missing = "missing",
-    level_control = "group 1",
-    level_baseline = "time 1"
+    level_control = "group_1",
+    level_baseline = "time_1"
   )
   brm_data_validate(data)
   data
