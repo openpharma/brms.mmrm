@@ -7,12 +7,22 @@ test_that("brm_simulate_outline() grid", {
     rate_lapse = 0.5
   )
   expect_equal(nrow(data), 1716L)
-  expect_equal(data$group, paste("group", rep(seq_len(11L), each = 12L * 13L)))
+  for (field in c("group", "patient", "time")) {
+    data[[field]] <- as.integer(gsub(paste0(field, "_"), "", data[[field]]))
+  }
+  data <- dplyr::arrange(data, group, patient, time)
+  expect_equal(
+    data$group,
+    rep(seq_len(11L), each = 12L * 13L)
+  )
   expect_equal(
     data$patient,
-    paste("patient", rep(seq_len(11L * 12L), each = 13L))
+    rep(seq_len(11L * 12L), each = 13L)
   )
-  expect_equal(data$time, paste("time", rep(seq_len(13L), times = 11L * 12L)))
+  expect_equal(
+    data$time,
+    rep(seq_len(13L), times = 11L * 12L)
+  )
 })
 
 test_that("brm_simulate_outline() compounded missingness", {

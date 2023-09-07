@@ -42,12 +42,12 @@ test_that("brm_marginal_probabilities() on response", {
     sort(colnames(x)),
     sort(c("group", "time", "direction", "threshold", "value"))
   )
-  expect_equal(x$group, rep("group.2", 3))
-  expect_equal(x$time, paste0("time.", seq(2, 4)))
+  expect_equal(x$group, rep("group_2", 3))
+  expect_equal(x$time, paste0("time_", seq(2, 4)))
   expect_equal(x$direction, rep("greater", 3))
   expect_equal(x$threshold, rep(0, 3))
   column <- function(group, time) {
-    sprintf("group.%s%stime.%s", group, brm_sep(), time)
+    sprintf("group_%s%stime_%s", group, brm_sep(), time)
   }
   expect_equal(
     x$value[1L],
@@ -109,8 +109,8 @@ test_that("brm_marginal_probabilities() on change and multiple probs", {
     sort(colnames(x)),
     sort(c("group", "time", "direction", "threshold", "value"))
   )
-  expect_equal(x$group, rep("group.2", 8))
-  expect_equal(x$time, rep(paste0("time.", seq(1, 4)), times = 2))
+  expect_equal(x$group, rep("group_2", 8))
+  expect_equal(x$time, rep(paste0("time_", seq(1, 4)), times = 2))
   expect_equal(x$direction, rep(c("greater", "less"), each = 4))
   expect_equal(x$threshold, c(rep(30, 4), rep(15, 4)))
   expect_equal(x$value, rep(c(0.4, 0.28), each = 4L))

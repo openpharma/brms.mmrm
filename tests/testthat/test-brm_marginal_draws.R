@@ -32,15 +32,13 @@ test_that("brm_marginal_draws() on response", {
   old_sep <- emmeans::get_emm_option("sep")
   out <- brm_marginal_draws(
     model = model,
-    data = data,
-    control = "group.1",
-    baseline = "time.1"
+    data = data
   )
   expect_warning(
     brm_marginal_draws(
       model = model,
       data = data,
-      control = "group.1"
+      control = "group_1"
     ),
     class = "brm_deprecate"
   )
@@ -48,7 +46,7 @@ test_that("brm_marginal_draws() on response", {
     brm_marginal_draws(
       model = model,
       data = data,
-      baseline = "time.1"
+      baseline = "time_1"
     ),
     class = "brm_deprecate"
   )
@@ -72,13 +70,13 @@ test_that("brm_marginal_draws() on response", {
     sort(colnames(out$response)),
     sort(c(columns, names_mcmc))
   )
-  columns_df <- columns_df[columns_df$time != "time.1", ]
+  columns_df <- columns_df[columns_df$time != "time_1", ]
   columns <- paste(columns_df$group, columns_df$time, sep = brm_sep())
   expect_equal(
     sort(colnames(out$change)),
     sort(c(columns, names_mcmc))
   )
-  columns_df <- columns_df[columns_df$group != "group.1", ]
+  columns_df <- columns_df[columns_df$group != "group_1", ]
   columns <- paste(columns_df$group, columns_df$time, sep = brm_sep())
   expect_equal(
     sort(colnames(out$difference)),
@@ -89,9 +87,9 @@ test_that("brm_marginal_draws() on response", {
   colnames(draws) <- gsub("^b_sigma_", "", colnames(draws))
   colnames(draws) <- gsub(paste0("^time"), "", x = colnames(draws))
   sigma <- exp(draws)
-  for (group in setdiff(unique(data$group), "group.1")) {
-    for (time in setdiff(unique(data$time), "time.1")) {
-      name1 <- paste("group.1", time, sep = brm_sep())
+  for (group in setdiff(unique(data$group), "group_1")) {
+    for (time in setdiff(unique(data$time), "time_1")) {
+      name1 <- paste("group_1", time, sep = brm_sep())
       name2 <- paste(group, time, sep = brm_sep())
       expect_equal(
         out$difference[[name2]],
@@ -104,8 +102,8 @@ test_that("brm_marginal_draws() on response", {
     }
   }
   for (group in unique(data$group)) {
-    for (time in setdiff(unique(data$time), "time.1")) {
-      name1 <- paste(group, "time.1", sep = brm_sep())
+    for (time in setdiff(unique(data$time), "time_1")) {
+      name1 <- paste(group, "time_1", sep = brm_sep())
       name2 <- paste(group, time, sep = brm_sep())
       expect_equal(
         out$change[[name2]],
@@ -147,9 +145,7 @@ test_that("brm_marginal_draws() on change", {
   )
   out <- brm_marginal_draws(
     model = model,
-    data = data,
-    control = "group.1",
-    baseline = "time.1"
+    data = data
   )
   fields <- c("response", "difference", "effect")
   columns_df <- expand.grid(
@@ -170,15 +166,15 @@ test_that("brm_marginal_draws() on change", {
     sort(colnames(out$response)),
     sort(c(columns, names_mcmc))
   )
-  columns_df <- columns_df[columns_df$group != "group.1", ]
+  columns_df <- columns_df[columns_df$group != "group_1", ]
   columns <- paste(columns_df$group, columns_df$time, sep = brm_sep())
   expect_equal(
     sort(colnames(out$difference)),
     sort(c(columns, names_mcmc))
   )
-  for (group in setdiff(unique(data$group), "group.1")) {
+  for (group in setdiff(unique(data$group), "group_1")) {
     for (time in unique(data$time)) {
-      name1 <- paste("group.1", time, sep = brm_sep())
+      name1 <- paste("group_1", time, sep = brm_sep())
       name2 <- paste(group, time, sep = brm_sep())
       expect_equal(
         out$difference[[name2]],
