@@ -79,7 +79,10 @@ brm_formula <- function(
     term("0", !intercept),
     term(time, effect_time),
     term(baseline, effect_baseline && !is.null(baseline)),
-    term(paste0(baseline, ":", time), interaction_baseline && !is.null(baseline)),
+    term(
+      paste0(baseline, ":", time),
+      interaction_baseline && !is.null(baseline)
+    ),
     term(group, effect_group),
     term(paste0(group, ":", time), interaction_group),
     covariates,
