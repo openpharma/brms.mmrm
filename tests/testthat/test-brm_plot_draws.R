@@ -7,7 +7,9 @@ test_that("brm_plot_draws()", {
     role = "response",
     group = "group",
     time = "time",
-    patient = "patient"
+    patient = "patient",
+    level_control = "group 1",
+    level_baseline = "time 1"
   )
   formula <- brm_formula(
     data = data,

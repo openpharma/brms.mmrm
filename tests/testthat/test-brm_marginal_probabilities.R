@@ -7,7 +7,9 @@ test_that("brm_marginal_probabilities() on response", {
     role = "response",
     group = "group",
     time = "time",
-    patient = "patient"
+    patient = "patient",
+    level_control = "group 1",
+    level_baseline = "time 1"
   )
   formula <- brm_formula(
     data = data,
@@ -72,7 +74,8 @@ test_that("brm_marginal_probabilities() on change and multiple probs", {
     role = "change",
     group = "group",
     time = "time",
-    patient = "patient"
+    patient = "patient",
+    level_control = "group 1"
   )
   formula <- brm_formula(
     data = data,
