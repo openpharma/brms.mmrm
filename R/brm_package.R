@@ -31,7 +31,7 @@
 #'   mcse_sd
 #' @importFrom purrr map_dbl map_df map2_df
 #' @importFrom rlang warn
-#' @importFrom stats as.formula median model.matrix rnorm runif sd
+#' @importFrom stats as.formula median model.matrix rbinom rnorm runif sd
 #' @importFrom tibble tibble
 #' @importFrom tidyr expand_grid pivot_longer pivot_wider
 #' @importFrom tidyselect any_of everything
@@ -55,7 +55,8 @@ globalVariables(
     "time",
     "value",
     "outcome",
-    "level"
+    "level",
+    "patient"
   ),
   package = "brms.mmrm"
 )

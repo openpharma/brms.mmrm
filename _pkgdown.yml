@@ -6,6 +6,9 @@ reference:
 - title: Data
   contents:
   - '`brm_data`'
+- title: Simulation
+  contents:
+  - '`brm_simulate_outline`'
   - '`brm_simulate_simple`'
 - title: Models
   contents:

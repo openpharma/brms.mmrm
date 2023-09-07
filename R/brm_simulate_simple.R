@@ -17,7 +17,7 @@
 #'   prior with shape parameter `hyper_lambda`.
 #' @return A list of three objects:
 #'   * `data`: A tidy dataset with one row per patient per discrete
-#'     time point and columns for the response and covariates.
+#'     time point and columns for the outcome and ID variables.
 #'   * `model_matrix`: A matrix with one row per row of `data` and columns
 #'     that represent levels of the covariates.
 #'   * `parameters`: A named list of parameter draws sampled from the prior:
