@@ -8,11 +8,14 @@ brm_data(
   data,
   outcome = "CHG",
   role = "change",
-  base = NULL,
+  baseline = NULL,
   group = "TRT01P",
   time = "AVISIT",
   patient = "USUBJID",
-  covariates = character(0)
+  covariates = character(0L),
+  missing = NULL,
+  level_control = "Placebo",
+  level_baseline = NULL
 )
 }
 \arguments{
@@ -24,7 +27,8 @@ brm_data(
 is the raw response variable (e.g. AVAL) or \code{"change"} if \code{outcome}
 is change from baseline (e.g. CHG).}
 
-\item{base}{Character of length 1, name of the baseline response variable.
+\item{baseline}{Character of length 1,
+name of the baseline response variable.
 Supply \code{NULL} to ignore or omit.}
 
 \item{group}{Character of length 1, name of the treatment group variable.
@@ -38,6 +42,17 @@ to characters.}
 \item{patient}{Character of length 1, name of the patient ID variable.}
 
 \item{covariates}{Character vector of names of other covariates.}
+
+\item{missing}{Character of length 1, name of an optional variable
+in a simulated dataset to indicate which outcome values should be missing.
+Set to \code{NULL} to omit.}
+
+\item{level_control}{Character of length 1, Level of the \code{group} column
+to indicate the control group.}
+
+\item{level_baseline}{Character of length 1, Level of the \code{time} column
+to indicate the baseline time point. Expected if \code{role} is \code{"change"}.
+Set to \code{NULL} to omit.}
 }
 \value{
 A classed tibble with attributes which denote features of
@@ -84,7 +99,9 @@ brm_data(
   role = "response",
   group = "col_group",
   time = "col_time",
-  patient = "col_patient"
+  patient = "col_patient",
+  level_control = "group 1",
+  level_baseline = "time 1"
 )
 }
 \concept{data}

@@ -1,4 +1,4 @@
-test_that("brm_data() good", {
+test_that("brm_data() response", {
   set.seed(0)
   sim <- brm_simulate_simple()
   data <- tibble::as_tibble(sim$data)
@@ -9,6 +9,7 @@ test_that("brm_data() good", {
   colnames(data) <- paste0("col_", colnames(data))
   data <- data[- c(2L, 3L), ]
   data <- data[sample.int(n = nrow(data)), ]
+  data$col_missing <- FALSE
   out <- brm_data(
     data = data,
     outcome = "col_response",
@@ -16,7 +17,10 @@ test_that("brm_data() good", {
     group = "col_group",
     time = "col_time",
     patient = "col_patient",
-    covariates = c("col_factor2", "col_factor3")
+    covariates = c("col_factor2", "col_factor3"),
+    level_control = "group 1",
+    level_baseline = "time 1",
+    missing = "col_missing"
   )
   expect_s3_class(out, "brm_data")
   expect_true(tibble::is_tibble(out))
@@ -33,7 +37,8 @@ test_that("brm_data() good", {
         "col_response",
         "col_group",
         "col_factor2",
-        "col_factor3"
+        "col_factor3",
+        "col_missing"
       )
     )
   )
@@ -69,6 +74,82 @@ test_that("brm_data() good", {
   expect_equal(
     sort(attr(out, "brm_labels_time")), paste("time", seq_len(4L))
   )
+  expect_equal(attr(out, "brm_missing"), "col_missing")
+  expect_equal(attr(out, "brm_level_control"), "group.1")
+  expect_equal(attr(out, "brm_level_baseline"), "time.1")
+})
+
+test_that("brm_data() change", {
+  set.seed(0)
+  sim <- brm_simulate_simple()
+  data <- tibble::as_tibble(sim$data)
+  data$group <- as.factor(data$group)
+  data$factor1 <- data$patient
+  data$factor2 <- data$patient
+  data$factor3 <- data$patient
+  colnames(data) <- paste0("col_", colnames(data))
+  data <- data[- c(2L, 3L), ]
+  data <- data[sample.int(n = nrow(data)), ]
+  out <- brm_data(
+    data = data,
+    outcome = "col_response",
+    role = "change",
+    group = "col_group",
+    time = "col_time",
+    patient = "col_patient",
+    covariates = character(0L),
+    level_control = "group 1"
+  )
+  expect_s3_class(out, "brm_data")
+  expect_true(tibble::is_tibble(out))
+  expect_silent(brm_data_validate(out))
+  expect_true(all(is.na(out$col_response[c(2L, 3L)])))
+  expect_false(anyNA(out$col_response[- c(2L, 3L)]))
+  expect_equal(nrow(out), 800L)
+  expect_equal(
+    sort(colnames(out)),
+    sort(
+      c(
+        "col_patient",
+        "col_time",
+        "col_response",
+        "col_group"
+      )
+    )
+  )
+  expect_equal(
+    out$col_group,
+    rep(paste0("group.", c(1L, 2L)), each = 400L)
+  )
+  expect_equal(
+    out$col_time,
+    rep(paste0("time.", seq_len(4L)), times = 200L)
+  )
+  expect_equal(
+    sort(out$col_response[- c(2L, 3L)]),
+    sort(c(data$col_response))
+  )
+  expect_equal(attr(out, "brm_outcome"), "col_response")
+  expect_equal(attr(out, "brm_role"), "change")
+  expect_equal(attr(out, "brm_group"), "col_group")
+  expect_equal(attr(out, "brm_time"), "col_time")
+  expect_equal(attr(out, "brm_patient"), "col_patient")
+  expect_equal(attr(out, "brm_covariates"), character(0L))
+  expect_equal(
+    sort(attr(out, "brm_levels_group")), c("group.1", "group.2")
+  )
+  expect_equal(
+    sort(attr(out, "brm_levels_time")), paste0("time.", seq_len(4L))
+  )
+  expect_equal(
+    sort(attr(out, "brm_labels_group")), c("group 1", "group 2")
+  )
+  expect_equal(
+    sort(attr(out, "brm_labels_time")), paste("time", seq_len(4L))
+  )
+  expect_null(attr(out, "brm_missing"))
+  expect_equal(attr(out, "brm_level_control"), "group.1")
+  expect_null(attr(out, "brm_level_baseline"))
 })
 
 test_that("brm_data() bad role", {
@@ -84,12 +165,14 @@ test_that("brm_data() bad role", {
   expect_error(
     brm_data(
       data = data,
-      outcome = "nope",
-      role = "response",
+      outcome = "response",
+      role = "nope",
       group = "col_group",
       time = "col_time",
       patient = "col_patient",
-      covariates = c("col_factor2", "col_factor3")
+      covariates = c("col_factor2", "col_factor3"),
+      level_control = "group 1",
+      level_baseline = "time 1"
     ),
     class = "brm_error"
   )
@@ -113,7 +196,9 @@ test_that("brm_data() bad group", {
       group = "nope",
       time = "col_time",
       patient = "col_patient",
-      covariates = c("col_factor2", "col_factor3")
+      covariates = c("col_factor2", "col_factor3"),
+      level_control = "group 1",
+      level_baseline = "time 1"
     ),
     class = "brm_error"
   )
