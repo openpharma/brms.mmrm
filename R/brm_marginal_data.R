@@ -32,7 +32,9 @@
 #'   role = "response",
 #'   group = "group",
 #'   time = "time",
-#'   patient = "patient"
+#'   patient = "patient",
+#'   level_control = "group 1",
+#'   level_baseline = "time 1"
 #' )
 #' brm_marginal_data(data = data)
 brm_marginal_data <- function(data, level = 0.95) {

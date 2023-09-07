@@ -29,12 +29,7 @@ test_that("brm_marginal_draws_average()", {
       )
     )
   )
-  out <- brm_marginal_draws(
-    model = model,
-    data = data,
-    control = "group.1",
-    baseline = "time.1"
-  )
+  out <- brm_marginal_draws(model = model, data = data)
   averages_all <- brm_marginal_draws_average(
     draws = out,
     data = data,

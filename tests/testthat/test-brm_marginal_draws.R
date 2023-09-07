@@ -36,6 +36,22 @@ test_that("brm_marginal_draws() on response", {
     control = "group.1",
     baseline = "time.1"
   )
+  expect_warning(
+    brm_marginal_draws(
+      model = model,
+      data = data,
+      control = "group.1"
+    ),
+    class = "brm_deprecate"
+  )
+  expect_warning(
+    brm_marginal_draws(
+      model = model,
+      data = data,
+      baseline = "time.1"
+    ),
+    class = "brm_deprecate"
+  )
   expect_equal(emmeans::get_emm_option("sep"), old_sep)
   fields <- c("response", "change", "difference", "effect")
   columns_df <- expand.grid(

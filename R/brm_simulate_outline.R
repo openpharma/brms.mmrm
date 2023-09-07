@@ -38,19 +38,20 @@ brm_simulate_outline <- function(
   data <- brm_simulate_lapse(data = data, rate = rate_lapse)
   data <- brm_simulate_levels(data = data)
   data$response <- NA_real_
-  # nolint start
-  # data <- brm_data(
-  #   data = data,
-  #   outcome = "response",
-  #   role = "response",
-  #   base = NULL,
-  #   group = "group",
-  #   time = "time",
-  #   patient = "patient",
-  #   covariates = character(0L)
-  # )
-  # brm_data_validate(data)
-  # nolint end
+  data <- brm_data(
+    data = data,
+    outcome = "response",
+    role = "response",
+    baseline = NULL,
+    group = "group",
+    time = "time",
+    patient = "patient",
+    covariates = character(0L),
+    missing = "missing",
+    level_control = "group 1",
+    level_baseline = "time 1"
+  )
+  brm_data_validate(data)
   data
 }
 

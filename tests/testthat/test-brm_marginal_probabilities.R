@@ -31,9 +31,7 @@ test_that("brm_marginal_probabilities() on response", {
   )
   draws <- brm_marginal_draws(
     model = model,
-    data = data,
-    control = "group.1",
-    baseline = "time.1"
+    data = data
   )
   x <- brm_marginal_probabilities(
     draws,
@@ -97,9 +95,7 @@ test_that("brm_marginal_probabilities() on change and multiple probs", {
   )
   draws <- brm_marginal_draws(
     model = model,
-    data = data,
-    control = "group.1",
-    baseline = "time.1"
+    data = data
   )
   for (index in seq_along(draws$difference)) {
     draws$difference[[index]] <- seq_len(nrow(draws$difference))

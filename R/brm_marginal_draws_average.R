@@ -36,7 +36,9 @@
 #'   role = "response",
 #'   group = "group",
 #'   time = "time",
-#'   patient = "patient"
+#'   patient = "patient",
+#'   level_control = "group 1",
+#'   level_baseline = "time 1"
 #' )
 #' formula <- brm_formula(
 #'   data = data,
@@ -56,12 +58,7 @@
 #'     )
 #'   )
 #' )
-#' draws <- brm_marginal_draws(
-#'   model = model,
-#'   data = data,
-#'   control = "group 1",
-#'   baseline = "time 1"
-#' )
+#' draws <- brm_marginal_draws(model = model, data = data)
 #' brm_marginal_draws_average(draws = draws, data = data)
 #' brm_marginal_draws_average(
 #'   draws = draws,
