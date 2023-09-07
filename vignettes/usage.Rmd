@@ -41,7 +41,7 @@ raw_data <- brm_simulate_simple(
 raw_data
 ```
 
-Next, create a special classed dataset that the package will recognize. The classed data object contains a pre-processed version of the data, along with attributes to declare the outcome variable, whether the outcome is response or change from baseline, the treatment group variable, the discrete time point variable, and other details.
+Next, create a special classed dataset that the package will recognize. The classed data object contains a pre-processed version of the data, along with attributes to declare the outcome variable, whether the outcome is response or change from baseline, the treatment group variable, the discrete time point variable, control group, baseline time point, and other details.
 
 ```{r}
 data <- brm_data(
@@ -50,7 +50,9 @@ data <- brm_data(
   role = "response",
   group = "group",
   patient = "patient",
-  time = "time"
+  time = "time",
+  level_control = "group_1",
+  level_baseline = "time_1"
 )
 
 data
@@ -62,8 +64,6 @@ roles$row.names <- NULL
 str(roles)
 ```
 
-Above, the levels of the `group` and `time` columns are automatically cleaned with `make.names()` to ensure alignment between the data and `brms` output. Whenever `brms.mmrm` calls `make.names()`, it always sets `unique = FALSE` and `allow_ = TRUE`.
-
 # Formula
 
 Next, choose a `brms` model formula for the fixed effect and variance parameters. The `brm_formula()` function from `brms.mmrm` makes this process easier. A cell means parameterization for this particular model can be expressed as follows. It specifies one fixed effect parameter for each combination of treatment group and time point, and it makes the specification of informative priors straightforward through the `prior` argument of `brm_model()`.
@@ -72,10 +72,10 @@ Next, choose a `brms` model formula for the fixed effect and variance parameters
 brm_formula(
   data = data,
   intercept = FALSE,
-  effect_base = FALSE,
+  effect_baseline = FALSE,
   effect_group = FALSE,
   effect_time = FALSE,
-  interaction_base = FALSE,
+  interaction_baseline = FALSE,
   interaction_group = TRUE
 )
 ```
@@ -86,10 +86,10 @@ For the purposes of our example, we choose a fully parameterized analysis of the
 formula <- brm_formula(
   data = data,
   intercept = TRUE,
-  effect_base = FALSE,
+  effect_baseline = FALSE,
   effect_group = TRUE,
   effect_time = TRUE,
-  interaction_base = FALSE,
+  interaction_baseline = FALSE,
   interaction_group = TRUE
 )
 
@@ -134,12 +134,7 @@ Regardless of the choice of fixed effects formula, `brms.mmrm` performs inferenc
 To derive posterior draws of these marginals, use the `brm_marginal_draws()` function.
 
 ```{r, paged.print = FALSE}
-draws <- brm_marginal_draws(
-  model = model,
-  data = data,
-  control = "group 1", # automatically cleaned with make.names()
-  baseline = "time 1" # also cleaned with make.names()
-)
+draws <- brm_marginal_draws(model = model, data = data)
 
 draws
 ```
