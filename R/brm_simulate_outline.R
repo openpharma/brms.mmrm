@@ -119,7 +119,7 @@ brm_simulate_lapse <- function(data, rate) {
 
 brm_simulate_levels <- function(data) {
   for (field in c("group", "patient", "time")) {
-    data[[field]] <- paste(field, data[[field]])
+    data[[field]] <- paste0(field, "_", data[[field]])
   }
   data
 }
