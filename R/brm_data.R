@@ -250,12 +250,12 @@ brm_data_validate <- function(data) {
 brm_data_select <- function(data) {
   columns <- c(
     attr(data, "brm_outcome"),
+    attr(data, "brm_missing"),
     attr(data, "brm_baseline"),
     attr(data, "brm_group"),
     attr(data, "brm_time"),
     attr(data, "brm_patient"),
-    attr(data, "brm_covariates"),
-    attr(data, "brm_missing")
+    attr(data, "brm_covariates")
   )
   columns <- as.character(columns)
   data[, columns, drop = FALSE]
