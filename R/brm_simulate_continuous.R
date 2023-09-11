@@ -4,9 +4,9 @@
 #' @description Simulate and append continuous covariates to an existing
 #'   [brm_data()] dataset.
 #' @details Each covariate is a new column of the dataset with independent
-#'   normal draws. All covariates simulated this way are independent of other
-#'   covariates (to the extent that the random number generators in R
-#'   work as intended).
+#'   random univariate normal draws. All covariates simulated this way are
+#'   independent of everything else in the data, including other covariates
+#'   (to the extent that the random number generators in R work as intended).
 #' @return A classed `tibble`, like from [brm_data()] or
 #'   [brm_simulate_outline()], but with new numeric covariate columns
 #'   and with the names of the new covariates appended to the
@@ -14,7 +14,8 @@
 #' @param data Classed `tibble` as from [brm_data()]
 #'   or [brm_simulate_outline()].
 #' @param names Character vector with the names of the new covariates
-#'   to simulate and append. Must not already be column names of `data`.
+#'   to simulate and append. Names must all be unique and
+#'   must not already be column names of `data`.
 #' @param mean Numeric of length 1,
 #'   mean of the normal distribution for simulating each covariate.
 #' @param sd Positive numeric of length 1,
@@ -22,16 +23,19 @@
 #'   for simulating each covariate.
 #' @examples
 #' data <- brm_simulate_outline()
-#' brm_simulate_covariates_continuous(data = data, names = c("a", "b"))
-#' brm_simulate_covariates_continuous(
+#' brm_simulate_continuous(
 #'   data = data,
-#'   names = c("x", "y"),
+#'   names = c("age", "biomarker")
+#' )
+#' brm_simulate_continuous(
+#'   data = data,
+#'   names = c("biomarker1", "biomarker2"),
 #'   mean = 1000,
 #'   sd = 100
 #' )
-brm_simulate_covariates_continuous <- function(
+brm_simulate_continuous <- function(
   data,
-  names = character(0L),
+  names,
   mean = 0,
   sd = 1
 ) {
@@ -39,6 +43,7 @@ brm_simulate_covariates_continuous <- function(
   assert_chr_vec(names, message = "names must be a valid character vector")
   assert_pos(length(names), message = "names must not be empty")
   assert_machine_names(names)
+  assert(!anyDuplicated(names), message = "names must all be unique")
   assert(
     !any(names %in% colnames(data)),
     message = paste(

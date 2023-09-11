@@ -1,9 +1,9 @@
-test_that("brm_simulate_covariates_continuous()", {
+test_that("brm_simulate_continuous()", {
   set.seed(0L)
   data <- brm_simulate_outline(n_patient = 1e4)
   mean <- 1070.25
   sd <- 99.5
-  out <- brm_simulate_covariates_continuous(
+  out <- brm_simulate_continuous(
     data = data,
     names = c("x", "y"),
     mean = mean,
@@ -18,7 +18,7 @@ test_that("brm_simulate_covariates_continuous()", {
     expect_equal(sd(out[[field]]), sd, tolerance = 0.01)
   }
   expect_error(
-    brm_simulate_covariates_continuous(data = out, names = c("x", "y")),
+    brm_simulate_continuous(data = out, names = c("x", "y")),
     class = "brm_error"
   )
 })

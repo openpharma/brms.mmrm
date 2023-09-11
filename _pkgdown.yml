@@ -8,7 +8,8 @@ reference:
   - '`brm_data`'
 - title: Simulation
   contents:
-  - '`brm_simulate_covariates_continuous`'
+  - '`brm_simulate_categorical`'
+  - '`brm_simulate_continuous`'
   - '`brm_simulate_outline`'
   - '`brm_simulate_simple`'
 - title: Models
