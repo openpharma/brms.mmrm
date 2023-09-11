@@ -55,6 +55,7 @@ brm_simulate_continuous(
 Other simulation: 
 \code{\link{brm_simulate_categorical}()},
 \code{\link{brm_simulate_outline}()},
+\code{\link{brm_simulate_prior}()},
 \code{\link{brm_simulate_simple}()}
 }
 \concept{simulation}

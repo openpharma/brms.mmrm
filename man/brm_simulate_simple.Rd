@@ -82,6 +82,7 @@ simulation$data
 Other simulation: 
 \code{\link{brm_simulate_categorical}()},
 \code{\link{brm_simulate_continuous}()},
-\code{\link{brm_simulate_outline}()}
+\code{\link{brm_simulate_outline}()},
+\code{\link{brm_simulate_prior}()}
 }
 \concept{simulation}
