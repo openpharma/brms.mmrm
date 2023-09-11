@@ -1,4 +1,5 @@
 test_that("brm_simulate_prior() runs", {
+  skip_on_cran()
   set.seed(0L)
   data <- brm_simulate_outline()
   data <- brm_simulate_continuous(data, names = c("age", "biomarker"))
