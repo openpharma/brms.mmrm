@@ -52,7 +52,7 @@ brm_simulate_outline()
 }
 \seealso{
 Other simulation: 
-\code{\link{brm_simulate_ccategorical}()},
+\code{\link{brm_simulate_categorical}()},
 \code{\link{brm_simulate_continuous}()},
 \code{\link{brm_simulate_simple}()}
 }

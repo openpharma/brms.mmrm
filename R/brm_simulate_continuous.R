@@ -1,10 +1,11 @@
 #' @title Append simulated continuous covariates
 #' @export
 #' @family simulation
-#' @description Simulate and append continuous covariates to an existing
-#'   [brm_data()] dataset.
-#' @details Each covariate is a new column of the dataset with independent
-#'   random univariate normal draws. All covariates simulated this way are
+#' @description Simulate and append non-time-varying continuous
+#'   covariates to an existing [brm_data()] dataset.
+#' @details Each covariate is a new column of the dataset with one independent
+#'   random univariate normal draw for each patient.
+#'   All covariates simulated this way are
 #'   independent of everything else in the data, including other covariates
 #'   (to the extent that the random number generators in R work as intended).
 #' @return A classed `tibble`, like from [brm_data()] or
@@ -53,12 +54,18 @@ brm_simulate_continuous <- function(
   )
   assert_num(mean, message = "mean must be a valid number")
   assert_pos(sd, message = "sd must be a valid positive number")
+  patient <- attr(data, "brm_patient")
+  data_patient <- tibble::tibble(name = unique(data[[patient]]))
+  colnames(data_patient) <- patient
+  n <- nrow(data_patient)
   for (name in names) {
-    data[[name]] <- stats::rnorm(n = nrow(data), mean = mean, sd = sd)
+    data_patient[[name]] <- stats::rnorm(n = n, mean = mean, sd = sd)
   }
+  data <- dplyr::left_join(x = data, y = data_patient, by = patient)
   attr(data, "brm_covariates") <- union(
     x = attr(data, "brm_covariates"),
     y = names
   )
+  brm_data_validate(data)
   data
 }

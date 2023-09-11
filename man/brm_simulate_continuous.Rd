@@ -28,12 +28,13 @@ and with the names of the new covariates appended to the
 \code{brm_covariates} attribute.
 }
 \description{
-Simulate and append continuous covariates to an existing
-\code{\link[=brm_data]{brm_data()}} dataset.
+Simulate and append non-time-varying continuous
+covariates to an existing \code{\link[=brm_data]{brm_data()}} dataset.
 }
 \details{
-Each covariate is a new column of the dataset with independent
-random univariate normal draws. All covariates simulated this way are
+Each covariate is a new column of the dataset with one independent
+random univariate normal draw for each patient.
+All covariates simulated this way are
 independent of everything else in the data, including other covariates
 (to the extent that the random number generators in R work as intended).
 }
@@ -52,7 +53,7 @@ brm_simulate_continuous(
 }
 \seealso{
 Other simulation: 
-\code{\link{brm_simulate_ccategorical}()},
+\code{\link{brm_simulate_categorical}()},
 \code{\link{brm_simulate_outline}()},
 \code{\link{brm_simulate_simple}()}
 }

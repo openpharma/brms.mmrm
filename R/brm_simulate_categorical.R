@@ -1,11 +1,11 @@
 #' @title Append simulated categorical covariates
 #' @export
 #' @family simulation
-#' @description Simulate and append categorical covariates to an existing
-#'   [brm_data()] dataset.
-#' @details Each covariate is a new column of the dataset with independent
-#'   random categorical draws from a fixed set of levels
-#'   (using `base::sample()` with `replace = TRUE`).
+#' @description Simulate and append non-time-varying
+#'   categorical covariates to an existing [brm_data()] dataset.
+#' @details Each covariate is a new column of the dataset with one independent
+#'   random categorical draw for each patient, using a fixed set of levels
+#'   (via `base::sample()` with `replace = TRUE`).
 #'   All covariates simulated this way are
 #'   independent of everything else in the data, including other covariates
 #'   (to the extent that the random number generators in R work as intended).
@@ -36,7 +36,7 @@
 #'   levels = c("area1", "area2"),
 #'   probabilities = c(0.1, 0.9)
 #' )
-brm_simulate_ccategorical <- function(
+brm_simulate_categorical <- function(
   data,
   names,
   levels,
@@ -73,17 +73,22 @@ brm_simulate_ccategorical <- function(
       "expected sampling proportions with length equal to that of levels."
     )
   )
+  patient <- attr(data, "brm_patient")
+  data_patient <- tibble::tibble(name = unique(data[[patient]]))
+  colnames(data_patient) <- patient
   for (name in names) {
-    data[[name]] <- sample(
+    data_patient[[name]] <- sample(
       x = levels,
-      size = nrow(data),
+      size = nrow(data_patient),
       replace = TRUE,
       prob = probabilities
     )
   }
+  data <- dplyr::left_join(x = data, y = data_patient, by = patient)
   attr(data, "brm_covariates") <- union(
     x = attr(data, "brm_covariates"),
     y = names
   )
+  brm_data_validate(data)
   data
 }

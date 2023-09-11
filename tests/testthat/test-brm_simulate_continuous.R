@@ -1,6 +1,6 @@
-test_that("brm_simulate_continuous()", {
+test_that("brm_simulate_continuous() values", {
   set.seed(0L)
-  data <- brm_simulate_outline(n_patient = 1e4)
+  data <- brm_simulate_outline(n_patient = 1e4, n_time = 1L)
   mean <- 1070.25
   sd <- 99.5
   out <- brm_simulate_continuous(
@@ -21,4 +21,18 @@ test_that("brm_simulate_continuous()", {
     brm_simulate_continuous(data = out, names = c("x", "y")),
     class = "brm_error"
   )
+})
+
+test_that("brm_simulate_continuous() non-time-repeating", {
+  set.seed(0L)
+  data <- brm_simulate_outline(n_patient = 1e4, n_time = 4L)
+  data <- brm_simulate_continuous(data = data, names = "x")
+  out <- tapply(
+    X = data$x,
+    INDEX = data$patient,
+    FUN = function(x) {
+      length(unique(x)) == 1L
+    }
+  )
+  expect_true(all(out))
 })
