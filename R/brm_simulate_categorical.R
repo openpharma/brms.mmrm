@@ -25,12 +25,12 @@
 #'  to each respective level of `levels`.
 #' @examples
 #' data <- brm_simulate_outline()
-#' brm_simulate_ccategorical(
+#' brm_simulate_categorical(
 #'   data = data,
 #'   names = c("site", "region"),
 #'   levels = c("area1", "area2")
 #' )
-#' brm_simulate_ccategorical(
+#' brm_simulate_categorical(
 #'   data = data,
 #'   names = c("site", "region"),
 #'   levels = c("area1", "area2"),
