@@ -6,6 +6,7 @@ reference:
 - title: Data
   contents:
   - '`brm_data`'
+  - '`brm_data_change`'
 - title: Simulation
   contents:
   - '`brm_simulate_categorical`'

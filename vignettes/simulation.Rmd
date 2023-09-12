@@ -236,7 +236,7 @@ sim$data
 
 # Posterior
 
-`brms` natively supports posterior predictive simulations and checks through functions `posteiror_predict()`, `posterior_epred()`, and `pp_check()`. These can be used with a `brms` model fit object either from `brm_model()` or from `brm_simulate_prior()`.
+`brms` supports posterior predictive simulations and checks through functions `posteiror_predict()`, `posterior_epred()`, and `pp_check()`. These can be used with a `brms` model fit object either from `brm_model()` or from `brm_simulate_prior()`.
 
 
 ```r
