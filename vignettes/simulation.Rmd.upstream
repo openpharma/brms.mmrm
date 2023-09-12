@@ -57,6 +57,24 @@ And the `model_matrix` element has the regression model matrix of fixed effect p
 head(sim$model_matrix)
 ```
 
+# Change from baseline
+
+`brm_data_change()` can convert the outcome variable from raw response to change from baseline. This applies to real datasets passed through [brm_data()] as well as simulated ones from e.g. [brm_simulate_simple()]. The dataset above uses raw response with a baseline time point of `"time_1"`
+
+```{r}
+sim$data
+```
+
+`brm_data_change()` subtracts baseline, replaces the raw response column with a new change from baseline column, adds a new column for the original baseline raw response, and adjusts the internal attributes of the classed object accordingly.
+
+```{r}
+brm_data_change(
+  data = sim$data,
+  name_change = "new_change",
+  name_baseline = "new_baseline"
+)
+```
+
 # Advanced
 
 For a more nuanced simulation, build up the dataset layer by layer. Begin with `brm_simulate_outline()` to create an initial structure and a random missingness pattern. In `brm_simulate_outline()`, missing responses can come from either transitory intercurrent events or from dropouts. The `missing` column indicates which outcome values will be missing (`NA_real_`) in a later step. The `response` column is entirely missing for now and will be simulated later.

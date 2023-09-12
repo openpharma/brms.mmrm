@@ -73,6 +73,7 @@ brm_data_change <- function(
     y = data_baseline,
     by = intersect(colnames(data_after), colnames(data_baseline))
   )
+  out[[name_change]] <- out[[name_change]] - out[[name_baseline]]
   brm_data(
     data = out,
     outcome = name_change,

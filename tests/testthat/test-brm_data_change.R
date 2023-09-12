@@ -23,6 +23,20 @@ test_that("brm_data_change()", {
   expect_equal(attr(changed, "brm_outcome"), "delta")
   expect_equal(attr(changed, "brm_baseline"), "base")
   expect_null(attr(changed, "brm_level_baseline"))
+  data_baseline <- dplyr::filter(data, time == "time_1")
+  data_after <- dplyr::filter(data, time != "time_1")
+  for (point in setdiff(unique(data$time), "time_1")) {
+    expect_equal(
+      as.numeric(changed[changed$time == point, ]$base),
+      as.numeric(data[data$time == "time_1", ]$y_values)
+    )
+    y_post <- data[data$time == point, ]$y_values
+    y_base <- data[data$time == "time_1", ]$y_values
+    expect_equal(
+      as.numeric(changed[changed$time == point, ]$delta),
+      as.numeric(y_post - y_base)
+    )
+  }
 })
 
 test_that("brm_data_change() assertions", {
