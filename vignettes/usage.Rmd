@@ -20,28 +20,32 @@ knitr::opts_chunk$set(
 )
 library(brms.mmrm)
 library(dplyr)
+library(magrittr)
 ```
 
 A mixed model of repeated measures (MMRM) analyzes longitudinal clinical trial data. In a longitudinal dataset, there are multiple patients, and each patient has multiple observations at a common set of discrete points in time.
 
 # Data
 
-To use the `brms.mmrm` package, begin with a longitudinal dataset with one row per patient observation and columns for the response variable, treatment group indicator, discrete time point indicator, patient ID variable, and optional baseline covariates such as age and region. If you do not have a real dataset of your own, you can simulate one from the package. The following dataset has the raw response variable and only the most essential factor variables. In general, the outcome variable can either be the raw response or change from baseline.
+To use the `brms.mmrm` package, begin with a longitudinal dataset with one row per patient observation and columns for the response variable, treatment group indicator, discrete time point indicator, patient ID variable, and optional baseline covariates such as age and region. If you do not have a real dataset of your own, you can simulate one from the package. The following dataset has the raw response variable, the  essential factor variables, and continuous baseline covariates.^[Covariates can be categorical too.] In general, the outcome variable can either be the raw response or change from baseline.
 
 ```{r}
 library(brms.mmrm)
 library(dplyr)
+library(magrittr)
 set.seed(0L)
 raw_data <- brm_simulate_simple(
   n_group = 3,
   n_patient = 100,
   n_time = 4
-)$data
+) %>%
+  extract2("data") %>%
+  brm_simulate_continuous(c("biomarker1", "biomarker2", "biomarker3"))
 
 raw_data
 ```
 
-Next, create a special classed dataset that the package will recognize. The classed data object contains a pre-processed version of the data, along with attributes to declare the outcome variable, whether the outcome is response or change from baseline, the treatment group variable, the discrete time point variable, control group, baseline time point, and other details.
+Next, create a special classed dataset that the package will recognize. The classed data object contains a pre-processed version of the data, along with attributes to declare the outcome variable, whether the outcome is response or change from baseline, the treatment group variable, the discrete time point variable, control group, baseline time point, and the covariates selected for analysis.
 
 ```{r}
 data <- brm_data(
@@ -51,6 +55,7 @@ data <- brm_data(
   group = "group",
   patient = "patient",
   time = "time",
+  covariates = c("biomarker1", "biomarker2"),
   level_control = "group_1",
   level_baseline = "time_1"
 )
