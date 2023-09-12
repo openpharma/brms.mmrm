@@ -104,4 +104,8 @@ brm_data(
   level_baseline = "time_1"
 )
 }
+\seealso{
+Other data: 
+\code{\link{brm_data_change}()}
+}
 \concept{data}
