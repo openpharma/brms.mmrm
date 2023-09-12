@@ -168,35 +168,26 @@ data <- data %>%
 
 data
 #> # A tibble: 800 × 9
-#>    response missing group   time   patient biomarker1 biomarker2 status1 status2
-#>       <dbl> <lgl>   <chr>   <chr>  <chr>        <dbl>      <dbl> <chr>   <chr>  
-#>  1       NA FALSE   group_1 time_1 patien…      0.328     -0.655 present absent 
-#>  2       NA TRUE    group_1 time_2 patien…      0.328     -0.655 present absent 
-#>  3       NA TRUE    group_1 time_3 patien…      0.328     -0.655 present absent 
-#>  4       NA TRUE    group_1 time_4 patien…      0.328     -0.655 present absent 
-#>  5       NA FALSE   group_1 time_1 patien…      1.04      -0.779 absent  absent 
-#>  6       NA FALSE   group_1 time_2 patien…      1.04      -0.779 absent  absent 
-#>  7       NA FALSE   group_1 time_3 patien…      1.04      -0.779 absent  absent 
-#>  8       NA TRUE    group_1 time_4 patien…      1.04      -0.779 absent  absent 
-#>  9       NA FALSE   group_1 time_1 patien…      0.717     -0.954 present absent 
-#> 10       NA FALSE   group_1 time_2 patien…      0.717     -0.954 present absent 
+#>    response missing group   time   patient  biomarker1 biomarker2 status1 status2
+#>       <dbl> <lgl>   <chr>   <chr>  <chr>         <dbl>      <dbl> <chr>   <chr>  
+#>  1       NA FALSE   group_1 time_1 patient…      0.328     -0.655 present absent 
+#>  2       NA TRUE    group_1 time_2 patient…      0.328     -0.655 present absent 
+#>  3       NA TRUE    group_1 time_3 patient…      0.328     -0.655 present absent 
+#>  4       NA TRUE    group_1 time_4 patient…      0.328     -0.655 present absent 
+#>  5       NA FALSE   group_1 time_1 patient…      1.04      -0.779 absent  absent 
+#>  6       NA FALSE   group_1 time_2 patient…      1.04      -0.779 absent  absent 
+#>  7       NA FALSE   group_1 time_3 patient…      1.04      -0.779 absent  absent 
+#>  8       NA TRUE    group_1 time_4 patient…      1.04      -0.779 absent  absent 
+#>  9       NA FALSE   group_1 time_1 patient…      0.717     -0.954 present absent 
+#> 10       NA FALSE   group_1 time_2 patient…      0.717     -0.954 present absent 
 #> # ℹ 790 more rows
 ```
 
-As described in the next section, `brms.mmrm` has a convenient function `brm_simulate_prior()` to simulate the outcome variable `response` from the prior predictive distribution. However, if you prefer a full custom approach, you may need granular details about the parameterization, which requires the model matrix. Fortunately, `brms` supports a `make_standata()` function to provide this, given a dataset and a formula. You may need to temporarily set the response variable to something non-missing, and you may wish to specify a custom prior.
+As described in the next section, `brms.mmrm` has a convenient function `brm_simulate_prior()` to simulate the outcome variable `response` using the data skeleton above and the prior predictive distribution. However, if you prefer a full custom approach, you may need granular details about the parameterization, which requires the model matrix. Fortunately, `brms` supports a `make_standata()` function to provide this, given a dataset and a formula. You may need to temporarily set the response variable to something non-missing, and you may wish to specify a custom prior.
 
 
 ```r
 library(brms)
-#> Loading required package: Rcpp
-#> Loading 'brms' package (version 2.20.1). Useful instructions
-#> can be found by typing help('brms'). A more detailed introduction
-#> to the package is available through vignette('brms_overview').
-#> 
-#> Attaching package: 'brms'
-#> The following object is masked from 'package:stats':
-#> 
-#>     ar
 formula <- brm_formula(data = data)
 formula
 #> response ~ time + group + group:time + biomarker1 + biomarker2 + status1 + status2 + unstr(time = time, gr = patient) 
@@ -265,7 +256,9 @@ The output object `sim` has multiple draws from the prior predictive distributio
 
 ```r
 names(sim)
-#> [1] "data"         "model"        "model_matrix" "outcome"      "parameters"
+#> [1] "data"         "model"       
+#> [3] "model_matrix" "outcome"     
+#> [5] "parameters"
 ```
 
 In addition, `sim$data` has a copy of the original dataset, but with the outcome variable taken from the final draw from the prior predictive distribution. In addition, the missingness pattern is automatically applied so that `sim$data$response` is `NA_real_` whenever `sim$data$missing` equals `TRUE`.
@@ -274,19 +267,23 @@ In addition, `sim$data` has a copy of the original dataset, but with the outcome
 ```r
 sim$data
 #> # A tibble: 800 × 9
-#>    response missing group   time   patient biomarker1 biomarker2 status1 status2
-#>       <dbl> <lgl>   <chr>   <chr>  <chr>        <dbl>      <dbl> <chr>   <chr>  
-#>  1   -1.47  FALSE   group_1 time_1 patien…      0.328     -0.655 present absent 
-#>  2   NA     TRUE    group_1 time_2 patien…      0.328     -0.655 present absent 
-#>  3   NA     TRUE    group_1 time_3 patien…      0.328     -0.655 present absent 
-#>  4   NA     TRUE    group_1 time_4 patien…      0.328     -0.655 present absent 
-#>  5    2.53  FALSE   group_1 time_1 patien…      1.04      -0.779 absent  absent 
-#>  6   -0.739 FALSE   group_1 time_2 patien…      1.04      -0.779 absent  absent 
-#>  7    3.41  FALSE   group_1 time_3 patien…      1.04      -0.779 absent  absent 
-#>  8   NA     TRUE    group_1 time_4 patien…      1.04      -0.779 absent  absent 
-#>  9    6.93  FALSE   group_1 time_1 patien…      0.717     -0.954 present absent 
-#> 10   -2.07  FALSE   group_1 time_2 patien…      0.717     -0.954 present absent 
+#>    response missing group   time  
+#>       <dbl> <lgl>   <chr>   <chr> 
+#>  1   -1.47  FALSE   group_1 time_1
+#>  2   NA     TRUE    group_1 time_2
+#>  3   NA     TRUE    group_1 time_3
+#>  4   NA     TRUE    group_1 time_4
+#>  5    2.53  FALSE   group_1 time_1
+#>  6   -0.739 FALSE   group_1 time_2
+#>  7    3.41  FALSE   group_1 time_3
+#>  8   NA     TRUE    group_1 time_4
+#>  9    6.93  FALSE   group_1 time_1
+#> 10   -2.07  FALSE   group_1 time_2
 #> # ℹ 790 more rows
+#> # ℹ 5 more variables: patient <chr>,
+#> #   biomarker1 <dbl>,
+#> #   biomarker2 <dbl>, status1 <chr>,
+#> #   status2 <chr>
 ```
 
 # Posterior
@@ -311,6 +308,6 @@ str(outcome_draws)
 dim(data)
 #> [1] 800   9
 
-sum(is.na(data$response))
-#> [1] 141
+sum(!is.na(data$response))
+#> [1] 659
 ```

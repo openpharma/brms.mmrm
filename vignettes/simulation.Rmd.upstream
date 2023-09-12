@@ -19,8 +19,10 @@ knitr::opts_chunk$set(
   paged.print = FALSE,
   eval = identical(tolower(Sys.getenv("NOT_CRAN", unset = "")), "true")
 )
+library(brms)
 library(brms.mmrm)
 library(dplyr)
+library(magrittr)
 ```
 
 There are multiple ways to simulate MMRM datasets using `brms` and `brms.mmrm`.
@@ -103,7 +105,7 @@ data <- data %>%
 data
 ```
 
-As described in the next section, `brms.mmrm` has a convenient function `brm_simulate_prior()` to simulate the outcome variable `response` from the prior predictive distribution. However, if you prefer a full custom approach, you may need granular details about the parameterization, which requires the model matrix. Fortunately, `brms` supports a `make_standata()` function to provide this, given a dataset and a formula. You may need to temporarily set the response variable to something non-missing, and you may wish to specify a custom prior.
+As described in the next section, `brms.mmrm` has a convenient function `brm_simulate_prior()` to simulate the outcome variable `response` using the data skeleton above and the prior predictive distribution. However, if you prefer a full custom approach, you may need granular details about the parameterization, which requires the model matrix. Fortunately, `brms` supports a `make_standata()` function to provide this, given a dataset and a formula. You may need to temporarily set the response variable to something non-missing, and you may wish to specify a custom prior.
 
 ```{r}
 library(brms)
@@ -171,5 +173,5 @@ str(outcome_draws)
 
 dim(data)
 
-sum(is.na(data$response))
+sum(!is.na(data$response))
 ```
