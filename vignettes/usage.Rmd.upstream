@@ -16,6 +16,7 @@ knitr::opts_chunk$set(
   comment = "#>",
   fig.width = 7,
   fig.height = 5,
+  fig.path = "usage/",
   eval = identical(tolower(Sys.getenv("NOT_CRAN", unset = "")), "true")
 )
 library(brms.mmrm)
@@ -194,7 +195,7 @@ summaries_data
 
 The `brm_plot_compare()` function compares means and intervals from many different models and data sources in the same plot. First, we need the marginals of the data.
 
-```{r}
+```{r response}
 brm_plot_compare(
   data = summaries_data,
   model1 = summaries,
@@ -204,7 +205,7 @@ brm_plot_compare(
 
 If you omit the marginals of the data, you can show inference on change from baseline or the treatment effect.
 
-```{r}
+```{r difference}
 brm_plot_compare(
   model1 = summaries,
   model2 = summaries,
@@ -214,6 +215,6 @@ brm_plot_compare(
 
 Finally, `brm_plot_draws()` can plot the posterior draws of the response, change from baseline, or treatment difference.
 
-```{r}
+```{r draws}
 brm_plot_draws(draws = draws$difference)
 ```
