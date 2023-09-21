@@ -96,6 +96,6 @@ brm_simulate_prior <- function(
     model = model,
     model_matrix = stan_data$X,
     outcome = outcome_draws,
-    parameters = posterior::summarize_draws(model)
+    parameters = posterior::as_draws_df(model)
   )
 }
