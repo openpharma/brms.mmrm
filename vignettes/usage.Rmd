@@ -34,18 +34,18 @@ raw_data <- brm_simulate_simple(
 
 raw_data
 #> # A tibble: 1,200 × 7
-#>    response group time  patient biomarker1 biomarker2 biomarker3
-#>       <dbl> <chr> <chr> <chr>        <dbl>      <dbl>      <dbl>
-#>  1    1.11  grou… time… patien…      1.31      -0.361      1.52 
-#>  2    2.15  grou… time… patien…      1.31      -0.361      1.52 
-#>  3    2.54  grou… time… patien…      1.31      -0.361      1.52 
-#>  4   -1.73  grou… time… patien…      1.31      -0.361      1.52 
-#>  5   -0.180 grou… time… patien…      0.107     -2.44      -0.139
-#>  6    0.626 grou… time… patien…      0.107     -2.44      -0.139
-#>  7   -0.221 grou… time… patien…      0.107     -2.44      -0.139
-#>  8   -1.53  grou… time… patien…      0.107     -2.44      -0.139
-#>  9    0.393 grou… time… patien…      1.44      -0.419     -1.54 
-#> 10    0.442 grou… time… patien…      1.44      -0.419     -1.54 
+#>    response group   time   patient     biomarker1 biomarker2 biomarker3
+#>       <dbl> <chr>   <chr>  <chr>            <dbl>      <dbl>      <dbl>
+#>  1    1.11  group_1 time_1 patient_1        1.31      -0.361      1.52 
+#>  2    2.15  group_1 time_2 patient_1        1.31      -0.361      1.52 
+#>  3    2.54  group_1 time_3 patient_1        1.31      -0.361      1.52 
+#>  4   -1.73  group_1 time_4 patient_1        1.31      -0.361      1.52 
+#>  5   -0.180 group_1 time_1 patient_10       0.107     -2.44      -0.139
+#>  6    0.626 group_1 time_2 patient_10       0.107     -2.44      -0.139
+#>  7   -0.221 group_1 time_3 patient_10       0.107     -2.44      -0.139
+#>  8   -1.53  group_1 time_4 patient_10       0.107     -2.44      -0.139
+#>  9    0.393 group_1 time_1 patient_100      1.44      -0.419     -1.54 
+#> 10    0.442 group_1 time_2 patient_100      1.44      -0.419     -1.54 
 #> # ℹ 1,190 more rows
 ```
 
@@ -142,6 +142,83 @@ formula
 #> sigma ~ 0 + time
 ```
 
+# Parameterization
+
+The formula is not the only factor
+that ultimately determines the fixed effect parameterization.
+The ordering of the categorical variables in the data,
+as well as the `contrast` option in R, affect the
+construction of the model matrix. To see the model
+matrix that will ultimately be used in `brm_model()`,
+run `brms::make_standata()` and examine the `X` element
+of the returned list.
+
+The `contrast` option accepts a named vector of two character vectors which govern `model.matrix()` contrasts for unordered and ordered variables, respectively.
+
+
+```r
+options(contrasts = c(unordered = "contr.SAS", ordered = "contr.poly"))
+```
+
+The `make_standata()` function lets you see the data that `brms` will generate for Stan. This includes the fixed effects model matrix `X`. Note the differences in the `groupgroup_*` additive terms between the matrix below and the one above.
+
+```r
+head(brms::make_standata(formula = formula, data = data)$X)
+#>   Intercept timetime_1 timetime_2 timetime_3 groupgroup_1 groupgroup_2 biomarker1
+#> 1         1          1          0          0            1            0  1.3126508
+#> 2         1          0          1          0            1            0  1.3126508
+#> 3         1          0          0          1            1            0  1.3126508
+#> 4         1          0          0          0            1            0  1.3126508
+#> 5         1          1          0          0            1            0  0.1068624
+#> 6         1          0          1          0            1            0  0.1068624
+#>   biomarker2 timetime_1:groupgroup_1 timetime_2:groupgroup_1 timetime_3:groupgroup_1
+#> 1 -0.3608809                       1                       0                       0
+#> 2 -0.3608809                       0                       1                       0
+#> 3 -0.3608809                       0                       0                       1
+#> 4 -0.3608809                       0                       0                       0
+#> 5 -2.4441488                       1                       0                       0
+#> 6 -2.4441488                       0                       1                       0
+#>   timetime_1:groupgroup_2 timetime_2:groupgroup_2 timetime_3:groupgroup_2
+#> 1                       0                       0                       0
+#> 2                       0                       0                       0
+#> 3                       0                       0                       0
+#> 4                       0                       0                       0
+#> 5                       0                       0                       0
+#> 6                       0                       0                       0
+```
+
+If you choose a different contrast method, a different model matrix may result.
+
+
+```r
+options(
+  contrasts = c(unordered = "contr.treatment", ordered = "contr.poly")
+)
+# different model matrix than before:
+head(brms::make_standata(formula = formula, data = data)$X)
+#>   Intercept timetime_2 timetime_3 timetime_4 groupgroup_2 groupgroup_3 biomarker1
+#> 1         1          0          0          0            0            0  1.3126508
+#> 2         1          1          0          0            0            0  1.3126508
+#> 3         1          0          1          0            0            0  1.3126508
+#> 4         1          0          0          1            0            0  1.3126508
+#> 5         1          0          0          0            0            0  0.1068624
+#> 6         1          1          0          0            0            0  0.1068624
+#>   biomarker2 timetime_2:groupgroup_2 timetime_3:groupgroup_2 timetime_4:groupgroup_2
+#> 1 -0.3608809                       0                       0                       0
+#> 2 -0.3608809                       0                       0                       0
+#> 3 -0.3608809                       0                       0                       0
+#> 4 -0.3608809                       0                       0                       0
+#> 5 -2.4441488                       0                       0                       0
+#> 6 -2.4441488                       0                       0                       0
+#>   timetime_2:groupgroup_3 timetime_3:groupgroup_3 timetime_4:groupgroup_3
+#> 1                       0                       0                       0
+#> 2                       0                       0                       0
+#> 3                       0                       0                       0
+#> 4                       0                       0                       0
+#> 5                       0                       0                       0
+#> 6                       0                       0                       0
+```
+
 # Priors
 
 Some analyses require informative priors, others require non-informative ones. Please use [`brms`](https://paul-buerkner.github.io/brms/) to construct a prior suitable for your analysis. The [`brms`](https://paul-buerkner.github.io/brms/) package has documentation on how its default priors are constructed and how to set your own priors. Once you have an R object that represents the joint prior distribution of your model, you can pass it to the `brm_model()` function described below. The `get_prior()` function shows the default priors for a given dataset and model formula.
@@ -149,50 +226,50 @@ Some analyses require informative priors, others require non-informative ones. P
 
 ```r
 brms::get_prior(data = data, formula = formula)
-#>                   prior     class                    coef group
-#>                  (flat)         b                              
-#>                  (flat)         b              biomarker1      
-#>                  (flat)         b              biomarker2      
-#>                  (flat)         b            groupgroup_2      
-#>                  (flat)         b            groupgroup_3      
-#>                  (flat)         b              timetime_2      
-#>                  (flat)         b timetime_2:groupgroup_2      
-#>                  (flat)         b timetime_2:groupgroup_3      
-#>                  (flat)         b              timetime_3      
-#>                  (flat)         b timetime_3:groupgroup_2      
-#>                  (flat)         b timetime_3:groupgroup_3      
-#>                  (flat)         b              timetime_4      
-#>                  (flat)         b timetime_4:groupgroup_2      
-#>                  (flat)         b timetime_4:groupgroup_3      
-#>                  lkj(1)   cortime                              
-#>  student_t(3, 0.9, 2.5) Intercept                              
-#>                  (flat)         b                              
-#>                  (flat)         b              timetime_1      
-#>                  (flat)         b              timetime_2      
-#>                  (flat)         b              timetime_3      
-#>                  (flat)         b              timetime_4      
-#>  resp  dpar nlpar lb ub       source
-#>                              default
-#>                         (vectorized)
-#>                         (vectorized)
-#>                         (vectorized)
-#>                         (vectorized)
-#>                         (vectorized)
-#>                         (vectorized)
-#>                         (vectorized)
-#>                         (vectorized)
-#>                         (vectorized)
-#>                         (vectorized)
-#>                         (vectorized)
-#>                         (vectorized)
-#>                         (vectorized)
-#>                              default
-#>                              default
-#>       sigma                  default
-#>       sigma             (vectorized)
-#>       sigma             (vectorized)
-#>       sigma             (vectorized)
-#>       sigma             (vectorized)
+#>                   prior     class                    coef group resp  dpar nlpar lb ub
+#>                  (flat)         b                                                     
+#>                  (flat)         b              biomarker1                             
+#>                  (flat)         b              biomarker2                             
+#>                  (flat)         b            groupgroup_2                             
+#>                  (flat)         b            groupgroup_3                             
+#>                  (flat)         b              timetime_2                             
+#>                  (flat)         b timetime_2:groupgroup_2                             
+#>                  (flat)         b timetime_2:groupgroup_3                             
+#>                  (flat)         b              timetime_3                             
+#>                  (flat)         b timetime_3:groupgroup_2                             
+#>                  (flat)         b timetime_3:groupgroup_3                             
+#>                  (flat)         b              timetime_4                             
+#>                  (flat)         b timetime_4:groupgroup_2                             
+#>                  (flat)         b timetime_4:groupgroup_3                             
+#>                  lkj(1)   cortime                                                     
+#>  student_t(3, 0.9, 2.5) Intercept                                                     
+#>                  (flat)         b                                    sigma            
+#>                  (flat)         b              timetime_1            sigma            
+#>                  (flat)         b              timetime_2            sigma            
+#>                  (flat)         b              timetime_3            sigma            
+#>                  (flat)         b              timetime_4            sigma            
+#>        source
+#>       default
+#>  (vectorized)
+#>  (vectorized)
+#>  (vectorized)
+#>  (vectorized)
+#>  (vectorized)
+#>  (vectorized)
+#>  (vectorized)
+#>  (vectorized)
+#>  (vectorized)
+#>  (vectorized)
+#>  (vectorized)
+#>  (vectorized)
+#>  (vectorized)
+#>       default
+#>       default
+#>       default
+#>  (vectorized)
+#>  (vectorized)
+#>  (vectorized)
+#>  (vectorized)
 ```
 
 # Model
@@ -220,192 +297,36 @@ model
 #>          total post-warmup draws = 4000
 #> 
 #> Correlation Structures:
-#>                        Estimate
-#> cortime(time_1,time_2)     0.49
-#> cortime(time_1,time_3)    -0.49
-#> cortime(time_2,time_3)    -0.26
-#> cortime(time_1,time_4)    -0.15
-#> cortime(time_2,time_4)     0.14
-#> cortime(time_3,time_4)     0.08
-#>                        Est.Error
-#> cortime(time_1,time_2)      0.04
-#> cortime(time_1,time_3)      0.04
-#> cortime(time_2,time_3)      0.06
-#> cortime(time_1,time_4)      0.05
-#> cortime(time_2,time_4)      0.06
-#> cortime(time_3,time_4)      0.06
-#>                        l-95% CI
-#> cortime(time_1,time_2)     0.40
-#> cortime(time_1,time_3)    -0.57
-#> cortime(time_2,time_3)    -0.37
-#> cortime(time_1,time_4)    -0.25
-#> cortime(time_2,time_4)     0.03
-#> cortime(time_3,time_4)    -0.04
-#>                        u-95% CI
-#> cortime(time_1,time_2)     0.58
-#> cortime(time_1,time_3)    -0.40
-#> cortime(time_2,time_3)    -0.15
-#> cortime(time_1,time_4)    -0.04
-#> cortime(time_2,time_4)     0.25
-#> cortime(time_3,time_4)     0.19
-#>                        Rhat
-#> cortime(time_1,time_2) 1.00
-#> cortime(time_1,time_3) 1.00
-#> cortime(time_2,time_3) 1.00
-#> cortime(time_1,time_4) 1.00
-#> cortime(time_2,time_4) 1.00
-#> cortime(time_3,time_4) 1.00
-#>                        Bulk_ESS
-#> cortime(time_1,time_2)     5073
-#> cortime(time_1,time_3)     5197
-#> cortime(time_2,time_3)     5131
-#> cortime(time_1,time_4)     6564
-#> cortime(time_2,time_4)     5987
-#> cortime(time_3,time_4)     6469
-#>                        Tail_ESS
-#> cortime(time_1,time_2)     3186
-#> cortime(time_1,time_3)     3348
-#> cortime(time_2,time_3)     2786
-#> cortime(time_1,time_4)     3319
-#> cortime(time_2,time_4)     3071
-#> cortime(time_3,time_4)     3246
+#>                        Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+#> cortime(time_1,time_2)     0.50      0.04     0.41     0.57 1.00     4516     3319
+#> cortime(time_1,time_3)    -0.49      0.04    -0.57    -0.40 1.00     5194     3374
+#> cortime(time_2,time_3)    -0.26      0.05    -0.36    -0.15 1.00     4833     3372
+#> cortime(time_1,time_4)    -0.15      0.06    -0.26    -0.03 1.00     5513     2907
+#> cortime(time_2,time_4)     0.14      0.06     0.03     0.25 1.00     5748     2987
+#> cortime(time_3,time_4)     0.07      0.06    -0.04     0.19 1.00     5557     2927
 #> 
 #> Population-Level Effects: 
-#>                         Estimate
-#> Intercept                  -0.20
-#> timetime_2                  1.32
-#> timetime_3                  0.51
-#> timetime_4                 -1.44
-#> groupgroup_2                1.35
-#> groupgroup_3                1.55
-#> biomarker1                  0.02
-#> biomarker2                  0.02
-#> timetime_2:groupgroup_2     0.04
-#> timetime_3:groupgroup_2    -0.17
-#> timetime_4:groupgroup_2    -0.08
-#> timetime_2:groupgroup_3     0.02
-#> timetime_3:groupgroup_3    -0.19
-#> timetime_4:groupgroup_3    -0.27
-#> sigma_timetime_1           -0.06
-#> sigma_timetime_2            0.08
-#> sigma_timetime_3            0.09
-#> sigma_timetime_4            0.26
-#>                         Est.Error
-#> Intercept                    0.10
-#> timetime_2                   0.10
-#> timetime_3                   0.18
-#> timetime_4                   0.18
-#> groupgroup_2                 0.13
-#> groupgroup_3                 0.13
-#> biomarker1                   0.03
-#> biomarker2                   0.03
-#> timetime_2:groupgroup_2      0.14
-#> timetime_3:groupgroup_2      0.25
-#> timetime_4:groupgroup_2      0.25
-#> timetime_2:groupgroup_3      0.14
-#> timetime_3:groupgroup_3      0.25
-#> timetime_4:groupgroup_3      0.25
-#> sigma_timetime_1             0.04
-#> sigma_timetime_2             0.04
-#> sigma_timetime_3             0.04
-#> sigma_timetime_4             0.04
-#>                         l-95% CI
-#> Intercept                  -0.39
-#> timetime_2                  1.12
-#> timetime_3                  0.17
-#> timetime_4                 -1.79
-#> groupgroup_2                1.09
-#> groupgroup_3                1.28
-#> biomarker1                 -0.03
-#> biomarker2                 -0.03
-#> timetime_2:groupgroup_2    -0.24
-#> timetime_3:groupgroup_2    -0.65
-#> timetime_4:groupgroup_2    -0.57
-#> timetime_2:groupgroup_3    -0.26
-#> timetime_3:groupgroup_3    -0.68
-#> timetime_4:groupgroup_3    -0.76
-#> sigma_timetime_1           -0.14
-#> sigma_timetime_2           -0.00
-#> sigma_timetime_3            0.01
-#> sigma_timetime_4            0.18
-#>                         u-95% CI
-#> Intercept                  -0.01
-#> timetime_2                  1.52
-#> timetime_3                  0.86
-#> timetime_4                 -1.10
-#> groupgroup_2                1.62
-#> groupgroup_3                1.81
-#> biomarker1                  0.07
-#> biomarker2                  0.07
-#> timetime_2:groupgroup_2     0.31
-#> timetime_3:groupgroup_2     0.32
-#> timetime_4:groupgroup_2     0.41
-#> timetime_2:groupgroup_3     0.32
-#> timetime_3:groupgroup_3     0.29
-#> timetime_4:groupgroup_3     0.20
-#> sigma_timetime_1            0.02
-#> sigma_timetime_2            0.16
-#> sigma_timetime_3            0.17
-#> sigma_timetime_4            0.34
-#>                         Rhat
-#> Intercept               1.00
-#> timetime_2              1.00
-#> timetime_3              1.00
-#> timetime_4              1.00
-#> groupgroup_2            1.00
-#> groupgroup_3            1.00
-#> biomarker1              1.00
-#> biomarker2              1.00
-#> timetime_2:groupgroup_2 1.00
-#> timetime_3:groupgroup_2 1.00
-#> timetime_4:groupgroup_2 1.00
-#> timetime_2:groupgroup_3 1.00
-#> timetime_3:groupgroup_3 1.00
-#> timetime_4:groupgroup_3 1.00
-#> sigma_timetime_1        1.00
-#> sigma_timetime_2        1.00
-#> sigma_timetime_3        1.00
-#> sigma_timetime_4        1.00
-#>                         Bulk_ESS
-#> Intercept                   1462
-#> timetime_2                  1941
-#> timetime_3                  1592
-#> timetime_4                  1612
-#> groupgroup_2                1514
-#> groupgroup_3                1572
-#> biomarker1                  6023
-#> biomarker2                  6342
-#> timetime_2:groupgroup_2     2187
-#> timetime_3:groupgroup_2     1692
-#> timetime_4:groupgroup_2     1811
-#> timetime_2:groupgroup_3     2210
-#> timetime_3:groupgroup_3     1531
-#> timetime_4:groupgroup_3     1739
-#> sigma_timetime_1            4527
-#> sigma_timetime_2            4901
-#> sigma_timetime_3            5446
-#> sigma_timetime_4            6614
-#>                         Tail_ESS
-#> Intercept                   1836
-#> timetime_2                  2866
-#> timetime_3                  1970
-#> timetime_4                  2118
-#> groupgroup_2                2403
-#> groupgroup_3                2442
-#> biomarker1                  2983
-#> biomarker2                  2646
-#> timetime_2:groupgroup_2     2723
-#> timetime_3:groupgroup_2     2214
-#> timetime_4:groupgroup_2     2320
-#> timetime_2:groupgroup_3     2913
-#> timetime_3:groupgroup_3     2200
-#> timetime_4:groupgroup_3     2627
-#> sigma_timetime_1            3156
-#> sigma_timetime_2            2810
-#> sigma_timetime_3            3485
-#> sigma_timetime_4            2952
+#>                         Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+#> Intercept                  -0.20      0.09    -0.38    -0.02 1.00     1213     2044
+#> timetime_2                  1.32      0.10     1.12     1.51 1.00     1948     2529
+#> timetime_3                  0.51      0.17     0.17     0.85 1.00     1324     2119
+#> timetime_4                 -1.44      0.17    -1.78    -1.12 1.00     1285     2264
+#> groupgroup_2                1.35      0.13     1.09     1.61 1.00     1409     2368
+#> groupgroup_3                1.55      0.13     1.29     1.79 1.00     1325     2469
+#> biomarker1                  0.02      0.03    -0.03     0.07 1.00     5913     3069
+#> biomarker2                  0.02      0.03    -0.03     0.07 1.00     6207     2738
+#> timetime_2:groupgroup_2     0.04      0.14    -0.24     0.33 1.00     2261     2921
+#> timetime_3:groupgroup_2    -0.16      0.24    -0.63     0.31 1.00     1459     2458
+#> timetime_4:groupgroup_2    -0.07      0.24    -0.53     0.41 1.00     1493     2212
+#> timetime_2:groupgroup_3     0.02      0.14    -0.25     0.31 1.00     2131     3201
+#> timetime_3:groupgroup_3    -0.20      0.24    -0.67     0.28 1.00     1453     2171
+#> timetime_4:groupgroup_3    -0.27      0.24    -0.75     0.20 1.00     1393     2081
+#> sigma_timetime_1           -0.06      0.04    -0.14     0.02 1.00     4289     3157
+#> sigma_timetime_2            0.08      0.04     0.00     0.16 1.00     4967     3265
+#> sigma_timetime_3            0.09      0.04     0.01     0.17 1.00     4796     3073
+#> sigma_timetime_4            0.26      0.04     0.18     0.34 1.00     6301     2938
 #> 
-#> Draws were sampled using sampling(NUTS). For each parameter, Bulk_ESS
+#> Draws were sampled using sample(hmc). For each parameter, Bulk_ESS
 #> and Tail_ESS are effective sample size measures, and Rhat is the potential
 #> scale reduction factor on split chains (at convergence, Rhat = 1).
 ```
@@ -428,329 +349,109 @@ draws <- brm_marginal_draws(model = model, data = data)
 draws
 #> $response
 #> # A draws_df: 1000 iterations, 4 chains, and 12 variables
-#>    group_1|time_1
-#> 1          -0.206
-#> 2          -0.134
-#> 3          -0.148
-#> 4          -0.132
-#> 5          -0.227
-#> 6          -0.079
-#> 7          -0.235
-#> 8          -0.211
-#> 9          -0.210
-#> 10         -0.263
-#>    group_2|time_1
-#> 1            1.12
-#> 2            1.00
-#> 3            1.22
-#> 4            1.13
-#> 5            1.25
-#> 6            1.16
-#> 7            0.96
-#> 8            0.98
-#> 9            1.34
-#> 10           1.02
-#>    group_3|time_1
-#> 1             1.4
-#> 2             1.5
-#> 3             1.3
-#> 4             1.3
-#> 5             1.2
-#> 6             1.5
-#> 7             1.3
-#> 8             1.4
-#> 9             1.5
-#> 10            1.3
-#>    group_1|time_2
-#> 1            1.07
-#> 2            1.22
-#> 3            1.06
-#> 4            1.25
-#> 5            0.99
-#> 6            1.21
-#> 7            1.16
-#> 8            1.14
-#> 9            1.34
-#> 10           1.22
-#>    group_2|time_2
-#> 1             2.3
-#> 2             2.5
-#> 3             2.4
-#> 4             2.8
-#> 5             2.5
-#> 6             2.5
-#> 7             2.4
-#> 8             2.4
-#> 9             2.7
-#> 10            2.3
-#>    group_3|time_2
-#> 1             2.7
-#> 2             2.7
-#> 3             2.7
-#> 4             2.7
-#> 5             2.3
-#> 6             2.9
-#> 7             2.8
-#> 8             2.8
-#> 9             2.7
-#> 10            2.8
-#>    group_1|time_3
-#> 1            0.24
-#> 2            0.40
-#> 3            0.23
-#> 4            0.47
-#> 5            0.41
-#> 6            0.36
-#> 7            0.48
-#> 8            0.45
-#> 9            0.28
-#> 10           0.44
-#>    group_2|time_3
-#> 1             1.4
-#> 2             1.6
-#> 3             1.3
-#> 4             1.5
-#> 5             1.5
-#> 6             1.5
-#> 7             1.7
-#> 8             1.6
-#> 9             1.3
-#> 10            1.5
+#>    group_1|time_1 group_2|time_1 group_3|time_1 group_1|time_2 group_2|time_2
+#> 1          -0.256           1.03            1.2           0.94            2.3
+#> 2          -0.207           1.04            1.2           1.01            2.6
+#> 3          -0.090           1.18            1.5           0.94            2.3
+#> 4          -0.011           1.29            1.4           1.36            2.6
+#> 5          -0.070           1.04            1.1           1.09            2.6
+#> 6          -0.032           1.14            1.5           1.23            2.5
+#> 7          -0.093           1.06            1.2           1.13            2.5
+#> 8          -0.034           1.08            1.3           1.26            2.5
+#> 9          -0.167           0.98            1.4           1.09            2.4
+#> 10         -0.204           1.21            1.3           1.07            2.6
+#>    group_3|time_2 group_1|time_3 group_2|time_3
+#> 1             2.6          0.338            1.4
+#> 2             2.5          0.474            1.6
+#> 3             2.7          0.055            1.5
+#> 4             2.9          0.234            1.4
+#> 5             2.5          0.260            1.5
+#> 6             2.8          0.194            1.6
+#> 7             2.6          0.335            1.6
+#> 8             2.6          0.077            1.7
+#> 9             2.8          0.252            1.6
+#> 10            2.6          0.288            1.6
 #> # ... with 3990 more draws, and 4 more variables
 #> # ... hidden reserved variables {'.chain', '.iteration', '.draw'}
 #> 
 #> $change
 #> # A draws_df: 1000 iterations, 4 chains, and 9 variables
-#>    group_1|time_2
-#> 1             1.3
-#> 2             1.4
-#> 3             1.2
-#> 4             1.4
-#> 5             1.2
-#> 6             1.3
-#> 7             1.4
-#> 8             1.3
-#> 9             1.6
-#> 10            1.5
-#>    group_1|time_3
-#> 1            0.45
-#> 2            0.54
-#> 3            0.37
-#> 4            0.60
-#> 5            0.63
-#> 6            0.44
-#> 7            0.72
-#> 8            0.66
-#> 9            0.49
-#> 10           0.70
-#>    group_1|time_4
-#> 1            -1.5
-#> 2            -1.3
-#> 3            -1.6
-#> 4            -1.4
-#> 5            -1.5
-#> 6            -1.3
-#> 7            -1.3
-#> 8            -1.3
-#> 9            -1.4
-#> 10           -1.2
-#>    group_2|time_2
-#> 1             1.2
-#> 2             1.5
-#> 3             1.1
-#> 4             1.7
-#> 5             1.2
-#> 6             1.3
-#> 7             1.5
-#> 8             1.4
-#> 9             1.4
-#> 10            1.3
-#>    group_2|time_3
-#> 1           0.260
-#> 2           0.569
-#> 3           0.101
-#> 4           0.370
-#> 5           0.230
-#> 6           0.367
-#> 7           0.756
-#> 8           0.644
-#> 9          -0.024
-#> 10          0.492
-#>    group_2|time_4
-#> 1            -1.5
-#> 2            -1.4
-#> 3            -1.8
-#> 4            -1.3
-#> 5            -1.8
-#> 6            -1.4
-#> 7            -1.3
-#> 8            -1.4
-#> 9            -1.7
-#> 10           -1.4
-#>    group_3|time_2
-#> 1             1.3
-#> 2             1.2
-#> 3             1.3
-#> 4             1.4
-#> 5             1.1
-#> 6             1.4
-#> 7             1.5
-#> 8             1.4
-#> 9             1.2
-#> 10            1.5
-#>    group_3|time_3
-#> 1           0.262
-#> 2           0.243
-#> 3           0.355
-#> 4           0.230
-#> 5           0.481
-#> 6           0.096
-#> 7           0.335
-#> 8           0.369
-#> 9           0.227
-#> 10          0.395
+#>    group_1|time_2 group_1|time_3 group_1|time_4 group_2|time_2 group_2|time_3
+#> 1             1.2           0.59           -1.4            1.3           0.38
+#> 2             1.2           0.68           -1.4            1.5           0.57
+#> 3             1.0           0.14           -1.6            1.1           0.36
+#> 4             1.4           0.24           -1.7            1.3           0.16
+#> 5             1.2           0.33           -1.4            1.5           0.50
+#> 6             1.3           0.23           -2.0            1.3           0.42
+#> 7             1.2           0.43           -1.6            1.4           0.53
+#> 8             1.3           0.11           -1.7            1.4           0.60
+#> 9             1.3           0.42           -1.5            1.4           0.65
+#> 10            1.3           0.49           -1.5            1.4           0.42
+#>    group_2|time_4 group_3|time_2 group_3|time_3
+#> 1            -1.5            1.4         0.6418
+#> 2            -1.4            1.2         0.3158
+#> 3            -1.5            1.3         0.0437
+#> 4            -1.7            1.5         0.1925
+#> 5            -1.2            1.4         0.7741
+#> 6            -1.7            1.3         0.0014
+#> 7            -1.2            1.4         0.5891
+#> 8            -1.5            1.3         0.3694
+#> 9            -1.3            1.4         0.1679
+#> 10           -1.6            1.3         0.4824
 #> # ... with 3990 more draws, and 1 more variables
 #> # ... hidden reserved variables {'.chain', '.iteration', '.draw'}
 #> 
 #> $difference
 #> # A draws_df: 1000 iterations, 4 chains, and 6 variables
-#>    group_2|time_2
-#> 1          -0.059
-#> 2           0.172
-#> 3          -0.076
-#> 4           0.280
-#> 5          -0.013
-#> 6           0.042
-#> 7           0.080
-#> 8           0.035
-#> 9          -0.193
-#> 10         -0.198
-#>    group_2|time_3
-#> 1          -0.190
-#> 2           0.033
-#> 3          -0.273
-#> 4          -0.234
-#> 5          -0.404
-#> 6          -0.072
-#> 7           0.040
-#> 8          -0.012
-#> 9          -0.512
-#> 10         -0.208
-#>    group_2|time_4
-#> 1           0.019
-#> 2          -0.056
-#> 3          -0.191
-#> 4           0.122
-#> 5          -0.314
-#> 6          -0.098
-#> 7           0.050
-#> 8          -0.031
-#> 9          -0.286
-#> 10         -0.178
-#>    group_3|time_2
-#> 1         0.02699
-#> 2        -0.12298
-#> 3         0.13425
-#> 4        -0.01787
-#> 5        -0.08279
-#> 6         0.10895
-#> 7         0.09175
-#> 8         0.07055
-#> 9        -0.31149
-#> 10       -0.00073
-#>    group_3|time_3
-#> 1           -0.19
-#> 2           -0.29
-#> 3           -0.02
-#> 4           -0.37
-#> 5           -0.15
-#> 6           -0.34
-#> 7           -0.38
-#> 8           -0.29
-#> 9           -0.26
-#> 10          -0.30
+#>    group_2|time_2 group_2|time_3 group_2|time_4 group_3|time_2 group_3|time_3
+#> 1           0.106         -0.216         -0.059          0.233         0.0481
+#> 2           0.335         -0.115          0.015          0.014        -0.3649
+#> 3           0.119          0.213          0.021          0.240        -0.1007
+#> 4          -0.076         -0.085          0.064          0.137        -0.0523
+#> 5           0.363          0.169          0.242          0.277         0.4438
+#> 6           0.051          0.194          0.279          0.026        -0.2247
+#> 7           0.218          0.097          0.453          0.142         0.1610
+#> 8           0.095          0.484          0.251         -0.039         0.2579
+#> 9           0.166          0.233          0.268          0.097        -0.2517
+#> 10          0.165         -0.072         -0.128          0.052        -0.0093
 #>    group_3|time_4
-#> 1          -0.335
-#> 2          -0.402
-#> 3          -0.099
-#> 4          -0.506
-#> 5          -0.160
-#> 6          -0.370
-#> 7          -0.262
-#> 8          -0.326
-#> 9          -0.400
-#> 10         -0.320
+#> 1         -0.2188
+#> 2         -0.3413
+#> 3         -0.4630
+#> 4          0.1403
+#> 5         -0.0098
+#> 6          0.2332
+#> 7          0.0092
+#> 8          0.0695
+#> 9         -0.1699
+#> 10        -0.2650
 #> # ... with 3990 more draws
 #> # ... hidden reserved variables {'.chain', '.iteration', '.draw'}
 #> 
 #> $effect
 #> # A draws_df: 1000 iterations, 4 chains, and 6 variables
-#>    group_2|time_2
-#> 1          -0.057
-#> 2           0.164
-#> 3          -0.069
-#> 4           0.262
-#> 5          -0.012
-#> 6           0.038
-#> 7           0.071
-#> 8           0.031
-#> 9          -0.174
-#> 10         -0.165
-#>    group_2|time_3
-#> 1          -0.177
-#> 2           0.030
-#> 3          -0.246
-#> 4          -0.216
-#> 5          -0.376
-#> 6          -0.066
-#> 7           0.038
-#> 8          -0.012
-#> 9          -0.449
-#> 10         -0.184
-#>    group_2|time_4
-#> 1           0.015
-#> 2          -0.045
-#> 3          -0.146
-#> 4           0.092
-#> 5          -0.237
-#> 6          -0.078
-#> 7           0.038
-#> 8          -0.025
-#> 9          -0.208
-#> 10         -0.138
-#>    group_3|time_2
-#> 1         0.02600
-#> 2        -0.11734
-#> 3         0.12200
-#> 4        -0.01670
-#> 5        -0.07554
-#> 6         0.09773
-#> 7         0.08133
-#> 8         0.06257
-#> 9        -0.28115
-#> 10       -0.00061
-#>    group_3|time_3
-#> 1          -0.175
-#> 2          -0.265
-#> 3          -0.018
-#> 4          -0.345
-#> 5          -0.142
-#> 6          -0.317
-#> 7          -0.362
-#> 8          -0.271
-#> 9          -0.230
-#> 10         -0.269
+#>    group_2|time_2 group_2|time_3 group_2|time_4 group_3|time_2 group_3|time_3
+#> 1           0.102         -0.201         -0.047          0.223         0.0448
+#> 2           0.330         -0.106          0.011          0.013        -0.3341
+#> 3           0.109          0.192          0.015          0.220        -0.0908
+#> 4          -0.070         -0.079          0.053          0.125        -0.0485
+#> 5           0.342          0.151          0.177          0.261         0.3973
+#> 6           0.046          0.176          0.211          0.024        -0.2032
+#> 7           0.202          0.085          0.321          0.132         0.1402
+#> 8           0.085          0.448          0.202         -0.035         0.2385
+#> 9           0.157          0.206          0.197          0.092        -0.2224
+#> 10          0.140         -0.069         -0.102          0.044        -0.0089
 #>    group_3|time_4
-#> 1          -0.261
-#> 2          -0.327
-#> 3          -0.076
-#> 4          -0.381
-#> 5          -0.120
-#> 6          -0.293
-#> 7          -0.201
-#> 8          -0.256
-#> 9          -0.291
-#> 10         -0.247
+#> 1         -0.1748
+#> 2         -0.2589
+#> 3         -0.3365
+#> 4          0.1148
+#> 5         -0.0071
+#> 6          0.1764
+#> 7          0.0065
+#> 8          0.0559
+#> 9         -0.1249
+#> 10        -0.2116
 #> # ... with 3990 more draws
 #> # ... hidden reserved variables {'.chain', '.iteration', '.draw'}
 ```
@@ -762,131 +463,65 @@ If you need samples from these marginals averaged across time points, e.g. an "o
 brm_marginal_draws_average(draws = draws, data = data)
 #> $response
 #> # A draws_df: 1000 iterations, 4 chains, and 3 variables
-#>    group_1|average
-#> 1          -0.1501
-#> 2           0.0057
-#> 3          -0.1500
-#> 4           0.0159
-#> 5          -0.1307
-#> 6           0.0184
-#> 7          -0.0390
-#> 8          -0.0416
-#> 9          -0.0532
-#> 10         -0.0290
-#>    group_2|average
-#> 1              1.1
-#> 2              1.2
-#> 3              1.1
-#> 4              1.3
-#> 5              1.2
-#> 6              1.2
-#> 7              1.2
-#> 8              1.1
-#> 9              1.3
-#> 10             1.1
-#>    group_3|average
-#> 1              1.3
-#> 2              1.4
-#> 3              1.3
-#> 4              1.3
-#> 5              1.2
-#> 6              1.4
-#> 7              1.4
-#> 8              1.4
-#> 9              1.4
-#> 10             1.4
+#>    group_1|average group_2|average group_3|average
+#> 1           -0.160             1.1             1.3
+#> 2           -0.091             1.2             1.2
+#> 3           -0.189             1.2             1.3
+#> 4           -0.038             1.2             1.4
+#> 5           -0.053             1.3             1.3
+#> 6           -0.151             1.2             1.4
+#> 7           -0.083             1.3             1.3
+#> 8           -0.120             1.2             1.3
+#> 9           -0.131             1.2             1.4
+#> 10          -0.127             1.3             1.3
 #> # ... with 3990 more draws
 #> # ... hidden reserved variables {'.chain', '.iteration', '.draw'}
 #> 
 #> $change
 #> # A draws_df: 1000 iterations, 4 chains, and 3 variables
-#>    group_1|average
-#> 1           0.0748
-#> 2           0.1864
-#> 3          -0.0021
-#> 4           0.1967
-#> 5           0.1288
-#> 6           0.1301
-#> 7           0.2612
-#> 8           0.2261
-#> 9           0.2095
-#> 10          0.3126
-#>    group_2|average
-#> 1          -0.0018
-#> 2           0.2360
-#> 3          -0.1820
-#> 4           0.2526
-#> 5          -0.1151
-#> 6           0.0875
-#> 7           0.3179
-#> 8           0.2231
-#> 9          -0.1209
-#> 10          0.1177
-#>    group_3|average
-#> 1          -0.0907
-#> 2          -0.0861
-#> 3           0.0031
-#> 4          -0.1024
-#> 5          -0.0029
-#> 6          -0.0714
-#> 7           0.0773
-#> 8           0.0448
-#> 9          -0.1151
-#> 10          0.1042
+#>    group_1|average group_2|average group_3|average
+#> 1            0.127           0.071           0.148
+#> 2            0.154           0.232          -0.077
+#> 3           -0.132          -0.014          -0.240
+#> 4           -0.037          -0.069           0.038
+#> 5            0.023           0.281           0.260
+#> 6           -0.159           0.016          -0.147
+#> 7            0.014           0.270           0.118
+#> 8           -0.113           0.163          -0.017
+#> 9            0.049           0.271          -0.060
+#> 10           0.103           0.091           0.028
 #> # ... with 3990 more draws
 #> # ... hidden reserved variables {'.chain', '.iteration', '.draw'}
 #> 
 #> $difference
 #> # A draws_df: 1000 iterations, 4 chains, and 2 variables
-#>    group_2|average
-#> 1          -0.0766
-#> 2           0.0496
-#> 3          -0.1800
-#> 4           0.0560
-#> 5          -0.2439
-#> 6          -0.0426
-#> 7           0.0567
-#> 8          -0.0031
-#> 9          -0.3304
-#> 10         -0.1949
-#>    group_3|average
-#> 1          -0.1655
-#> 2          -0.2725
-#> 3           0.0051
-#> 4          -0.2991
-#> 5          -0.1317
-#> 6          -0.2015
-#> 7          -0.1839
-#> 8          -0.1813
-#> 9          -0.3246
-#> 10         -0.2084
+#>    group_2|average group_3|average
+#> 1           -0.056           0.021
+#> 2            0.078          -0.231
+#> 3            0.118          -0.108
+#> 4           -0.032           0.075
+#> 5            0.258           0.237
+#> 6            0.175           0.012
+#> 7            0.256           0.104
+#> 8            0.277           0.096
+#> 9            0.222          -0.108
+#> 10          -0.012          -0.074
 #> # ... with 3990 more draws
 #> # ... hidden reserved variables {'.chain', '.iteration', '.draw'}
 #> 
 #> $effect
 #> # A draws_df: 1000 iterations, 4 chains, and 2 variables
-#>    group_2|average
-#> 1          -0.0727
-#> 2           0.0494
-#> 3          -0.1536
-#> 4           0.0459
-#> 5          -0.2082
-#> 6          -0.0354
-#> 7           0.0491
-#> 8          -0.0019
-#> 9          -0.2772
-#> 10         -0.1623
-#>    group_3|average
-#> 1          -0.1367
-#> 2          -0.2363
-#> 3           0.0094
-#> 4          -0.2475
-#> 5          -0.1126
-#> 6          -0.1707
-#> 7          -0.1604
-#> 8          -0.1549
-#> 9          -0.2674
-#> 10         -0.1724
+#>    group_2|average group_3|average
+#> 1           -0.049         0.03107
+#> 2            0.079        -0.19320
+#> 3            0.106        -0.06895
+#> 4           -0.032         0.06376
+#> 5            0.223         0.21688
+#> 6            0.145        -0.00099
+#> 7            0.202         0.09280
+#> 8            0.245         0.08637
+#> 9            0.187        -0.08528
+#> 10          -0.010        -0.05889
 #> # ... with 3990 more draws
 #> # ... hidden reserved variables {'.chain', '.iteration', '.draw'}
 ```
@@ -899,22 +534,19 @@ summaries <- brm_marginal_summaries(draws, level = 0.95)
 
 summaries
 #> # A tibble: 165 × 6
-#>    marginal statistic group  
-#>    <chr>    <chr>     <chr>  
-#>  1 change   lower     group_1
-#>  2 change   lower     group_1
-#>  3 change   lower     group_1
-#>  4 change   lower     group_2
-#>  5 change   lower     group_2
-#>  6 change   lower     group_2
-#>  7 change   lower     group_3
-#>  8 change   lower     group_3
-#>  9 change   lower     group_3
-#> 10 change   mean      group_1
+#>    marginal statistic group   time     value    mcse
+#>    <chr>    <chr>     <chr>   <chr>    <dbl>   <dbl>
+#>  1 change   lower     group_1 time_2  1.12   0.00488
+#>  2 change   lower     group_1 time_3  0.168  0.0102 
+#>  3 change   lower     group_1 time_4 -1.78   0.00876
+#>  4 change   lower     group_2 time_2  1.15   0.00553
+#>  5 change   lower     group_2 time_3  0.0160 0.00963
+#>  6 change   lower     group_2 time_4 -1.84   0.0102 
+#>  7 change   lower     group_3 time_2  1.14   0.00353
+#>  8 change   lower     group_3 time_3 -0.0223 0.00824
+#>  9 change   lower     group_3 time_4 -2.06   0.00872
+#> 10 change   mean      group_1 time_2  1.32   0.00230
 #> # ℹ 155 more rows
-#> # ℹ 3 more variables:
-#> #   time <chr>, value <dbl>,
-#> #   mcse <dbl>
 ```
 
 The `brm_marginal_probabilities()` function shows posterior probabilities of the form, 
@@ -941,22 +573,20 @@ brm_marginal_probabilities(
   direction = c("greater", "less")
 )
 #> # A tibble: 12 × 5
-#>    direction threshold group  
-#>    <chr>         <dbl> <chr>  
-#>  1 greater        -0.1 group_2
-#>  2 greater        -0.1 group_2
-#>  3 greater        -0.1 group_2
-#>  4 greater        -0.1 group_3
-#>  5 greater        -0.1 group_3
-#>  6 greater        -0.1 group_3
-#>  7 less            0.1 group_2
-#>  8 less            0.1 group_2
-#>  9 less            0.1 group_2
-#> 10 less            0.1 group_3
-#> 11 less            0.1 group_3
-#> 12 less            0.1 group_3
-#> # ℹ 2 more variables:
-#> #   time <chr>, value <dbl>
+#>    direction threshold group   time   value
+#>    <chr>         <dbl> <chr>   <chr>  <dbl>
+#>  1 greater        -0.1 group_2 time_2 0.833
+#>  2 greater        -0.1 group_2 time_3 0.397
+#>  3 greater        -0.1 group_2 time_4 0.549
+#>  4 greater        -0.1 group_3 time_2 0.800
+#>  5 greater        -0.1 group_3 time_3 0.334
+#>  6 greater        -0.1 group_3 time_4 0.244
+#>  7 less            0.1 group_2 time_2 0.660
+#>  8 less            0.1 group_2 time_3 0.860
+#>  9 less            0.1 group_2 time_4 0.768
+#> 10 less            0.1 group_3 time_2 0.705
+#> 11 less            0.1 group_3 time_3 0.890
+#> 12 less            0.1 group_3 time_4 0.938
 ```
 
 Finally, the `brm_marignals_data()` computes marginal means and confidence intervals on the response variable in the data, along with other summary statistics.
@@ -967,21 +597,19 @@ summaries_data <- brm_marginal_data(data = data, level = 0.95)
 
 summaries_data
 #> # A tibble: 84 × 4
-#>    statistic group   time  
-#>    <chr>     <chr>   <chr> 
-#>  1 lower     group_1 time_1
-#>  2 lower     group_1 time_2
-#>  3 lower     group_1 time_3
-#>  4 lower     group_1 time_4
-#>  5 lower     group_2 time_1
-#>  6 lower     group_2 time_2
-#>  7 lower     group_2 time_3
-#>  8 lower     group_2 time_4
-#>  9 lower     group_3 time_1
-#> 10 lower     group_3 time_2
+#>    statistic group   time      value
+#>    <chr>     <chr>   <chr>     <dbl>
+#>  1 lower     group_1 time_1 -0.00263
+#>  2 lower     group_1 time_2  1.32   
+#>  3 lower     group_1 time_3  0.535  
+#>  4 lower     group_1 time_4 -1.39   
+#>  5 lower     group_2 time_1  1.33   
+#>  6 lower     group_2 time_2  2.72   
+#>  7 lower     group_2 time_3  1.72   
+#>  8 lower     group_2 time_4 -0.0926 
+#>  9 lower     group_3 time_1  1.52   
+#> 10 lower     group_3 time_2  2.90   
 #> # ℹ 74 more rows
-#> # ℹ 1 more variable:
-#> #   value <dbl>
 ```
 
 # Visualization

@@ -102,6 +102,39 @@ formula <- brm_formula(
 formula
 ```
 
+# Parameterization
+
+The formula is not the only factor
+that ultimately determines the fixed effect parameterization.
+The ordering of the categorical variables in the data,
+as well as the `contrast` option in R, affect the
+construction of the model matrix. To see the model
+matrix that will ultimately be used in `brm_model()`,
+run `brms::make_standata()` and examine the `X` element
+of the returned list.
+
+The `contrast` option accepts a named vector of two character vectors which govern `model.matrix()` contrasts for unordered and ordered variables, respectively.
+
+```{r}
+options(contrasts = c(unordered = "contr.SAS", ordered = "contr.poly"))
+```
+
+The `make_standata()` function lets you see the data that `brms` will generate for Stan. This includes the fixed effects model matrix `X`. Note the differences in the `groupgroup_*` additive terms between the matrix below and the one above.
+
+```{r}
+head(brms::make_standata(formula = formula, data = data)$X)
+```
+
+If you choose a different contrast method, a different model matrix may result.
+
+```{r}
+options(
+  contrasts = c(unordered = "contr.treatment", ordered = "contr.poly")
+)
+# different model matrix than before:
+head(brms::make_standata(formula = formula, data = data)$X)
+```
+
 # Priors
 
 Some analyses require informative priors, others require non-informative ones. Please use [`brms`](https://paul-buerkner.github.io/brms/) to construct a prior suitable for your analysis. The [`brms`](https://paul-buerkner.github.io/brms/) package has documentation on how its default priors are constructed and how to set your own priors. Once you have an R object that represents the joint prior distribution of your model, you can pass it to the `brm_model()` function described below. The `get_prior()` function shows the default priors for a given dataset and model formula.

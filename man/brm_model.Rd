@@ -28,6 +28,19 @@ A fitted model object from \code{brms}.
 \description{
 Fit a basic MMRM model using \code{brms}.
 }
+\section{Parameterization}{
+
+The formula is not the only factor
+that determines the fixed effect parameterization.
+The ordering of the categorical variables in the data,
+as well as the \code{contrast} option in R, affect the
+construction of the model matrix. To see the model
+matrix that will ultimately be used in \code{\link[=brm_model]{brm_model()}},
+run \code{\link[brms:make_standata]{brms::make_standata()}} and examine the \code{X} element
+of the returned list. See the examples below for a
+demonstration.
+}
+
 \examples{
 if (identical(Sys.getenv("BRM_EXAMPLES", unset = ""), "true")) {
 set.seed(0L)
@@ -46,6 +59,17 @@ formula <- brm_formula(
   effect_baseline = FALSE,
   interaction_baseline = FALSE
 )
+# Optional: set the contrast option, which determines the model matrix.
+options(contrasts = c(unordered = "contr.SAS", ordered = "contr.poly"))
+# See the fixed effect parameterization you get from the data:
+head(brms::make_standata(formula = formula, data = data)$X)
+# Specify a different contrast method to use an alternative
+# parameterization when fitting the model with brm_model():
+options(
+  contrasts = c(unordered = "contr.treatment", ordered = "contr.poly")
+)
+# different model matrix than before:
+head(brms::make_standata(formula = formula, data = data)$X)
 tmp <- utils::capture.output(
   suppressMessages(
     suppressWarnings(
@@ -59,7 +83,10 @@ tmp <- utils::capture.output(
     )
   )
 )
+# The output model is a brms model fit object.
 model
+# The `prior_summary()` function shows the full prior specification
+# which reflects the fully realized fixed effects parameterization.
 brms::prior_summary(model)
 }
 }

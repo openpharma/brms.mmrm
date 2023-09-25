@@ -51,8 +51,17 @@
 #'   In other words, set `level_baseline` to `NULL` if `role` is `"change"`,
 #'   and set `level_baseline` to a non-null value in `data[[time]]`
 #'   if `role` is `"response"`.
+#'
+#'   Note: `level_baseline` only applies to the post-processing that happens
+#'   in functions like [brm_marginal_draws()] downstream of the model.
+#'   It does not control the fixed effect parameterization in the
+#'   model matrix that `brms` derives from the formula from `brm_formula()`.
 #' @param level_control Character of length 1, Level of the `group` column
 #'   to indicate the control group.
+#'   `level_control` only applies to the post-processing that happens
+#'   in functions like [brm_marginal_draws()] downstream of the model.
+#'   It does not control the fixed effect parameterization in the
+#'   model matrix that `brms` derives from the formula from `brm_formula()`.
 #' @examples
 #' set.seed(0)
 #' data <- brm_simulate_simple()$data

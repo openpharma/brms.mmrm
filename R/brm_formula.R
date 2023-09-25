@@ -2,6 +2,16 @@
 #' @export
 #' @family models
 #' @description Build a model formula for an MMRM.
+#' @section Parameterization:
+#'   The formula is not the only factor
+#'   that determines the fixed effect parameterization.
+#'   The ordering of the categorical variables in the data,
+#'   as well as the `contrast` option in R, affect the
+#'   construction of the model matrix. To see the model
+#'   matrix that will ultimately be used in [brm_model()],
+#'   run [brms::make_standata()] and examine the `X` element
+#'   of the returned list. See the examples below for a
+#'   demonstration.
 #' @return An object of class `"brmsformula"` returned from
 #'   `brms::brmsformula()`. It contains the fixed effect parameterization,
 #'   correlation structure, and residual variance structure.
@@ -33,12 +43,24 @@
 #' )
 #' brm_formula(data)
 #' brm_formula(data = data, intercept = FALSE, effect_baseline = FALSE)
-#' brm_formula(
+#' formula <- brm_formula(
 #'   data = data,
 #'   intercept = FALSE,
 #'   effect_baseline = FALSE,
 #'   interaction_group = FALSE
 #' )
+#' formula
+#' # Optional: set the contrast option, which determines the model matrix.
+#' options(contrasts = c(unordered = "contr.SAS", ordered = "contr.poly"))
+#' # See the fixed effect parameterization you get from the data:
+#' head(brms::make_standata(formula = formula, data = data)$X)
+#' # Specify a different contrast method to use an alternative
+#' # parameterization when fitting the model with brm_model():
+#' options(
+#'   contrasts = c(unordered = "contr.treatment", ordered = "contr.poly")
+#' )
+#' # different model matrix than before:
+#' head(brms::make_standata(formula = formula, data = data)$X)
 brm_formula <- function(
   data,
   intercept = TRUE,

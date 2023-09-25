@@ -2,6 +2,7 @@
 #' @export
 #' @family models
 #' @description Fit a basic MMRM model using `brms`.
+#' @inheritSection brm_formula Parameterization
 #' @return A fitted model object from `brms`.
 #' @param data A tidy data frame with one row per patient per discrete
 #'   time point.
@@ -32,6 +33,17 @@
 #'   effect_baseline = FALSE,
 #'   interaction_baseline = FALSE
 #' )
+#' # Optional: set the contrast option, which determines the model matrix.
+#' options(contrasts = c(unordered = "contr.SAS", ordered = "contr.poly"))
+#' # See the fixed effect parameterization you get from the data:
+#' head(brms::make_standata(formula = formula, data = data)$X)
+#' # Specify a different contrast method to use an alternative
+#' # parameterization when fitting the model with brm_model():
+#' options(
+#'   contrasts = c(unordered = "contr.treatment", ordered = "contr.poly")
+#' )
+#' # different model matrix than before:
+#' head(brms::make_standata(formula = formula, data = data)$X)
 #' tmp <- utils::capture.output(
 #'   suppressMessages(
 #'     suppressWarnings(
@@ -45,7 +57,10 @@
 #'     )
 #'   )
 #' )
+#' # The output model is a brms model fit object.
 #' model
+#' # The `prior_summary()` function shows the full prior specification
+#' # which reflects the fully realized fixed effects parameterization.
 #' brms::prior_summary(model)
 #' }
 brm_model <- function(

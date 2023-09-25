@@ -48,7 +48,11 @@ in a simulated dataset to indicate which outcome values should be missing.
 Set to \code{NULL} to omit.}
 
 \item{level_control}{Character of length 1, Level of the \code{group} column
-to indicate the control group.}
+to indicate the control group.
+\code{level_control} only applies to the post-processing that happens
+in functions like \code{\link[=brm_marginal_draws]{brm_marginal_draws()}} downstream of the model.
+It does not control the fixed effect parameterization in the
+model matrix that \code{brms} derives from the formula from \code{brm_formula()}.}
 
 \item{level_baseline}{Character of length 1 or \code{NULL},
 level of the \code{time} column to indicate the baseline time point.
@@ -58,7 +62,12 @@ if the outcome variable is the raw response so that \code{brms.mmrm}
 can produce model-based marginal estimates of change from baseline.
 In other words, set \code{level_baseline} to \code{NULL} if \code{role} is \code{"change"},
 and set \code{level_baseline} to a non-null value in \code{data[[time]]}
-if \code{role} is \code{"response"}.}
+if \code{role} is \code{"response"}.
+
+Note: \code{level_baseline} only applies to the post-processing that happens
+in functions like \code{\link[=brm_marginal_draws]{brm_marginal_draws()}} downstream of the model.
+It does not control the fixed effect parameterization in the
+model matrix that \code{brms} derives from the formula from \code{brm_formula()}.}
 }
 \value{
 A classed tibble with attributes which denote features of
