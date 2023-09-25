@@ -1,0 +1,3 @@
+main:
+  seconds_meta_append: 10.0
+  seconds_reporter: 5.0
