@@ -42,9 +42,15 @@
 #' @param missing Character of length 1, name of an optional variable
 #'   in a simulated dataset to indicate which outcome values should be missing.
 #'   Set to `NULL` to omit.
-#' @param level_baseline Character of length 1, Level of the `time` column
-#'   to indicate the baseline time point. Expected if `role` is `"change"`.
-#'   Set to `NULL` to omit.
+#' @param level_baseline Character of length 1 or `NULL`,
+#'   level of the `time` column to indicate the baseline time point.
+#'   This value should not be present in the data if the outcome
+#'   variable is change from baseline, but it must be in the data
+#'   if the outcome variable is the raw response so that `brms.mmrm`
+#'   can produce model-based marginal estimates of change from baseline.
+#'   In other words, set `level_baseline` to `NULL` if `role` is `"change"`,
+#'   and set `level_baseline` to a non-null value in `data[[time]]`
+#'   if `role` is `"response"`.
 #' @param level_control Character of length 1, Level of the `group` column
 #'   to indicate the control group.
 #' @examples
