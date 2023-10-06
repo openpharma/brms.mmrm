@@ -7,7 +7,7 @@ output:
     highlight: default
     toc: yes
     toc_float: yes
-    number_sections: true  
+    number_sections: true 
 vignette: |
   %\VignetteIndexEntry{Comparison of Bayesian and frequentist MMRM fits using example datasets}
   %\VignetteEncoding{UTF-8}
@@ -37,21 +37,21 @@ This is a comparison of Bayesian MMRM fits, obtained by `brms.mmrm::brm_model()`
 
 Load general packages:
 
-```{r load_gen_pkgs, eval=T, echo=T}
-packages <- c("tidyr", "dplyr", "stringr", "tibble", "forcats")
+```{r load_gen_pkgs, eval=T, echo=T, class.source = NULL}
+packages <- c("tidyr", "dplyr", "stringr", "tibble", "ggplot2", "gt", "gtsummary")
 invisible(lapply(packages, library, character.only = T))
 ```
 
 Load packages providing example datasets:
 
-```{r load_dat_pkgs, eval=T, echo=T}
+```{r load_dat_pkgs, eval=T, echo=T, class.source = NULL}
 library("Hmisc")
 library("HSAUR3")
 ```
 
 Load MMRM packages:
 
-```{r load_mmrm_pkgs, eval=T, echo=T}
+```{r load_mmrm_pkgs, eval=T, echo=T, class.source = NULL}
 #if (!require("remotes")) {install.packages("remotes")}
 #remotes::install_github("openpharma/brms.mmrm")
 library(brms.mmrm)
@@ -62,14 +62,16 @@ library(emmeans)
 
 Set seed:
 
-```{r set_seed, eval=T, echo=T}
+```{r set_seed, eval=T, echo=T, class.source = NULL}
 set.seed(123L)
 ```
 
 
 # Cervical dystonia data
 
-A description of the `cdystonia` dataset is available [here](https://hbiostat.org/data/repo/cdystonia).
+A description of the `cdystonia` dataset and further references are given [here](https://hbiostat.org/data/repo/cdystonia).
+
+In brief, the data are a subset from a multicenter, randomized controlled trial of botulinum toxin type B in patients with cervical dystonia. The trial endpoint is the total score on Toronto Western Spasmodic Torticollis Rating Scale (TWSTRS).
 
 <!--
 Reduced to two groups.
@@ -78,14 +80,15 @@ TWSTRS-total scores from 109 patients with cervical dystonia: First 35 subjects
 
 ## Data pre-processing 
 
-```{r cdystonia1, eval=T, echo=T}
+```{r cdystonia1, eval=T, echo=T, class.source = NULL}
 getHdata(cdystonia)
 cdystonia1 <- cdystonia |>
   filter(treat %in% c("10000U", "Placebo")) |> # restrict to two arms
   droplevels() |>
+  mutate_all(~{attr(., "label") <- NULL; .})|>
   mutate(
-    week = paste0("w", sprintf("%02d", week)), # convert to character variable
-    id = paste0(site, "-", sprintf("%02d", id)), # create unique id
+    week = paste0("w", sprintf("%02d", week)), 
+    id = paste0(site, "-", sprintf("%02d", id))
   ) |>
   select(-c(site)) |>
   arrange(id, week) |>
@@ -95,6 +98,7 @@ cdystonia1 <- cdystonia |>
     group = "treat",
     time = "week",
     patient = "id",
+    covariates = c("age", "sex"),
     level_control = "Placebo",
     level_baseline = "w00"
   ) |>
@@ -102,29 +106,77 @@ cdystonia1 <- cdystonia |>
   filter(!is.na(delta))
 ```
 
-```{r cdystonia2, eval=T, echo=T}
-head(cdystonia1)
+```{r cdystonia2, eval=T, echo=T, class.source = NULL}
+head(cdystonia1) |> gt()
 ```
 
 ## Descriptive statistics
 
-```{r cdystonia3, eval=T, echo=T}
-cdystonia1 |> group_by(treat) |> tally() 
-cdystonia1 |> group_by(week) |> tally()
-cdystonia1 |> group_by(treat, week) |> tally()
+```{r cdystonia3a, eval=T, echo=T, class.source = 'fold-hide'}
+cdystonia1 |> select(treat, age, sex, baseline) |> distinct() |>
+  tbl_summary(
+    by = c(treat),  
+    statistic = list(
+      all_continuous() ~ "{mean} ({sd})",
+      all_categorical() ~ "{n} / {N} ({p}%)")
+    ) |>
+  modify_caption("**Baseline characteristics.**")
 ```
 
+```{r cdystonia3b, eval=T, echo=T, class.source = 'fold-hide'}
+unique(cdystonia1$week) |> sort() |>
+  purrr::map(
+    .f = ~ cdystonia1 |>
+      dplyr::filter(week %in% .x)|>
+      tbl_summary(
+        by = treat, 
+        include = delta,
+        type = delta ~ "continuous2",
+        statistic = delta ~ c("{mean} ({sd})", "{median} ({p25}, {p75})", "{min}, {max}"),
+        label = list(delta = paste("Visit ", .x))
+        )
+    ) |>
+  tbl_stack(quiet = T) |>
+  modify_caption("**Change from baseline in total TWSTRS score.**")
+```
+
+```{r cdystonia_boxpl, eval=T, echo=T, fig.align='center', out.width="75%", fig.dim = c(8, 5), fig.fig.keep='all', fig.pos="!ht", fig.cap="Change from baseline in total TWSTRS score"}
+cdystonia1 |> group_by(treat) |>
+  ggplot(aes(x = week, y = delta, fill = factor(treat))) +
+  geom_boxplot() + 
+  labs(
+    x = "Visit", 
+    y = "Change from baseline in total TWSTRS score", 
+    fill = "Treatment" ) +
+  theme_bw()
+```
 
 
 ## Fitting MMRMs
 
-...
+### Function `mmrm::mmrm()`
+
+```{r cdystonia4a, eval=T, echo=T, class.source = 'fold-hide'}
+cdystonia2 <- cdystonia1 |>
+  mutate(
+    treat = factor(treat),
+    week = factor(week),
+    id = factor(id)
+  )
+cdystonia_mmrm <- mmrm(
+  formula = delta ~ baseline + age + treat * week + us(week | id),
+  data = cdystonia2
+)
+summary(cdystonia_mmrm)
+```
+
+### Function `brms.mmrm::brm_model()`
 
 ## Comparison 
 
 ...
 
-
+<!--
 
 # HSAUR3 data
 
@@ -146,6 +198,9 @@ cdystonia1 |> group_by(treat, week) |> tally()
 
 ```{r figure1, eval=F, echo=F, fig.align='center', fig.width=8, fig.height=5, fig.keep='all', fig.pos="!ht", dev=c('pdf', 'png'), out.width="0.9\\textwidth", fig.cap="..."}
 ```
+
+-->
+
 
 # References {.unnumbered}
 
