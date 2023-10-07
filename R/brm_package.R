@@ -18,8 +18,8 @@
 #'     in Longitudinal Clinical Trials.
 #'     Ther Innov Regul Sci, 42, 303–319.
 #'     doi:10.1177/009286150804200402
-#'   * Mallinckrodt C and Lipkovich I (2017). Analyzing Longitudinal Trial Data -- 
-#'     A Practical Guide. Chapman `&amp;` Hall/ CRC Biostatistics Series. 
+#'   * Mallinckrodt C and Lipkovich I (2017). Analyzing Longitudinal Trial
+#'   Data -- A Practical Guide. Chapman `&amp;` Hall/ CRC Biostatistics Series.
 #' @family help
 #' @importFrom brms brm brmsformula get_prior prior unstr
 #' @importFrom coda as.mcmc

@@ -18,15 +18,23 @@ editor_options:
     wrap: 72
 ---
 
-```{r setup, eval=T, include=F, warning=F, message=F}
+```{r setup, eval=TRUE, include=FALSE, warning=FALSE, message=FALSE}
 rm(list = ls())
 library(knitr)
-knitr::opts_chunk$set( 
-  echo = T, collapse = T, warning = F, message = F, 
-  prompt = T, comment = NA, size = "scriptsize",
-  fig.height = 5, fig.width = 6, dpi = 320, 
-  fig.align = "center", fig.path="figures/"
-  )
+knitr::opts_chunk$set(
+  echo = TRUE,
+  collapse = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  prompt = TRUE,
+  comment = NA,
+  size = "scriptsize",
+  fig.height = 5,
+  fig.width = 6,
+  dpi = 320,
+  fig.align = "center",
+  fig.path = "figures/"
+)
 ```
 
 # About {.unnumbered}
@@ -37,32 +45,29 @@ This vignette provides an exemplary comparison of Bayesian MMRM fits, obtained b
 
 Load general packages:
 
-```{r load_gen_pkgs, eval=T, echo=T, class.source = NULL}
+```{r load_gen_pkgs, eval=TRUE, echo=TRUE, class.source = NULL}
 packages <- c("tidyr", "dplyr", "tibble", "ggplot2", "gt", "gtsummary")
-invisible(lapply(packages, library, character.only = T))
+invisible(lapply(packages, library, character.only = TRUE))
 ```
 
 Load packages providing example datasets:
 
-```{r load_dat_pkgs, eval=T, echo=T, class.source = NULL}
+```{r load_dat_pkgs, eval=TRUE, echo=TRUE, class.source = NULL}
 library("Hmisc")
 library("HSAUR3")
 ```
 
 Load MMRM packages:
 
-```{r load_mmrm_pkgs, eval=T, echo=T, class.source = NULL}
-#if (!require("remotes")) {install.packages("remotes")}
-#remotes::install_github("openpharma/brms.mmrm")
+```{r load_mmrm_pkgs, eval=TRUE, echo=TRUE, class.source = NULL}
 library(brms.mmrm)
-#remotes::install_github("openpharma/mmrm")
 library(mmrm)
 library(emmeans)
 ```
 
 Set seed:
 
-```{r set_seed, eval=T, echo=T, class.source = NULL}
+```{r set_seed, eval=TRUE, echo=TRUE, class.source = NULL}
 set.seed(123L)
 ```
 
@@ -80,14 +85,17 @@ TWSTRS-total scores from 109 patients with cervical dystonia: First 35 subjects
 
 ## Data pre-processing 
 
-```{r cdystonia1, eval=T, echo=T, class.source = NULL}
+```{r cdystonia1, eval=TRUE, echo=TRUE, class.source = NULL}
 Hmisc::getHdata(cdystonia)
 cdystonia1 <- cdystonia |>
   dplyr::filter(treat %in% c("10000U", "Placebo")) |> # restrict to two arms
   droplevels() |>
-  dplyr::mutate_all(~{attr(., "label") <- NULL; .})|>
+  dplyr::mutate_all(~ {
+    attr(., "label") <- NULL
+    .
+  }) |>
   dplyr::mutate(
-    week = paste0("w", sprintf("%02d", week)), 
+    week = paste0("w", sprintf("%02d", week)),
     id = paste0(site, "-", sprintf("%02d", id))
   ) |>
   dplyr::select(-c(site)) |>
@@ -106,49 +114,54 @@ cdystonia1 <- cdystonia |>
   dplyr::filter(!is.na(delta))
 ```
 
-```{r cdystonia2, eval=T, echo=T, class.source = NULL}
+```{r cdystonia2, eval=TRUE, echo=TRUE, class.source = NULL}
 head(cdystonia1) |> gt::gt()
 ```
 
 ## Descriptive statistics
 
-```{r cdystonia3a, eval=T, echo=T, class.source = 'fold-hide'}
-cdystonia1 |> dplyr::select(treat, age, sex, baseline) |> 
+```{r cdystonia3a, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
+cdystonia1 |>
+  dplyr::select(treat, age, sex, baseline) |>
   dplyr::distinct() |>
   gtsummary::tbl_summary(
-    by = c(treat),  
+    by = c(treat),
     statistic = list(
       all_continuous() ~ "{mean} ({sd})",
-      all_categorical() ~ "{n} / {N} ({p}%)")
-    ) |>
+      all_categorical() ~ "{n} / {N} ({p}%)"
+    )
+  ) |>
   gtsummary::modify_caption("**Baseline characteristics.**")
 ```
 
-```{r cdystonia3b, eval=T, echo=T, class.source = 'fold-hide'}
-unique(cdystonia1$week) |> sort() |>
+```{r cdystonia3b, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
+unique(cdystonia1$week) |>
+  sort() |>
   purrr::map(
     .f = ~ cdystonia1 |>
-      dplyr::filter(week %in% .x)|>
+      dplyr::filter(week %in% .x) |>
       gtsummary::tbl_summary(
-        by = treat, 
+        by = treat,
         include = delta,
         type = delta ~ "continuous2",
-        statistic = delta ~ c("{mean} ({sd})", "{median} ({p25}, {p75})", "{min}, {max}"),
+        statistic = delta ~ c("{mean} ({sd})",
+                              "{median} ({p25}, {p75})",
+                              "{min}, {max}"),
         label = list(delta = paste("Visit ", .x))
-        )
-    ) |>
-  gtsummary::tbl_stack(quiet = T) |>
+      )
+  ) |>
+  gtsummary::tbl_stack(quiet = TRUE) |>
   gtsummary::modify_caption("**Change from baseline in total TWSTRS score.**")
 ```
 
-```{r cdystonia_boxpl, eval=T, echo=T, fig.align='center', out.width="75%", fig.dim = c(8, 5), fig.fig.keep='all', fig.pos="!ht", fig.cap="Change from baseline in total TWSTRS score"}
-cdystonia1 |> dplyr::group_by(treat) |>
+```{r cdystonia_boxpl, eval=TRUE, echo=TRUE, fig.align='center', out.width="75%", fig.dim = c(8, 5), fig.fig.keep='all', fig.pos="!ht", fig.cap="Change from baseline in total TWSTRS score"}
+cdystonia1 |>
+  dplyr::group_by(treat) |>
   ggplot2::ggplot(aes(x = week, y = delta, fill = factor(treat))) +
-  ggplot2::geom_boxplot() + 
-  ggplot2::labs(
-    x = "Visit", 
-    y = "Change from baseline in total TWSTRS score", 
-    fill = "Treatment" ) +
+  ggplot2::geom_boxplot() +
+  ggplot2::labs(x = "Visit",
+                y = "Change from baseline in total TWSTRS score",
+                fill = "Treatment") +
   ggplot2::theme_bw()
 ```
 
@@ -157,7 +170,7 @@ cdystonia1 |> dplyr::group_by(treat) |>
 
 ### Function `mmrm::mmrm()`
 
-```{r cdystonia4a, eval=T, echo=T, class.source = 'fold-hide'}
+```{r cdystonia4a, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
 cdystonia2 <- cdystonia1 |>
   dplyr::mutate(
     treat = factor(treat),
@@ -220,6 +233,6 @@ summary(cdystonia_mmrm)
 
 ## Session info {.unnumbered}
 
-```{r citation_session, echo=T, eval=T, message=F}
+```{r citation_session, echo=TRUE, eval=TRUE, message=FALSE}
 sessionInfo()
 ```
