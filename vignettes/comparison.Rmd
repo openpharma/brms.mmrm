@@ -31,14 +31,14 @@ knitr::opts_chunk$set(
 
 # About {.unnumbered}
 
-This is a comparison of Bayesian MMRM fits, obtained by `brms.mmrm::brm_model()`, and frequentist MMRM fits, obtained by `mmrm::mmrm()`, using an example dataset.
+This vignette provides an exemplary comparison of Bayesian MMRM fits, obtained by `brms.mmrm::brm_model()`, and frequentist MMRM fits, obtained by `mmrm::mmrm()`, using an example dataset.
 
 # Prerequisites
 
 Load general packages:
 
 ```{r load_gen_pkgs, eval=T, echo=T, class.source = NULL}
-packages <- c("tidyr", "dplyr", "stringr", "tibble", "ggplot2", "gt", "gtsummary")
+packages <- c("tidyr", "dplyr", "tibble", "ggplot2", "gt", "gtsummary")
 invisible(lapply(packages, library, character.only = T))
 ```
 
@@ -81,17 +81,17 @@ TWSTRS-total scores from 109 patients with cervical dystonia: First 35 subjects
 ## Data pre-processing 
 
 ```{r cdystonia1, eval=T, echo=T, class.source = NULL}
-getHdata(cdystonia)
+Hmisc::getHdata(cdystonia)
 cdystonia1 <- cdystonia |>
-  filter(treat %in% c("10000U", "Placebo")) |> # restrict to two arms
+  dplyr::filter(treat %in% c("10000U", "Placebo")) |> # restrict to two arms
   droplevels() |>
-  mutate_all(~{attr(., "label") <- NULL; .})|>
-  mutate(
+  dplyr::mutate_all(~{attr(., "label") <- NULL; .})|>
+  dplyr::mutate(
     week = paste0("w", sprintf("%02d", week)), 
     id = paste0(site, "-", sprintf("%02d", id))
   ) |>
-  select(-c(site)) |>
-  arrange(id, week) |>
+  dplyr::select(-c(site)) |>
+  dplyr::arrange(id, week) |>
   brm_data( # create and preprocess MMRM dataset
     outcome = "twstrs",
     role = "response",
@@ -103,24 +103,25 @@ cdystonia1 <- cdystonia |>
     level_baseline = "w00"
   ) |>
   brm_data_change(name_change = "delta") |> # convert to change from baseline
-  filter(!is.na(delta))
+  dplyr::filter(!is.na(delta))
 ```
 
 ```{r cdystonia2, eval=T, echo=T, class.source = NULL}
-head(cdystonia1) |> gt()
+head(cdystonia1) |> gt::gt()
 ```
 
 ## Descriptive statistics
 
 ```{r cdystonia3a, eval=T, echo=T, class.source = 'fold-hide'}
-cdystonia1 |> select(treat, age, sex, baseline) |> distinct() |>
-  tbl_summary(
+cdystonia1 |> dplyr::select(treat, age, sex, baseline) |> 
+  dplyr::distinct() |>
+  gtsummary::tbl_summary(
     by = c(treat),  
     statistic = list(
       all_continuous() ~ "{mean} ({sd})",
       all_categorical() ~ "{n} / {N} ({p}%)")
     ) |>
-  modify_caption("**Baseline characteristics.**")
+  gtsummary::modify_caption("**Baseline characteristics.**")
 ```
 
 ```{r cdystonia3b, eval=T, echo=T, class.source = 'fold-hide'}
@@ -128,7 +129,7 @@ unique(cdystonia1$week) |> sort() |>
   purrr::map(
     .f = ~ cdystonia1 |>
       dplyr::filter(week %in% .x)|>
-      tbl_summary(
+      gtsummary::tbl_summary(
         by = treat, 
         include = delta,
         type = delta ~ "continuous2",
@@ -136,19 +137,19 @@ unique(cdystonia1$week) |> sort() |>
         label = list(delta = paste("Visit ", .x))
         )
     ) |>
-  tbl_stack(quiet = T) |>
-  modify_caption("**Change from baseline in total TWSTRS score.**")
+  gtsummary::tbl_stack(quiet = T) |>
+  gtsummary::modify_caption("**Change from baseline in total TWSTRS score.**")
 ```
 
 ```{r cdystonia_boxpl, eval=T, echo=T, fig.align='center', out.width="75%", fig.dim = c(8, 5), fig.fig.keep='all', fig.pos="!ht", fig.cap="Change from baseline in total TWSTRS score"}
-cdystonia1 |> group_by(treat) |>
-  ggplot(aes(x = week, y = delta, fill = factor(treat))) +
-  geom_boxplot() + 
-  labs(
+cdystonia1 |> dplyr::group_by(treat) |>
+  ggplot2::ggplot(aes(x = week, y = delta, fill = factor(treat))) +
+  ggplot2::geom_boxplot() + 
+  ggplot2::labs(
     x = "Visit", 
     y = "Change from baseline in total TWSTRS score", 
     fill = "Treatment" ) +
-  theme_bw()
+  ggplot2::theme_bw()
 ```
 
 
@@ -158,12 +159,12 @@ cdystonia1 |> group_by(treat) |>
 
 ```{r cdystonia4a, eval=T, echo=T, class.source = 'fold-hide'}
 cdystonia2 <- cdystonia1 |>
-  mutate(
+  dplyr::mutate(
     treat = factor(treat),
     week = factor(week),
     id = factor(id)
   )
-cdystonia_mmrm <- mmrm(
+cdystonia_mmrm <- mmrm::mmrm(
   formula = delta ~ baseline + age + treat * week + us(week | id),
   data = cdystonia2
 )
