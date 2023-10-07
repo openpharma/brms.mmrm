@@ -24,8 +24,8 @@ Recommendations for the Primary Analysis of Continuous Endpoints
 in Longitudinal Clinical Trials.
 Ther Innov Regul Sci, 42, 303–319.
 doi:10.1177/009286150804200402
-\item Mallinckrodt C and Lipkovich I (2017). Analyzing Longitudinal Trial Data --
-A Practical Guide. Chapman \verb{&amp;} Hall/ CRC Biostatistics Series.
+\item Mallinckrodt C and Lipkovich I (2017). Analyzing Longitudinal Trial
+Data -- A Practical Guide. Chapman \verb{&amp;} Hall/ CRC Biostatistics Series.
 }
 }
 \concept{help}
