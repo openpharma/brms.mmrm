@@ -1,24 +1,17 @@
 #' cdystonia dataset
 #'
-#' Subset from a multicenter, randomized controlled trial of botulinum toxin 
+#' Subset from a multicenter, randomized controlled trial of botulinum toxin
 #' type B in patients with cervical dystonia.
 #'
-#' @format A tibble with 420 rows and 6 variables
-#' 
-#' \describe{
-#'   \item id. ...
-#'   \item sex. ...
-#'   \item age. ...
-#'   \item baseline. ...   
-#'   \item treat, ...
-#'   \item week. ...
-#'   \item chg ...
-#' }
+#' @format A tibble with 347 rows and 7 variables
 #'
-#' @docType data
-#' @keywords datasets
-#' @name cdystonia
-#' @usage data(cdystonia)
-
-#' @references \url{https://hbiostat.org/data/repo/cdystonia}
+#' \describe{
+#'   \item{id}{id}
+#'   \item{sex}{sex}
+#'   \item{age}{age}
+#'   \item{baseline}{baseline}
+#'   \item{treat}{treat}
+#'   \item{week}{week}
+#'   \item{chg}{chg}
+#' }
 "cdystonia"

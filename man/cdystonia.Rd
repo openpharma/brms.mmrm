@@ -5,26 +5,23 @@
 \alias{cdystonia}
 \title{cdystonia dataset}
 \format{
-A tibble with 420 rows and 6 variables
+A tibble with 347 rows and 7 variables
 
 \describe{
-\item id. ...
-\item sex. ...
-\item age. ...
-\item baseline. ...
-\item treat, ...
-\item week. ...
-\item chg ...
+\item{id}{id}
+\item{sex}{sex}
+\item{age}{age}
+\item{baseline}{baseline}
+\item{treat}{treat}
+\item{week}{week}
+\item{chg}{chg}
 }
 }
 \usage{
-data(cdystonia)
+cdystonia
 }
 \description{
 Subset from a multicenter, randomized controlled trial of botulinum toxin
 type B in patients with cervical dystonia.
-}
-\references{
-\url{https://hbiostat.org/data/repo/cdystonia}
 }
 \keyword{datasets}

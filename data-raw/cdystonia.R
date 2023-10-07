@@ -1,6 +1,6 @@
 Hmisc::getHdata(cdystonia)
 cdystonia <- cdystonia |>
-  dplyr::filter(treat %in% c("10000U", "Placebo")) |> 
+  dplyr::filter(treat %in% c("10000U", "Placebo")) |>
   droplevels() |>
   dplyr::mutate_all(~ {
     attr(., "label") <- NULL
@@ -21,8 +21,8 @@ cdystonia <- cdystonia |>
     covariates = c("age", "sex"),
     level_control = "Placebo",
     level_baseline = "w00"
-    ) |>
-  brms.mmrm::brm_data_change(name_change = "chg") |> 
+  ) |>
+  brms.mmrm::brm_data_change(name_change = "chg") |>
   dplyr::filter(!is.na(chg)) |>
   dplyr::select(id, sex, age, baseline, treat, week, chg) |>
   dplyr::arrange(id, week)

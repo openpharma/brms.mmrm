@@ -71,11 +71,6 @@ A description of the `cdystonia` dataset and further references are given [here]
 
 In brief, the data are a subset from a multicenter, randomized controlled trial of botulinum toxin type B in patients with cervical dystonia. The trial endpoint is the total score on Toronto Western Spasmodic Torticollis Rating Scale (TWSTRS).
 
-<!--
-Reduced to two groups.
-TWSTRS-total scores from 109 patients with cervical dystonia: First 35 subjects
--->
-
 ## Data pre-processing 
 ```{r cdystonia1, eval=TRUE, echo=TRUE, class.source = NULL}
 data(cdystonia, package = "brms.mmrm")
