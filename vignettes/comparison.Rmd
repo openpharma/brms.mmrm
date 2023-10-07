@@ -50,13 +50,6 @@ packages <- c("tidyr", "dplyr", "tibble", "ggplot2", "gt", "gtsummary")
 invisible(lapply(packages, library, character.only = TRUE))
 ```
 
-Load packages providing example datasets:
-
-```{r load_dat_pkgs, eval=TRUE, echo=TRUE, class.source = NULL}
-library("Hmisc")
-library("HSAUR3")
-```
-
 Load MMRM packages:
 
 ```{r load_mmrm_pkgs, eval=TRUE, echo=TRUE, class.source = NULL}
@@ -84,44 +77,15 @@ TWSTRS-total scores from 109 patients with cervical dystonia: First 35 subjects
 -->
 
 ## Data pre-processing 
-
 ```{r cdystonia1, eval=TRUE, echo=TRUE, class.source = NULL}
-Hmisc::getHdata(cdystonia)
-cdystonia1 <- cdystonia |>
-  dplyr::filter(treat %in% c("10000U", "Placebo")) |> # restrict to two arms
-  droplevels() |>
-  dplyr::mutate_all(~ {
-    attr(., "label") <- NULL
-    .
-  }) |>
-  dplyr::mutate(
-    week = paste0("w", sprintf("%02d", week)),
-    id = paste0(site, "-", sprintf("%02d", id))
-  ) |>
-  dplyr::select(-c(site)) |>
-  dplyr::arrange(id, week) |>
-  brm_data( # create and preprocess MMRM dataset
-    outcome = "twstrs",
-    role = "response",
-    group = "treat",
-    time = "week",
-    patient = "id",
-    covariates = c("age", "sex"),
-    level_control = "Placebo",
-    level_baseline = "w00"
-  ) |>
-  brm_data_change(name_change = "delta") |> # convert to change from baseline
-  dplyr::filter(!is.na(delta))
-```
-
-```{r cdystonia2, eval=TRUE, echo=TRUE, class.source = NULL}
-head(cdystonia1) |> gt::gt()
+data(cdystonia, package = "brms.mmrm")
+head(cdystonia) |> gt::gt()
 ```
 
 ## Descriptive statistics
 
-```{r cdystonia3a, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
-cdystonia1 |>
+```{r cdystonia2a, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
+cdystonia |>
   dplyr::select(treat, age, sex, baseline) |>
   dplyr::distinct() |>
   gtsummary::tbl_summary(
@@ -134,20 +98,20 @@ cdystonia1 |>
   gtsummary::modify_caption("**Baseline characteristics.**")
 ```
 
-```{r cdystonia3b, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
-unique(cdystonia1$week) |>
+```{r cdystonia2b, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
+unique(cdystonia$week) |>
   sort() |>
   purrr::map(
-    .f = ~ cdystonia1 |>
+    .f = ~ cdystonia |>
       dplyr::filter(week %in% .x) |>
       gtsummary::tbl_summary(
         by = treat,
-        include = delta,
-        type = delta ~ "continuous2",
-        statistic = delta ~ c("{mean} ({sd})",
-                              "{median} ({p25}, {p75})",
-                              "{min}, {max}"),
-        label = list(delta = paste("Visit ", .x))
+        include = chg,
+        type = chg ~ "continuous2",
+        statistic = chg ~ c("{mean} ({sd})",
+                            "{median} ({p25}, {p75})",
+                            "{min}, {max}"),
+        label = list(chg = paste("Visit ", .x))
       )
   ) |>
   gtsummary::tbl_stack(quiet = TRUE) |>
@@ -155,9 +119,9 @@ unique(cdystonia1$week) |>
 ```
 
 ```{r cdystonia_boxpl, eval=TRUE, echo=TRUE, fig.align='center', out.width="75%", fig.dim = c(8, 5), fig.fig.keep='all', fig.pos="!ht", fig.cap="Change from baseline in total TWSTRS score"}
-cdystonia1 |>
+cdystonia |>
   dplyr::group_by(treat) |>
-  ggplot2::ggplot(aes(x = week, y = delta, fill = factor(treat))) +
+  ggplot2::ggplot(aes(x = week, y = chg, fill = factor(treat))) +
   ggplot2::geom_boxplot() +
   ggplot2::labs(x = "Visit",
                 y = "Change from baseline in total TWSTRS score",
@@ -170,16 +134,16 @@ cdystonia1 |>
 
 ### Function `mmrm::mmrm()`
 
-```{r cdystonia4a, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
-cdystonia2 <- cdystonia1 |>
+```{r cdystonia3a, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
+cdystonia1 <- cdystonia |>
   dplyr::mutate(
     treat = factor(treat),
     week = factor(week),
     id = factor(id)
   )
 cdystonia_mmrm <- mmrm::mmrm(
-  formula = delta ~ baseline + age + treat * week + us(week | id),
-  data = cdystonia2
+  formula = chg ~ baseline + age + treat * week + us(week | id),
+  data = cdystonia1
 )
 summary(cdystonia_mmrm)
 ```
