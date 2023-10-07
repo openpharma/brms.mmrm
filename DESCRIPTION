@@ -21,7 +21,7 @@ Description: The mixed model for repeated measures (MMRM) is a popular
     Bürkner (2017) <doi:10.18637/jss.v080.i01>, Mallinckrodt (2008)
     <doi:10.1177/009286150804200402>.
 License: MIT + file LICENSE
-URL:https://openpharma.github.io/brms.mmrm/,
+URL: https://openpharma.github.io/brms.mmrm/,
     https://github.com/openpharma/brms.mmrm
 BugReports: https://github.com/openpharma/brms.mmrm/issues
 Depends:
@@ -48,8 +48,6 @@ Suggests:
     BH,
     gt,
     gtsummary,
-    Hmisc,
-    HSAUR3,
     knitr (>= 1.30),
     markdown (>= 1.1),
     mmrm,
@@ -67,3 +65,4 @@ Encoding: UTF-8
 Language: en-US
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
+LazyData: true
