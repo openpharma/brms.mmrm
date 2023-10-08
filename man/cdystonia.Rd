@@ -5,23 +5,35 @@
 \alias{cdystonia}
 \title{cdystonia dataset}
 \format{
-A tibble with 347 rows and 7 variables
+A tibble with 420 rows and 6 variables
 
 \describe{
-\item{id}{id}
-\item{sex}{sex}
-\item{age}{age}
-\item{baseline}{baseline}
-\item{treat}{treat}
-\item{week}{week}
-\item{chg}{chg}
+\item{id}{Character. Unique subject identifier}
+\item{age}{Integer.  Age of subject in years}
+\item{sex}{Character.  Sex of subject (\code{F}, female; \code{M}, male)}
+\item{treat}{Character. Treatment (\code{Placebo}, placebo, \code{X10000U},
+10,000 units of BotB)}
+\item{week}{Character. Week of study visit}
+\item{twstrs}{Integer. Total TWSTRS score}
 }
+}
+\source{
+The data were drawn from the \pkg{Hmisc} package.
+For further details see
+\url{https://hbiostat.org/data/repo/cdystonia}.
 }
 \usage{
-cdystonia
+data(cdystonia)
 }
 \description{
-Subset from a multicenter, randomized controlled trial of botulinum toxin
-type B in patients with cervical dystonia.
+Subset of data from a multicenter, randomized controlled trial of
+botulinum toxin type B (BotB) in patients with cervical dystonia.
+The endpoint of the trial was the total score on the Toronto Western
+Spasmodic Torticollis Rating Scale (TWSTRS). The dataset contains data from
+72 patients and is limited to 2 (of originally 3) treatment arms.
+}
+\examples{
+data(cdystonia)
+head(cdystonia)
 }
 \keyword{datasets}
