@@ -39,7 +39,9 @@ knitr::opts_chunk$set(
 
 # About {.unnumbered}
 
-This vignette provides an exemplary comparison of Bayesian MMRM fits, obtained by `brms.mmrm::brm_model()`, and frequentist MMRM fits, obtained by `mmrm::mmrm()`, using an example dataset.
+This vignette provides an exemplary comparison of Bayesian MMRM fits, 
+obtained by `brms.mmrm::brm_model()`, 
+and frequentist MMRM fits, obtained by `mmrm::mmrm()`, using an example dataset.
 
 # Prerequisites
 
@@ -67,13 +69,58 @@ set.seed(123L)
 
 # Cervical dystonia data
 
-A description of the `cdystonia` dataset and further references are given [here](https://hbiostat.org/data/repo/cdystonia).
+A description of the `cdystonia` dataset and further references are given 
+[here](https://hbiostat.org/data/repo/cdystonia).
 
-In brief, the data are a subset from a multicenter, randomized controlled trial of botulinum toxin type B in patients with cervical dystonia. The trial endpoint is the total score on Toronto Western Spasmodic Torticollis Rating Scale (TWSTRS).
+In brief, the data are a subset from a multicenter, randomized controlled trial
+of botulinum toxin type B in patients with cervical dystonia. 
+The trial endpoint is the total score on Toronto Western Spasmodic Torticollis
+Rating Scale (TWSTRS).
 
-## Data pre-processing 
-```{r cdystonia1, eval=TRUE, echo=TRUE, class.source = NULL}
+## Data pre-processing
+
+Load dataset
+```{r cdystonia1a, eval=TRUE, echo=TRUE, class.source = NULL}
 data(cdystonia, package = "brms.mmrm")
+```
+
+Create and preprocess and MMRM dataset:
+```{r cdystonia1b, eval=TRUE, echo=TRUE, class.source = NULL}
+cdystonia <- brms.mmrm::brm_data(
+  data = cdystonia,
+  outcome = "twstrs",
+  role = "response",
+  group = "treat",
+  time = "week",
+  patient = "id",
+  covariates = c("age", "sex"),
+  level_control = "Placebo",
+  level_baseline = "w00"
+)
+```
+
+Convert to change from baseline:
+```{r cdystonia1c, eval=TRUE, echo=TRUE, class.source = NULL}  
+cdystonia <- cdystonia |>
+  brms.mmrm::brm_data_change(name_change = "chg")
+```
+
+Further modifications:
+```{r cdystonia1d, eval=TRUE, echo=TRUE, class.source = NULL} 
+cdystonia <- dplyr::mutate(
+  .data = cdystonia,
+  id = factor(id),
+  sex = factor(sex),
+  treat = factor(treat),
+  week = factor(week)
+) |>
+  dplyr::select(id, age, sex, baseline, treat, week, chg) |>
+  dplyr::arrange(id, week) |>
+  dplyr::filter(!is.na(chg))
+```
+
+First rows of dataset:
+```{r cdystonia1e, eval=TRUE, echo=TRUE, class.source = NULL}
 head(cdystonia) |> gt::gt()
 ```
 
@@ -129,21 +176,57 @@ cdystonia |>
 
 ### Function `mmrm::mmrm()`
 
+Fit model:
 ```{r cdystonia3a, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
-cdystonia1 <- cdystonia |>
-  dplyr::mutate(
-    treat = factor(treat),
-    week = factor(week),
-    id = factor(id)
-  )
 cdystonia_mmrm <- mmrm::mmrm(
-  formula = chg ~ baseline + age + treat * week + us(week | id),
-  data = cdystonia1
+  formula = chg ~ baseline + week + age + treat : week + us(week | id),
+  data = cdystonia
 )
+```
+
+Summary of results:
+```{r cdystonia3b, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
 summary(cdystonia_mmrm)
 ```
 
 ### Function `brms.mmrm::brm_model()`
+
+Model formula:
+```{r cdystonia3c, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
+cdystonia_formula <- brm_formula(
+  data = cdystonia,
+  intercept = TRUE,
+  effect_baseline = TRUE,
+  effect_group = FALSE,
+  effect_time = TRUE,
+  interaction_baseline = FALSE,
+  interaction_group = TRUE,
+  correlation = "unstructured"
+)
+print(cdystonia_formula)
+```
+
+Fit model (using multiple cores, if available, to limit runtime):
+```{r cdystonia3d, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
+n_cores <- ifelse(
+  test = parallel::detectCores() > 1,
+  yes = min(3, parallel::detectCores()),
+  no = 1
+)
+cdystonia_brms.mmrm <- brm_model(
+  data = cdystonia,
+  formula = cdystonia_formula,
+  iter = 1500,
+  chains = max(1, n_cores),
+  cores = n_cores,
+  refresh = 0
+)
+```
+
+```{r cdystonia3e, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
+summary(cdystonia_brms.mmrm)
+```
+
 
 ## Comparison 
 
