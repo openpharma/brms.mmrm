@@ -32,40 +32,19 @@ simulate_complex <- function(prior, chains, warmup, iter) {
     interaction_group = TRUE,
     correlation = "unstructured"
   )
-  simulation <- brms.mmrm::brm_simulate_prior(
-    data = outline,
+  run_simulation(
+    outline = outline,
     formula = formula,
     prior = prior,
     chains = chains,
-    cores = chains,
-    iter = iter,
     warmup = warmup,
-    refresh = 0L
+    iter = iter
   )
-  parameters <- dplyr::select(
-    tibble::as_tibble(simulation$parameters),
-    tidyselect::starts_with("b_"),
-    tidyselect::starts_with("cortime_")
-  )
-  truth <- as.numeric(parameters[nrow(parameters), ])
-  names(truth) <- names(parameters)
-  model <- brms.mmrm::brm_model(
-    data = simulation$data,
-    formula = formula,
-    prior = prior,
-    chains = chains,
-    cores = chains,
-    iter = iter,
-    warmup = warmup,
-  )
-  draws <- posterior::as_draws_matrix(model)[, colnames(parameters)]
-  ranks <- SBC::calculate_ranks_draws_matrix(variables = truth, dm = draws)
-  tibble::as_tibble(as.list(ranks))
 }
 
 get_prior_complex <- function() {
-  prior <- brms::set_prior(prior = random_lkj(), class = "cortime") +
-    brms::set_prior(prior = random_t(), class = "Intercept")
+  prior <- brms::set_prior(prior = random_lkj_text(), class = "cortime") +
+    brms::set_prior(prior = random_t_text(), class = "Intercept")
   terms <- c(
     "balancedlevel2",
     "balancedlevel3",
@@ -81,7 +60,7 @@ get_prior_complex <- function() {
   )
   for (term in terms) {
     prior <- prior + brms::set_prior(
-      prior = random_t(),
+      prior = random_t_text(),
       class = "b",
       coef = term
     )
@@ -93,7 +72,7 @@ get_prior_complex <- function() {
   )
   for (term in terms) {
     prior <- prior + brms::set_prior(
-      prior = random_t(),
+      prior = random_t_text(),
       class = "b",
       coef = term,
       dpar = "sigma"

@@ -1,4 +1,4 @@
-library(crew.cluster)
+library(crew.aws.batch)
 library(targets)
 library(tarchetypes)
 
@@ -9,12 +9,23 @@ tar_option_set(
   garbage_collection = TRUE,
   error = "null",
   workspace_on_error = TRUE,
-  controller = crew_controller_sge(
-    workers = 100L,
+  controller = crew_controller_aws_batch(
+    name = "brms-mmrm-sbc",
+    workers = 10L,
     seconds_idle = 120,
-    seconds_launch = 604800,
-    sge_cores = 4L,
-    script_lines = paste0("module load R/", getRversion())
+    seconds_launch = 1800,
+    launch_max = 3L,
+    processes = 4,
+    aws_batch_job_definition = Sys.getenv("JOB_DEFINITION"),
+    aws_batch_job_queue = Sys.getenv("JOB_QUEUE")
+  ),
+  repository = "aws",
+  cue = tar_cue(file = FALSE),
+  resources = tar_resources(
+    aws = tar_resources_aws(
+      bucket = Sys.getenv("BUCKET"),
+      prefix = Sys.getenv("PREFIX")
+    )
   )
 )
 
@@ -31,9 +42,10 @@ list(
       warmup = 2000L,
       iter = 4000L
     ),
-    batches = 1000,
-    reps = 1
+    batches = 100,
+    reps = 10
   ),
+  tar_target(simple, ranks_simple),
   tar_rep(
     ranks_complex,
     simulate_complex(
@@ -42,7 +54,8 @@ list(
       warmup = 2000L,
       iter = 4000L
     ),
-    batches = 1000,
-    reps = 1
-  )
+    batches = 100,
+    reps = 10
+  ),
+  tar_target(complex, ranks_complex)
 )

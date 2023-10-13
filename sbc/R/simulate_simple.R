@@ -20,58 +20,37 @@ simulate_simple <- function(prior, chains, warmup, iter) {
     interaction_group = FALSE,
     correlation = "unstructured"
   )
-  simulation <- brms.mmrm::brm_simulate_prior(
-    data = outline,
+  run_simulation(
+    outline = outline,
     formula = formula,
     prior = prior,
     chains = chains,
-    cores = chains,
-    iter = iter,
     warmup = warmup,
-    refresh = 0L
+    iter = iter
   )
-  parameters <- dplyr::select(
-    tibble::as_tibble(simulation$parameters),
-    tidyselect::starts_with("b_"),
-    tidyselect::starts_with("cortime_")
-  )
-  truth <- as.numeric(parameters[nrow(parameters), ])
-  names(truth) <- names(parameters)
-  model <- brms.mmrm::brm_model(
-    data = simulation$data,
-    formula = formula,
-    prior = prior,
-    chains = chains,
-    cores = chains,
-    iter = iter,
-    warmup = warmup,
-  )
-  draws <- posterior::as_draws_matrix(model)[, colnames(parameters)]
-  ranks <- SBC::calculate_ranks_draws_matrix(variables = truth, dm = draws)
-  tibble::as_tibble(as.list(ranks))
 }
 
 get_prior_simple <- function() {
   n_group <- 3L
   n_time <- 4L
-  prior <- brms::set_prior(prior = random_lkj(), class = "cortime")
+  prior <- brms::set_prior(prior = random_lkj_text(), class = "cortime")
   for (group in seq_len(n_group - 1L) + 1L) {
     prior <- prior + brms::set_prior(
-      prior = random_t(),
+      prior = random_t_text(),
       class = "b",
       coef = paste0("groupgroup_", group)
     )
   }
   for (time in seq_len(n_time)) {
     prior <- prior + brms::set_prior(
-      prior = random_t(),
+      prior = random_t_text(),
       class = "b",
       coef = paste0("timetime_", time)
     )
   }
   for (time in seq_len(n_time)) {
     prior <- prior + brms::set_prior(
-      prior = random_t(),
+      prior = random_t_text(),
       class = "b",
       coef = paste0("timetime_", time),
       dpar = "sigma"
