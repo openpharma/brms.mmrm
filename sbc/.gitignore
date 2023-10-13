@@ -7,3 +7,4 @@ _targets
 *out
 run.R
 job.sh
+.Renviron
