@@ -16,15 +16,15 @@ tar_option_set(
     seconds_launch = 1800,
     launch_max = 3L,
     processes = 4,
-    aws_batch_job_definition = Sys.getenv("JOB_DEFINITION"),
-    aws_batch_job_queue = Sys.getenv("JOB_QUEUE")
+    aws_batch_job_definition = Sys.getenv("JOB_DEFINITION", unset = "job"),
+    aws_batch_job_queue = Sys.getenv("JOB_QUEUE", unset = "queue")
   ),
   repository = "aws",
   cue = tar_cue(file = FALSE),
   resources = tar_resources(
     aws = tar_resources_aws(
-      bucket = Sys.getenv("BUCKET"),
-      prefix = Sys.getenv("PREFIX")
+      bucket = Sys.getenv("BUCKET", unset = "bucket"),
+      prefix = Sys.getenv("PREFIX", unset = "prefix")
     )
   )
 )
