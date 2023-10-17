@@ -1,5 +1,7 @@
 ARG R_VERSION 
-FROM rocker/rstudio:${R_VERSION}
+
+FROM rocker/r-ver:${R_VERSION}
+
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
       cmake \
@@ -9,10 +11,17 @@ RUN apt-get update && \
       libglpk40 \
       libssl-dev \
       libxml2-dev \
+      libzmq3-dev \
       xz-utils
+
 RUN echo 'options(warn = 2L)' >> /root/.Rprofile
-RUN Rscript -e 'install.packages("renv")'
-COPY ./renv.lock ./renv.lock
+
 ARG GITHUB_PAT
-RUN Rscript -e 'renv::restore()'
+
+COPY renv.lock renv.lock
+
+RUN R -e 'install.packages("renv")'
+
+RUN R -e 'renv::restore()'
+
 CMD ["R", "--vanilla"]
