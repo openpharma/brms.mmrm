@@ -11,6 +11,7 @@ run_simulation <- function(
     formula = formula,
     prior = prior
   )
+  options(brms.backend = "rstan")
   model <- brms.mmrm::brm_model(
     data = simulation$data,
     formula = formula,

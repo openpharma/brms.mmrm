@@ -1,5 +1,4 @@
 simulate_simple <- function(prior, chains, warmup, iter) {
-  options(brms.backend = "cmdstanr")
   n_group <- 3L
   n_patient <- 100L
   n_time <- 4L

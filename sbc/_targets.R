@@ -7,11 +7,14 @@ tar_option_set(
   retrieval = "worker",
   memory = "transient",
   garbage_collection = TRUE,
-  error = "null",
+#  error = "null",
   workspace_on_error = TRUE,
+
+#controller = crew::crew_controller_local(),
+
   controller = crew_controller_aws_batch(
     name = "brms-mmrm-sbc",
-    workers = 10L,
+    workers = 25L,
     seconds_idle = 120,
     seconds_launch = 1800,
     launch_max = 3L,
@@ -19,15 +22,20 @@ tar_option_set(
     aws_batch_job_definition = Sys.getenv("JOB_DEFINITION", unset = "job"),
     aws_batch_job_queue = Sys.getenv("JOB_QUEUE", unset = "queue")
   ),
+
   repository = "aws",
   cue = tar_cue(file = FALSE),
+ 
   resources = tar_resources(
-    aws = tar_resources_aws(
-      bucket = Sys.getenv("BUCKET", unset = "bucket"),
-      prefix = Sys.getenv("PREFIX", unset = "prefix")
-    )
+  aws = tar_resources_aws(
+    bucket = Sys.getenv("BUCKET", unset = "bucket"),
+    prefix = Sys.getenv("PREFIX", unset = "prefix"),
+    region = Sys.getenv("REGION", unset = "region")
   )
+ )
 )
+
+#tar_option_set(resources = resources)
 
 tar_source()
 

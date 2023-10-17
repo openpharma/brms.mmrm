@@ -1,5 +1,4 @@
 simulate_complex <- function(prior, chains, warmup, iter) {
-  options(brms.backend = "cmdstanr")
   n_group <- 2L
   n_patient <- 150L
   n_time <- 3L
