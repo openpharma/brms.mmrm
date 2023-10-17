@@ -30,8 +30,6 @@ tar_option_set(
  )
 )
 
-#tar_option_set(resources = resources)
-
 tar_source()
 
 list(
