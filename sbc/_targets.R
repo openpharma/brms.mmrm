@@ -39,7 +39,6 @@ list(
     ranks_simple,
     simulate_simple(
       prior = prior_simple,
-      chains = 1,
       warmup = 20,
       iter = 40,
       chains = 4L,
@@ -54,7 +53,6 @@ list(
     ranks_complex,
     simulate_complex(
       prior = prior_complex,
-      chains = 1,
       warmup = 20,
       iter = 40,
       chains = 4L,
