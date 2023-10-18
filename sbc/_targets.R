@@ -11,7 +11,7 @@ tar_option_set(
   workspace_on_error = TRUE,
   controller = crew_controller_aws_batch(
     name = "brms-mmrm-sbc",
-    workers = 25L,
+    workers = 50L,
     seconds_idle = 120,
     seconds_launch = 1800,
     launch_max = 3L,
