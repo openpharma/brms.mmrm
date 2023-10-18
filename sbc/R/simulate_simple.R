@@ -35,21 +35,21 @@ get_prior_simple <- function() {
   prior <- brms::set_prior(prior = random_lkj_text(), class = "cortime")
   for (group in seq_len(n_group - 1L) + 1L) {
     prior <- prior + brms::set_prior(
-      prior = random_t_text(),
+      prior = random_normal_text_b(),
       class = "b",
       coef = paste0("groupgroup_", group)
     )
   }
   for (time in seq_len(n_time)) {
     prior <- prior + brms::set_prior(
-      prior = random_t_text(),
+      prior = random_normal_text_b(),
       class = "b",
       coef = paste0("timetime_", time)
     )
   }
   for (time in seq_len(n_time)) {
     prior <- prior + brms::set_prior(
-      prior = random_t_text(),
+      prior = random_normal_text_b_sigma(),
       class = "b",
       coef = paste0("timetime_", time),
       dpar = "sigma"

@@ -43,7 +43,7 @@ simulate_complex <- function(prior, chains, warmup, iter) {
 
 get_prior_complex <- function() {
   prior <- brms::set_prior(prior = random_lkj_text(), class = "cortime") +
-    brms::set_prior(prior = random_t_text(), class = "Intercept")
+    brms::set_prior(prior = random_normal_text_b(), class = "Intercept")
   terms <- c(
     "balancedlevel2",
     "balancedlevel3",
@@ -59,7 +59,7 @@ get_prior_complex <- function() {
   )
   for (term in terms) {
     prior <- prior + brms::set_prior(
-      prior = random_t_text(),
+      prior = random_normal_text_b(),
       class = "b",
       coef = term
     )
@@ -71,7 +71,7 @@ get_prior_complex <- function() {
   )
   for (term in terms) {
     prior <- prior + brms::set_prior(
-      prior = random_t_text(),
+      prior = random_normal_text_b_sigma(),
       class = "b",
       coef = term,
       dpar = "sigma"

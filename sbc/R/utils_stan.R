@@ -6,15 +6,22 @@ lkj <- function(shape) {
   shape
 }
 
-random_t_text <- function() {
+random_normal_text_b <- function() {
   sprintf(
-    "student_t(%s, %s, %s)",
-    runif(n = 1L, min = 3, max = 4),
+    "normal(%s, %s)",
     runif(n = 1L, min = -0.25, max = 0.25),
-    runif(n = 1L, min = 1, max = 2)
+    runif(n = 1L, min = 0.25, max = 3)
   )
 }
 
-student_t <- function(df, center, scale) {
-  stats::rt(n = 1L, df = df, ncp = 0) * scale + center
+random_normal_text_b_sigma <- function() {
+  sprintf(
+    "normal(%s, %s)",
+    runif(n = 1L, min = -1, max = 1),
+    runif(n = 1L, min = 0.25, max = 1)
+  )
+}
+
+normal <- function(mean, sd) {
+  stats::rnorm(n = 1L, mean = mean, sd = sd)
 }
