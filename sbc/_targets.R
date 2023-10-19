@@ -72,6 +72,22 @@ list(
   tar_target(complex, ranks_complex),
   tar_target(simple, ranks_simple),
   tar_file(
+    file_prior_simple,
+    prior_simple %>%
+      dplyr::select(prior, class, coef, dpar) %>%
+      save_fst("../vignettes/sbc/prior_simple.fst"),
+    deployment = "main",
+    repository = "local"
+  ),
+  tar_file(
+    file_prior_complex,
+    prior_complex %>%
+      dplyr::select(prior, class, coef, dpar) %>%
+      save_fst("../vignettes/sbc/prior_complex.fst"),
+    deployment = "main",
+    repository = "local"
+  ),
+  tar_file(
     file_benchmark,
     save_fst(benchmark_simple, "../vignettes/sbc/benchmark_simple.fst"),
     deployment = "main",
