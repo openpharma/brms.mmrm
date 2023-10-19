@@ -58,5 +58,17 @@ list(
     batches = 100,
     reps = 10
   ),
-  tar_target(complex, ranks_complex)
+  tar_target(complex, ranks_complex),
+  tar_file(
+    file_simple,
+    save_fst(simple, "../vignettes/sbc/simple.fst"),
+    deployment = "main",
+    repository = "local"
+  ),
+  tar_file(
+    file_complex,
+    save_fst(complex, "../vignettes/sbc/complex.fst"),
+    deployment = "main",
+    repository = "local"
+  )
 )
