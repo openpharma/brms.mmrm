@@ -79,7 +79,10 @@ read_ranks <- function(path) {
 
 plot_ranks <- function(ranks) {
   ggplot(ranks) +
-    geom_histogram(aes(x = rank), bins = 30) +
+    geom_histogram(
+      aes(x = rank),
+      breaks = seq(from = 0, to = max(ranks$rank), length.out = 10)
+    ) +
     facet_wrap(~parameter) +
     theme_gray(16)
 }
