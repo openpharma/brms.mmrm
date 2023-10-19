@@ -36,6 +36,17 @@ list(
   tar_target(prior_simple, get_prior_simple()),
   tar_target(prior_complex, get_prior_complex()),
   tar_rep(
+    ranks_benchmark_simple,
+    simulate_benchmark_simple(
+      prior = prior_simple,
+      chains = 4L,
+      warmup = 2000L,
+      iter = 4000L
+    ),
+    batches = 100,
+    reps = 10
+  ),
+  tar_rep(
     ranks_simple,
     simulate_simple(
       prior = prior_simple,
@@ -46,7 +57,6 @@ list(
     batches = 100,
     reps = 10
   ),
-  tar_target(simple, ranks_simple),
   tar_rep(
     ranks_complex,
     simulate_complex(
@@ -58,7 +68,15 @@ list(
     batches = 100,
     reps = 10
   ),
+  tar_target(benchmark_simple, ranks_benchmark_simple),
   tar_target(complex, ranks_complex),
+  tar_target(simple, ranks_simple),
+  tar_file(
+    file_benchmark,
+    save_fst(benchmark_simple, "../vignettes/sbc/benchmark_simple.fst"),
+    deployment = "main",
+    repository = "local"
+  ),
   tar_file(
     file_simple,
     save_fst(simple, "../vignettes/sbc/simple.fst"),
