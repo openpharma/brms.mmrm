@@ -57,10 +57,10 @@ formula <- brms.mmrm::brm_formula(
 )
 ```
 
-And the prior for both simulation and analysis is:
+The prior was randomly generated and used for both simulation and analysis:
 
-```{r}
-
+```{r, paged.print = FALSE}
+tibble::as_tibble(fst::read_fst("sbc/prior_simple.fst"))
 ```
 
 The following histograms show the SBC rank statistics which compare the prior parameter draws draws to the posterior draws. If the data simulation code and modeling code are both correct and consistent, then the rank statistics should be uniformly distributed.
@@ -152,10 +152,10 @@ n_group <- 2L
   )
 ```
 
-And the prior for both simulation and analysis is:
+The prior was randomly generated and used for both simulation and analysis:
 
-```{r}
-
+```{r, paged.print = FALSE}
+tibble::as_tibble(fst::read_fst("sbc/prior_complex.fst"))
 ```
 
 The following histograms show the SBC rank statistics which compare the prior parameter draws draws to the posterior draws. If the data simulation code and modeling code are both correct and consistent, then the rank statistics should be uniformly distributed.
