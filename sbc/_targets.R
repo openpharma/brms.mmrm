@@ -3,6 +3,7 @@ library(targets)
 library(tarchetypes)
 
 tar_option_set(
+  packages = "magrittr",
   storage = "worker",
   retrieval = "worker",
   memory = "transient",
