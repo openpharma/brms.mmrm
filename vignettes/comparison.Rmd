@@ -181,9 +181,9 @@ n_cores <- ifelse(
   no = 1
 )
 b_mmrm_fit <- brm_model(
-  data = fev_data,
+  data = filter(fev_data, !is.na(FEV1_CHG)),
   formula = b_mmrm_formula,
-  iter = 1000,
+  iter = 1500,
   chains = max(1, n_cores),
   cores = n_cores,
   refresh = 0
