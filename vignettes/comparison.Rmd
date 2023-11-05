@@ -8,10 +8,10 @@ output:
     toc: yes
     toc_float: yes
     number_sections: true 
-vignette: |
+vignette: >
   %\VignetteIndexEntry{Exemplary comparison of Bayesian and frequentist MMRM fits}
+  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-  %\VignetteEngine{knitr::rmarkdown} 
 editor_options:
   chunk_output_type: console
   markdown:
@@ -174,12 +174,15 @@ print(b_mmrm_formula)
 ```
 
 Fit model (using multiple cores, if available, to avoid long runtime):
-```{r bayes_mmrm_2, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
+```{r bayes_mmrm_2a, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
 n_cores <- ifelse(
   test = detectCores() > 1,
-  yes = min(3, detectCores()),
+  yes = min(2, detectCores()),
   no = 1
 )
+```
+
+```{r bayes_mmrm_2b, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
 b_mmrm_fit <- brm_model(
   data = filter(fev_data, !is.na(FEV1_CHG)),
   formula = b_mmrm_formula,
