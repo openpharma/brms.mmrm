@@ -1,5 +1,5 @@
 ---
-title: Comparison of Bayesian and frequentist MMRM fits using example datasets
+title: Exemplary comparison of Bayesian and frequentist MMRM fits
 date: "`r format(Sys.time(), '%d/%m/%Y')`"
 output:
   rmarkdown::html_document:
@@ -9,7 +9,7 @@ output:
     toc_float: yes
     number_sections: true 
 vignette: |
-  %\VignetteIndexEntry{Comparison of Bayesian and frequentist MMRM fits using example datasets}
+  %\VignetteIndexEntry{Exemplary comparison of Bayesian and frequentist MMRM fits}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown} 
 editor_options:
@@ -40,161 +40,128 @@ knitr::opts_chunk$set(
 # About {.unnumbered}
 
 This vignette provides an exemplary comparison of Bayesian MMRM fits, 
-obtained by `brms.mmrm::brm_model()`, 
-and frequentist MMRM fits, obtained by `mmrm::mmrm()`, using an example dataset.
+obtained by `brms.mmrm::brm_model()`, and frequentist MMRM fits, 
+obtained by `mmrm::mmrm()`.
 
 # Prerequisites
 
-Load general packages:
+Load required packages:
 
 ```{r load_gen_pkgs, eval=TRUE, echo=TRUE, class.source = NULL}
-packages <- c("tidyr", "dplyr", "tibble", "ggplot2", "gt", "gtsummary")
+packages <- c(
+  "dplyr",
+  "ggplot2",
+  "gt",
+  "gtsummary",
+  "purrr",
+  "parallel",
+  "brms.mmrm",
+  "mmrm",
+  "emmeans"
+)
 invisible(lapply(packages, library, character.only = TRUE))
 ```
 
-Load MMRM packages:
-
-```{r load_mmrm_pkgs, eval=TRUE, echo=TRUE, class.source = NULL}
-library(brms.mmrm)
-library(mmrm)
-library(emmeans)
-```
-
 Set seed:
-
 ```{r set_seed, eval=TRUE, echo=TRUE, class.source = NULL}
 set.seed(123L)
 ```
 
+# Data
 
-# Cervical dystonia data
+## Pre-processing
 
-A description of the `cdystonia` dataset and further references are given 
-[here](https://hbiostat.org/data/repo/cdystonia).
-
-In brief, the data are a subset from a multicenter, randomized controlled trial
-of botulinum toxin type B in patients with cervical dystonia. 
-The trial endpoint is the total score on Toronto Western Spasmodic Torticollis
-Rating Scale (TWSTRS).
-
-## Data pre-processing
-
-Load dataset
-```{r cdystonia1a, eval=TRUE, echo=TRUE, class.source = NULL}
-data(cdystonia, package = "brms.mmrm")
+Load the `fev_dat` dataset that is contained in `{mmrm}`:
+```{r fev_dat_1, eval=TRUE, echo=TRUE, class.source = NULL}
+data(fev_data, package = "mmrm")
 ```
 
-Create and preprocess and MMRM dataset:
-```{r cdystonia1b, eval=TRUE, echo=TRUE, class.source = NULL}
-cdystonia <- brms.mmrm::brm_data(
-  data = cdystonia,
-  outcome = "twstrs",
-  role = "response",
-  group = "treat",
-  time = "week",
-  patient = "id",
-  covariates = c("age", "sex"),
-  level_control = "Placebo",
-  level_baseline = "w00"
-)
-```
-
-Convert to change from baseline:
-```{r cdystonia1c, eval=TRUE, echo=TRUE, class.source = NULL}  
-cdystonia <- cdystonia |>
-  brms.mmrm::brm_data_change(name_change = "chg")
-```
-
-Further modifications:
-```{r cdystonia1d, eval=TRUE, echo=TRUE, class.source = NULL} 
-cdystonia <- dplyr::mutate(
-  .data = cdystonia,
-  id = factor(id),
-  sex = factor(sex),
-  treat = factor(treat),
-  week = factor(week)
+Create and preprocess dataset for MMRM analysis:
+```{r fev_dat_2, eval=TRUE, echo=TRUE, class.source = NULL}
+fev_data <- fev_data |>
+  mutate("FEV1_CHG" = FEV1 - FEV1_BL) # use change from baseline as endpoint
+fev_data <- brm_data(
+  data = fev_data,
+  outcome = "FEV1_CHG",
+  role = "change",
+  group = "ARMCD",
+  time = "AVISIT",
+  patient = "USUBJID",
+  baseline = "FEV1_BL",
+  level_control = "PBO",
+  covariates = c("RACE", "SEX")
 ) |>
-  dplyr::select(id, age, sex, baseline, treat, week, chg) |>
-  dplyr::arrange(id, week) |>
-  dplyr::filter(!is.na(chg))
+  mutate(ARMCD = factor(ARMCD),
+         AVISIT = factor(AVISIT))
 ```
 
 First rows of dataset:
-```{r cdystonia1e, eval=TRUE, echo=TRUE, class.source = NULL}
-head(cdystonia) |> gt::gt()
+```{r fev_dat_3, eval=TRUE, echo=TRUE, class.source = NULL}
+head(fev_data) |> gt()
 ```
 
 ## Descriptive statistics
 
-```{r cdystonia2a, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
-cdystonia |>
-  dplyr::select(treat, age, sex, baseline) |>
-  dplyr::distinct() |>
-  gtsummary::tbl_summary(
-    by = c(treat),
+Table of baseline characteristics:
+```{r descr_1, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
+fev_data |>
+  select(ARMCD, USUBJID, SEX, RACE, FEV1_BL) |>
+  distinct() |>
+  select(-USUBJID) |>
+  tbl_summary(
+    by = c(ARMCD),
     statistic = list(
       all_continuous() ~ "{mean} ({sd})",
       all_categorical() ~ "{n} / {N} ({p}%)"
     )
   ) |>
-  gtsummary::modify_caption("**Baseline characteristics.**")
+  modify_caption("Baseline characteristics.")
 ```
 
-```{r cdystonia2b, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
-unique(cdystonia$week) |>
+Table of change from baseline in FEV1 over 52 weeks:
+```{r descr_2, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
+fev_data |>
+  pull(AVISIT) |>
+  unique() |>
   sort() |>
   purrr::map(
-    .f = ~ cdystonia |>
-      dplyr::filter(week %in% .x) |>
-      gtsummary::tbl_summary(
-        by = treat,
-        include = chg,
-        type = chg ~ "continuous2",
-        statistic = chg ~ c("{mean} ({sd})",
-                            "{median} ({p25}, {p75})",
-                            "{min}, {max}"),
-        label = list(chg = paste("Visit ", .x))
+    .f = ~ fev_data |>
+      filter(AVISIT %in% .x) |>
+      tbl_summary(
+        by = ARMCD,
+        include = FEV1_CHG,
+        type = FEV1_CHG ~ "continuous2",
+        statistic = FEV1_CHG ~ c("{mean} ({sd})",
+                                 "{median} ({p25}, {p75})",
+                                 "{min}, {max}"),
+        label = list(FEV1_CHG = paste("Visit ", .x))
       )
   ) |>
-  gtsummary::tbl_stack(quiet = TRUE) |>
-  gtsummary::modify_caption("**Change from baseline in total TWSTRS score.**")
+  tbl_stack(quiet = TRUE) |>
+  modify_caption("Change from baseline in FEV1 over 4 visit time points.")
 ```
 
-```{r cdystonia_boxpl, eval=TRUE, echo=TRUE, fig.align='center', out.width="75%", fig.dim = c(8, 5), fig.fig.keep='all', fig.pos="!ht", fig.cap="Change from baseline in total TWSTRS score"}
-cdystonia |>
-  dplyr::group_by(treat) |>
-  ggplot2::ggplot(aes(x = week, y = chg, fill = factor(treat))) +
-  ggplot2::geom_boxplot() +
-  ggplot2::labs(x = "Visit",
-                y = "Change from baseline in total TWSTRS score",
-                fill = "Treatment") +
-  ggplot2::theme_bw()
+```{r descr_3, eval=TRUE, echo=TRUE, fig.align='center', out.width="75%", fig.dim = c(8, 5), fig.fig.keep='all', fig.pos="!ht", fig.cap="Change from baseline in FEV1 over 4 visit time points."}
+fev_data |>
+  group_by(ARMCD) |>
+  ggplot(aes(x = AVISIT, y = FEV1_CHG, fill = factor(ARMCD))) +
+  geom_hline(yintercept = 0, col = "grey", size = 1.2) +
+  geom_boxplot(na.rm = TRUE) +
+  labs(x = "Visit",
+       y = "Change from baseline in FEV1",
+       fill = "Treatment") +
+  scale_fill_manual(values = c("darkgoldenrod2", "coral2")) +
+  theme_bw()
 ```
 
+# Fitting MMRMs
 
-## Fitting MMRMs
-
-### Function `mmrm::mmrm()`
-
-Fit model:
-```{r cdystonia3a, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
-cdystonia_mmrm <- mmrm::mmrm(
-  formula = chg ~ baseline + week + age + treat : week + us(week | id),
-  data = cdystonia
-)
-```
-
-Summary of results:
-```{r cdystonia3b, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
-summary(cdystonia_mmrm)
-```
-
-### Function `brms.mmrm::brm_model()`
+## Bayesian model
 
 Model formula:
-```{r cdystonia3c, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
-cdystonia_formula <- brm_formula(
-  data = cdystonia,
+```{r bayes_mmrm_1, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
+b_mmrm_formula <- brm_formula(
+  data = fev_data,
   intercept = TRUE,
   effect_baseline = TRUE,
   effect_group = FALSE,
@@ -203,74 +170,67 @@ cdystonia_formula <- brm_formula(
   interaction_group = TRUE,
   correlation = "unstructured"
 )
-print(cdystonia_formula)
+print(b_mmrm_formula)
 ```
 
-Fit model (using multiple cores, if available, to limit runtime):
-```{r cdystonia3d, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
+Fit model (using multiple cores, if available, to avoid long runtime):
+```{r bayes_mmrm_2, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
 n_cores <- ifelse(
-  test = parallel::detectCores() > 1,
-  yes = min(3, parallel::detectCores()),
+  test = detectCores() > 1,
+  yes = min(3, detectCores()),
   no = 1
 )
-cdystonia_brms.mmrm <- brm_model(
-  data = cdystonia,
-  formula = cdystonia_formula,
-  iter = 1500,
+b_mmrm_fit <- brm_model(
+  data = fev_data,
+  formula = b_mmrm_formula,
+  iter = 1000,
   chains = max(1, n_cores),
   cores = n_cores,
   refresh = 0
 )
 ```
 
-```{r cdystonia3e, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
-summary(cdystonia_brms.mmrm)
+```{r bayes_mmrm_3, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
+summary(b_mmrm_fit)
 ```
 
 
-## Comparison 
+## Frequentist model
+
+Fit model:
+```{r freq_mmrm_1, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
+f_mmrm_fit <- mmrm::mmrm(
+  formula = FEV1_CHG ~ FEV1_BL + AVISIT + ARMCD:AVISIT + RACE + SEX +
+    us(AVISIT | USUBJID),
+  data = fev_data
+)
+```
+
+Summary of results:
+```{r freq_mmrm_2, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
+summary(f_mmrm_fit)
+```
+
+
+# Comparison 
 
 ...
+
 
 <!--
-
-# HSAUR3 data
-
-## Data pre-processing
-
-...
-
-## Descriptive statistics
-...
-
-## Fitting MMRMs
-
-...
-
-## Comparison 
-
-...
-
-
-```{r figure1, eval=F, echo=F, fig.align='center', fig.width=8, fig.height=5, fig.keep='all', fig.pos="!ht", dev=c('pdf', 'png'), out.width="0.9\\textwidth", fig.cap="..."}
-```
-
--->
-
-
 # References {.unnumbered}
 
 ## Literature {.unnumbered}
 
 ...
 
-<!--
+
 &nbsp;
 
 <div id="refs"></div>
 
 &nbsp;
--->
+
 
 
 ## Session info {.unnumbered}
@@ -278,3 +238,5 @@ summary(cdystonia_brms.mmrm)
 ```{r citation_session, echo=TRUE, eval=TRUE, message=FALSE}
 sessionInfo()
 ```
+
+-->
