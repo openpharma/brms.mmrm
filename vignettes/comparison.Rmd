@@ -39,8 +39,8 @@ knitr::opts_chunk$set(
 
 # About {.unnumbered}
 
-This vignette provides an exemplary comparison of Bayesian MMRM fits, 
-obtained by `brms.mmrm::brm_model()`, and frequentist MMRM fits, 
+This vignette provides an exemplary comparison of a Bayesian MMRM fit, 
+obtained by `brms.mmrm::brm_model()`, and a frequentist MMRM fit, 
 obtained by `mmrm::mmrm()`.
 
 # Prerequisites
@@ -73,7 +73,7 @@ set.seed(123L)
 
 ## Pre-processing
 
-Load the `fev_dat` dataset that is contained in `{mmrm}`:
+The `fev_dat` dataset is used that is contained in `{mmrm}`:
 ```{r fev_dat_1, eval=TRUE, echo=TRUE, class.source = NULL}
 data(fev_data, package = "mmrm")
 ```
@@ -197,6 +197,7 @@ b_mmrm_fit <- brm_model(
 )
 ```
 
+Summary of results:
 ```{r bayes_mmrm_3, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
 summary(b_mmrm_fit)
 ```
@@ -319,23 +320,3 @@ gt(b_f_comparison) |>
   )
 ```
 
-
-<!--
-# References {.unnumbered}
-
-## Literature {.unnumbered}
-
-...
-
-&nbsp;
-
-<div id="refs"></div>
-
-&nbsp;
-
-## Session info {.unnumbered}
-
-```{r citation_session, echo=TRUE, eval=TRUE, message=FALSE}
-sessionInfo()
-```
--->
