@@ -33,7 +33,7 @@ knitr::opts_chunk$set(
   fig.width = 6,
   dpi = 320,
   fig.align = "center",
-  fig.path = "figures/"
+  fig.path = "comparison_figures/"
 )
 ```
 
