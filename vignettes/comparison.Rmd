@@ -1,5 +1,5 @@
 ---
-title: Exemplary comparison of Bayesian and frequentist MMRM fits
+title: Comparison of Bayesian and frequentist MMRM fits
 date: "`r format(Sys.time(), '%d/%m/%Y')`"
 output:
   rmarkdown::html_document:
@@ -9,7 +9,7 @@ output:
     toc_float: yes
     number_sections: true 
 vignette: >
-  %\VignetteIndexEntry{Exemplary comparison of Bayesian and frequentist MMRM fits}
+  %\VignetteIndexEntry{Comparison of Bayesian and frequentist MMRM fits}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 editor_options:
@@ -39,7 +39,7 @@ knitr::opts_chunk$set(
 
 # About {.unnumbered}
 
-This vignette provides an exemplary comparison of a Bayesian MMRM fit, 
+This vignette provides an example comparison of a Bayesian MMRM fit, 
 obtained by `brms.mmrm::brm_model()`, and a frequentist MMRM fit, 
 obtained by `mmrm::mmrm()`.
 
