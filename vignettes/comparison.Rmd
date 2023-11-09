@@ -73,15 +73,35 @@ set.seed(123L)
 
 ## Pre-processing
 
-The `fev_dat` dataset is used that is contained in `{mmrm}`:
+The `fev_dat` dataset is used that is contained in the `mmrm`-package:
 ```{r fev_dat_1, eval=TRUE, echo=TRUE, class.source = NULL}
 data(fev_data, package = "mmrm")
 ```
 
+It is an artificial (simulated) dataset of a clinical trial investigating the 
+effect of an active treatment on `FEV1` (forced expired volume in one second),
+compared to placebo. `FEV1` is a measure of how quickly the lungs can be 
+emptied and low levels may indicate chronic obstructive pulmonary disease 
+(COPD). 
+
+The dataset is a `tibble` with 800 rows and 7 variables:
+
+* `USUBJID` (subject ID),
+* `AVISIT` (visit number),
+* `ARMCD` (treatment, `TRT` or `PBO`),
+* `RACE` (3-category race),
+* `SEX` (sex),
+* `FEV1_BL` (FEV1 at baseline, %),
+* `FEV1` (FEV1 at study visits),
+* `WEIGHT` (weighting variable).
+
+In this analysis, change from baseline in `FEV1` is used as an endpoint and
+a corresponding new variable (`FEV1_CHG`) is created.
+
 Create and preprocess dataset for MMRM analysis:
 ```{r fev_dat_2, eval=TRUE, echo=TRUE, class.source = NULL}
-fev_data <- fev_data |>
-  mutate("FEV1_CHG" = FEV1 - FEV1_BL) # use change from baseline as endpoint
+fev_data <- fev_data |> 
+  mutate("FEV1_CHG" = FEV1 - FEV1_BL)
 fev_data <- brm_data(
   data = fev_data,
   outcome = "FEV1_CHG",
