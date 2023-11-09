@@ -2,65 +2,65 @@ Package: brms.mmrm
 Title: Bayesian MMRMs using 'brms'
 Version: 0.0.2.9001
 Authors@R: c(
-    person(c("William", "Michael"), "Landau", , "will.landau@gmail.com", role = c("aut", "cre"),
-           comment = c(ORCID = "0000-0003-1878-3253")),
-    person("Kevin", "Kunzmann", , "kevin.kunzmann@boehringer-ingelheim.com", role = "aut",
-           comment = c(ORCID = "0000-0002-1140-7143")),
-    person("Yoni", "Sidi", , "yoni.sidi@sagerx.com", role = "aut"),
-    person("Christian", "Stock", , "christian.stock@boehringer-ingelheim.com", role = "aut",
-           comment = c(ORCID = "0000-0002-3493-3234")),
-    person(, "Eli Lilly and Company", role = c("cph", "fnd")),
-    person("Boehringer Ingelheim Pharma GmbH & Co. KG", role = c("cph", "fnd"))
+  person(c("William", "Michael"), "Landau", , "will.landau@gmail.com", role = c("aut", "cre"),
+  comment = c(ORCID = "0000-0003-1878-3253")),
+  person("Kevin", "Kunzmann", , "kevin.kunzmann@boehringer-ingelheim.com", role = "aut",
+  comment = c(ORCID = "0000-0002-1140-7143")),
+  person("Yoni", "Sidi", , "yoni.sidi@sagerx.com", role = "aut"),
+  person("Christian", "Stock", , "christian.stock@boehringer-ingelheim.com", role = "aut",
+  comment = c(ORCID = "0000-0002-3493-3234")),
+  person(, "Eli Lilly and Company", role = c("cph", "fnd")),
+  person("Boehringer Ingelheim Pharma GmbH & Co. KG", role = c("cph", "fnd"))
   )
 Description: The mixed model for repeated measures (MMRM) is a popular
-    model for longitudinal clinical trial data with continuous endpoints,
-    and 'brms' is a powerful and versatile package for fitting Bayesian
-    regression models.  The 'brms.mmrm' R package leverages 'brms' to run
-    MMRMs, and it supports a simplified interfaced to reduce difficulty
-    and align with the best practices of the life sciences.  References:
-    Bürkner (2017) <doi:10.18637/jss.v080.i01>, Mallinckrodt (2008)
-    <doi:10.1177/009286150804200402>.
+  model for longitudinal clinical trial data with continuous endpoints,
+  and 'brms' is a powerful and versatile package for fitting Bayesian
+  regression models.  The 'brms.mmrm' R package leverages 'brms' to run
+  MMRMs, and it supports a simplified interfaced to reduce difficulty
+  and align with the best practices of the life sciences.  References:
+  Bürkner (2017) <doi:10.18637/jss.v080.i01>, Mallinckrodt (2008)
+  <doi:10.1177/009286150804200402>.
 License: MIT + file LICENSE
 URL: https://openpharma.github.io/brms.mmrm/,
-    https://github.com/openpharma/brms.mmrm
+  https://github.com/openpharma/brms.mmrm
 BugReports: https://github.com/openpharma/brms.mmrm/issues
 Depends:
-    R (>= 4.0.0)
+  R (>= 4.0.0)
 Imports:
-    brms (>= 2.19.0),
-    coda,
-    dplyr,
-    emmeans (>= 1.8.7),
-    ggplot2,
-    ggridges,
-    MASS,
-    posterior,
-    purrr,
-    rlang,
-    stats,
-    tibble,
-    tidyr,
-    tidyselect,
-    trialr,
-    utils,
-    zoo
+  brms (>= 2.19.0),
+  coda,
+  dplyr,
+  emmeans (>= 1.8.7),
+  ggplot2,
+  ggridges,
+  MASS,
+  posterior,
+  purrr,
+  rlang,
+  stats,
+  tibble,
+  tidyr,
+  tidyselect,
+  trialr,
+  utils,
+  zoo
 Suggests:
-    BH,
-    gt,
-    gtsummary,
-    knitr (>= 1.30),
-    markdown (>= 1.1),
-    mmrm,
-    parallel,
-    Rcpp,
-    RcppEigen,
-    RcppParallel,
-    rmarkdown (>= 2.4),
-    rstan,
-    StanHeaders,
-    testthat (>= 3.0.0)
+  BH,
+  gt,
+  gtsummary,
+  knitr (>= 1.30),
+  markdown (>= 1.1),
+  mmrm,
+  parallel,
+  Rcpp,
+  RcppEigen,
+  RcppParallel,
+  rmarkdown (>= 2.4),
+  rstan,
+  StanHeaders,
+  testthat (>= 3.0.0)
 VignetteBuilder: 
-    knitr
+  knitr
 Config/testthat/edition: 3
 Encoding: UTF-8
 Language: en-US
