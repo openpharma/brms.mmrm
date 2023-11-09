@@ -41,7 +41,10 @@ knitr::opts_chunk$set(
 
 This vignette provides an example comparison of a Bayesian MMRM fit, 
 obtained by `brms.mmrm::brm_model()`, and a frequentist MMRM fit, 
-obtained by `mmrm::mmrm()`.
+obtained by `mmrm::mmrm()`. An overview of parameter estimates and 
+differences by type of MMRM is given in the [summary (Table 4)](#Summary) 
+at the end.
+
 
 # Prerequisites
 
@@ -100,7 +103,7 @@ a corresponding new variable (`FEV1_CHG`) is created.
 
 Create and preprocess dataset for MMRM analysis:
 ```{r fev_dat_2, eval=TRUE, echo=TRUE, class.source = NULL}
-fev_data <- fev_data |> 
+fev_data <- fev_data |>
   mutate("FEV1_CHG" = FEV1 - FEV1_BL)
 fev_data <- brm_data(
   data = fev_data,
@@ -311,7 +314,7 @@ f_mmrm_summary <- bind_rows(f_mmrm_fixed,
 ```
 
 
-## Summary
+## Summary {#Summary}
 ```{r comparison_3a, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
 b_f_comparison <- full_join(x = b_mmrm_summary,
                             y = f_mmrm_summary,
