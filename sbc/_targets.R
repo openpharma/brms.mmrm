@@ -8,7 +8,7 @@ tar_option_set(
   memory = "transient",
   garbage_collection = TRUE,
   workspace_on_error = TRUE,
-  controller <- crew_controller_sge(
+  controller = crew_controller_sge(
     name = "brms-mmrm-sbc",
     workers = 50L,
     seconds_idle = 120,
