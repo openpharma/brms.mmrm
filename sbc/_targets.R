@@ -46,23 +46,23 @@ list(
     ranks_simple,
     simulate_simple(
       prior = prior_simple,
-      chains = 1,#4L,
-      warmup = 10,#2000L,
-      iter = 20 #4000L
+      chains = 4L,
+      warmup = 2000L,
+      iter = 4000L
     ),
-    batches = 1,#100,
-    reps = 1#10
+    batches = 100,
+    reps = 1 #10
   ),
   tar_rep(
     ranks_complex,
     simulate_complex(
       prior = prior_complex,
-      chains = 1L, #4L,
-      warmup = 10L, #2000L,
-      iter = 20L #4000L
+      chains = 4L,
+      warmup = 2000L,
+      iter = 4000L
     ),
-    batches = 1,#100,
-    reps = 1#10
+    batches = 100,
+    reps = 1 #10
   ),
   tar_target(complex, ranks_complex),
   tar_target(simple, ranks_simple),

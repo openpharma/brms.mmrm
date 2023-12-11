@@ -13,7 +13,7 @@ run_simulation <- function(
   )
   options(brms.backend = "rstan")
   model <- brms.mmrm::brm_model(
-    data = simulation$data,
+    data = dplyr::filter(simulation$data, !is.na(response)),
     formula = formula,
     prior = as_brms_prior(prior),
     chains = chains,
