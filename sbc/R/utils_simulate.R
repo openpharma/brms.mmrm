@@ -7,7 +7,7 @@ run_simulation <- function(
   iter = iter
 ) {
   simulation <- simulate_response(
-    data = outline,
+    outline = outline,
     formula = formula,
     prior = prior
   )
@@ -15,70 +15,82 @@ run_simulation <- function(
   model <- brms.mmrm::brm_model(
     data = simulation$data,
     formula = formula,
-    prior = prior,
+    prior = as_brms_prior(prior),
     chains = chains,
     cores = chains,
     iter = iter,
     warmup = warmup,
   )
+  assert_equal_priors(as_brms_prior(prior), brms::prior_summary(model))
   get_sbc_ranks(model, simulation)
 }
 
-simulate_response <- function(data, formula, prior) {
-  name_intercept <- "Intercept"
-  data$response <- 0
-  stan_data <- brms::make_standata(
-    formula = formula,
-    data = data,
-    prior = prior
-  )
+simulate_response <- function(outline, formula, prior) {
+  data <- dplyr::mutate(outline, response = 0)
+  stan_data <- brms::make_standata(formula, data, prior = as_brms_prior(prior))
+  prior$coef[prior$class == "Intercept"] <- "Intercept"
   model_matrix <- stan_data$X
-  beta <- numeric(0L)
-  for (label in setdiff(colnames(model_matrix), name_intercept)) {
-    text <- dplyr::filter(prior, coef == label, class == "b", dpar == "")$prior
-    beta <- c(beta, structure(eval(parse(text = text)), names = label))
-  }
-  if (name_intercept %in% prior$class) {
-    text <- dplyr::filter(prior, class == name_intercept)$prior
-    beta <- c(beta, Intercept = eval(parse(text = text)))
-  }
-  beta <- beta[colnames(model_matrix)]
+  stopifnot(all(sort(colnames(model_matrix)) %in% prior$coef))
+  prior_beta <- dplyr::filter(
+    prior,
+    class %in% c("b", "Intercept"),
+    dpar != "sigma"
+  )
+  n_beta <- nrow(prior_beta)
+  beta <- stats::rnorm(n = n_beta, mean = prior_beta$mean, sd = prior_beta$sd)
+  names(beta) <- prior_beta$coef
+  stopifnot(all(sort(names(beta)) == sort(names(model_matrix))))
+  stopifnot(!anyNA(names(beta)))
   stopifnot(!anyNA(beta))
-  mu <- as.numeric(model_matrix %*% beta)
-  names(beta) <- paste0("b_", names(beta))
-  prior_sigma <- dplyr::filter(prior, dpar == "sigma")
-  b_sigma <- numeric(0L)
-  for (label in prior_sigma$coef) {
-    text <- dplyr::filter(prior, coef == label, dpar == "sigma")$prior
-    name <- paste0("b_sigma_", label)
-    b_sigma <- c(b_sigma, structure(eval(parse(text = text)), names = name))
-  }
+  beta <- beta[colnames(model_matrix)]
+  mu <- model_matrix %*% beta
+  names(beta) <- prior_beta$name
+  stopifnot(!anyNA(names(beta)))
+  stopifnot(!anyNA(beta))
+  prior_sigma <- dplyr::arrange(dplyr::filter(prior, dpar == "sigma"), coef)
+  n_time <- nrow(prior_sigma)
+  b_sigma <- stats::rnorm(n_time, mean = prior_sigma$mean, sd = prior_sigma$sd)
+  names(b_sigma) <- prior_sigma$name
   sigma <- exp(b_sigma)
-  shape <- eval(parse(text = dplyr::filter(prior, class == "cortime")$prior))
-  correlation <- trialr::rlkjcorr(n = 1L, K = length(sigma), eta = shape)
-  cortime <- numeric(0L)
-  for (i in seq(from = 1L, to = length(sigma))) {
-    for (j in seq(from = 1L, to = length(sigma))) {
-      if (j > i) {
-        name <- sprintf("cortime__time_%s__time_%s", i, j)
-        cortime <- c(cortime, structure(correlation[i, j], names = name))
-      }
-    }
-  }
+  shape <- prior[prior$class == "Lcortime", "shape"]
+  correlation <- trialr::rlkjcorr(n = 1L, K = n_time, eta = shape)
+  i <- rep(seq_len(n_time), each = n_time)
+  j <- rep(seq_len(n_time), times = n_time)
+  cortime <- as.numeric(correlation)[j > i]
+  names(cortime) <- sprintf("cortime__time_%s__time_%s", i[j > i], j[j > i])
   covariance <- diag(sigma) %*% correlation %*% diag(sigma)
-  for (patient in unique(data$patient)) {
-    index <- which(data$patient == patient)
-    mu_patient <- mu[index]
-    data$response[index] <- as.numeric(
-      MASS::mvrnorm(
+  n_patient <- nrow(data) / n_time
+  stopifnot(
+    all(data$time == paste0("time_", rep(seq_len(n_time), times = n_patient)))
+  )
+  labels_group <- data$group
+  labels_time <- data$time
+  labels_patient <- data$patient
+  data <- data |>
+    dplyr::mutate(
+      mu = as.numeric(model_matrix %*% beta),
+      index_patient = rep(seq_len(n_patient), each = n_time)
+    ) |>
+    dplyr::group_by(index_patient) |>
+    dplyr::group_modify(~{
+      out <- .x
+      out$response <- MASS::mvrnorm(
         n = 1L,
-        mu = mu_patient,
+        mu = .x$mu,
         Sigma = covariance
       )
-    )
-  }
+      out
+    }) |>
+    dplyr::ungroup() |>
+    dplyr::select(-index_patient, -mu)
   data$response[data$missing] <- NA_real_
+  stopifnot(all(colnames(data) == colnames(outline)))
+  stopifnot(all(data$group == labels_group))
+  stopifnot(all(data$time == labels_time))
+  stopifnot(all(data$patient == labels_patient))
+  attributes(data) <- attributes(outline)
   parameters <- c(beta, b_sigma, cortime)
+  stopifnot(!anyDuplicated(names(parameters)))
   list(data = data, parameters = parameters)
 }
 

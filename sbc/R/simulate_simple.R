@@ -32,28 +32,26 @@ simulate_simple <- function(prior, chains, warmup, iter) {
 get_prior_simple <- function() {
   n_group <- 3L
   n_time <- 4L
-  prior <- brms::set_prior(prior = random_lkj_text(), class = "cortime")
-  for (group in seq_len(n_group - 1L) + 1L) {
-    prior <- prior + brms::set_prior(
-      prior = random_normal_text_b(),
-      class = "b",
-      coef = paste0("groupgroup_", group)
-    )
+  prior <- new_prior_lkj(dimension = n_time)
+  terms <- c(
+    "groupgroup_2",
+    "groupgroup_3",
+    "timetime_1",
+    "timetime_2",
+    "timetime_3",
+    "timetime_4"
+  )
+  for (term in terms) {
+    prior <- prior + new_prior_normal(coef = term)
   }
-  for (time in seq_len(n_time)) {
-    prior <- prior + brms::set_prior(
-      prior = random_normal_text_b(),
-      class = "b",
-      coef = paste0("timetime_", time)
-    )
-  }
-  for (time in seq_len(n_time)) {
-    prior <- prior + brms::set_prior(
-      prior = random_normal_text_b_sigma(),
-      class = "b",
-      coef = paste0("timetime_", time),
-      dpar = "sigma"
-    )
+  terms <- c(
+    "timetime_1",
+    "timetime_2",
+    "timetime_3",
+    "timetime_4"
+  )
+  for (term in terms) {
+    prior <- prior + new_prior_normal(coef = term, dpar = "sigma")
   }
   prior
 }

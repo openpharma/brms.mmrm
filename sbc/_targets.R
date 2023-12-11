@@ -1,34 +1,40 @@
-library(crew.aws.batch)
+library(crew.cluster)
 library(targets)
 library(tarchetypes)
 
 tar_option_set(
-  packages = "magrittr",
   storage = "worker",
   retrieval = "worker",
   memory = "transient",
   garbage_collection = TRUE,
-  error = "null",
   workspace_on_error = TRUE,
-  controller = crew_controller_aws_batch(
+  controller <- crew_controller_sge(
     name = "brms-mmrm-sbc",
     workers = 50L,
     seconds_idle = 120,
     seconds_launch = 1800,
     launch_max = 3L,
-    processes = 4,
-    aws_batch_job_definition = Sys.getenv("JOB_DEFINITION", unset = "job"),
-    aws_batch_job_queue = Sys.getenv("JOB_QUEUE", unset = "queue")
-  ),
-  repository = "aws",
-  cue = tar_cue(file = FALSE),
-  resources = tar_resources(
-    aws = tar_resources_aws(
-      bucket = Sys.getenv("BUCKET", unset = "bucket"),
-      prefix = Sys.getenv("PREFIX", unset = "prefix"),
-      region = Sys.getenv("REGION", unset = "region")
-    )
+    script_lines = "module load R/4.2.2",
+    sge_cores = 4L
   )
+  # controller = crew_controller_aws_batch(
+  #   name = "brms-mmrm-sbc",
+  #   workers = 50L,
+  #   seconds_idle = 120,
+  #   seconds_launch = 1800,
+  #   launch_max = 3L,
+  #   processes = 4,
+  #   aws_batch_job_definition = Sys.getenv("JOB_DEFINITION", unset = "job"),
+  #   aws_batch_job_queue = Sys.getenv("JOB_QUEUE", unset = "queue")
+  # ),
+  # repository = "aws",
+  # resources = tar_resources(
+  #   aws = tar_resources_aws(
+  #     bucket = Sys.getenv("BUCKET", unset = "bucket"),
+  #     prefix = Sys.getenv("PREFIX", unset = "prefix"),
+  #     region = Sys.getenv("REGION", unset = "region")
+  #   )
+  # )
 )
 
 tar_source()
@@ -37,60 +43,42 @@ list(
   tar_target(prior_simple, get_prior_simple()),
   tar_target(prior_complex, get_prior_complex()),
   tar_rep(
-    ranks_benchmark_simple,
-    simulate_benchmark_simple(
-      prior = prior_simple,
-      chains = 4L,
-      warmup = 2000L,
-      iter = 4000L
-    ),
-    batches = 100,
-    reps = 10
-  ),
-  tar_rep(
     ranks_simple,
     simulate_simple(
       prior = prior_simple,
-      chains = 4L,
-      warmup = 2000L,
-      iter = 4000L
+      chains = 1,#4L,
+      warmup = 10,#2000L,
+      iter = 20 #4000L
     ),
-    batches = 100,
-    reps = 10
+    batches = 1,#100,
+    reps = 1#10
   ),
   tar_rep(
     ranks_complex,
     simulate_complex(
       prior = prior_complex,
-      chains = 4L,
-      warmup = 2000L,
-      iter = 4000L
+      chains = 1L, #4L,
+      warmup = 10L, #2000L,
+      iter = 20L #4000L
     ),
-    batches = 100,
-    reps = 10
+    batches = 1,#100,
+    reps = 1#10
   ),
-  tar_target(benchmark_simple, ranks_benchmark_simple),
   tar_target(complex, ranks_complex),
   tar_target(simple, ranks_simple),
   tar_file(
     file_prior_simple,
-    prior_simple %>%
-      dplyr::select(prior, class, coef, dpar) %>%
+    prior_simple |>
+      dplyr::select(prior, class, coef, dpar) |>
       save_fst("../vignettes/sbc/prior_simple.fst"),
     deployment = "main",
     repository = "local"
   ),
   tar_file(
     file_prior_complex,
-    prior_complex %>%
-      dplyr::select(prior, class, coef, dpar) %>%
+    prior_complex |>
+      dplyr::select(prior, class, coef, dpar) |>
       save_fst("../vignettes/sbc/prior_complex.fst"),
-    deployment = "main",
-    repository = "local"
-  ),
-  tar_file(
-    file_benchmark,
-    save_fst(benchmark_simple, "../vignettes/sbc/benchmark_simple.fst"),
     deployment = "main",
     repository = "local"
   ),
