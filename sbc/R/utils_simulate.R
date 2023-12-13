@@ -26,7 +26,7 @@ run_simulation <- function(
 }
 
 simulate_response <- function(outline, formula, prior) {
-  data <- dplyr::mutate(outline, response = seq_len(dplyr::n()))
+  data <- dplyr::mutate(outline, response = seq_len(nrow(outline)))
   stan_data <- brms::make_standata(formula, data, prior = as_brms_prior(prior))
   undo_brms_permutation <- match(x = data$response, table = stan_data$Y)
   stopifnot(all(stan_data$Y[undo_brms_permutation] == data$response))
