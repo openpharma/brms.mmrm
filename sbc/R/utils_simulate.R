@@ -26,10 +26,12 @@ run_simulation <- function(
 }
 
 simulate_response <- function(outline, formula, prior) {
-  data <- dplyr::mutate(outline, response = 0)
+  data <- dplyr::mutate(outline, response = seq_len(dplyr::n()))
   stan_data <- brms::make_standata(formula, data, prior = as_brms_prior(prior))
+  undo_brms_permutation <- match(x = data$response, table = stan_data$Y)
+  stopifnot(all(stan_data$Y[undo_brms_permutation] == data$response))
+  model_matrix <- stan_data$X[undo_brms_permutation, ]
   prior$coef[prior$class == "Intercept"] <- "Intercept"
-  model_matrix <- stan_data$X
   stopifnot(all(sort(colnames(model_matrix)) %in% prior$coef))
   prior_beta <- dplyr::filter(
     prior,
@@ -43,7 +45,6 @@ simulate_response <- function(outline, formula, prior) {
   stopifnot(!anyNA(names(beta)))
   stopifnot(!anyNA(beta))
   beta <- beta[colnames(model_matrix)]
-  mu <- model_matrix %*% beta
   names(beta) <- prior_beta$name
   stopifnot(!anyNA(names(beta)))
   stopifnot(!anyNA(beta))
@@ -72,15 +73,7 @@ simulate_response <- function(outline, formula, prior) {
       index_patient = rep(seq_len(n_patient), each = n_time)
     ) |>
     dplyr::group_by(index_patient) |>
-    dplyr::group_modify(~{
-      out <- .x
-      out$response <- MASS::mvrnorm(
-        n = 1L,
-        mu = .x$mu,
-        Sigma = covariance
-      )
-      out
-    }) |>
+    dplyr::mutate(response = MASS::mvrnorm(mu = mu, Sigma = covariance)) |>
     dplyr::ungroup() |>
     dplyr::select(-index_patient, -mu)
   data$response[data$missing] <- NA_real_
