@@ -10,7 +10,7 @@ tar_option_set(
   workspace_on_error = TRUE,
   controller = crew_controller_sge(
     name = "brms-mmrm-sbc",
-    workers = 50L,
+    workers = 100L,
     seconds_idle = 120,
     seconds_launch = 1800,
     launch_max = 3L,
