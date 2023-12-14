@@ -52,8 +52,7 @@ list(
       iter = 4000L
     ),
     batches = 100,
-    reps = 1, #10
-    iteration = "list"
+    reps = 1 #10
   ),
   tar_rep(
     ranks_complex,
@@ -64,8 +63,7 @@ list(
       iter = 4000L
     ),
     batches = 100,
-    reps = 1, #10
-    iteration = "list"
+    reps = 1 #10
   ),
   tar_target(complex, ranks_complex),
   tar_target(simple, ranks_simple),
