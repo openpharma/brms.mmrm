@@ -1,4 +1,4 @@
-library(crew.cluster)
+library(crew.aws.batch)
 library(targets)
 library(tarchetypes)
 
