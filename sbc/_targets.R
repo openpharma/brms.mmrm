@@ -67,8 +67,8 @@ list(
     reps = 1, #10
     iteration = "list"
   ),
-  tar_target(complex, bind_ranks(ranks_complex)),
-  tar_target(simple, bind_ranks(ranks_simple)),
+  tar_target(complex, ranks_complex),
+  tar_target(simple, ranks_simple),
   tar_file(
     file_prior_simple,
     prior_simple |>

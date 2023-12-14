@@ -24,17 +24,7 @@ run_simulation <- function(
     warmup = warmup,
   )
   assert_equal_priors(as_brms_prior(prior), brms::prior_summary(model))
-  list(
-    seed = seed,
-    simulation = simulation,
-    draws = posterior::as_draws_matrix(model),
-    ranks = get_sbc_ranks(model, simulation)
-  )
-}
-
-bind_ranks <- function(results) {
-  out <- purrr::map(results, ~.x[[1L]]$ranks)
-  dplyr::bind_rows(out)
+  get_sbc_ranks(model, simulation)
 }
 
 simulate_response <- function(outline, formula, prior) {
