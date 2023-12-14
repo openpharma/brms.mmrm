@@ -20,7 +20,7 @@ tar_option_set(
   # )
   controller = crew_controller_aws_batch(
     name = "brms-mmrm-sbc",
-    workers = 50L,
+    workers = 200L,
     seconds_idle = 120,
     seconds_launch = 1800,
     launch_max = 3L,
@@ -52,7 +52,7 @@ list(
       iter = 4000L
     ),
     batches = 100,
-    reps = 1 #10
+    reps = 10
   ),
   tar_rep(
     ranks_complex,
@@ -63,7 +63,7 @@ list(
       iter = 4000L
     ),
     batches = 100,
-    reps = 1 #10
+    reps = 10
   ),
   tar_target(complex, ranks_complex),
   tar_target(simple, ranks_simple),
