@@ -1,6 +1,7 @@
 ---
 title: "Simulation-based calibration"
-bibliography: bibliography.bib
+bibliography: '`r system.file("bibliography.bib", package = "brms.mmrm")`'
+csl: '`r system.file("asa.csl", package = "brms.mmrm")`'
 output:
   rmarkdown::html_vignette:
     toc: true
