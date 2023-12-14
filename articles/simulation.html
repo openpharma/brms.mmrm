@@ -56,6 +56,9 @@
       <a href="../articles/methods.html">Methods</a>
     </li>
     <li>
+      <a href="../articles/sbc.html">Simulation-based calibration</a>
+    </li>
+    <li>
       <a href="../articles/simulation.html">Simulation</a>
     </li>
     <li>
@@ -244,8 +247,8 @@ using <code><a href="../reference/brm_simulate_categorical.html">brm_simulate_ca
 covariates are non-time-varying, which means each patient gets only one
 unique value.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="va">data</span> <span class="op">%&gt;%</span></span>
-<span>  <span class="fu"><a href="../reference/brm_simulate_continuous.html">brm_simulate_continuous</a></span><span class="op">(</span>names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"biomarker1"</span>, <span class="st">"biomarker2"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="va">data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/brm_simulate_continuous.html">brm_simulate_continuous</a></span><span class="op">(</span>names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"biomarker1"</span>, <span class="st">"biomarker2"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/brm_simulate_categorical.html">brm_simulate_categorical</a></span><span class="op">(</span></span>
 <span>    names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"status1"</span>, <span class="st">"status2"</span><span class="op">)</span>,</span>
 <span>    levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"present"</span>, <span class="st">"absent"</span><span class="op">)</span></span>
@@ -284,7 +287,7 @@ something non-missing, and you may wish to specify a custom prior.</p>
 <span></span>
 <span><span class="va">stan_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://paul-buerkner.github.io/brms/reference/make_standata.html" class="external-link">make_standata</a></span><span class="op">(</span></span>
 <span>  formula <span class="op">=</span> <span class="va">formula</span>,</span>
-<span>  data <span class="op">=</span> <span class="fu">mutate</span><span class="op">(</span><span class="va">data</span>, response <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
+<span>  data <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span><span class="va">data</span>, response <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">model_matrix</span> <span class="op">&lt;-</span> <span class="va">stan_data</span><span class="op">$</span><span class="va">X</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">model_matrix</span><span class="op">)</span></span>
