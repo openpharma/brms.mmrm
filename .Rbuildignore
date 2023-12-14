@@ -7,4 +7,5 @@
 ^\.lintr$
 ^_pkgdown\.yml$
 ^docs$
+^sbc$
 ^data-raw$

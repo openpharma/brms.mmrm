@@ -46,6 +46,7 @@ Imports:
   zoo
 Suggests:
   BH,
+  fst,
   gt,
   gtsummary,
   knitr (>= 1.30),

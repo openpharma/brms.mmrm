@@ -79,7 +79,7 @@ brm_model <- function(
     message = "prior arg must be a \"brmsprior\" object or NULL."
   )
   brms::brm(
-    data = data,
+    data = data[!is.na(data[[attr(data, "brm_outcome")]]), ],
     formula = formula,
     prior = prior,
     ...

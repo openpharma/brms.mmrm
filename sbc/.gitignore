@@ -1,0 +1,10 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+_targets
+*~
+*out
+run.R
+job.sh
+.Renviron

@@ -1,0 +1,203 @@
+---
+title: "Simulation-based calibration"
+bibliography: '`r system.file("bibliography.bib", package = "brms.mmrm")`'
+csl: '`r system.file("asa.csl", package = "brms.mmrm")`'
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    number_sections: true
+vignette: >
+  %\VignetteIndexEntry{Simulation-based calibration}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 5
+)
+library(brms.mmrm)
+library(dplyr)
+library(fst)
+library(ggplot2)
+library(tibble)
+library(tidyr)
+```
+
+# About
+
+This vignette shows the results of a simulation-based calibration (SBC) study to validate the implementation of the models in `brms.mmrm`. SBC tests the ability of a Bayesian model to recapture the parameters used to simulate prior predictive data. For details on SBC, please read @talts2020 and the [`SBC`](https://hyunjimoon.github.io/SBC/) R package [@sbc]. This particular SBC study uses the [`targets`](https://docs.ropensci.org/targets/) pipeline in the [`sbc`](https://github.com/openpharma/brms.mmrm/tree/main/sbc) subdirectory of the [`brms.mmrm`](https://github.com/openpharma/brms.mmrm) package source code.
+
+# Simple scenario
+
+In the simple scenario, we simulate datasets from the prior predictive distribution assuming 3 treatment groups, 4 time points, 100 patients per treatment group, no adjustment for covariates, and no missing responses. The model formula is:
+
+```{r, echo = FALSE}
+n_group <- 3L
+n_patient <- 100L
+n_time <- 4L
+outline <- brms.mmrm::brm_simulate_outline(
+  n_group = n_group,
+  n_patient = n_patient,
+  n_time = n_time,
+  rate_dropout = 0,
+  rate_lapse = 0
+)
+formula <- brms.mmrm::brm_formula(
+  data = outline,
+  intercept = FALSE,
+  effect_baseline = FALSE,
+  effect_group = TRUE,
+  effect_time = TRUE,
+  interaction_baseline = FALSE,
+  interaction_group = FALSE,
+  correlation = "unstructured"
+)
+```
+
+The prior was randomly generated and used for both simulation and analysis:
+
+```{r, paged.print = FALSE}
+tibble::as_tibble(fst::read_fst("sbc/prior_simple.fst"))
+```
+
+The following histograms show the SBC rank statistics which compare the prior parameter draws draws to the posterior draws. If the data simulation code and modeling code are both correct and consistent, then the rank statistics should be uniformly distributed.
+
+```{r}
+library(dplyr)
+library(ggplot2)
+library(tibble)
+library(tidyr)
+
+read_ranks <- function(path) {
+  fst::read_fst(path) %>%
+    tibble::as_tibble() %>%
+    pivot_longer(
+      cols = everything(),
+      names_to = "parameter",
+      values_to = "rank"
+    )
+}
+
+plot_ranks <- function(ranks) {
+  ggplot(ranks) +
+    geom_histogram(
+      aes(x = rank),
+      breaks = seq(from = 0, to = max(ranks$rank), length.out = 10)
+    ) +
+    facet_wrap(~parameter) +
+    theme_gray(16)
+}
+```
+
+```{r}
+simple_ranks <- read_ranks("sbc/simple.fst")
+```
+
+Fixed effect parameter ranks:
+
+```{r}
+simple_ranks %>%
+  filter(grepl("^b_", parameter)) %>%
+  filter(!grepl("^b_sigma", parameter)) %>%
+  plot_ranks()
+```
+Log-scale standard deviation parameter ranks:
+
+```{r}
+simple_ranks %>%
+  filter(grepl("b_sigma", parameter)) %>%
+  plot_ranks()
+```
+
+Correlation parameter ranks:
+
+```{r}
+simple_ranks %>%
+  filter(grepl("cortime_", parameter)) %>%
+  plot_ranks()
+```
+
+# Complex scenario
+
+In the complex scenario, we simulate datasets from the prior predictive distribution assuming 2 treatment groups, 3 time points, 150 patients per treatment group, adjustment for two continuous and two categorical baseline covariates, 30% dropout, and an 8% rate of independent/sporadic missing values. The model formula is:
+
+```{r, echo = FALSE}
+n_group <- 2L
+n_patient <- 150L
+n_time <- 3L
+outline <- brms.mmrm::brm_simulate_outline(
+  n_group = n_group,
+  n_patient = n_patient,
+  n_time = n_time,
+  rate_dropout = 0.3,
+  rate_lapse = 0.08
+) |>
+  brms.mmrm::brm_simulate_continuous(
+    names = c("continuous1", "continuous2")
+  ) |>
+  brms.mmrm::brm_simulate_categorical(
+    names = "balanced",
+    levels = c("level1", "level2", "level3")
+  ) |>
+  brms.mmrm::brm_simulate_categorical(
+    names = "unbalanced",
+    levels = c("level1", "level2", "level3"),
+    probabilities = c(0.64, 0.26, 0.1)
+  )
+formula <- brms.mmrm::brm_formula(
+  data = outline,
+  intercept = TRUE,
+  effect_baseline = FALSE,
+  effect_group = TRUE,
+  effect_time = TRUE,
+  interaction_baseline = TRUE,
+  interaction_group = TRUE,
+  correlation = "unstructured"
+)
+```
+
+The prior was randomly generated and used for both simulation and analysis:
+
+```{r, paged.print = FALSE}
+tibble::as_tibble(fst::read_fst("sbc/prior_complex.fst"))
+```
+
+The following histograms show the SBC rank statistics which compare the prior parameter draws draws to the posterior draws. If the data simulation code and modeling code are both correct and consistent, then the rank statistics should be uniformly distributed.
+
+```{r}
+complex_ranks <- read_ranks("sbc/complex.fst")
+```
+
+Fixed effect parameter ranks:
+
+```{r}
+complex_ranks %>%
+  filter(grepl("^b_", parameter)) %>%
+  filter(!grepl("^b_sigma", parameter)) %>%
+  plot_ranks()
+```
+Log-scale standard deviation parameter ranks:
+
+```{r}
+complex_ranks %>%
+  filter(grepl("b_sigma", parameter)) %>%
+  plot_ranks()
+```
+
+Correlation parameter ranks:
+
+```{r}
+complex_ranks %>%
+  filter(grepl("cortime_", parameter)) %>%
+  plot_ranks()
+```
+
+# Conclusion
+
+The SBC rank statistics look uniformly distributed. In other words, the posterior distribution from the `brms`/Stan MMRM modeling code matches the prior from which the datasets were simulated. This is evidence that the model in `brms.mmrm` is implemented correctly.
+
+# References
