@@ -6,6 +6,8 @@ run_simulation <- function(
   warmup = warmup,
   iter = iter
 ) {
+  rnorm(1)
+  seed <- .GlobalEnv[[".Random.seed"]]
   simulation <- simulate_response(
     outline = outline,
     formula = formula,
@@ -22,7 +24,17 @@ run_simulation <- function(
     warmup = warmup,
   )
   assert_equal_priors(as_brms_prior(prior), brms::prior_summary(model))
-  get_sbc_ranks(model, simulation)
+  list(
+    seed = seed,
+    simulation = simulation,
+    draws = posterior::as_draws_matrix(model),
+    ranks = get_sbc_ranks(model, simulation)
+  )
+}
+
+bind_ranks <- function(results) {
+  out <- purrr::map(results, ~.x$ranks)
+  dplyr::bind_rows(out)
 }
 
 simulate_response <- function(outline, formula, prior) {
