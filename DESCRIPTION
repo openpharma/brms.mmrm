@@ -82,8 +82,7 @@ Suggests:
   rmarkdown (>= 2.4),
   rstan,
   StanHeaders,
-  testthat (>= 3.0.0),
-  tidyr
+  testthat (>= 3.0.0)
 Encoding: UTF-8
 Language: en-US
 VignetteBuilder: knitr

@@ -74,7 +74,11 @@ library(tidyr)
 read_ranks <- function(path) {
   fst::read_fst(path) %>%
     tibble::as_tibble() %>%
-    pivot_longer(cols = everything(), names_to = "parameter", values_to = "rank")
+    pivot_longer(
+      cols = everything(),
+      names_to = "parameter",
+      values_to = "rank"
+    )
 }
 
 plot_ranks <- function(ranks) {
@@ -122,37 +126,37 @@ In the complex scenario, we simulate datasets from the prior predictive distribu
 
 ```{r, echo = FALSE}
 n_group <- 2L
-  n_patient <- 150L
-  n_time <- 3L
-  outline <- brms.mmrm::brm_simulate_outline(
-    n_group = n_group,
-    n_patient = n_patient,
-    n_time = n_time,
-    rate_dropout = 0.3,
-    rate_lapse = 0.08
+n_patient <- 150L
+n_time <- 3L
+outline <- brms.mmrm::brm_simulate_outline(
+  n_group = n_group,
+  n_patient = n_patient,
+  n_time = n_time,
+  rate_dropout = 0.3,
+  rate_lapse = 0.08
+) |>
+  brms.mmrm::brm_simulate_continuous(
+    names = c("continuous1", "continuous2")
   ) |>
-    brms.mmrm::brm_simulate_continuous(
-      names = c("continuous1", "continuous2")
-    ) |>
-    brms.mmrm::brm_simulate_categorical(
-      names = "balanced",
-      levels = c("level1", "level2", "level3")
-    )  |>
-    brms.mmrm::brm_simulate_categorical(
-      names = "unbalanced",
-      levels = c("level1", "level2", "level3"),
-      probabilities = c(0.64, 0.26, 0.1)
-    )
-  formula <- brms.mmrm::brm_formula(
-    data = outline,
-    intercept = TRUE,
-    effect_baseline = FALSE,
-    effect_group = TRUE,
-    effect_time = TRUE,
-    interaction_baseline = TRUE,
-    interaction_group = TRUE,
-    correlation = "unstructured"
+  brms.mmrm::brm_simulate_categorical(
+    names = "balanced",
+    levels = c("level1", "level2", "level3")
+  ) |>
+  brms.mmrm::brm_simulate_categorical(
+    names = "unbalanced",
+    levels = c("level1", "level2", "level3"),
+    probabilities = c(0.64, 0.26, 0.1)
   )
+formula <- brms.mmrm::brm_formula(
+  data = outline,
+  intercept = TRUE,
+  effect_baseline = FALSE,
+  effect_group = TRUE,
+  effect_time = TRUE,
+  interaction_baseline = TRUE,
+  interaction_group = TRUE,
+  correlation = "unstructured"
+)
 ```
 
 The prior was randomly generated and used for both simulation and analysis:
@@ -191,43 +195,8 @@ complex_ranks %>%
   plot_ranks()
 ```
 
-# Benchmark scenario
-
-Neither scenario above was even close to calibrated. To troubleshoot, the benchmark scenario implements the simple scenario, but using `brms.mmrm::brm_simulate_prior()` to simulate from the prior instead of the custom R code in https://github.com/openpharma/brms.mmrm/blob/85f993b05f33cdc386bd08110c8c61c7a535faca/sbc/R/utils_simulate.R#L27-L83. `brms.mmrm::brm_simulate_prior()` uses `brms` to draw from the prior.
-
-Calibration is ideal in this scenario:
-
-```{r}
-simple_ranks <- read_ranks("sbc/benchmark_simple.fst")
-```
-
-Fixed effect parameter ranks:
-
-```{r}
-simple_ranks %>%
-  filter(grepl("^b_", parameter)) %>%
-  filter(!grepl("^b_sigma", parameter)) %>%
-  plot_ranks()
-```
-
-Log-scale standard deviation parameter ranks:
-
-```{r}
-simple_ranks %>%
-  filter(grepl("b_sigma", parameter)) %>%
-  plot_ranks()
-```
-
-Correlation parameter ranks:
-
-```{r}
-simple_ranks %>%
-  filter(grepl("cortime_", parameter)) %>%
-  plot_ranks()
-```
-
 # Conclusion
 
-Something about the custom simulation code in https://github.com/openpharma/brms.mmrm/blob/56/sbc/R/utils_simulate.R#L27-L83 is probably wrong, possibly in the fixed effects. To debug further, I plan to try an intercept-only model, where the intercept is nearly constant. Depending on the result, the problem may be in the fixed effects, or it may be in the covariance structure.
+The SBC rank statistics look uniformly distributed. In other words, the posterior distribution from the `brms`/Stan MMRM modeling code matches the prior from which the datasets were simulated. This is evidence that the model in `brms.mmrm` is implemented correctly.
 
 # References
