@@ -33,7 +33,7 @@ run_simulation <- function(
 }
 
 bind_ranks <- function(results) {
-  out <- purrr::map(results, ~.x$ranks)
+  out <- purrr::map(results, ~.x[[1L]]$ranks)
   dplyr::bind_rows(out)
 }
 
@@ -45,6 +45,7 @@ simulate_response <- function(outline, formula, prior) {
     data = data,
     prior = as_brms_prior(prior)
   )
+  brms_permutation <- match(x = stan_data$Y, table = data$response)
   undo_brms_permutation <- match(x = data$response, table = stan_data$Y)
   stopifnot(all(stan_data$Y[undo_brms_permutation] == data$response))
   model_matrix <- stan_data$X[undo_brms_permutation, ]
@@ -64,6 +65,8 @@ simulate_response <- function(outline, formula, prior) {
     class %in% c("b", "Intercept"),
     dpar != "sigma"
   )
+  prior_beta <- prior_beta[match(x = colnames(model_matrix), table = prior_beta$coef), ]
+  stopifnot(all(prior_beta$coef == colnames(model_matrix)))
   n_beta <- nrow(prior_beta)
   beta <- stats::rnorm(n = n_beta, mean = prior_beta$mean, sd = prior_beta$sd)
   names(beta) <- prior_beta$coef
