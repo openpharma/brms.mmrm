@@ -62,18 +62,21 @@ test_that("brm_data() response", {
   expect_equal(attr(out, "brm_outcome"), "col_response")
   expect_equal(attr(out, "brm_role"), "response")
   expect_equal(attr(out, "brm_group"), "col_group")
+  expect_null(attr(out, "brm_subgroup"))
   expect_equal(attr(out, "brm_time"), "col_time")
   expect_equal(attr(out, "brm_patient"), "col_patient")
   expect_equal(attr(out, "brm_covariates"), c("col_factor2", "col_factor3"))
   expect_equal(
     sort(attr(out, "brm_levels_group")), c("group.1", "group.2")
   )
+  expect_null(attr(out, "brm_levels_subgroup"))
   expect_equal(
     sort(attr(out, "brm_levels_time")), paste0("time.", seq_len(4L))
   )
   expect_equal(
     sort(attr(out, "brm_labels_group")), c("group 1", "group 2")
   )
+   expect_null(attr(out, "brm_labels_subgroup"))
   expect_equal(
     sort(attr(out, "brm_labels_time")), paste("time", seq_len(4L))
   )
@@ -237,4 +240,38 @@ test_that("brm_data() levels ", {
 test_that("brm_levels()", {
   expect_equal(brm_levels(c("a 1", "a 1", "b 2")), c("a.1", "a.1", "b.2"))
   expect_error(brm_levels(c("a 1", "a.1")), class = "brm_error")
+})
+
+test_that("brm_data() deprecate level_control", {
+  set.seed(0)
+  expect_warning(
+    brm_data(
+      data = brm_simulate_simple()$data,
+      outcome = "response",
+      role = "response",
+      group = "group",
+      time = "time",
+      patient = "patient",
+      level_control = "group_1",
+      reference_time = "time_1"
+    ),
+    class = "brm_deprecate"
+  )
+})
+
+test_that("brm_data() deprecate level_baseline", {
+  set.seed(0)
+  expect_warning(
+    brm_data(
+      data = brm_simulate_simple()$data,
+      outcome = "response",
+      role = "response",
+      group = "group",
+      time = "time",
+      patient = "patient",
+      reference_group = "group_1",
+      level_baseline = "time_1"
+    ),
+    class = "brm_deprecate"
+  )
 })
