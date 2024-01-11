@@ -10,11 +10,13 @@ brm_data(
   role = "change",
   baseline = NULL,
   group = "TRT01P",
+  subgroup = NULL,
   time = "AVISIT",
   patient = "USUBJID",
   covariates = character(0L),
   missing = NULL,
   level_control = "Placebo",
+  level_reference_subgroup = NULL,
   level_baseline = NULL
 )
 }
@@ -35,6 +37,9 @@ Supply \code{NULL} to ignore or omit.}
 Must point to a character vector in the data. Factors are converted
 to characters.}
 
+\item{subgroup}{Character of length 1, optional name of the a
+discrete subgroup variable. Set to \code{NULL} to omit the subgroup (default).}
+
 \item{time}{Character of length 1, name of the discrete time variable.
 Must point to a character vector in the data. Factors are converted
 to characters.}
@@ -51,6 +56,13 @@ Set to \code{NULL} to omit.}
 to indicate the control group.
 \code{level_control} only applies to the post-processing that happens
 in functions like \code{\link[=brm_marginal_draws]{brm_marginal_draws()}} downstream of the model.
+It does not control the fixed effect parameterization in the
+model matrix that \code{brms} derives from the formula from \code{brm_formula()}.}
+
+\item{level_reference_subgroup}{Character of length 1,
+level of the \code{subgroup} column
+to use as a reference for pairwise differences in when computing
+marginal means downstream of the model.
 It does not control the fixed effect parameterization in the
 model matrix that \code{brms} derives from the formula from \code{brm_formula()}.}
 
