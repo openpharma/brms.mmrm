@@ -136,7 +136,7 @@ brm_data <- function(
     brm_covariates = as.character(covariates),
     brm_missing = missing,
     brm_reference_group = as.character(reference_group),
-    brm_reference_subgroup = as.character(reference_subgroup),
+    brm_reference_subgroup = reference_subgroup,
     brm_reference_time = reference_time
   )
   brm_data_validate(data = out)
@@ -229,6 +229,10 @@ brm_data_validate <- function(data) {
   assert_chr_vec(covariates, "covariates of data must be a character vector")
   assert_chr(missing %|||% "missing", "missing must NULL or character")
   assert_chr(reference_group, "reference_group must be a nonempty string")
+  assert_chr(
+    reference_subgroup %|||% "x",
+    "reference_subgroup must NULL or a nonempty character string"
+  )
   assert_chr(reference_time %|||% "x", "reference_time must NULL or character")
   assert(
     role %in% c("response", "change"),
@@ -264,8 +268,16 @@ brm_data_validate <- function(data) {
       message = "all subgroup levels must be in data[[subgroup]]"
     )
     assert(
-      reference_subgroup %in% data[[subgroup]],
-      message = "reference_subgroup must be in data[[subgroup]]"
+      reference_subgroup,
+      is.character(.),
+      !anyNA(.),
+      length(.) == 1L,
+      nzchar(.),
+      .%in% data[[subgroup]],
+      message = paste(
+        "reference_subgroup must be a nonempty character string",
+        "in data[[subgroup]]"
+      )
     )
   }
   assert(
@@ -430,21 +442,33 @@ brm_data_fill <- function(data) {
   attributes <- brm_data_attributes(data)
   baseline <- attr(data, "brm_baseline")
   group <- attr(data, "brm_group")
+  subgroup <- attr(data, "brm_subgroup")
   time <- attr(data, "brm_time")
   patient <- attr(data, "brm_patient")
   covariates <- attr(data, "brm_covariates")
+  missing <- attr(data, "brm_missing")
   args <- list(data = data, as.symbol(patient), as.symbol(time))
   data <- do.call(what = tidyr::complete, args = args)
   args <- list(.data = data, as.symbol(patient), as.symbol(time))
   data <- do.call(what = dplyr::arrange, args = args)
-  for (column in c(baseline, group, covariates)) {
+  for (column in c(baseline, group, subgroup, covariates, missing)) {
     data[[column]] <- brm_data_fill_column(data[[column]], data[[patient]])
   }
-  args <- list(
-    .data = data,
-    as.symbol(group),
-    as.symbol(patient),
-    as.symbol(time)
+  args <- if_any(
+    is.null(subgroup),
+    list(
+      .data = data,
+      as.symbol(group),
+      as.symbol(patient),
+      as.symbol(time)
+    ),
+    list(
+      .data = data,
+      as.symbol(group),
+      as.symbol(subgroup),
+      as.symbol(patient),
+      as.symbol(time)
+    )
   )
   attributes$data <- do.call(what = dplyr::arrange, args = args)
   do.call(what = brm_data_new, args = attributes)
