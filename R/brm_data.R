@@ -384,8 +384,8 @@ brm_data_level_subgroup <- function(data) {
   data[[subgroup]] <- as.character(names_subgroup)
   meta_subgroup <- dplyr::arrange(dplyr::distinct(all_subgroup), level)
   attr(data, "brm_reference_subgroup") <- brm_levels(reference_subgroup)
-  attr(data, "brm_levels_subgroup") <- as.character(meta_group$level)
-  attr(data, "brm_labels_subgroup") <- as.character(meta_group$label)
+  attr(data, "brm_levels_subgroup") <- as.character(meta_subgroup$level)
+  attr(data, "brm_labels_subgroup") <- as.character(meta_subgroup$label)
   data
 }
 
