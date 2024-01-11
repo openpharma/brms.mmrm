@@ -13,7 +13,7 @@ test_that("brm_formula() with default names and all terms", {
     time = "AVISIT",
     baseline = "baseline",
     patient = "USUBJID",
-    level_control = "x"
+    reference_group = "x"
   )
   out <- brm_formula(
     data = data,
@@ -57,7 +57,7 @@ test_that("brm_formula() with all user-supplied columns and all terms", {
     baseline = "b",
     patient = "p",
     covariates = c("a", "b"),
-    level_control = "x"
+    reference_group = "x"
   )
   out <- brm_formula(
     data = data,
@@ -95,7 +95,7 @@ test_that("brm_formula() without intercept", {
     time = "AVISIT",
     baseline = "baseline",
     patient = "USUBJID",
-    level_control = "x"
+    reference_group = "x"
   )
   out <- brm_formula(
     data = data,
@@ -136,7 +136,7 @@ test_that("brm_formula() without group effect", {
     time = "AVISIT",
     baseline = "baseline",
     patient = "USUBJID",
-    level_control = "x"
+    reference_group = "x"
   )
   out <- brm_formula(
     data = data,
@@ -177,7 +177,7 @@ test_that("brm_formula() without time effect", {
     time = "AVISIT",
     baseline = "baseline",
     patient = "USUBJID",
-    level_control = "x"
+    reference_group = "x"
   )
   out <- brm_formula(
     data = data,
@@ -218,7 +218,7 @@ test_that("brm_formula() without baseline effect", {
     time = "AVISIT",
     baseline = "baseline",
     patient = "USUBJID",
-    level_control = "x"
+    reference_group = "x"
   )
   out <- brm_formula(
     data = data,
@@ -259,7 +259,7 @@ test_that("brm_formula() without baseline interaction", {
     time = "AVISIT",
     baseline = "baseline",
     patient = "USUBJID",
-    level_control = "x"
+    reference_group = "x"
   )
   out <- brm_formula(
     data = data,
@@ -300,7 +300,7 @@ test_that("brm_formula() without group interaction", {
     time = "AVISIT",
     baseline = "baseline",
     patient = "USUBJID",
-    level_control = "x"
+    reference_group = "x"
   )
   out <- brm_formula(
     data = data,

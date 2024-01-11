@@ -5,6 +5,8 @@
 #' @return A classed `tibble` with change from baseline as the outcome variable
 #'   and the internal attributes modified accordingly. A special baseline
 #'   column is also created, and the original raw response column is removed.
+#'   The new baseline column is comprised of the elements of the response
+#'   variable corresponding to the `reference_time` argument of [brm_data()].
 #' @param data A classed `tibble` (e.g. from [brm_data()]) with raw response
 #'   as the outcome variable (role = `"response"` in [brm_data()]).
 #' @param name_change Character of length 1, name of the new outcome column
@@ -20,20 +22,20 @@
 #'   group = "group",
 #'   time = "time",
 #'   patient = "patient",
-#'   level_control = "group_1",
-#'   level_baseline = "time_1"
+#'   reference_group = "group_1",
+#'   reference_time = "time_1"
 #' )
 #' data
 #' attr(data, "brm_role")
 #' attr(data, "brm_outcome")
 #' attr(data, "brm_baseline")
-#' attr(data, "brm_level_baseline")
+#' attr(data, "brm_reference_time")
 #' changed <- brm_data_change(data = data, name_change = "delta")
 #' changed
 #' attr(changed, "brm_role")
 #' attr(changed, "brm_outcome")
 #' attr(changed, "brm_baseline")
-#' attr(data, "brm_level_baseline")
+#' attr(data, "brm_reference_time")
 brm_data_change <- function(
   data,
   name_change = "change",
@@ -59,10 +61,10 @@ brm_data_change <- function(
     )
   )
   name_time <- attr(data, "brm_time")
-  level_baseline <- attr(data, "brm_level_baseline")
+  reference_time <- attr(data, "brm_reference_time")
   name_response <- attr(data, "brm_outcome")
-  data_baseline <- data[data[[name_time]] == level_baseline, ]
-  data_after <- data[data[[name_time]] != level_baseline, ]
+  data_baseline <- data[data[[name_time]] == reference_time, ]
+  data_after <- data[data[[name_time]] != reference_time, ]
   data_baseline[[name_baseline]] <- data_baseline[[name_response]]
   data_after[[name_change]] <- data_after[[name_response]]
   data_baseline[[name_response]] <- NULL
@@ -80,11 +82,13 @@ brm_data_change <- function(
     role = "change",
     baseline = name_baseline,
     group = attr(data, "brm_group"),
+    subgroup = attr(data, "brm_subgroup"),
     time = name_time,
     patient = attr(data, "brm_patient"),
     covariates = attr(data, "brm_covariates"),
     missing = attr(data, "brm_missing"),
-    level_control = attr(data, "brm_level_control"),
-    level_baseline = NULL
+    reference_group = attr(data, "brm_reference_group"),
+    reference_subgroup = attr(data, "brm_reference_subgroup"),
+    reference_time = NULL
   )
 }

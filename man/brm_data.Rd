@@ -15,8 +15,10 @@ brm_data(
   patient = "USUBJID",
   covariates = character(0L),
   missing = NULL,
-  level_control = "Placebo",
-  level_reference_subgroup = NULL,
+  reference_group = "Placebo",
+  level_control = NULL,
+  reference_subgroup = NULL,
+  reference_time = NULL,
   level_baseline = NULL
 )
 }
@@ -31,6 +33,7 @@ is change from baseline (e.g. CHG).}
 
 \item{baseline}{Character of length 1,
 name of the baseline response variable.
+Only relevant if the response variable is change from baseline.
 Supply \code{NULL} to ignore or omit.}
 
 \item{group}{Character of length 1, name of the treatment group variable.
@@ -52,34 +55,40 @@ to characters.}
 in a simulated dataset to indicate which outcome values should be missing.
 Set to \code{NULL} to omit.}
 
-\item{level_control}{Character of length 1, Level of the \code{group} column
+\item{reference_group}{Character of length 1, Level of the \code{group} column
 to indicate the control group.
-\code{level_control} only applies to the post-processing that happens
+\code{reference_group} only applies to the post-processing that happens
 in functions like \code{\link[=brm_marginal_draws]{brm_marginal_draws()}} downstream of the model.
 It does not control the fixed effect parameterization in the
 model matrix that \code{brms} derives from the formula from \code{brm_formula()}.}
 
-\item{level_reference_subgroup}{Character of length 1,
+\item{level_control}{Deprecated on 2024-01-11 (version 0.2.0.9002).
+Use \code{reference_group} instead.}
+
+\item{reference_subgroup}{Character of length 1,
 level of the \code{subgroup} column
 to use as a reference for pairwise differences in when computing
 marginal means downstream of the model.
 It does not control the fixed effect parameterization in the
 model matrix that \code{brms} derives from the formula from \code{brm_formula()}.}
 
-\item{level_baseline}{Character of length 1 or \code{NULL},
+\item{reference_time}{Character of length 1 or \code{NULL},
 level of the \code{time} column to indicate the baseline time point.
 This value should not be present in the data if the outcome
 variable is change from baseline, but it must be in the data
 if the outcome variable is the raw response so that \code{brms.mmrm}
 can produce model-based marginal estimates of change from baseline.
-In other words, set \code{level_baseline} to \code{NULL} if \code{role} is \code{"change"},
-and set \code{level_baseline} to a non-null value in \code{data[[time]]}
+In other words, set \code{reference_time} to \code{NULL} if \code{role} is \code{"change"},
+and set \code{reference_time} to a non-null value in \code{data[[time]]}
 if \code{role} is \code{"response"}.
 
-Note: \code{level_baseline} only applies to the post-processing that happens
+Note: \code{reference_time} only applies to the post-processing that happens
 in functions like \code{\link[=brm_marginal_draws]{brm_marginal_draws()}} downstream of the model.
 It does not control the fixed effect parameterization in the
 model matrix that \code{brms} derives from the formula from \code{brm_formula()}.}
+
+\item{level_baseline}{Deprecated on 2024-01-11 (version 0.2.0.9002).
+Use \code{reference_time} instead.}
 }
 \value{
 A classed tibble with attributes which denote features of
@@ -127,8 +136,8 @@ brm_data(
   group = "col_group",
   time = "col_time",
   patient = "col_patient",
-  level_control = "group_1",
-  level_baseline = "time_1"
+  reference_group = "group_1",
+  reference_time = "time_1"
 )
 }
 \seealso{

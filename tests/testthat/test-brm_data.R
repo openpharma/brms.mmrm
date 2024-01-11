@@ -21,8 +21,8 @@ test_that("brm_data() response", {
     time = "col_time",
     patient = "col_patient",
     covariates = c("col_factor2", "col_factor3"),
-    level_control = "group 1",
-    level_baseline = "time 1",
+    reference_group = "group 1",
+    reference_time = "time 1",
     missing = "col_missing"
   )
   expect_s3_class(out, "brm_data")
@@ -78,8 +78,8 @@ test_that("brm_data() response", {
     sort(attr(out, "brm_labels_time")), paste("time", seq_len(4L))
   )
   expect_equal(attr(out, "brm_missing"), "col_missing")
-  expect_equal(attr(out, "brm_level_control"), "group.1")
-  expect_equal(attr(out, "brm_level_baseline"), "time.1")
+  expect_equal(attr(out, "brm_reference_group"), "group.1")
+  expect_equal(attr(out, "brm_reference_time"), "time.1")
 })
 
 test_that("brm_data() change", {
@@ -104,7 +104,7 @@ test_that("brm_data() change", {
     time = "col_time",
     patient = "col_patient",
     covariates = character(0L),
-    level_control = "group 1"
+    reference_group = "group 1"
   )
   expect_s3_class(out, "brm_data")
   expect_true(tibble::is_tibble(out))
@@ -154,8 +154,8 @@ test_that("brm_data() change", {
     sort(attr(out, "brm_labels_time")), paste("time", seq_len(4L))
   )
   expect_null(attr(out, "brm_missing"))
-  expect_equal(attr(out, "brm_level_control"), "group.1")
-  expect_null(attr(out, "brm_level_baseline"))
+  expect_equal(attr(out, "brm_reference_group"), "group.1")
+  expect_null(attr(out, "brm_reference_time"))
 })
 
 test_that("brm_data() bad role", {
@@ -177,8 +177,8 @@ test_that("brm_data() bad role", {
       time = "col_time",
       patient = "col_patient",
       covariates = c("col_factor2", "col_factor3"),
-      level_control = "group 1",
-      level_baseline = "time 1"
+      reference_group = "group 1",
+      reference_time = "time 1"
     ),
     class = "brm_error"
   )
@@ -203,8 +203,8 @@ test_that("brm_data() bad group", {
       time = "col_time",
       patient = "col_patient",
       covariates = c("col_factor2", "col_factor3"),
-      level_control = "group 1",
-      level_baseline = "time 1"
+      reference_group = "group 1",
+      reference_time = "time 1"
     ),
     class = "brm_error"
   )

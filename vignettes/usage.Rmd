@@ -61,8 +61,8 @@ data <- brm_data(
   patient = "patient",
   time = "time",
   covariates = c("biomarker1", "biomarker2"),
-  level_control = "group_1",
-  level_baseline = "time_1"
+  reference_group = "group_1",
+  reference_time = "time_1"
 )
 
 data
@@ -96,8 +96,8 @@ str(roles)
 #>  $ brm_time          : chr "time"
 #>  $ brm_patient       : chr "patient"
 #>  $ brm_covariates    : chr [1:2] "biomarker1" "biomarker2"
-#>  $ brm_level_control : chr "group_1"
-#>  $ brm_level_baseline: chr "time_1"
+#>  $ brm_reference_group : chr "group_1"
+#>  $ brm_reference_time: chr "time_1"
 #>  $ brm_levels_group  : chr [1:3] "group_1" "group_2" "group_3"
 #>  $ brm_levels_time   : chr [1:4] "time_1" "time_2" "time_3" "time_4"
 #>  $ brm_labels_group  : chr [1:3] "group_1" "group_2" "group_3"

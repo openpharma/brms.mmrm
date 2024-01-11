@@ -7,13 +7,13 @@ test_that("brm_data_change()", {
     group = "group",
     time = "time",
     patient = "patient",
-    level_control = "group_1",
-    level_baseline = "time_1"
+    reference_group = "group_1",
+    reference_time = "time_1"
   )
   expect_equal(attr(data, "brm_role"), "response")
   expect_equal(attr(data, "brm_outcome"), "y_values")
   expect_null(attr(data, "brm_baseline"))
-  expect_equal(attr(data, "brm_level_baseline"), "time_1")
+  expect_equal(attr(data, "brm_reference_time"), "time_1")
   changed <- brm_data_change(
     data = data,
     name_change = "delta",
@@ -22,7 +22,7 @@ test_that("brm_data_change()", {
   expect_equal(attr(changed, "brm_role"), "change")
   expect_equal(attr(changed, "brm_outcome"), "delta")
   expect_equal(attr(changed, "brm_baseline"), "base")
-  expect_null(attr(changed, "brm_level_baseline"))
+  expect_null(attr(changed, "brm_reference_time"))
   data_baseline <- dplyr::filter(data, time == "time_1")
   data_after <- dplyr::filter(data, time != "time_1")
   for (point in setdiff(unique(data$time), "time_1")) {
@@ -48,13 +48,13 @@ test_that("brm_data_change() assertions", {
     group = "group",
     time = "time",
     patient = "patient",
-    level_control = "group_1",
-    level_baseline = "time_1"
+    reference_group = "group_1",
+    reference_time = "time_1"
   )
   expect_equal(attr(data, "brm_role"), "response")
   expect_equal(attr(data, "brm_outcome"), "y_values")
   expect_null(attr(data, "brm_baseline"))
-  expect_equal(attr(data, "brm_level_baseline"), "time_1")
+  expect_equal(attr(data, "brm_reference_time"), "time_1")
   already_changed <- brm_data_change(
     data = data,
     name_change = "delta",

@@ -7,8 +7,8 @@ test_that("brm_marginal_data()", {
     group = "group",
     time = "time",
     patient = "patient",
-    level_control = "group_1",
-    level_baseline = "time_1"
+    reference_group = "group_1",
+    reference_time = "time_1"
   )
   data$response[1L] <- NA_real_
   out <- brm_marginal_data(

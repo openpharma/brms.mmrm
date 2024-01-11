@@ -8,8 +8,8 @@ test_that("brm_plot_draws()", {
     group = "group",
     time = "time",
     patient = "patient",
-    level_control = "group_1",
-    level_baseline = "time_1"
+    reference_group = "group_1",
+    reference_time = "time_1"
   )
   formula <- brm_formula(
     data = data,

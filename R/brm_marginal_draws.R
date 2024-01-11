@@ -29,8 +29,8 @@
 #'   group = "group",
 #'   time = "time",
 #'   patient = "patient",
-#'   level_control = "group_1",
-#'   level_baseline = "time_1"
+#'   reference_group = "group_1",
+#'   reference_time = "time_1"
 #' )
 #' formula <- brm_formula(
 #'   data = data,
@@ -61,13 +61,13 @@ brm_marginal_draws <- function(
   if (!is.null(control)) {
     brm_deprecate(
       "The control argument was deprecated on 2023-09-07. ",
-      "Set the level_control argument of brm_data() instead."
+      "Set the reference_group argument of brm_data() instead."
     )
   }
   if (!is.null(baseline)) {
     brm_deprecate(
       "The baseline argument was deprecated on 2023-09-07. ",
-      "Set the level_baseline argument of brm_data() instead."
+      "Set the reference_time argument of brm_data() instead."
     )
   }
   brm_data_validate(data)
@@ -79,8 +79,8 @@ brm_marginal_draws <- function(
   covariates <- attr(data, "brm_covariates")
   levels_group <- attr(data, "brm_levels_group")
   levels_time <- attr(data, "brm_levels_time")
-  control <- attr(data, "brm_level_control")
-  baseline <- attr(data, "brm_level_baseline")
+  control <- attr(data, "brm_reference_group")
+  baseline <- attr(data, "brm_reference_time")
   assert(
     control %in% as.character(data[[group]]),
     message = "control arg must be a treatment group level in the data"

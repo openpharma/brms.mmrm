@@ -93,8 +93,8 @@ brm_simulate_simple <- function(
     patient = "patient",
     covariates = character(0L),
     missing = NULL,
-    level_control = "group_1",
-    level_baseline = "time_1"
+    reference_group = "group_1",
+    reference_time = "time_1"
   )
   parameters <- list(
     beta = beta,
