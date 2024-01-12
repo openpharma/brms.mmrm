@@ -61,14 +61,18 @@ brm_data_change <- function(
     )
   )
   name_time <- attr(data, "brm_time")
+  name_missing <- attr(data, "brm_missing")
   reference_time <- attr(data, "brm_reference_time")
   name_response <- attr(data, "brm_outcome")
   data_baseline <- data[data[[name_time]] == reference_time, ]
-  data_after <- data[data[[name_time]] != reference_time, ]
+  if (!is.null(name_missing)) {
+    data_baseline[[name_missing]] <- NULL
+  }
   data_baseline[[name_baseline]] <- data_baseline[[name_response]]
-  data_after[[name_change]] <- data_after[[name_response]]
   data_baseline[[name_response]] <- NULL
   data_baseline[[name_time]] <- NULL
+  data_after <- data[data[[name_time]] != reference_time, ]
+  data_after[[name_change]] <- data_after[[name_response]]
   data_after[[name_response]] <- NULL
   out <- dplyr::left_join(
     x = data_after,

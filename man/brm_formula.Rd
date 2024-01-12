@@ -7,10 +7,10 @@
 brm_formula(
   data,
   intercept = TRUE,
-  effect_baseline = TRUE,
+  effect_baseline = !is.null(attr(data, "brm_baseline")),
   effect_group = TRUE,
   effect_time = TRUE,
-  interaction_baseline = TRUE,
+  interaction_baseline = !is.null(attr(data, "brm_baseline")),
   interaction_group = TRUE,
   correlation = "unstructured"
 )

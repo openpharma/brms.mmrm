@@ -64,10 +64,10 @@
 brm_formula <- function(
   data,
   intercept = TRUE,
-  effect_baseline = TRUE,
+  effect_baseline = !is.null(attr(data, "brm_baseline")),
   effect_group = TRUE,
   effect_time = TRUE,
-  interaction_baseline = TRUE,
+  interaction_baseline = !is.null(attr(data, "brm_baseline")),
   interaction_group = TRUE,
   correlation = "unstructured"
 ) {
@@ -100,11 +100,8 @@ brm_formula <- function(
   terms <- c(
     term("0", !intercept),
     term(time, effect_time),
-    term(baseline, effect_baseline && !is.null(baseline)),
-    term(
-      paste0(baseline, ":", time),
-      interaction_baseline && !is.null(baseline)
-    ),
+    term(baseline, effect_baseline),
+    term(paste0(baseline, ":", time), interaction_baseline),
     term(group, effect_group),
     term(paste0(group, ":", time), interaction_group),
     covariates,
