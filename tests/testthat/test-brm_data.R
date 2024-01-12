@@ -76,7 +76,7 @@ test_that("brm_data() response", {
   expect_equal(
     sort(attr(out, "brm_labels_group")), c("group 1", "group 2")
   )
-   expect_null(attr(out, "brm_labels_subgroup"))
+  expect_null(attr(out, "brm_labels_subgroup"))
   expect_equal(
     sort(attr(out, "brm_labels_time")), paste("time", seq_len(4L))
   )

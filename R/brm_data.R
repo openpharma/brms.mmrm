@@ -273,7 +273,7 @@ brm_data_validate <- function(data) {
       !anyNA(.),
       length(.) == 1L,
       nzchar(.),
-      .%in% data[[subgroup]],
+      . %in% data[[subgroup]],
       message = paste(
         "reference_subgroup must be a nonempty character string",
         "in data[[subgroup]]"

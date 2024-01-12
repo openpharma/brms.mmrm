@@ -1,4 +1,4 @@
-test_that("brm_simulate_outline() grid", {
+test_that("brm_simulate_outline() grid without subgroup", {
   data <- brm_simulate_outline(
     n_group = 11L,
     n_patient = 12L,
@@ -22,6 +22,38 @@ test_that("brm_simulate_outline() grid", {
   expect_equal(
     data$time,
     rep(seq_len(13L), times = 11L * 12L)
+  )
+})
+
+test_that("brm_simulate_outline() grid with subgroup", {
+  data <- brm_simulate_outline(
+    n_group = 11L,
+    n_subgroup = 5L,
+    n_patient = 12L,
+    n_time = 13L,
+    rate_dropout = 0.5,
+    rate_lapse = 0.5
+  )
+  expect_equal(nrow(data), 8580L)
+  for (field in c("group", "subgroup", "patient", "time")) {
+    data[[field]] <- as.integer(gsub(paste0(field, "_"), "", data[[field]]))
+  }
+  data <- dplyr::arrange(data, group, patient, time)
+  expect_equal(
+    data$group,
+    rep(seq_len(11L), each = 5L * 12L * 13L)
+  )
+  expect_equal(
+    data$subgroup,
+    rep(rep(seq_len(5L), times = 11L), each = 12L * 13L)
+  )
+  expect_equal(
+    data$patient,
+    rep(seq_len(5L * 11L * 12L), each = 13L)
+  )
+  expect_equal(
+    data$time,
+    rep(seq_len(13L), times = 5L * 11L * 12L)
   )
 })
 
