@@ -50,7 +50,7 @@ In \code{\link[=brm_prior_simple]{brm_prior_simple()}}, you can separately choos
 the intercept, model coefficients, log-scale standard deviations,
 and pairwise correlations between time points within patients.
 However, each class of parameters is set as a whole. In other words,
-\code{\link[=brms_prior_simple]{brms_prior_simple()}} cannot assign different priors
+\code{\link[=brm_prior_simple]{brm_prior_simple()}} cannot assign different priors
 to different fixed effect parameters.
 }
 \examples{

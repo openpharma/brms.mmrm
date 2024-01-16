@@ -6,7 +6,7 @@
 #'   the intercept, model coefficients, log-scale standard deviations,
 #'   and pairwise correlations between time points within patients.
 #'   However, each class of parameters is set as a whole. In other words,
-#'   [brms_prior_simple()] cannot assign different priors
+#'   [brm_prior_simple()] cannot assign different priors
 #'   to different fixed effect parameters.
 #' @return A classed data frame with the `brms` prior.
 #' @inheritParams brm_model
