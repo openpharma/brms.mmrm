@@ -22,6 +22,22 @@ or \code{brms::brmsformula()}. Should include the full parameterization
 of the model, including fixed effects, residual correlation,
 and heterogeneity in the discrete-time-specific residual variance
 components.}
+
+\item{intercept}{Character of length 1, Stan code for the prior
+to set on the intercept parameter.}
+
+\item{coefficients}{Character of length 1, Stan code for the prior
+to set independently on each of the non-intercept model coefficients.}
+
+\item{sigma}{Character of length 1, Stan code for the prior
+to set independently on each of the log-scale standard deviation
+parameters. Should be a symmetric prior in most situations.}
+
+\item{correlation}{Character of length 1, Stan code for the prior
+on the correlation matrix for the residuals of a given patient.
+(Different patients are modeled as independent, and each
+patient has the same correlation structure as each other patient.)
+Should be an LKJ prior in most situations.}
 }
 \value{
 A classed data frame with the \code{brms} prior.
@@ -46,6 +62,13 @@ formula <- brm_formula(
   baseline = FALSE,
   baseline_time = FALSE
 )
-brm_prior_simple(data = data, formula = formula)
+brm_prior_simple(
+  data = data,
+  formula = formula,
+  intercept = "student_t(3, 0, 2.5)",
+  coefficients = "normal(0, 10)",
+  sigma = "student_t(2, 0, 4)",
+  correlation = "lkj(2.5)"
+)
 }
 \concept{priors}
