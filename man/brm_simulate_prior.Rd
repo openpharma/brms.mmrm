@@ -6,7 +6,7 @@
 \usage{
 brm_simulate_prior(
   data,
-  formula = brms.mmrm::brm_formula(),
+  formula,
   prior = brms::set_prior("student_t(3, 0, 1.3)", class = "Intercept") +
     brms::set_prior("student_t(3, 0, 1.2)", class = "b") +
     brms::set_prior("student_t(3, 0, 1.1)", class = "b", dpar = "sigma") +
@@ -71,8 +71,8 @@ data <- brm_simulate_outline()
 data <- brm_simulate_continuous(data, names = c("age", "biomarker"))
 formula <- brm_formula(
   data = data,
-  effect_baseline = FALSE,
-  interaction_baseline = FALSE
+  baseline = FALSE,
+  baseline_time = FALSE
 )
 tmp <- utils::capture.output(
   suppressMessages(

@@ -24,8 +24,8 @@
 #' )
 #' formula <- brm_formula(
 #'   data = data,
-#'   effect_baseline = FALSE,
-#'   interaction_base = FALSE
+#'   baseline = FALSE,
+#'   baseline_time = FALSE
 #' )
 #' tmp <- utils::capture.output(
 #'   suppressMessages(

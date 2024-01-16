@@ -54,7 +54,7 @@
 #'   reference_time = "time_1"
 #' )
 #' brm_formula(data)
-#' brm_formula(data = data, intercept = FALSE, effect_baseline = FALSE)
+#' brm_formula(data = data, intercept = FALSE, baseline = FALSE)
 #' formula <- brm_formula(
 #'   data = data,
 #'   intercept = FALSE,
