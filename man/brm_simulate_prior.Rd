@@ -7,10 +7,7 @@
 brm_simulate_prior(
   data,
   formula,
-  prior = brms::set_prior("student_t(3, 0, 1.3)", class = "Intercept") +
-    brms::set_prior("student_t(3, 0, 1.2)", class = "b") +
-    brms::set_prior("student_t(3, 0, 1.1)", class = "b", dpar = "sigma") +
-    brms::set_prior("lkj(1)", class = "cortime"),
+  prior = brms.mmrm::brm_prior_simple(data = data, formula = formula),
   ...
 )
 }
@@ -27,10 +24,8 @@ components.}
 \item{prior}{A valid \code{brms} prior object with proper priors for parameters
 \code{b} (model coefficients), \code{b_sigma} (log residual standard deviations
 for each time point), and \code{cortime} (residual correlations among
-time points within patients). See the default argument of
-\code{\link[=brm_simulate_prior]{brm_simulate_prior()}} for an example. You may have to remove the
-\code{set_prior()} component with \code{class = "Intercept"} if you set
-\code{intercept = FALSE} in \code{\link[=brm_formula]{brm_formula()}}.}
+time points within patients). See the
+\code{\link[=brm_prior_standard_normal]{brm_prior_standard_normal()}} function for an example.}
 
 \item{...}{Arguments to \code{brms::brm()} other than \code{data}, \code{formula},
 and \code{prior}.}

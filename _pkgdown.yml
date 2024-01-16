@@ -14,6 +14,9 @@ reference:
   - '`brm_simulate_outline`'
   - '`brm_simulate_prior`'
   - '`brm_simulate_simple`'
+- title: Priors
+  contents:
+  - '`brm_prior_simple`'
 - title: Models
   contents:
   - '`brm_formula`'

@@ -25,10 +25,8 @@
 #' @param prior A valid `brms` prior object with proper priors for parameters
 #'   `b` (model coefficients), `b_sigma` (log residual standard deviations
 #'   for each time point), and `cortime` (residual correlations among
-#'   time points within patients). See the default argument of
-#'   [brm_simulate_prior()] for an example. You may have to remove the
-#'   `set_prior()` component with `class = "Intercept"` if you set
-#'   `intercept = FALSE` in [brm_formula()].
+#'   time points within patients). See the
+#'   [brm_prior_standard_normal()] function for an example.
 #' @inheritParams brm_model
 #' @examples
 #' if (identical(Sys.getenv("BRM_EXAMPLES", unset = ""), "true")) {
@@ -55,10 +53,10 @@
 brm_simulate_prior <- function(
   data,
   formula,
-  prior = brms::set_prior("student_t(3, 0, 1.3)", class = "Intercept") +
-    brms::set_prior("student_t(3, 0, 1.2)", class = "b") +
-    brms::set_prior("student_t(3, 0, 1.1)", class = "b", dpar = "sigma") +
-    brms::set_prior("lkj(1)", class = "cortime"),
+  prior = brms.mmrm::brm_prior_simple(
+    data = data,
+    formula = formula
+  ),
   ...
 ) {
   brm_data_validate(data = data)
