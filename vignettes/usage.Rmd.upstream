@@ -78,11 +78,11 @@ Next, choose a `brms` model formula for the fixed effect and variance parameters
 brm_formula(
   data = data,
   intercept = FALSE,
-  effect_baseline = FALSE,
-  effect_group = FALSE,
-  effect_time = FALSE,
-  interaction_baseline = FALSE,
-  interaction_group = TRUE
+  baseline = FALSE,
+  group = FALSE,
+  time = FALSE,
+  baseline_time = FALSE,
+  group_time = TRUE
 )
 ```
 
@@ -92,11 +92,11 @@ For the purposes of our example, we choose a fully parameterized analysis of the
 formula <- brm_formula(
   data = data,
   intercept = TRUE,
-  effect_baseline = FALSE,
-  effect_group = TRUE,
-  effect_time = TRUE,
-  interaction_baseline = FALSE,
-  interaction_group = TRUE
+  baseline = FALSE,
+  group = TRUE,
+  time = TRUE,
+  baseline_time = FALSE,
+  group_time = TRUE
 )
 
 formula

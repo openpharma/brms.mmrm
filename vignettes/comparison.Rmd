@@ -189,11 +189,11 @@ Model formula:
 b_mmrm_formula <- brm_formula(
   data = fev_data,
   intercept = TRUE,
-  effect_baseline = TRUE,
-  effect_group = FALSE,
-  effect_time = TRUE,
-  interaction_baseline = FALSE,
-  interaction_group = TRUE,
+  baseline = TRUE,
+  group = FALSE,
+  time = TRUE,
+  baseline_time = FALSE,
+  group_time = TRUE,
   correlation = "unstructured"
 )
 print(b_mmrm_formula)

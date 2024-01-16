@@ -13,8 +13,8 @@ test_that("brm_marginal_summaries() on response", {
   )
   formula <- brm_formula(
     data = data,
-    effect_base = FALSE,
-    interaction_base = FALSE
+    base = FALSE,
+    baseline_time = FALSE
   )
   tmp <- utils::capture.output(
     suppressMessages(
@@ -132,8 +132,8 @@ test_that("brm_marginal_summaries() on change", {
   )
   formula <- brm_formula(
     data = data,
-    effect_base = FALSE,
-    interaction_base = FALSE
+    base = FALSE,
+    baseline_time = FALSE
   )
   tmp <- utils::capture.output(
     suppressMessages(
