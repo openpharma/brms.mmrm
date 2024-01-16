@@ -26,7 +26,7 @@
 #'   `b` (model coefficients), `b_sigma` (log residual standard deviations
 #'   for each time point), and `cortime` (residual correlations among
 #'   time points within patients). See the
-#'   [brm_prior_standard_normal()] function for an example.
+#'   [brm_prior_simple()] function for an example.
 #' @inheritParams brm_model
 #' @examples
 #' if (identical(Sys.getenv("BRM_EXAMPLES", unset = ""), "true")) {

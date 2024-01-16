@@ -25,7 +25,7 @@ components.}
 \code{b} (model coefficients), \code{b_sigma} (log residual standard deviations
 for each time point), and \code{cortime} (residual correlations among
 time points within patients). See the
-\code{\link[=brm_prior_standard_normal]{brm_prior_standard_normal()}} function for an example.}
+\code{\link[=brm_prior_simple]{brm_prior_simple()}} function for an example.}
 
 \item{...}{Arguments to \code{brms::brm()} other than \code{data}, \code{formula},
 and \code{prior}.}
