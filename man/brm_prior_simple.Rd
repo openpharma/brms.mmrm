@@ -47,7 +47,7 @@ Generate a simple prior for a \code{brms} MMRM.
 }
 \details{
 In \code{\link[=brm_prior_simple]{brm_prior_simple()}}, you can separately choose priors for
-the intercept, model coefficents, log-scale standard deviations,
+the intercept, model coefficients, log-scale standard deviations,
 and pairwise correlations between time points within patients.
 However, each class of parameters is set as a whole. In other words,
 \code{\link[=brms_prior_simple]{brms_prior_simple()}} cannot assign different priors

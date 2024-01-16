@@ -3,7 +3,7 @@
 #' @family priors
 #' @description Generate a simple prior for a `brms` MMRM.
 #' @details In [brm_prior_simple()], you can separately choose priors for
-#'   the intercept, model coefficents, log-scale standard deviations,
+#'   the intercept, model coefficients, log-scale standard deviations,
 #'   and pairwise correlations between time points within patients.
 #'   However, each class of parameters is set as a whole. In other words,
 #'   [brms_prior_simple()] cannot assign different priors
