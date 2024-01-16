@@ -15,14 +15,19 @@ test_that("brm_formula() with default names and all terms", {
     patient = "USUBJID",
     reference_group = "x"
   )
-  out <- brm_formula(
-    data = data,
-    intercept = TRUE,
-    group = TRUE,
-    time = TRUE,
-    baseline = TRUE,
-    baseline_time = TRUE,
-    group_time = TRUE
+  suppressWarnings(
+    expect_warning(
+      out <- brm_formula(
+        data = data,
+        intercept = TRUE,
+        effect_group = TRUE,
+        effect_time = TRUE,
+        effect_baseline = TRUE,
+        interaction_baseline = TRUE,
+        interaction_group = TRUE
+      ),
+      class = "brm_deprecate"
+    )
   )
   expect_s3_class(out, "brmsformula")
   expect_equal(
@@ -59,14 +64,19 @@ test_that("brm_formula() with all user-supplied columns and all terms", {
     covariates = c("a", "b"),
     reference_group = "x"
   )
-  out <- brm_formula(
-    data = data,
-    intercept = TRUE,
-    group = TRUE,
-    time = TRUE,
-    baseline = TRUE,
-    baseline_time = TRUE,
-    group_time = TRUE
+  suppressWarnings(
+    expect_warning(
+      out <- brm_formula(
+        data = data,
+        intercept = TRUE,
+        effect_group = TRUE,
+        effect_time = TRUE,
+        effect_baseline = TRUE,
+        interaction_baseline = TRUE,
+        interaction_group = TRUE
+      ),
+      class = "brm_deprecate"
+    )
   )
   expect_equal(
     deparse(out[[1L]], width.cutoff = 500L),
@@ -97,14 +107,19 @@ test_that("brm_formula() without intercept", {
     patient = "USUBJID",
     reference_group = "x"
   )
-  out <- brm_formula(
-    data = data,
-    intercept = FALSE,
-    group = TRUE,
-    time = TRUE,
-    baseline = TRUE,
-    baseline_time = TRUE,
-    group_time = TRUE
+  suppressWarnings(
+    expect_warning(
+      out <- brm_formula(
+        data = data,
+        intercept = FALSE,
+        effect_group = TRUE,
+        effect_time = TRUE,
+        effect_baseline = TRUE,
+        interaction_baseline = TRUE,
+        interaction_group = TRUE
+      ),
+      class = "brm_deprecate"
+    )
   )
   expect_equal(
     deparse(out[[1L]], width.cutoff = 500L),
@@ -138,14 +153,19 @@ test_that("brm_formula() without group effect", {
     patient = "USUBJID",
     reference_group = "x"
   )
-  out <- brm_formula(
-    data = data,
-    intercept = TRUE,
-    group = FALSE,
-    time = TRUE,
-    baseline = TRUE,
-    baseline_time = TRUE,
-    group_time = TRUE
+  suppressWarnings(
+    expect_warning(
+      out <- brm_formula(
+        data = data,
+        intercept = TRUE,
+        effect_group = FALSE,
+        effect_time = TRUE,
+        effect_baseline = TRUE,
+        interaction_baseline = TRUE,
+        interaction_group = TRUE
+      ),
+      class = "brm_deprecate"
+    )
   )
   expect_equal(
     deparse(out[[1L]], width.cutoff = 500L),
@@ -179,14 +199,19 @@ test_that("brm_formula() without time effect", {
     patient = "USUBJID",
     reference_group = "x"
   )
-  out <- brm_formula(
-    data = data,
-    intercept = TRUE,
-    group = TRUE,
-    time = FALSE,
-    baseline = TRUE,
-    baseline_time = TRUE,
-    group_time = TRUE
+  suppressWarnings(
+    expect_warning(
+      out <- brm_formula(
+        data = data,
+        intercept = TRUE,
+        effect_group = TRUE,
+        effect_time = FALSE,
+        effect_baseline = TRUE,
+        interaction_baseline = TRUE,
+        interaction_group = TRUE
+      ),
+      class = "brm_deprecate"
+    )
   )
   expect_equal(
     deparse(out[[1L]], width.cutoff = 500L),
@@ -220,14 +245,19 @@ test_that("brm_formula() without baseline effect", {
     patient = "USUBJID",
     reference_group = "x"
   )
-  out <- brm_formula(
-    data = data,
-    intercept = TRUE,
-    group = TRUE,
-    time = TRUE,
-    baseline = FALSE,
-    baseline_time = TRUE,
-    group_time = TRUE
+  suppressWarnings(
+    expect_warning(
+      out <- brm_formula(
+        data = data,
+        intercept = TRUE,
+        effect_group = TRUE,
+        effect_time = TRUE,
+        effect_baseline = FALSE,
+        interaction_baseline = TRUE,
+        interaction_group = TRUE
+      ),
+      class = "brm_deprecate"
+    )
   )
   expect_equal(
     deparse(out[[1L]], width.cutoff = 500L),
@@ -261,14 +291,19 @@ test_that("brm_formula() without baseline interaction", {
     patient = "USUBJID",
     reference_group = "x"
   )
-  out <- brm_formula(
-    data = data,
-    intercept = TRUE,
-    group = TRUE,
-    time = TRUE,
-    baseline = TRUE,
-    baseline_time = FALSE,
-    group_time = TRUE
+  suppressWarnings(
+    expect_warning(
+      out <- brm_formula(
+        data = data,
+        intercept = TRUE,
+        effect_group = TRUE,
+        effect_time = TRUE,
+        effect_baseline = TRUE,
+        interaction_baseline = FALSE,
+        interaction_group = TRUE
+      ),
+      class = "brm_deprecate"
+    )
   )
   expect_equal(
     deparse(out[[1L]], width.cutoff = 500L),
@@ -302,14 +337,19 @@ test_that("brm_formula() without group interaction", {
     patient = "USUBJID",
     reference_group = "x"
   )
-  out <- brm_formula(
-    data = data,
-    intercept = TRUE,
-    group = TRUE,
-    time = TRUE,
-    baseline = TRUE,
-    baseline_time = TRUE,
-    group_time = FALSE
+  suppressWarnings(
+    expect_warning(
+      out <- brm_formula(
+        data = data,
+        intercept = TRUE,
+        effect_group = TRUE,
+        effect_time = TRUE,
+        effect_baseline = TRUE,
+        interaction_baseline = TRUE,
+        interaction_group = FALSE
+      ),
+      class = "brm_deprecate"
+    )
   )
   expect_equal(
     deparse(out[[1L]], width.cutoff = 500L),

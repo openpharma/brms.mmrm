@@ -7,6 +7,7 @@
 * Zero-pad numeric indexes in simulated data so the levels sort as expected.
 * In `brm_data()`, deprecate `level_control` in favor of `reference_group`.
 * In `brm_data()`, deprecate `level_baseline` in favor of `reference_time`.
+* In `brm_formula()`, deprecate arguments `effect_baseline`, `effect_group`, `effect_time`, `interaction_baseline`, and `interaction_group` in favor of `baseline`, `group`, `time`, `baseline_time`, and `group_time`, respectively.
 
 # brms.mmrm 0.0.2
 

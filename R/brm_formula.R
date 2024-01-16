@@ -18,17 +18,29 @@
 #' @param data A classed data frame from [brm_data()].
 #' @param correlation Character of length 1, name of the correlation
 #'   structure. Only `"unstructured"` is currently supported.
-#' @param intercept `TRUE` to include an intercept, `FALSE` to omit.
-#' @param effect_baseline `TRUE` to include an additive effect for baseline
+#' @param intercept Logical of length 1.
+#'   `TRUE` to include an intercept, `FALSE` to omit.
+#' @param baseline Logical of length 1.
+#'   `TRUE` to include an additive effect for baseline
 #'   response, `FALSE` to omit.
-#' @param effect_group `TRUE` to include an additive effects for treatment
-#'   groups, `FALSE` to omit.
-#' @param effect_time `TRUE` to include a additive effect for discrete
-#'   time points, `FALSE` to omit.
-#' @param interaction_baseline `TRUE` to include baseline-by-time interaction,
-#'   `FALSE` to omit.
-#' @param interaction_group `TRUE` to include treatment-group-by-time
-#'   interaction, `FALSE` to omit.
+#' @param group Logical of length 1.
+#'   `TRUE` to include additive effects for treatment groups, `FALSE` to omit.
+#' @param time Logical of length 1.
+#'   `TRUE` to include a additive effect for discrete time, `FALSE` to omit.
+#' @param baseline_time Logical of length 1.
+#'   `TRUE` to include baseline-by-time interaction, `FALSE` to omit.
+#' @param group_time Logical of length 1.
+#'   `TRUE` to include group-by-time interaction, `FALSE` to omit.
+#' @param effect_baseline Deprecated on 2024-01-16 (version 0.0.2.9002).
+#'   Use `baseline` instead.
+#' @param effect_group Deprecated on 2024-01-16 (version 0.0.2.9002).
+#'   Use `group` instead.
+#' @param effect_time Deprecated on 2024-01-16 (version 0.0.2.9002).
+#'   Use `time` instead.
+#' @param interaction_baseline Deprecated on 2024-01-16 (version 0.0.2.9002).
+#'   Use `baseline_time` instead.
+#' @param interaction_group Deprecated on 2024-01-16 (version 0.0.2.9002).
+#'   Use `group_time` instead.
 #' @examples
 #' set.seed(0)
 #' data <- brm_data(
@@ -46,8 +58,8 @@
 #' formula <- brm_formula(
 #'   data = data,
 #'   intercept = FALSE,
-#'   effect_baseline = FALSE,
-#'   interaction_group = FALSE
+#'   baseline = FALSE,
+#'   group = FALSE
 #' )
 #' formula
 #' # Optional: set the contrast option, which determines the model matrix.
@@ -64,20 +76,49 @@
 brm_formula <- function(
   data,
   intercept = TRUE,
-  effect_baseline = !is.null(attr(data, "brm_baseline")),
-  effect_group = TRUE,
-  effect_time = TRUE,
-  interaction_baseline = !is.null(attr(data, "brm_baseline")),
-  interaction_group = TRUE,
-  correlation = "unstructured"
+  baseline = !is.null(attr(data, "brm_baseline")),
+  group = TRUE,
+  time = TRUE,
+  baseline_time = !is.null(attr(data, "brm_baseline")),
+  group_time = TRUE,
+  correlation = "unstructured",
+  effect_baseline = NULL,
+  effect_group = NULL,
+  effect_time = NULL,
+  interaction_baseline = NULL,
+  interaction_group = NULL
 ) {
   brm_data_validate(data)
   assert_lgl(intercept)
-  assert_lgl(effect_group)
-  assert_lgl(effect_time)
-  assert_lgl(effect_baseline)
-  assert_lgl(interaction_baseline)
-  assert_lgl(interaction_group)
+  assert_lgl(group)
+  assert_lgl(time)
+  assert_lgl(baseline)
+  assert_lgl(baseline_time)
+  assert_lgl(group_time)
+  message <- paste0(
+    "%s was deprecated on 2024-01-16 (version 0.0.2.9002).",
+    "Use %s instead."
+  )
+  if (!is.null(effect_baseline)) {
+    brm_deprecate(sprintf(message, "effect_baseline", "baseline"))
+    baseline <- effect_baseline
+  }
+  if (!is.null(effect_group)) {
+    brm_deprecate(sprintf(message, "effect_group", "group"))
+    group <- effect_group
+  }
+  if (!is.null(effect_time)) {
+    brm_deprecate(sprintf(message, "effect_time", "time"))
+    time <- effect_time
+  }
+  if (!is.null(interaction_baseline)) {
+    brm_deprecate(sprintf(message, "interaction_baseline", "baseline_time"))
+    baseline_time <- interaction_baseline
+  }
+  if (!is.null(interaction_group)) {
+    brm_deprecate(sprintf(message, "interaction_group", "group_time"))
+    group_time <- interaction_group
+  }
   assert_chr(
     correlation,
     "correlation arg must be a nonempty character string"
@@ -90,36 +131,40 @@ brm_formula <- function(
       paste(correlations, collapse = ", ")
     )
   )
-  outcome <- attr(data, "brm_outcome")
-  role <- attr(data, "brm_role")
-  baseline <- attr(data, "brm_baseline")
-  group <- attr(data, "brm_group")
-  time <- attr(data, "brm_time")
-  patient <- attr(data, "brm_patient")
-  covariates <- attr(data, "brm_covariates")
+  label_outcome <- attr(data, "brm_outcome")
+  label_role <- attr(data, "brm_role")
+  label_baseline <- attr(data, "brm_baseline")
+  label_group <- attr(data, "brm_group")
+  label_time <- attr(data, "brm_time")
+  label_patient <- attr(data, "brm_patient")
+  label_covariates <- attr(data, "brm_covariates")
   terms <- c(
     term("0", !intercept),
-    term(time, effect_time),
-    term(baseline, effect_baseline),
-    term(paste0(baseline, ":", time), interaction_baseline),
-    term(group, effect_group),
-    term(paste0(group, ":", time), interaction_group),
-    covariates,
-    term_correlation(correlation, time, patient)
+    term(label_baseline, baseline),
+    term(label_time, time),
+    term(c(label_baseline, label_time), baseline_time),
+    term(label_group, group),
+    term(c(label_group, label_time), group_time),
+    label_covariates,
+    term_correlation(correlation, label_time, label_patient)
   )
   right <- paste(terms, collapse = " + ")
-  formula <- stats::as.formula(paste(outcome, "~", right))
-  formula_sigma <- stats::as.formula(paste("sigma ~ 0 +", time))
+  formula <- stats::as.formula(paste(label_outcome, "~", right))
+  formula_sigma <- stats::as.formula(paste("sigma ~ 0 +", label_time))
   brms::brmsformula(formula = formula, formula_sigma)
 }
 
-term <- function(name, condition) {
-  if_any(condition, name, character(0L))
+term <- function(labels, condition) {
+  if_any(condition, paste0(labels, collapse = ":"), character(0L))
 }
 
-term_correlation <- function(correlation, time, patient) {
+term_correlation <- function(correlation, label_time, label_patient) {
   switch(
     correlation,
-    unstructured = sprintf("unstr(time = %s, gr = %s)", time, patient)
+    unstructured = sprintf(
+      "unstr(time = %s, gr = %s)",
+      label_time,
+      label_patient
+    )
   )
 }
