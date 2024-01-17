@@ -13,7 +13,7 @@ test_that("brm_marginal_probabilities() on response", {
   )
   formula <- brm_formula(
     data = data,
-    base = FALSE,
+    baseline = FALSE,
     baseline_time = FALSE
   )
   tmp <- utils::capture.output(
@@ -77,7 +77,7 @@ test_that("brm_marginal_probabilities() on change and multiple probs", {
   )
   formula <- brm_formula(
     data = data,
-    base = FALSE,
+    baseline = FALSE,
     baseline_time = FALSE
   )
   tmp <- utils::capture.output(

@@ -13,7 +13,7 @@ test_that("brm_marginal_draws() on response", {
   )
   formula <- brm_formula(
     data = data,
-    base = FALSE,
+    baseline = FALSE,
     baseline_time = FALSE
   )
   tmp <- utils::capture.output(
@@ -127,7 +127,7 @@ test_that("brm_marginal_draws() on change", {
   )
   formula <- brm_formula(
     data = data,
-    base = FALSE,
+    baseline = FALSE,
     baseline_time = FALSE
   )
   tmp <- utils::capture.output(

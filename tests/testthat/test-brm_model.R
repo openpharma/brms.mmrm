@@ -13,7 +13,7 @@ test_that("brm_model() runs", {
   )
   formula <- brm_formula(
     data = data,
-    base = FALSE,
+    baseline = FALSE,
     baseline_time = FALSE
   )
   tmp <- utils::capture.output(

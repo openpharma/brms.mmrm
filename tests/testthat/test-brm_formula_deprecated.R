@@ -33,7 +33,7 @@ test_that("brm_formula() with default names and all terms", {
   expect_equal(
     deparse(out[[1L]], width.cutoff = 500L),
     paste(
-      "CHG ~ baseline + AVISIT + baseline:AVISIT + TRT01P + TRT01P:AVISIT",
+      "CHG ~ baseline + baseline:AVISIT + TRT01P + TRT01P:AVISIT + AVISIT",
       "+ unstr(time = AVISIT, gr = USUBJID)"
     )
   )
@@ -80,7 +80,7 @@ test_that("brm_formula() with all user-supplied columns and all terms", {
   )
   expect_equal(
     deparse(out[[1L]], width.cutoff = 500L),
-    "y ~ b + t + b:t + g + g:t + a + b + unstr(time = t, gr = p)"
+    "y ~ b + b:t + g + g:t + t + a + b + unstr(time = t, gr = p)"
   )
   expect_equal(
     deparse(out[[2L]][[1L]], width.cutoff = 500L),
@@ -124,7 +124,7 @@ test_that("brm_formula() without intercept", {
   expect_equal(
     deparse(out[[1L]], width.cutoff = 500L),
     paste(
-      "CHG ~ 0 + baseline + AVISIT + baseline:AVISIT + TRT01P + TRT01P:AVISIT",
+      "CHG ~ 0 + baseline + baseline:AVISIT + TRT01P + TRT01P:AVISIT + AVISIT",
       "+ unstr(time = AVISIT, gr = USUBJID)"
     )
   )
@@ -170,7 +170,7 @@ test_that("brm_formula() without group effect", {
   expect_equal(
     deparse(out[[1L]], width.cutoff = 500L),
     paste(
-      "CHG ~ baseline + AVISIT + baseline:AVISIT + TRT01P:AVISIT",
+      "CHG ~ baseline + baseline:AVISIT + TRT01P:AVISIT + AVISIT",
       "+ unstr(time = AVISIT, gr = USUBJID)"
     )
   )
@@ -262,7 +262,7 @@ test_that("brm_formula() without baseline effect", {
   expect_equal(
     deparse(out[[1L]], width.cutoff = 500L),
     paste(
-      "CHG ~ AVISIT + baseline:AVISIT + TRT01P + TRT01P:AVISIT",
+      "CHG ~ baseline:AVISIT + TRT01P + TRT01P:AVISIT + AVISIT",
       "+ unstr(time = AVISIT, gr = USUBJID)"
     )
   )
@@ -308,7 +308,7 @@ test_that("brm_formula() without baseline interaction", {
   expect_equal(
     deparse(out[[1L]], width.cutoff = 500L),
     paste(
-      "CHG ~ baseline + AVISIT + TRT01P + TRT01P:AVISIT",
+      "CHG ~ baseline + TRT01P + TRT01P:AVISIT + AVISIT",
       "+ unstr(time = AVISIT, gr = USUBJID)"
     )
   )
@@ -354,7 +354,7 @@ test_that("brm_formula() without group interaction", {
   expect_equal(
     deparse(out[[1L]], width.cutoff = 500L),
     paste(
-      "CHG ~ baseline + AVISIT + baseline:AVISIT + TRT01P",
+      "CHG ~ baseline + baseline:AVISIT + TRT01P + AVISIT",
       "+ unstr(time = AVISIT, gr = USUBJID)"
     )
   )
