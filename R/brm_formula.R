@@ -5,7 +5,7 @@
 #' @details [brm_formula()] builds an R formula for an MMRM based on
 #'   the details in the data and your choice of parameterization.
 #'   Customize your parameterization by toggling on or off
-#'   the various `TRUE`/`FALSE` arguments of [brms_formula()],
+#'   the various `TRUE`/`FALSE` arguments of [brm_formula()],
 #'   such as `intercept`, `baseline`, and `group_time`.
 #'   All plausible additive effects, two-way interactions, and
 #'   three-way interactions can be specified. The following interactions

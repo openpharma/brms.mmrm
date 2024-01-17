@@ -1,5 +1,4 @@
 #' brms.mmrm: Bayesian MMRMs using `brms`
-#' @docType _PACKAGE
 #' @name brms.mmrm-package
 #' @description The mixed model for repeated measures (MMRM) is a
 #'   popular model for longitudinal clinical trial data with

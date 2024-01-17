@@ -100,7 +100,7 @@ Build a model formula for an MMRM.
 \code{\link[=brm_formula]{brm_formula()}} builds an R formula for an MMRM based on
 the details in the data and your choice of parameterization.
 Customize your parameterization by toggling on or off
-the various \code{TRUE}/\code{FALSE} arguments of \code{\link[=brms_formula]{brms_formula()}},
+the various \code{TRUE}/\code{FALSE} arguments of \code{\link[=brm_formula]{brm_formula()}},
 such as \code{intercept}, \code{baseline}, and \code{group_time}.
 All plausible additive effects, two-way interactions, and
 three-way interactions can be specified. The following interactions
