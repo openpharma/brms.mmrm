@@ -137,6 +137,28 @@ brm_formula <- function(
   assert_lgl(subgroup, sprintf(text, "subgroup"))
   assert_lgl(subgroup_time, sprintf(text, "subgroup_time"))
   assert_lgl(time, sprintf(text, "time"))
+  expect_baseline <- baseline ||
+    baseline_subgroup ||
+    baseline_subgroup_time ||
+    baseline_time
+  if (expect_baseline) {
+    assert_chr(
+      attr(data, "brm_baseline"),
+      message = "brm_data() found no baseline column in the data."
+    )
+  }
+  expect_subgroup <-  baseline_subgroup ||
+    baseline_subgroup_time ||
+    group_subgroup ||
+    group_subgroup_time ||
+    subgroup ||
+    subgroup_time
+  if (expect_subgroup) {
+    assert_chr(
+      attr(data, "brm_subgroup"),
+      message = "brm_data() found no subgroup column in the data."
+    )
+  }
   text <- paste0(
     "%s was deprecated on 2024-01-16 (version 0.0.2.9002).",
     "Use %s instead."

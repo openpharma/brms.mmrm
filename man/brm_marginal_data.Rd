@@ -4,23 +4,35 @@
 \alias{brm_marginal_data}
 \title{Marginal summaries of the data.}
 \usage{
-brm_marginal_data(data, level = 0.95)
+brm_marginal_data(
+  data,
+  level = 0.95,
+  subgroup = !is.null(attr(data, "subgroup"))
+)
 }
 \arguments{
 \item{data}{A classed data frame from \code{\link[=brm_data]{brm_data()}}.}
 
 \item{level}{Numeric of length 1 from 0 to 1, level of the confidence
 intervals.}
+
+\item{subgroup}{Logical of length 1, whether to summarize the data by
+each subgroup level.}
 }
 \value{
 A tibble with one row per summary statistic and the following
 columns:
 \itemize{
 \item \code{group}: treatment group.
+\item \code{subgroup}: subgroup level. Only included if the \code{subgroup}
+argument of \code{\link[=brm_marginal_data]{brm_marginal_data()}} is \code{TRUE}.
 \item \code{time}: discrete time point.
 \item \code{statistic}: type of summary statistic.
 \item \code{value}: numeric value of the estimate.
+}
+
 The \code{statistic} column has the following possible values:
+\itemize{
 \item \code{mean}: observed mean response after removing missing values.
 \item \code{median}: observed median response after removing missing values.
 \item \code{sd}: observed standard deviation of the response after

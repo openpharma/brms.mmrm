@@ -46,7 +46,7 @@ outline <- brms.mmrm::brm_simulate_outline(
   rate_dropout = 0,
   rate_lapse = 0
 )
-formula <- brms.mmrm::brm_formula(
+brms.mmrm::brm_formula(
   data = outline,
   intercept = FALSE,
   baseline = FALSE,
@@ -148,13 +148,12 @@ outline <- brms.mmrm::brm_simulate_outline(
     levels = c("level1", "level2", "level3"),
     probabilities = c(0.64, 0.26, 0.1)
   )
-formula <- brms.mmrm::brm_formula(
+brms.mmrm::brm_formula(
   data = outline,
   intercept = TRUE,
   baseline = FALSE,
   group = TRUE,
   time = TRUE,
-  baseline_time = TRUE,
   group_time = TRUE,
   correlation = "unstructured"
 )
