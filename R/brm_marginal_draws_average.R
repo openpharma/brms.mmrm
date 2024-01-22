@@ -5,17 +5,28 @@
 #'   marginal MCMC draws across time points.
 #' @inheritSection brm_data Separation string
 #' @return A named list of tibbles of MCMC draws of the marginal posterior
-#'   distribution of each treatment group.
+#'   distribution of each treatment group and time point
+#'   (or group-by-subgroup-by-time, if applicable).
+#'   In each tibble, there is 1 row per posterior sample sand one column for
+#'   each type of marginal distribution (i.e. each combination of treatment
+#'   group and discrete time point. The specific `tibble`s in the returned
+#'   list are described below:
 #'   * `response`: on the scale of the response variable.
-#'   * `change`: change from baseline, where the `baseline` argument determines
-#'     the time point at baseline. Only returned if the `role` argument is
+#'   * `difference_time`: change from baseline: the
+#'     `response` at a particular time minus the `response` at baseline
+#'     (`reference_time`).
+#'     Only returned if the `role` argument of [brm_data()] was
 #'     `"response"`. (If `role` is `"change"`, then `response` already
 #'     represents change from baseline.)
-#'   * `difference`: treatment effect of change from baseline, where the
-#'     `control` argument identifies the placebo or active control group.
-#'   In each tibble, there is 1 row per posterior sample and one column for
-#'   each treatment group. There is a time point label which is called
-#'   `"average"` by default.
+#'   * `difference_group`: treatment effect: the
+#'     the `difference_time` at each active group minus the `difference_time`
+#'     at the control group (`reference_group`).
+#'     If `role` is `"change"`, then treatment group
+#'     is instead the difference between `response` at each active group minus
+#'     the `response` at the control group.
+#'   * `difference_subgroup`: subgroup differences: the `difference_group`
+#'     at each subgroup level minus the `difference_group` at the subgroup
+#'     reference level (`reference_subgroup`).
 #' @inheritParams brm_marginal_draws
 #' @param draws Fitted `brms` model object from [brm_model()].
 #' @param times Character vector of discrete time point levels

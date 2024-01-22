@@ -48,7 +48,7 @@ tmp <- utils::capture.output(
   )
 )
 draws <- brm_marginal_draws(model = model, data = data)
-brm_plot_draws(draws = draws$change)
+brm_plot_draws(draws = draws$difference_time)
 }
 }
 \seealso{

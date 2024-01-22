@@ -242,12 +242,12 @@ If you omit the marginals of the data, you can show inference on change from bas
 brm_plot_compare(
   model1 = summaries,
   model2 = summaries,
-  marginal = "difference" # treatment effect
+  marginal = "difference_group" # treatment effect
 )
 ```
 
 Finally, `brm_plot_draws()` can plot the posterior draws of the response, change from baseline, or treatment difference.
 
 ```{r draws}
-brm_plot_draws(draws = draws$difference)
+brm_plot_draws(draws = draws$difference_group)
 ```

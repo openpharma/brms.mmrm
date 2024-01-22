@@ -33,6 +33,6 @@ test_that("brm_plot_draws()", {
     model = model,
     data = data
   )
-  out <- brm_plot_draws(draws = draws$change)
+  out <- brm_plot_draws(draws = draws$difference_time)
   expect_s3_class(out, "ggplot")
 })

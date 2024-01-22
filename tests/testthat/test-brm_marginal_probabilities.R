@@ -51,15 +51,15 @@ test_that("brm_marginal_probabilities() on response", {
   }
   expect_equal(
     x$value[1L],
-    mean(draws$difference[[column(2L, 2L)]] > 0)
+    mean(draws$difference_group[[column(2L, 2L)]] > 0)
   )
   expect_equal(
     x$value[2L],
-    mean(draws$difference[[column(2L, 3L)]] > 0)
+    mean(draws$difference_group[[column(2L, 3L)]] > 0)
   )
   expect_equal(
     x$value[3L],
-    mean(draws$difference[[column(2L, 4L)]] > 0)
+    mean(draws$difference_group[[column(2L, 4L)]] > 0)
   )
 })
 
@@ -97,8 +97,8 @@ test_that("brm_marginal_probabilities() on change and multiple probs", {
     model = model,
     data = data
   )
-  for (index in seq_along(draws$difference)) {
-    draws$difference[[index]] <- seq_len(nrow(draws$difference))
+  for (index in seq_along(draws$difference_group)) {
+    draws$difference_group[[index]] <- seq_len(nrow(draws$difference_group))
   }
   x <- brm_marginal_probabilities(
     draws,

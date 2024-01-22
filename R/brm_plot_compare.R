@@ -6,7 +6,8 @@
 #' @param ... Named data frames of marginals posterior summaries
 #'   from [brm_marginal_summaries()] and/or [brm_marginal_data()].
 #' @param marginal Character of length 1, which kind of marginal
-#'   to visualize: either `"response"`, `"change"`, or `"difference"`.
+#'   to visualize: either `"response"`, `"difference_time"`,
+#'   or `"difference_group"`.
 #'   Only applies to MCMC output, the data is always on the scale of the
 #'   response variable.
 #' @examples
@@ -57,10 +58,14 @@
 brm_plot_compare <- function(..., marginal = "response") {
   data <- list(...)
   assert_chr(marginal, "marginal arg must be a nonempty character string.")
+  marginal <- if_any(marginal == "change", "difference_time", marginal)
+  marginal <- if_any(marginal == "difference", "difference_group", marginal)
   assert(
-    marginal %in% c("response", "change", "difference"),
-    message =
-      "marginal arg must be one of \"response\", \"change\", or \"difference\""
+    marginal %in% c("response", "difference_time", "difference_group"),
+    message = paste(
+      "marginal arg must be one of \"response\",",
+      "\"difference_time\", or \"difference_group\""
+    )
   )
   assert_chr_vec(names(data), message = "arguments must be named.")
   for (name in names(data)) {

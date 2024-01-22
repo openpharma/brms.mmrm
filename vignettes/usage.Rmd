@@ -374,7 +374,7 @@ draws
 #> # ... with 3990 more draws, and 4 more variables
 #> # ... hidden reserved variables {'.chain', '.iteration', '.draw'}
 #> 
-#> $change
+#> $difference_time
 #> # A draws_df: 1000 iterations, 4 chains, and 9 variables
 #>    group_1|time_2 group_1|time_3 group_1|time_4 group_2|time_2 group_2|time_3
 #> 1             1.2           0.59           -1.4            1.3           0.38
@@ -401,7 +401,7 @@ draws
 #> # ... with 3990 more draws, and 1 more variables
 #> # ... hidden reserved variables {'.chain', '.iteration', '.draw'}
 #> 
-#> $difference
+#> $difference_group
 #> # A draws_df: 1000 iterations, 4 chains, and 6 variables
 #>    group_2|time_2 group_2|time_3 group_2|time_4 group_3|time_2 group_3|time_3
 #> 1           0.106         -0.216         -0.059          0.233         0.0481
@@ -477,7 +477,7 @@ brm_marginal_draws_average(draws = draws, data = data)
 #> # ... with 3990 more draws
 #> # ... hidden reserved variables {'.chain', '.iteration', '.draw'}
 #> 
-#> $change
+#> $difference_time
 #> # A draws_df: 1000 iterations, 4 chains, and 3 variables
 #>    group_1|average group_2|average group_3|average
 #> 1            0.127           0.071           0.148
@@ -493,7 +493,7 @@ brm_marginal_draws_average(draws = draws, data = data)
 #> # ... with 3990 more draws
 #> # ... hidden reserved variables {'.chain', '.iteration', '.draw'}
 #> 
-#> $difference
+#> $difference_group
 #> # A draws_df: 1000 iterations, 4 chains, and 2 variables
 #>    group_2|average group_3|average
 #> 1           -0.056           0.021
@@ -634,7 +634,7 @@ If you omit the marginals of the data, you can show inference on change from bas
 brm_plot_compare(
   model1 = summaries,
   model2 = summaries,
-  marginal = "difference" # treatment effect
+  marginal = "difference_group" # treatment effect
 )
 ```
 
@@ -644,7 +644,7 @@ Finally, `brm_plot_draws()` can plot the posterior draws of the response, change
 
 
 ```r
-brm_plot_draws(draws = draws$difference)
+brm_plot_draws(draws = draws$difference_group)
 ```
 
 ![plot of chunk draws](usage/draws-1.png)

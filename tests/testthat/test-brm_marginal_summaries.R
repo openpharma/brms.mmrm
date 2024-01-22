@@ -43,18 +43,19 @@ test_that("brm_marginal_summaries() on response", {
     sort(colnames(x)),
     sort(c("marginal", "group", "time", "statistic", "value", "mcse"))
   )
+  tibbles <- c("response", "difference_time", "difference_group", "effect")
   expect_equal(
     sort(unique(x$marginal)),
-    sort(c("response", "change", "difference", "effect"))
+    sort(tibbles)
   )
-  for (marginal in c("response", "change", "difference", "effect")) {
+  for (marginal in tibbles) {
     groups <- unique(data$group)
     times <- unique(data$time)
-    if (marginal %in% c("change", "difference")) {
+    if (marginal %in% c("difference_time", "difference_group")) {
       times <- setdiff(times, "time.1")
     }
-    if (identical(marginal, "difference")) {
-      groups <- setdiff(groups, "difference")
+    if (identical(marginal, "difference_group")) {
+      groups <- setdiff(groups, "difference_group")
     }
     for (group in groups) {
       for (time in times) {
@@ -164,13 +165,13 @@ test_that("brm_marginal_summaries() on change", {
   )
   expect_equal(
     sort(unique(x$marginal)),
-    sort(c("response", "difference", "effect"))
+    sort(c("response", "difference_group", "effect"))
   )
-  for (marginal in c("response", "difference", "effect")) {
+  for (marginal in c("response", "difference_group", "effect")) {
     groups <- unique(data$group)
     times <- unique(data$time)
-    if (identical(marginal, "difference")) {
-      groups <- setdiff(groups, "difference")
+    if (identical(marginal, "difference_group")) {
+      groups <- setdiff(groups, "difference_group")
     }
     for (group in groups) {
       for (time in times) {

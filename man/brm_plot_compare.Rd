@@ -11,7 +11,8 @@ brm_plot_compare(..., marginal = "response")
 from \code{\link[=brm_marginal_summaries]{brm_marginal_summaries()}} and/or \code{\link[=brm_marginal_data]{brm_marginal_data()}}.}
 
 \item{marginal}{Character of length 1, which kind of marginal
-to visualize: either \code{"response"}, \code{"change"}, or \code{"difference"}.
+to visualize: either \code{"response"}, \code{"difference_time"},
+or \code{"difference_group"}.
 Only applies to MCMC output, the data is always on the scale of the
 response variable.}
 }
