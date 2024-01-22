@@ -70,7 +70,7 @@ test_that("brm_marginal_data() subgroup", {
   out <- brm_marginal_data(
     data = data,
     level = 0.9,
-    subgroup = TRUE
+    use_subgroup = TRUE
   )
   expect_equal(nrow(out), 112L)
   expect_equal(

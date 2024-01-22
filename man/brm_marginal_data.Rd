@@ -7,7 +7,7 @@
 brm_marginal_data(
   data,
   level = 0.95,
-  subgroup = !is.null(attr(data, "brm_subgroup"))
+  use_subgroup = !is.null(attr(data, "brm_subgroup"))
 )
 }
 \arguments{
@@ -16,7 +16,7 @@ brm_marginal_data(
 \item{level}{Numeric of length 1 from 0 to 1, level of the confidence
 intervals.}
 
-\item{subgroup}{Logical of length 1, whether to summarize the data by
+\item{use_subgroup}{Logical of length 1, whether to summarize the data by
 each subgroup level.}
 }
 \value{

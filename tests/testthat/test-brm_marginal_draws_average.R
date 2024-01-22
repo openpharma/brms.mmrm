@@ -62,19 +62,19 @@ test_that("brm_marginal_draws_average()", {
       averages_sub$response[[name_marginal(group, "mean")]],
       apply(tibble::as_tibble(out$response)[, cols_sub], 1, mean)
     )
-    cols_all <- intersect(cols_all, colnames(out$change))
-    cols_sub <- intersect(cols_sub, colnames(out$change))
+    cols_all <- intersect(cols_all, colnames(out$difference_time))
+    cols_sub <- intersect(cols_sub, colnames(out$difference_time))
     expect_equal(
-      averages_all$change[[name_marginal(group, "average")]],
-      apply(tibble::as_tibble(out$change)[, cols_all], 1, mean)
+      averages_all$difference_time[[name_marginal(group, "average")]],
+      apply(tibble::as_tibble(out$difference_time)[, cols_all], 1, mean)
     )
     expect_equal(
-      averages_sub$change[[name_marginal(group, "mean")]],
-      apply(tibble::as_tibble(out$change)[, cols_sub], 1, mean)
+      averages_sub$difference_time[[name_marginal(group, "mean")]],
+      apply(tibble::as_tibble(out$difference_time)[, cols_sub], 1, mean)
     )
-    cols_all <- intersect(cols_all, colnames(out$difference))
-    cols_sub <- intersect(cols_sub, colnames(out$difference))
-    for (field in c("difference", "effect")) {
+    cols_all <- intersect(cols_all, colnames(out$difference_group))
+    cols_sub <- intersect(cols_sub, colnames(out$difference_group))
+    for (field in c("difference_group", "effect")) {
       expect_equal(
         averages_all[[field]][[name_marginal(group, "average")]],
         apply(tibble::as_tibble(out[[field]])[, cols_all], 1, mean)

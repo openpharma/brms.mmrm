@@ -79,7 +79,7 @@ brm_marginal_summaries <- function(
     summarize_marginals(draws$change, level),
     NULL
   )
-  table_difference <- summarize_marginals(draws$difference, level)
+  table_difference <- summarize_marginals(draws$difference_group, level)
   table_effect <- summarize_marginals(draws$effect, level)
   out <- dplyr::bind_rows(
     response = table_response,

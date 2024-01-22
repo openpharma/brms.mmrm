@@ -85,7 +85,7 @@ brm_marginal_probabilities <- function(
     length(direction) == length(threshold),
     message = "direction and threshold must have the same length"
   )
-  draws <- tibble::as_tibble(draws$difference)
+  draws <- tibble::as_tibble(draws$difference_group)
   for (name in names_mcmc) {
     draws[[name]] <- NULL
   }

@@ -9,6 +9,7 @@
 * In `brm_data()`, deprecate `level_baseline` in favor of `reference_time`.
 * In `brm_formula()`, deprecate arguments `effect_baseline`, `effect_group`, `effect_time`, `interaction_baseline`, and `interaction_group` in favor of `baseline`, `group`, `time`, `baseline_time`, and `group_time`, respectively.
 * Propagate values in the `missing` column in `brm_data_change()` such that a value in the change from baseline is labeled missing if either the baseline response is missing or the post-baseline response is missing.
+* Change the names in the output of `brm_marginal_draws()` to be more internally consistent and fit better with the addition of subgroup-specific marginals (#18).
 
 # brms.mmrm 0.0.2
 

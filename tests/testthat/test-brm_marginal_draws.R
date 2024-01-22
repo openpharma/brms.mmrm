@@ -1,4 +1,4 @@
-test_that("brm_marginal_draws() on response", {
+test_that("brm_marginal_draws() on response, no subgroup", {
   skip_on_cran()
   set.seed(0L)
   data <- brm_data(
@@ -51,7 +51,7 @@ test_that("brm_marginal_draws() on response", {
     class = "brm_deprecate"
   )
   expect_equal(emmeans::get_emm_option("sep"), old_sep)
-  fields <- c("response", "change", "difference", "effect")
+  fields <- c("response", "difference_time", "difference_group", "effect")
   columns_df <- expand.grid(
     group = sort(unique(data$group)),
     time = sort(unique(data$time)),
@@ -73,13 +73,13 @@ test_that("brm_marginal_draws() on response", {
   columns_df <- columns_df[columns_df$time != "time_1", ]
   columns <- paste(columns_df$group, columns_df$time, sep = brm_sep())
   expect_equal(
-    sort(colnames(out$change)),
+    sort(colnames(out$difference_time)),
     sort(c(columns, names_mcmc))
   )
   columns_df <- columns_df[columns_df$group != "group_1", ]
   columns <- paste(columns_df$group, columns_df$time, sep = brm_sep())
   expect_equal(
-    sort(colnames(out$difference)),
+    sort(colnames(out$difference_group)),
     sort(c(columns, names_mcmc))
   )
   draws <- tibble::as_tibble(posterior::as_draws_df(model))
@@ -92,12 +92,12 @@ test_that("brm_marginal_draws() on response", {
       name1 <- paste("group_1", time, sep = brm_sep())
       name2 <- paste(group, time, sep = brm_sep())
       expect_equal(
-        out$difference[[name2]],
-        out$change[[name2]] - out$change[[name1]]
+        out$difference_group[[name2]],
+        out$difference_time[[name2]] - out$difference_time[[name1]]
       )
       expect_equal(
         out$effect[[name2]],
-        out$difference[[name2]] / sigma[[time]]
+        out$difference_group[[name2]] / sigma[[time]]
       )
     }
   }
@@ -106,14 +106,14 @@ test_that("brm_marginal_draws() on response", {
       name1 <- paste(group, "time_1", sep = brm_sep())
       name2 <- paste(group, time, sep = brm_sep())
       expect_equal(
-        out$change[[name2]],
+        out$difference_time[[name2]],
         out$response[[name2]] - out$response[[name1]]
       )
     }
   }
 })
 
-test_that("brm_marginal_draws() on change", {
+test_that("brm_marginal_draws() on change, no subgroup", {
   skip_on_cran()
   set.seed(0L)
   data <- brm_data(
@@ -147,7 +147,7 @@ test_that("brm_marginal_draws() on change", {
     model = model,
     data = data
   )
-  fields <- c("response", "difference", "effect")
+  fields <- c("response", "difference_group", "effect")
   columns_df <- expand.grid(
     group = sort(unique(data$group)),
     time = sort(unique(data$time)),
@@ -169,7 +169,7 @@ test_that("brm_marginal_draws() on change", {
   columns_df <- columns_df[columns_df$group != "group_1", ]
   columns <- paste(columns_df$group, columns_df$time, sep = brm_sep())
   expect_equal(
-    sort(colnames(out$difference)),
+    sort(colnames(out$difference_group)),
     sort(c(columns, names_mcmc))
   )
   for (group in setdiff(unique(data$group), "group_1")) {
@@ -177,7 +177,7 @@ test_that("brm_marginal_draws() on change", {
       name1 <- paste("group_1", time, sep = brm_sep())
       name2 <- paste(group, time, sep = brm_sep())
       expect_equal(
-        out$difference[[name2]],
+        out$difference_group[[name2]],
         out$response[[name2]] - out$response[[name1]]
       )
     }

@@ -4,19 +4,33 @@
 #' @description Get marginal posterior draws from a fitted MMRM.
 #' @inheritSection brm_data Separation string
 #' @return A named list of tibbles of MCMC draws of the marginal posterior
-#'   distribution of each treatment group and time point:
+#'   distribution of each treatment group and time point
+#'   (or group-by-subgroup-by-time, if applicable).
+#'   In each tibble, there is 1 row per posterior sample sand one column for
+#'   each type of marginal distribution (i.e. each combination of treatment
+#'   group and discrete time point. The specific `tibble`s in the returned
+#'   list are described below:
 #'   * `response`: on the scale of the response variable.
-#'   * `change`: change from baseline, where the `baseline` argument determines
-#'     the time point at baseline. Only returned if the `role` argument is
+#'   * `difference_time`: change from baseline: the
+#'     `response` at a particular time minus the `response` at baseline
+#'     (`reference_time`).
+#'     Only returned if the `role` argument of [brm_data()] was
 #'     `"response"`. (If `role` is `"change"`, then `response` already
 #'     represents change from baseline.)
-#'   * `difference`: treatment effect of change from baseline, where the
-#'     `control` argument identifies the placebo or active control group.
-#'   In each tibble, there is 1 row per posterior sample and one column for
-#'   each type of marginal distribution (i.e. each combination of treatment
-#'   group and discrete time point.
+#'   * `difference_group`: treatment effect: the
+#'     the `difference_time` at each active group minus the `difference_time`
+#'     at the control group (`reference_group`).
+#'     If `role` is `"change"`, then treatment group
+#'     is instead the difference between `response` at each active group minus
+#'     the `response` at the control group.
+#'   * `difference_subgroup`: subgroup differences: the `difference_group`
+#'     at each subgroup level minus the `difference_group` at the subgroup
+#'     reference level (`reference_subgroup`).
 #' @param model Fitted `brms` model object from [brm_model()].
 #' @param data Classed tibble with preprocessed data from [brm_data()].
+#' @param use_subgroup Logical of length 1, whether to summarize the draws by
+#'   each subgroup level. If `TRUE`, subgroup-specific marginals are given.
+#'   Otherwise, the subgroup is marginalized out.
 #' @param control Deprecated. Set the control group level in [brm_data()].
 #' @param baseline Deprecated. Set the control group level in [brm_data()].
 #' @examples
@@ -55,6 +69,7 @@
 brm_marginal_draws <- function(
   model,
   data,
+  use_subgroup = !is.null(attr(data, "brm_subgroup")),
   control = NULL,
   baseline = NULL
 ) {
@@ -74,27 +89,41 @@ brm_marginal_draws <- function(
   role <- attr(data, "brm_role")
   base <- attr(data, "brm_base")
   group <- attr(data, "brm_group")
+  subgroup <- attr(data, "brm_subgroup")
   time <- attr(data, "brm_time")
   patient <- attr(data, "brm_patient")
   covariates <- attr(data, "brm_covariates")
   levels_group <- attr(data, "brm_levels_group")
+  levels_subgroup <- attr(data, "brm_levels_subgroup")
   levels_time <- attr(data, "brm_levels_time")
-  control <- attr(data, "brm_reference_group")
-  baseline <- attr(data, "brm_reference_time")
-  assert(
-    control %in% as.character(data[[group]]),
-    message = "control arg must be a treatment group level in the data"
-  )
-  if (identical(role, "response")) {
-    assert(
-      baseline %in% as.character(data[[time]]),
-      message = "baseline arg must be a discrete time level in the data"
+  reference_group <- attr(data, "brm_reference_group")
+  reference_subgroup <- attr(data, "brm_reference_subgroup")
+  reference_time <- attr(data, "brm_reference_time")
+  assert_lgl(use_subgroup, message = "use_subgroup must be TRUE or FALSE.")
+  if (use_subgroup) {
+    assert_chr(
+      subgroup,
+      message = "use_subgroup is TRUE but subgroup not found"
+    )
+    assert_chr_vec(
+      levels_subgroup,
+      message = "use_subgroup is TRUE but levels_subgroup not found"
     )
   }
-  nuisance <- c(base, patient, covariates)
+  nuisance <- c(
+    base,
+    patient,
+    covariates,
+    if_any(use_subgroup, NULL, subgroup)
+  )
+  specs <- if_any(
+    use_subgroup,
+    as.formula(sprintf("~%s:%s:%s", group, subgroup, time)),
+    as.formula(sprintf("~%s:%s", group, time))
+  )
   emmeans <- emmeans::emmeans(
     object = model,
-    specs = as.formula(sprintf("~%s:%s", group, time)),
+    specs = specs,
     wt.nuis = "proportional",
     nuisance = nuisance
   )
@@ -112,47 +141,93 @@ brm_marginal_draws <- function(
     )
   )
   if (identical(role, "response")) {
-    assert(
-      baseline %in% levels_time,
-      message = sprintf(
-        "baseline argument \"%s\" is not in one of the time points: %s",
-        baseline,
-        paste(levels_time, collapse = ", ")
+    if (use_subgroup) {
+      draws_difference_time <- subtract_reference_time_subroup(
+        draws = draws_response,
+        levels_group = levels_group,
+        levels_subgroup = levels_subgroup,
+        levels_time = levels_time,
+        reference_time = reference_time
       )
-    )
-    draws_change <- subtract_baseline(
-      draws = draws_response,
-      levels_group = levels_group,
-      levels_time = levels_time,
-      baseline = baseline
-    )
-    draws_difference <- subtract_control(
-      draws = draws_change,
-      levels_group = levels_group,
-      levels_time = setdiff(levels_time, baseline),
-      control = control
-    )
-  } else {
-    draws_difference <- subtract_control(
-      draws = draws_response,
-      levels_group = levels_group,
-      levels_time = levels_time,
-      control = control
-    )
+      draws_difference_group <- subtract_reference_group_subgroup(
+        draws = draws_difference_time,
+        levels_group = levels_group,
+        levels_subgroup = levels_subgroup,
+        levels_time = setdiff(levels_time, reference_time),
+        reference_group = reference_group
+      )
+      draws_difference_subgroup <- subtract_reference_subgroup(
+        draws = draws_difference_group,
+        levels_group = setdiff(levels_group, reference_group),
+        levels_subgroup = levels_subgroup,
+        levels_time = setdiff(levels_time, reference_time),
+        reference_subgroup = reference_subgroup
+      )
+    } else { # role is "response", no subgroup
+      draws_difference_time <- subtract_reference_time(
+        draws = draws_response,
+        levels_group = levels_group,
+        levels_time = levels_time,
+        reference_time = reference_time
+      )
+      draws_difference_group <- subtract_reference_group(
+        draws = draws_difference_time,
+        levels_group = levels_group,
+        levels_time = setdiff(levels_time, reference_time),
+        reference_group = reference_group
+      )
+    }
+  } else { # role is "change"
+    if (use_subgroup) {
+      draws_difference_group <- subtract_reference_group_subgroup(
+        draws = draws_response,
+        levels_group = levels_group,
+        levels_subgroup = levels_subgroup,
+        levels_time = levels_time,
+        reference_group = reference_group
+      )
+      draws_difference_subgroup <- subtract_reference_subgroup(
+        draws = draws_difference_group,
+        levels_group = setdiff(levels_group, reference_group),
+        levels_subgroup = levels_subgroup,
+        levels_time = levels_time,
+        reference_subgroup = reference_subgroup
+      )
+    } else { # role is "change", no subgroup
+      draws_difference_group <- subtract_reference_group(
+        draws = draws_response,
+        levels_group = levels_group,
+        levels_time = levels_time,
+        reference_group = reference_group
+      )
+    }
   }
   draws_sigma <- get_draws_sigma(model = model, time = time)
-  draws_effect <- get_draws_effect(
-    draws_difference = draws_difference,
-    draws_sigma = draws_sigma,
-    levels_group = levels_group,
-    levels_time = levels_time
+  draws_effect <- if_any(
+    use_subgroup,
+    get_draws_effect_subgroup(
+      draws_difference_group = draws_difference_group,
+      draws_sigma = draws_sigma,
+      levels_group = levels_group,
+      levels_subgroup = levels_subgroup,
+      levels_time = levels_time
+    ),
+    get_draws_effect(
+      draws_difference_group = draws_difference_group,
+      draws_sigma = draws_sigma,
+      levels_group = levels_group,
+      levels_time = levels_time
+    )
   )
   out <- list()
   out$response <- draws_response
   if (identical(role, "response")) {
-    out$change <- draws_change
+    out$difference_time <- draws_difference_time
   }
-  out$difference <- draws_difference
+  out$difference_group <- draws_difference_group
+  if (use_subgroup) {
+    out$difference_subgroup <- draws_difference_subgroup
+  }
   out$effect <- draws_effect
   out
 }
@@ -166,28 +241,58 @@ get_draws_sigma <- function(model, time) {
 }
 
 get_draws_effect <- function(
-  draws_difference,
+  draws_difference_group,
   draws_sigma,
   levels_group,
   levels_time
 ) {
-  out <- draws_difference
+  out <- draws_difference_group
   for (group in levels_group) {
     for (time in levels_time) {
       name <- name_marginal(group = group, time = time)
-      if (name %in% colnames(draws_difference)) {
-        out[[name]] <- draws_difference[[name]] / draws_sigma[[time]]
+      if (name %in% colnames(draws_difference_group)) {
+        out[[name]] <- draws_difference_group[[name]] / draws_sigma[[time]]
       }
     }
   }
   out
 }
 
-subtract_baseline <- function(draws, levels_group, levels_time, baseline) {
+get_draws_effect_subgroup <- function(
+  draws_difference_group,
+  draws_sigma,
+  levels_group,
+  levels_subgroup,
+  levels_time
+) {
+  out <- draws_difference_group
+  for (group in levels_group) {
+    for (subgroup in levels_subgroup) {
+      for (time in levels_time) {
+        name <- name_marginal_subgroup(
+          group = group,
+          subgroup = subgroup,
+          time = time
+        )
+        if (name %in% colnames(draws_difference_group)) {
+          out[[name]] <- draws_difference_group[[name]] / draws_sigma[[time]]
+        }
+      }
+    }
+  }
+  out
+}
+
+subtract_reference_time <- function(
+  draws,
+  levels_group,
+  levels_time,
+  reference_time
+) {
   out <- draws[, names_mcmc]
   for (group in levels_group) {
-    for (time in setdiff(levels_time, baseline)) {
-      name1 <- name_marginal(group, baseline)
+    for (time in setdiff(levels_time, reference_time)) {
+      name1 <- name_marginal(group, reference_time)
       name2 <- name_marginal(group, time)
       out[[name2]] <- draws[[name2]] - draws[[name1]]
     }
@@ -195,13 +300,78 @@ subtract_baseline <- function(draws, levels_group, levels_time, baseline) {
   out
 }
 
-subtract_control <- function(draws, levels_group, levels_time, control) {
+subtract_reference_time_subroup <- function(
+  draws,
+  levels_group,
+  levels_subgroup,
+  levels_time,
+  reference_time
+) {
   out <- draws[, names_mcmc]
-  for (group in setdiff(levels_group, control)) {
+  for (group in levels_group) {
+    for (subgroup in levels_subgroup) {
+      for (time in setdiff(levels_time, reference_time)) {
+        name1 <- name_marginal_subgroup(group, subgroup, reference_time)
+        name2 <- name_marginal_subgroup(group, subgroup, time)
+        out[[name2]] <- draws[[name2]] - draws[[name1]]
+      }
+    }
+  }
+  out
+}
+
+subtract_reference_group <- function(
+  draws,
+  levels_group,
+  levels_time,
+  reference_group
+) {
+  out <- draws[, names_mcmc]
+  for (group in setdiff(levels_group, reference_group)) {
     for (time in levels_time) {
-      name1 <- name_marginal(control, time)
+      name1 <- name_marginal(reference_group, time)
       name2 <- name_marginal(group, time)
       out[[name2]] <- draws[[name2]] - draws[[name1]]
+    }
+  }
+  out
+}
+
+subtract_reference_group_subgroup <- function(
+  draws,
+  levels_group,
+  levels_subgroup,
+  levels_time,
+  reference_group
+) {
+  out <- draws[, names_mcmc]
+  for (group in setdiff(levels_group, reference_group)) {
+    for (subgroup in levels_subgroup) {
+      for (time in levels_time) {
+        name1 <- name_marginal_subgroup(reference_group, subgroup, time)
+        name2 <- name_marginal_subgroup(group, subgroup, time)
+        out[[name2]] <- draws[[name2]] - draws[[name1]]
+      }
+    }
+  }
+  out
+}
+
+subtract_reference_subgroup <- function(
+  draws,
+  levels_group,
+  levels_subgroup,
+  levels_time,
+  reference_subgroup
+) {
+  out <- draws[, names_mcmc]
+  for (group in levels_group) {
+    for (subgroup in setdiff(levels_subgroup, reference_subgroup)) {
+      for (time in levels_time) {
+        name1 <- name_marginal_subgroup(group, reference_subgroup, time)
+        name2 <- name_marginal_subgroup(group, subgroup, time)
+        out[[name2]] <- draws[[name2]] - draws[[name1]]
+      }
     }
   }
   out

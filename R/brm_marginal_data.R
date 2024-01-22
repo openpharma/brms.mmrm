@@ -27,7 +27,7 @@
 #' @inheritParams brm_model
 #' @param level Numeric of length 1 from 0 to 1, level of the confidence
 #'   intervals.
-#' @param subgroup Logical of length 1, whether to summarize the data by
+#' @param use_subgroup Logical of length 1, whether to summarize the data by
 #'   each subgroup level.
 #' @examples
 #' set.seed(0L)
@@ -45,11 +45,11 @@
 brm_marginal_data <- function(
   data,
   level = 0.95,
-  subgroup = !is.null(attr(data, "brm_subgroup"))
+  use_subgroup = !is.null(attr(data, "brm_subgroup"))
 ) {
   brm_data_validate(data)
   assert(level, . >= 0, . <= 1, message = "level arg must be between 0 and 1")
-  if (subgroup) {
+  if (use_subgroup) {
     assert_chr(
       attr(data, "brm_subgroup"),
       message = "brm_marginal_data() found no subgroup column in the data."
@@ -59,14 +59,14 @@ brm_marginal_data <- function(
   data <- tibble::tibble(
     outcome = data[[attr(data, "brm_outcome")]],
     group = data[[attr(data, "brm_group")]],
-    subgroup = if_any(subgroup, data[[attr(data, "brm_subgroup")]], NULL),
+    subgroup = if_any(use_subgroup, data[[attr(data, "brm_subgroup")]], NULL),
     time = data[[attr(data, "brm_time")]]
   )
   args <- list(
     .data = data,
     quote(group),
     quote(time),
-    if_any(subgroup, quote(subgroup), NULL)
+    if_any(use_subgroup, quote(subgroup), NULL)
   )
   data <- do.call(what = dplyr::group_by, args = args)
   out <- dplyr::summarize(
@@ -80,7 +80,7 @@ brm_marginal_data <- function(
     upper = mean + z * sd / sqrt(n_observed),
     .groups = "drop"
   )
-  indicators <- c("group", if_any(subgroup, "subgroup", NULL), "time")
+  indicators <- c("group", if_any(use_subgroup, "subgroup", NULL), "time")
   out <- tidyr::pivot_longer(
     data = out,
     cols = -tidyselect::any_of(indicators),
