@@ -45,7 +45,7 @@
 brm_marginal_data <- function(
   data,
   level = 0.95,
-  subgroup = !is.null(attr(data, "subgroup"))
+  subgroup = !is.null(attr(data, "brm_subgroup"))
 ) {
   brm_data_validate(data)
   assert(level, . >= 0, . <= 1, message = "level arg must be between 0 and 1")

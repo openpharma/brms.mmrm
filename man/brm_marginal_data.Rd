@@ -7,7 +7,7 @@
 brm_marginal_data(
   data,
   level = 0.95,
-  subgroup = !is.null(attr(data, "subgroup"))
+  subgroup = !is.null(attr(data, "brm_subgroup"))
 )
 }
 \arguments{
