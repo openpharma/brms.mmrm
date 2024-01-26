@@ -98,7 +98,14 @@ brm_marginal_probabilities <- function(
       threshold = .y
     )
   )
-  columns <- c("direction", "threshold", "group", "time", "value")
+  columns <- c(
+    "direction",
+    "threshold",
+    "group",
+    if_any(names_have_subgroup(colnames(draws)), "subgroup", character(0L)),
+    "time",
+    "value"
+  )
   out <- out[, columns]
   args <- lapply(setdiff(columns, "value"), as.symbol)
   args$.data <- out
