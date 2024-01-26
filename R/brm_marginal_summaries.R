@@ -81,15 +81,30 @@ brm_marginal_summaries <- function(
   )
   table_difference_group <- summarize_marginals(draws$difference_group, level)
   table_effect <- summarize_marginals(draws$effect, level)
-  out <- dplyr::bind_rows(
+  args <- list(
     response = table_response,
     difference_time = table_difference_time,
     difference_group = table_difference_group,
+    difference_subgroup = if_any(
+      is.null(draws$difference_subgroup),
+      NULL,
+      summarize_marginals(draws$difference_subgroup, level)
+    ),
     effect = table_effect,
     .id = "marginal"
   )
-  columns <- c("marginal", "statistic", "group", "time", "value", "mcse")
-  out <- out[, columns]
+  out <- do.call(what = dplyr::bind_rows, args = args)
+  columns <- c(
+    "marginal",
+    "statistic",
+    "group",
+    "subgroup",
+    "time",
+    "value",
+    "mcse"
+  )
+  columns <- intersect(x = columns, y = colnames(out))
+  out <- out[, columns, drop = FALSE]
   args <- lapply(setdiff(columns, c("value", "mcse")), as.symbol)
   args$.data <- out
   do.call(what = dplyr::arrange, args = args)
@@ -98,9 +113,17 @@ brm_marginal_summaries <- function(
 summarize_marginals <- function(draws, level) {
   level_lower <- (1 - level) / 2
   level_upper <- 1 - level_lower
+  draws <- tibble::as_tibble(draws)
   draws[names_mcmc] <- NULL
+  use_subgroup <- names_have_subgroup(colnames(draws))
+  names_subgroup <- if_any(
+    use_subgroup,
+    names_component(names(draws), "subgroup"),
+    NULL
+  )
   value <- tibble::tibble(
     group = names_component(names(draws), "group"),
+    subgroup = names_subgroup,
     time = names_component(names(draws), "time"),
     mean = purrr::map_dbl(draws, mean),
     median = purrr::map_dbl(draws, median),
@@ -110,6 +133,7 @@ summarize_marginals <- function(draws, level) {
   )
   mcse <- tibble::tibble(
     group = names_component(names(draws), "group"),
+    subgroup = names_subgroup,
     time = names_component(names(draws), "time"),
     mean = purrr::map_dbl(draws, posterior::mcse_mean),
     median = purrr::map_dbl(draws, posterior::mcse_median),
@@ -117,22 +141,23 @@ summarize_marginals <- function(draws, level) {
     lower = purrr::map_dbl(draws, ~posterior::mcse_quantile(.x, level_lower)),
     upper = purrr::map_dbl(draws, ~posterior::mcse_quantile(.x, level_upper))
   )
+  columns <- c("group", if_any(use_subgroup, "subgroup", NULL), "time")
   value <- tidyr::pivot_longer(
     data = value,
-    cols = -tidyselect::any_of(c("group", "time")),
+    cols = -tidyselect::any_of(columns),
     names_to = "statistic",
     values_to = "value"
   )
   mcse <- tidyr::pivot_longer(
     data = mcse,
-    cols = -tidyselect::any_of(c("group", "time")),
+    cols = -tidyselect::any_of(columns),
     names_to = "statistic",
     values_to = "mcse"
   )
   out <- dplyr::left_join(
     x = value,
     y = mcse,
-    by = c("group", "time", "statistic")
+    by = c(columns, "statistic")
   )
   unname_df(out)
 }

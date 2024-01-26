@@ -19,14 +19,12 @@ names_component <- function(names, component) {
 }
 
 name_marginal <- function(group, time) {
-  sprintf("%s%s%s", group, brm_sep(), time)
+  paste(group, time, sep = brm_sep())
 }
 
 name_marginal_subgroup <- function(group, subgroup, time) {
-  sprintf("%s%s%s%s%s", group, brm_sep(), subgroup, brm_sep(), time)
+  paste(group, subgroup, time, sep = brm_sep())
 }
-
-names_mcmc <- c(".chain", ".draw", ".iteration")
 
 names_have_subgroup <- function(names) {
   names <- setdiff(names, names_mcmc)
@@ -46,3 +44,5 @@ names_have_subgroup <- function(names) {
   )
   matches > 1L
 }
+
+names_mcmc <- c(".chain", ".draw", ".iteration")
