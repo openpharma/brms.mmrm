@@ -45,14 +45,26 @@ brm_plot_draws <- function(draws) {
   for (name in names_mcmc) {
     draws[[name]] <- NULL
   }
+  names_group <- as.list(names_component(colnames(draws), "group"))
+  names_time <- as.list(names_component(colnames(draws), "time"))
+  names(names_group) <- colnames(draws)
+  names(names_time) <- colnames(draws)
   draws <- pivot_longer(
     data = draws,
     cols = tidyselect::everything(),
-    names_to = "name",
+    names_to = "name", # cannot use names_sep (regexp) with brm_sep() (fixed)
     values_to = "value"
   )
-  draws$group <- gsub_group(draws$name)
-  draws$time <- gsub_time(draws$name)
+  draws$group <- vapply(
+    draws$name,
+    function(x) names_group[[x]],
+    FUN.VALUE = character(1L)
+  )
+  draws$time <- vapply(
+    draws$name,
+    function(x) names_time[[x]],
+    FUN.VALUE = character(1L)
+  )
   draws$name <- NULL
   ggplot2::ggplot(draws) +
     ggridges::geom_density_ridges2(

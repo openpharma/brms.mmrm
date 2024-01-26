@@ -110,14 +110,19 @@ summarize_probabilities <- function(draws, direction, threshold) {
     draws,
     ~marginal_probability(.x, direction, threshold)
   )
-  out <- tibble::tibble(
-    group = names_group(draws),
-    time = names_time(draws),
+  args <- list(
+    group = names_component(names(draws), "group"),
+    subgroup = if_any(
+      names_have_subgroup(names(draws)),
+      names_component(names(draws), "subgroup"),
+      NULL
+    ),
+    time = names_component(names(draws), "time"),
     direction = direction,
     threshold = threshold,
     value = values
   )
-  out <- unname_df(out)
+  out <- unname_df(do.call(what = tibble::tibble, args = args))
 }
 
 marginal_probability <- function(difference, direction, threshold) {

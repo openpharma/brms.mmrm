@@ -100,8 +100,8 @@ summarize_marginals <- function(draws, level) {
   level_upper <- 1 - level_lower
   draws[names_mcmc] <- NULL
   value <- tibble::tibble(
-    group = names_group(draws),
-    time = names_time(draws),
+    group = names_component(names(draws), "group"),
+    time = names_component(names(draws), "time"),
     mean = purrr::map_dbl(draws, mean),
     median = purrr::map_dbl(draws, median),
     sd = purrr::map_dbl(draws, sd),
@@ -109,8 +109,8 @@ summarize_marginals <- function(draws, level) {
     upper = purrr::map_dbl(draws, ~quantile(.x, level_upper))
   )
   mcse <- tibble::tibble(
-    group = names_group(draws),
-    time = names_time(draws),
+    group = names_component(names(draws), "group"),
+    time = names_component(names(draws), "time"),
     mean = purrr::map_dbl(draws, posterior::mcse_mean),
     median = purrr::map_dbl(draws, posterior::mcse_median),
     sd = purrr::map_dbl(draws, posterior::mcse_sd),

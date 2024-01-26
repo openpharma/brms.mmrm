@@ -2,14 +2,20 @@ brm_sep <- function() {
   Sys.getenv("BRM_SEP", unset = "|")
 }
 
-gsub_group <- function(names) {
+names_component <- function(names, component) {
+  assert_chr(component)
+  assert(component %in% c("group", "subgroup", "time"))
+  names <- setdiff(names, names_mcmc)
   out <- strsplit(names, split = brm_sep(), fixed = TRUE)
-  as.character(lapply(out, function(x) x[[1L]]))
-}
-
-gsub_time <- function(names) {
-  out <- strsplit(names, split = brm_sep(), fixed = TRUE)
-  as.character(lapply(out, function(x) x[[2L]]))
+  if (component == "group") {
+    index <- 1L
+  } else if (component == "subgroup") {
+    assert(isTRUE(names_have_subgroup(names)))
+    index <- 2L
+  } else if (component == "time") {
+    index <- if_any(names_have_subgroup(names), 3L, 2L)
+  }
+  as.character(lapply(out, function(x) x[[index]]))
 }
 
 name_marginal <- function(group, time) {
@@ -18,14 +24,6 @@ name_marginal <- function(group, time) {
 
 name_marginal_subgroup <- function(group, subgroup, time) {
   sprintf("%s%s%s%s%s", group, brm_sep(), subgroup, brm_sep(), time)
-}
-
-names_group <- function(draws) {
-  gsub_group(setdiff(colnames(draws), names_mcmc))
-}
-
-names_time <- function(draws) {
-  gsub_time(setdiff(colnames(draws), names_mcmc))
 }
 
 names_mcmc <- c(".chain", ".draw", ".iteration")
