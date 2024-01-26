@@ -28,7 +28,7 @@
 #'     at each subgroup level minus the `difference_group` at the subgroup
 #'     reference level (`reference_subgroup`).
 #' @inheritParams brm_marginal_draws
-#' @param draws Fitted `brms` model object from [brm_model()].
+#' @param draws List of posterior draws from [brm_marginal_draws()].
 #' @param times Character vector of discrete time point levels
 #'   over which to average the MCMC samples within treatment group levels.
 #'   Set to `NULL` to average across all time points. Levels are automatically
@@ -90,6 +90,7 @@ brm_marginal_draws_average <- function(
   )
   brm_data_validate(data)
   levels_group <-  attr(data, "brm_levels_group")
+  levels_subgroup <-  attr(data, "brm_levels_subgroup")
   levels_time <- brm_levels(unique(times %|||% attr(data, "brm_levels_time")))
   assert(
     levels_time,
@@ -116,11 +117,21 @@ brm_marginal_draws_average <- function(
   )
   levels_time <- brm_levels(levels_time)
   for (field in names(draws)) {
-    draws[[field]] <- brm_marginal_draws_average_df(
-      draws = draws[[field]],
-      levels_group = levels_group,
-      levels_time = levels_time,
-      label = label
+    draws[[field]] <- if_any(
+      names_have_subgroup(names(draws[[field]])),
+      brm_marginal_draws_average_df_subgroup(
+        draws = draws[[field]],
+        levels_group = levels_group,
+        levels_subgroup = levels_subgroup,
+        levels_time = levels_time,
+        label = label
+      ),
+      brm_marginal_draws_average_df(
+        draws = draws[[field]],
+        levels_group = levels_group,
+        levels_time = levels_time,
+        label = label
+      )
     )
   }
   draws
@@ -140,6 +151,28 @@ brm_marginal_draws_average_df <- function(
       subset <- tibble::as_tibble(draws)[, names, drop = FALSE]
       name <- name_marginal(group, label)
       draws[[name]] <- apply(X = subset, MARGIN = 1L, FUN = mean)
+    }
+  }
+  draws[, setdiff(colnames(draws), original_columns), .drop = FALSE]
+}
+
+brm_marginal_draws_average_df_subgroup <- function(
+  draws,
+  levels_group,
+  levels_subgroup,
+  levels_time,
+  label
+) {
+  original_columns <- setdiff(colnames(draws), names_mcmc)
+  for (group in levels_group) {
+    for (subgroup in levels_subgroup) {
+      names <- name_marginal_subgroup(group, subgroup, levels_time)
+      names <- intersect(names, colnames(draws))
+      if (length(names) > 0L) {
+        subset <- tibble::as_tibble(draws)[, names, drop = FALSE]
+        name <- name_marginal_subgroup(group, subgroup, label)
+        draws[[name]] <- apply(X = subset, MARGIN = 1L, FUN = mean)
+      }
     }
   }
   draws[, setdiff(colnames(draws), original_columns), .drop = FALSE]

@@ -7,7 +7,7 @@
 brm_marginal_draws_average(draws, data, times = NULL, label = "average")
 }
 \arguments{
-\item{draws}{Fitted \code{brms} model object from \code{\link[=brm_model]{brm_model()}}.}
+\item{draws}{List of posterior draws from \code{\link[=brm_marginal_draws]{brm_marginal_draws()}}.}
 
 \item{data}{Classed tibble with preprocessed data from \code{\link[=brm_data]{brm_data()}}.}
 

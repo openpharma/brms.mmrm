@@ -29,3 +29,22 @@ names_time <- function(draws) {
 }
 
 names_mcmc <- c(".chain", ".draw", ".iteration")
+
+names_have_subgroup <- function(names) {
+  names <- setdiff(names, names_mcmc)
+  matches <- lapply(
+    names, function(name) {
+      length(gregexpr(pattern = brm_sep(), text = name, fixed = TRUE)[[1L]])
+    }
+  )
+  matches <- unique(as.integer(matches))
+  assert(
+    length(matches) == 1L,
+    message = paste(
+      "Found a mix of subgroup and non-subgroup names in these columns",
+      "of a posterior draws data frame:",
+      paste(names, collapse = ", ")
+    )
+  )
+  matches > 1L
+}
