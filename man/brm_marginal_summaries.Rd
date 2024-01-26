@@ -27,6 +27,7 @@ change from baseline scale and \code{"difference"} for treatment difference.
 \item \code{statistic}: type of summary statistic. \code{"lower"} and \code{"upper"}
 are bounds of an equal-tailed quantile-based credible interval.
 \item \code{group}: treatment group.
+\item \code{subgroup}: subgroup level, if applicable.
 \item \code{time}: discrete time point.
 \item \code{value}: numeric value of the estimate.
 \item \code{mcse}: Monte Carlo standard error of the estimate.

@@ -7,6 +7,7 @@
 #'   `Prob(treatment effect < threshold | data)`. It has one row per
 #'   probability and the following columns:
 #'     * `group`: treatment group.
+#'     * `subgroup`: subgroup level, if applicable.
 #'     * `time`: discrete time point,
 #'     * `direction`: direction of the comparison in the marginal probability:
 #'       `"greater"` for `>`, `"less"` for `<`

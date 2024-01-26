@@ -14,6 +14,7 @@
 #'    * `statistic`: type of summary statistic. `"lower"` and `"upper"`
 #'      are bounds of an equal-tailed quantile-based credible interval.
 #'    * `group`: treatment group.
+#'    * `subgroup`: subgroup level, if applicable.
 #'    * `time`: discrete time point.
 #'    * `value`: numeric value of the estimate.
 #'    * `mcse`: Monte Carlo standard error of the estimate.

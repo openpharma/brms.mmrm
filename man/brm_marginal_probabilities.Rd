@@ -29,6 +29,7 @@ A tibble of probabilities of the form
 \verb{Prob(treatment effect < threshold | data)}. It has one row per
 probability and the following columns:
 * \code{group}: treatment group.
+* \code{subgroup}: subgroup level, if applicable.
 * \code{time}: discrete time point,
 * \code{direction}: direction of the comparison in the marginal probability:
 \code{"greater"} for \code{>}, \code{"less"} for \code{<}
