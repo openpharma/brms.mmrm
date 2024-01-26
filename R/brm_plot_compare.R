@@ -71,10 +71,9 @@ brm_plot_compare <- function(..., marginal = "response") {
   data <- dplyr::bind_rows(data, .id = "source")
   use_subgroup <- "subgroup" %in% colnames(data)
   subgroup <- if_any(use_subgroup, "subgroup", character(0L))
-  id_cols <- c("source", "group", subgroup, "time")
   data <- tidyr::pivot_wider(
     data = data,
-    id_cols = id_cols,
+    id_cols = tidyselect::any_of(c("source", "group", subgroup, "time")),
     names_from = "statistic",
     values_from = "value"
   )
