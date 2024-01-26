@@ -49,6 +49,11 @@ brm_plot_draws <- function(draws) {
   names_time <- as.list(names_component(colnames(draws), "time"))
   names(names_group) <- colnames(draws)
   names(names_time) <- colnames(draws)
+  use_subgroup <- names_have_subgroup(colnames(draws))
+  if (use_subgroup) {
+    names_subgroup <- as.list(names_component(colnames(draws), "subgroup"))
+    names(names_subgroup) <- colnames(draws)
+  }
   draws <- pivot_longer(
     data = draws,
     cols = tidyselect::everything(),
@@ -60,6 +65,13 @@ brm_plot_draws <- function(draws) {
     function(x) names_group[[x]],
     FUN.VALUE = character(1L)
   )
+  if (use_subgroup) {
+    draws$subgroup <- vapply(
+      draws$name,
+      function(x) names_subgroup[[x]],
+      FUN.VALUE = character(1L)
+    )
+  }
   draws$time <- vapply(
     draws$name,
     function(x) names_time[[x]],
@@ -73,7 +85,11 @@ brm_plot_draws <- function(draws) {
       stat = "binline",
       bins = 20
     ) +
-    ggplot2::facet_wrap(~ group) +
     ggplot2::theme_gray(16) +
-    ggplot2::coord_flip()
+    ggplot2::coord_flip() +
+    if_any(
+      use_subgroup,
+      ggplot2::facet_grid(subgroup ~ group),
+      ggplot2::facet_wrap(~ group)
+    )
 }

@@ -1,4 +1,4 @@
-test_that("brm_plot_draws()", {
+test_that("brm_plot_draws() without subgroup", {
   skip_on_cran()
   set.seed(0L)
   data <- brm_data(
@@ -11,6 +11,42 @@ test_that("brm_plot_draws()", {
     reference_group = "group_1",
     reference_time = "time_1"
   )
+  formula <- brm_formula(
+    data = data,
+    baseline = FALSE,
+    baseline_time = FALSE
+  )
+  tmp <- utils::capture.output(
+    suppressMessages(
+      suppressWarnings(
+        model <- brm_model(
+          data = data,
+          formula = formula,
+          chains = 1,
+          iter = 100,
+          refresh = 0
+        )
+      )
+    )
+  )
+  draws <- brm_marginal_draws(
+    model = model,
+    data = data
+  )
+  out <- brm_plot_draws(draws = draws$difference_time)
+  expect_s3_class(out, "ggplot")
+})
+
+test_that("brm_plot_draws() with subgroup", {
+  skip_on_cran()
+  set.seed(0L)
+  data <- brm_simulate_outline(
+    n_group = 2L,
+    n_subgroup = 2L,
+    n_patient = 25L,
+    n_time = 4L
+  )
+  data$response <- rnorm(n = nrow(data))
   formula <- brm_formula(
     data = data,
     baseline = FALSE,
