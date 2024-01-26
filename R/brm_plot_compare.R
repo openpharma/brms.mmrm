@@ -3,11 +3,11 @@
 #' @family visualization
 #' @description Visually compare the marginals of models and datasets.
 #' @return A `ggplot` object.
-#' @param ... Named data frames of marginals posterior summaries
+#' @param ... Named `tibble`s of marginals posterior summaries
 #'   from [brm_marginal_summaries()] and/or [brm_marginal_data()].
 #' @param marginal Character of length 1, which kind of marginal
-#'   to visualize: either `"response"`, `"difference_time"`,
-#'   or `"difference_group"`.
+#'   to visualize. Must be a value in the `marginal` column of the supplied
+#'   `tibble`s in the `...` argument.
 #'   Only applies to MCMC output, the data is always on the scale of the
 #'   response variable.
 #' @examples
@@ -57,24 +57,23 @@
 #' }
 brm_plot_compare <- function(..., marginal = "response") {
   data <- list(...)
+  assert_chr_vec(names(data), message = "arguments must be named.")
   assert_chr(marginal, "marginal arg must be a nonempty character string.")
   marginal <- if_any(marginal == "change", "difference_time", marginal)
   marginal <- if_any(marginal == "difference", "difference_group", marginal)
-  assert(
-    marginal %in% c("response", "difference_time", "difference_group"),
-    message = paste(
-      "marginal arg must be one of \"response\",",
-      "\"difference_time\", or \"difference_group\""
-    )
-  )
-  assert_chr_vec(names(data), message = "arguments must be named.")
   for (name in names(data)) {
+    assert(
+      tibble::is_tibble(data[[name]]),
+      message = sprintf("'%s' is not a tibble", name)
+    )
     data[[name]] <- data_compare_clean(data[[name]], marginal = marginal)
   }
   data <- dplyr::bind_rows(data, .id = "source")
+  use_subgroup <- "subgroup" %in% colnames(data)
+  subgroup <- if_any(use_subgroup, "subgroup", character(0L))
   data <- tidyr::pivot_wider(
     data = data,
-    id_cols = c("source", "group", "time"),
+    id_cols = c("source", "group", subgroup, "time"),
     names_from = "statistic",
     values_from = "value"
   )
@@ -87,15 +86,28 @@ brm_plot_compare <- function(..., marginal = "response") {
       ggplot2::aes(x = time, ymin = lower, ymax = upper, color = source),
       position = ggplot2::position_dodge(width = 0.5)
     ) +
-    ggplot2::facet_wrap(~ group) +
     ggplot2::ylab(marginal) +
-    ggplot2::theme_gray(16)
+    ggplot2::theme_gray(16) +
+    if_any(
+      use_subgroup,
+      ggplot2::facet_grid(subgroup ~ group),
+      ggplot2::facet_wrap(~ group)
+    )
 }
 
 data_compare_clean <- function(data, marginal) {
   if ("marginal" %in% colnames(data)) {
+    marginal_choices <- unique(data$marginal)
+    assert(
+      marginal %in% marginal_choices,
+      message = paste(
+        "marginal argument must be one of:",
+        paste(sprintf("\"%s\"", marginal_choices), collapse = ", ")
+      )
+    )
     data <- data[data$marginal == marginal, ]
   }
   data <- data[data$statistic %in% c("mean", "lower", "upper"), ]
-  data[, c("statistic", "group", "time", "value")]
+  columns <- c("statistic", "group", "subgroup", "time", "value")
+  data[, intersect(columns, colnames(data)), drop = FALSE]
 }

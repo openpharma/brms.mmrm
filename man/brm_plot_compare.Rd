@@ -7,12 +7,12 @@
 brm_plot_compare(..., marginal = "response")
 }
 \arguments{
-\item{...}{Named data frames of marginals posterior summaries
+\item{...}{Named \code{tibble}s of marginals posterior summaries
 from \code{\link[=brm_marginal_summaries]{brm_marginal_summaries()}} and/or \code{\link[=brm_marginal_data]{brm_marginal_data()}}.}
 
 \item{marginal}{Character of length 1, which kind of marginal
-to visualize: either \code{"response"}, \code{"difference_time"},
-or \code{"difference_group"}.
+to visualize. Must be a value in the \code{marginal} column of the supplied
+\code{tibble}s in the \code{...} argument.
 Only applies to MCMC output, the data is always on the scale of the
 response variable.}
 }
