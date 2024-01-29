@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">brms.mmrm</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.2.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.2.9002</span>
       </span>
     </div>
 
@@ -25,28 +25,9 @@
       <ul class="nav navbar-nav"><li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/comparison.html">Comparison of Bayesian and frequentist MMRM fits</a>
-    </li>
-    <li>
-      <a href="../articles/methods.html">Methods</a>
-    </li>
-    <li>
-      <a href="../articles/sbc.html">Simulation-based calibration</a>
-    </li>
-    <li>
-      <a href="../articles/simulation.html">Simulation</a>
-    </li>
-    <li>
-      <a href="../articles/usage.html">Usage</a>
-    </li>
-  </ul></li>
+<li>
+  <a href="../articles/index.html">Articles</a>
+</li>
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
@@ -77,6 +58,7 @@
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">brm_simulate_outline</span><span class="op">(</span></span>
 <span>  n_group <span class="op">=</span> <span class="fl">2L</span>,</span>
+<span>  n_subgroup <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  n_patient <span class="op">=</span> <span class="fl">100L</span>,</span>
 <span>  n_time <span class="op">=</span> <span class="fl">4L</span>,</span>
 <span>  rate_dropout <span class="op">=</span> <span class="fl">0.1</span>,</span>
@@ -90,9 +72,18 @@
 <dd><p>Positive integer of length 1, number of treatment groups.</p></dd>
 
 
+<dt>n_subgroup</dt>
+<dd><p>Positive integer of length 1, number of subgroup levels.
+Set to <code>NULL</code> to omit the subgroup entirely.</p></dd>
+
+
 <dt>n_patient</dt>
-<dd><p>Positive integer of length 1, number of patients
-per treatment group.</p></dd>
+<dd><p>Positive integer of length 1.
+If <code>n_subgroup</code> is <code>NULL</code>, then <code>n_patient</code> is the number of patients
+per treatment group. Otherwise, <code>n_patient</code> is the number of patients
+per treatment group <em>per subgroup</em>. In both cases, the total number of
+patients in the whole simulated dataset is usually much greater than the
+<code>n_patients</code> argument of <code>brm_simulate_outline()</code>.</p></dd>
 
 
 <dt>n_time</dt>
@@ -142,16 +133,16 @@ patient per time point and the following columns:</p><ul><li><p><code>group</cod
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 800 × 5</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    response missing group   time   patient    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>       <span style="color: #BB0000;">NA</span> FALSE   group_1 time_1 patient_1  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>       <span style="color: #BB0000;">NA</span> FALSE   group_1 time_2 patient_1  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>       <span style="color: #BB0000;">NA</span> FALSE   group_1 time_3 patient_1  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>       <span style="color: #BB0000;">NA</span> FALSE   group_1 time_4 patient_1  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>       <span style="color: #BB0000;">NA</span> FALSE   group_1 time_1 patient_10 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>       <span style="color: #BB0000;">NA</span> FALSE   group_1 time_2 patient_10 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>       <span style="color: #BB0000;">NA</span> FALSE   group_1 time_3 patient_10 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>       <span style="color: #BB0000;">NA</span> FALSE   group_1 time_4 patient_10 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>       <span style="color: #BB0000;">NA</span> FALSE   group_1 time_1 patient_100</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>       <span style="color: #BB0000;">NA</span> FALSE   group_1 time_2 patient_100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>       <span style="color: #BB0000;">NA</span> FALSE   group_1 time_1 patient_001</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>       <span style="color: #BB0000;">NA</span> FALSE   group_1 time_2 patient_001</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>       <span style="color: #BB0000;">NA</span> FALSE   group_1 time_3 patient_001</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>       <span style="color: #BB0000;">NA</span> FALSE   group_1 time_4 patient_001</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>       <span style="color: #BB0000;">NA</span> FALSE   group_1 time_1 patient_002</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>       <span style="color: #BB0000;">NA</span> FALSE   group_1 time_2 patient_002</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>       <span style="color: #BB0000;">NA</span> FALSE   group_1 time_3 patient_002</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>       <span style="color: #BB0000;">NA</span> FALSE   group_1 time_4 patient_002</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>       <span style="color: #BB0000;">NA</span> FALSE   group_1 time_1 patient_003</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>       <span style="color: #BB0000;">NA</span> FALSE   group_1 time_2 patient_003</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 790 more rows</span></span>
 </code></pre></div>
     </div>

@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">brms.mmrm</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.2.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.2.9002</span>
       </span>
     </div>
 
@@ -42,29 +42,8 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/comparison.html">Comparison of Bayesian and frequentist MMRM fits</a>
-    </li>
-    <li>
-      <a href="../articles/methods.html">Methods</a>
-    </li>
-    <li>
-      <a href="../articles/sbc.html">Simulation-based calibration</a>
-    </li>
-    <li>
-      <a href="../articles/simulation.html">Simulation</a>
-    </li>
-    <li>
-      <a href="../articles/usage.html">Usage</a>
-    </li>
-  </ul>
+  <a href="../articles/index.html">Articles</a>
 </li>
 <li>
   <a href="../news/index.html">Changelog</a>
@@ -264,6 +243,22 @@ draws of the model coefficients <span class="math inline">\(\beta_p\)</span>. Th
 these marginal draws.</p>
 </div>
 <div class="section level2">
+<h2 id="subgroup-analysis">Subgroup analysis<a class="anchor" aria-label="anchor" href="#subgroup-analysis"></a>
+</h2>
+<p>The model above supports subgroup analysis through the addition of a
+categorical variable in the data to denote subgroup levels. To analyze
+the subgroup, new fixed effects parameters <span class="math inline">\(\beta_p\)</span> and columns of the model matrices
+<span class="math inline">\(X_i\)</span> are added to the model to
+describe the additive effect of the subgroup and plausible two-way and
+three-way interactions with treatment group, discrete time, and baseline
+(if applicable). Marginal means may include subgroup-specific terms, and
+model comparison via the widely applicable information criterion (WAIC)
+and expected log predictive density (ELPD) is implemented via R packages
+<code>loo</code> and <code>brms</code> (<span class="citation">Gabry et
+al. (2019)</span>, <span class="citation">Gelman and Hill (2007)</span>,
+<span class="citation">Vehtari et al. (2017)</span>, <span class="citation">Vehtari et al. (2019)</span>).</p>
+</div>
+<div class="section level2">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
 <div id="refs" class="references csl-bib-body hanging-indent">
@@ -272,6 +267,17 @@ Bürkner, P.-C. (2017), <span>“<span class="nocase">brms</span>: An
 <span>R</span> package for <span>Bayesian</span> multilevel models using
 <span>Stan</span>,”</span> <em>Journal of Statistical Software</em>, 80,
 1–28. <a href="https://doi.org/10.18637/jss.v080.i01" class="external-link">https://doi.org/10.18637/jss.v080.i01</a>.
+</div>
+<div id="ref-GabryVisualization2019" class="csl-entry">
+Gabry, J., Simpson, D., Vehtari, A., Betancourt, M., and Gelman, A.
+(2019), <span>“Visualization in bayesian workflow,”</span> <em>Journal
+of the Royal Statistical Society: Series A (Statistics in Society)</em>,
+182, 389–402. <a href="https://doi.org/10.1111/rssa.12378" class="external-link">https://doi.org/10.1111/rssa.12378</a>.
+</div>
+<div id="ref-GelmanData2007" class="csl-entry">
+Gelman, A., and Hill, J. (2007), <em>Data analysis using regression and
+multilevel/hierarchical models</em>, Cambridge, UK: Cambridge University
+Press.
 </div>
 <div id="ref-lenth2016" class="csl-entry">
 Lenth, R. V. (2016), <span>“Least-squares means: The r package
@@ -286,6 +292,16 @@ in longitudinal clinical trials,”</span> <em>Ther Innov Regul Sci</em>,
 <div id="ref-stan2023" class="csl-entry">
 Stan Development Team (2023), <em><a href="https://mc-stan.org" class="external-link">Stan
 modeling language users guide and reference manual</a></em>.
+</div>
+<div id="ref-VehtariPractical2017" class="csl-entry">
+Vehtari, A., Gelman, A., and Gabry, J. (2017), <span>“Practical bayesian
+model evaluation using leave-one-out cross-validation and WAIC,”</span>
+<em>Statistics and Computing</em>, 27, 1413–1432. <a href="https://doi.org/10.1007/s11222-016-9696-4" class="external-link">https://doi.org/10.1007/s11222-016-9696-4</a>.
+</div>
+<div id="ref-VehtariPareto2019" class="csl-entry">
+Vehtari, A., Simpson, D., Gelman, A., Yao, Y., and Gabry, J. (2019),
+<span>“Pareto smoothed importance sampling,”</span> <em>arXiv preprint
+arXiv:1507.02646</em>.
 </div>
 </div>
 </div>

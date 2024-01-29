@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">brms.mmrm</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.2.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.2.9002</span>
       </span>
     </div>
 
@@ -25,28 +25,9 @@
       <ul class="nav navbar-nav"><li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/comparison.html">Comparison of Bayesian and frequentist MMRM fits</a>
-    </li>
-    <li>
-      <a href="../articles/methods.html">Methods</a>
-    </li>
-    <li>
-      <a href="../articles/sbc.html">Simulation-based calibration</a>
-    </li>
-    <li>
-      <a href="../articles/simulation.html">Simulation</a>
-    </li>
-    <li>
-      <a href="../articles/usage.html">Usage</a>
-    </li>
-  </ul></li>
+<li>
+  <a href="../articles/index.html">Articles</a>
+</li>
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
@@ -75,7 +56,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">brm_model</span><span class="op">(</span><span class="va">data</span>, formula <span class="op">=</span> <span class="fu">brms.mmrm</span><span class="fu">::</span><span class="fu"><a href="brm_formula.html">brm_formula</a></span><span class="op">(</span><span class="op">)</span>, prior <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">brm_model</span><span class="op">(</span><span class="va">data</span>, <span class="va">formula</span>, prior <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -140,13 +121,13 @@ demonstration.</p>
 <span class="r-in"><span>  group <span class="op">=</span> <span class="st">"group"</span>,</span></span>
 <span class="r-in"><span>  time <span class="op">=</span> <span class="st">"time"</span>,</span></span>
 <span class="r-in"><span>  patient <span class="op">=</span> <span class="st">"patient"</span>,</span></span>
-<span class="r-in"><span>  level_control <span class="op">=</span> <span class="st">"group_1"</span>,</span></span>
-<span class="r-in"><span>  level_baseline <span class="op">=</span> <span class="st">"time_1"</span></span></span>
+<span class="r-in"><span>  reference_group <span class="op">=</span> <span class="st">"group_1"</span>,</span></span>
+<span class="r-in"><span>  reference_time <span class="op">=</span> <span class="st">"time_1"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">formula</span> <span class="op">&lt;-</span> <span class="fu"><a href="brm_formula.html">brm_formula</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  data <span class="op">=</span> <span class="va">data</span>,</span></span>
-<span class="r-in"><span>  effect_baseline <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
-<span class="r-in"><span>  interaction_baseline <span class="op">=</span> <span class="cn">FALSE</span></span></span>
+<span class="r-in"><span>  baseline <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>  baseline_time <span class="op">=</span> <span class="cn">FALSE</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># Optional: set the contrast option, which determines the model matrix.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>contrasts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>unordered <span class="op">=</span> <span class="st">"contr.SAS"</span>, ordered <span class="op">=</span> <span class="st">"contr.poly"</span><span class="op">)</span><span class="op">)</span></span></span>

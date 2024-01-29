@@ -18,7 +18,7 @@ predictive distribution of an MMRM using brms."><!-- mathjax --><script src="htt
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">brms.mmrm</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.2.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.2.9002</span>
       </span>
     </div>
 
@@ -26,28 +26,9 @@ predictive distribution of an MMRM using brms."><!-- mathjax --><script src="htt
       <ul class="nav navbar-nav"><li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/comparison.html">Comparison of Bayesian and frequentist MMRM fits</a>
-    </li>
-    <li>
-      <a href="../articles/methods.html">Methods</a>
-    </li>
-    <li>
-      <a href="../articles/sbc.html">Simulation-based calibration</a>
-    </li>
-    <li>
-      <a href="../articles/simulation.html">Simulation</a>
-    </li>
-    <li>
-      <a href="../articles/usage.html">Usage</a>
-    </li>
-  </ul></li>
+<li>
+  <a href="../articles/index.html">Articles</a>
+</li>
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
@@ -79,11 +60,8 @@ predictive distribution of an MMRM using <code>brms</code>.</p>
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">brm_simulate_prior</span><span class="op">(</span></span>
 <span>  <span class="va">data</span>,</span>
-<span>  formula <span class="op">=</span> <span class="fu">brms.mmrm</span><span class="fu">::</span><span class="fu"><a href="brm_formula.html">brm_formula</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  prior <span class="op">=</span> <span class="fu">brms</span><span class="fu">::</span><span class="fu"><a href="https://paul-buerkner.github.io/brms/reference/set_prior.html" class="external-link">set_prior</a></span><span class="op">(</span><span class="st">"student_t(3, 0, 1.3)"</span>, class <span class="op">=</span> <span class="st">"Intercept"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu">brms</span><span class="fu">::</span><span class="fu"><a href="https://paul-buerkner.github.io/brms/reference/set_prior.html" class="external-link">set_prior</a></span><span class="op">(</span><span class="st">"student_t(3, 0, 1.2)"</span>, class <span class="op">=</span> <span class="st">"b"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu">brms</span><span class="fu">::</span><span class="fu"><a href="https://paul-buerkner.github.io/brms/reference/set_prior.html" class="external-link">set_prior</a></span><span class="op">(</span><span class="st">"student_t(3, 0, 1.1)"</span>, class <span class="op">=</span> <span class="st">"b"</span>, dpar <span class="op">=</span> <span class="st">"sigma"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu">brms</span><span class="fu">::</span><span class="fu"><a href="https://paul-buerkner.github.io/brms/reference/set_prior.html" class="external-link">set_prior</a></span><span class="op">(</span><span class="st">"lkj(1)"</span>, class <span class="op">=</span> <span class="st">"cortime"</span><span class="op">)</span>,</span>
+<span>  <span class="va">formula</span>,</span>
+<span>  prior <span class="op">=</span> <span class="fu">brms.mmrm</span><span class="fu">::</span><span class="fu"><a href="brm_prior_simple.html">brm_prior_simple</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">data</span>, formula <span class="op">=</span> <span class="va">formula</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -107,10 +85,8 @@ components.</p></dd>
 <dd><p>A valid <code>brms</code> prior object with proper priors for parameters
 <code>b</code> (model coefficients), <code>b_sigma</code> (log residual standard deviations
 for each time point), and <code>cortime</code> (residual correlations among
-time points within patients). See the default argument of
-<code>brm_simulate_prior()</code> for an example. You may have to remove the
-<code>set_prior()</code> component with <code>class = "Intercept"</code> if you set
-<code>intercept = FALSE</code> in <code><a href="brm_formula.html">brm_formula()</a></code>.</p></dd>
+time points within patients). See the
+<code><a href="brm_prior_simple.html">brm_prior_simple()</a></code> function for an example.</p></dd>
 
 
 <dt>...</dt>
@@ -161,8 +137,8 @@ outcome variable to all zeros before invoking <code><a href="https://paul-buerkn
 <span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="brm_simulate_continuous.html">brm_simulate_continuous</a></span><span class="op">(</span><span class="va">data</span>, names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"age"</span>, <span class="st">"biomarker"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">formula</span> <span class="op">&lt;-</span> <span class="fu"><a href="brm_formula.html">brm_formula</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  data <span class="op">=</span> <span class="va">data</span>,</span></span>
-<span class="r-in"><span>  effect_baseline <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
-<span class="r-in"><span>  interaction_baseline <span class="op">=</span> <span class="cn">FALSE</span></span></span>
+<span class="r-in"><span>  baseline <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>  baseline_time <span class="op">=</span> <span class="cn">FALSE</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/capture.output.html" class="external-link">capture.output</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span></span></span>

@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">brms.mmrm</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.2.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.2.9002</span>
       </span>
     </div>
 
@@ -42,29 +42,8 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/comparison.html">Comparison of Bayesian and frequentist MMRM fits</a>
-    </li>
-    <li>
-      <a href="../articles/methods.html">Methods</a>
-    </li>
-    <li>
-      <a href="../articles/sbc.html">Simulation-based calibration</a>
-    </li>
-    <li>
-      <a href="../articles/simulation.html">Simulation</a>
-    </li>
-    <li>
-      <a href="../articles/usage.html">Usage</a>
-    </li>
-  </ul>
+  <a href="../articles/index.html">Articles</a>
 </li>
 <li>
   <a href="../news/index.html">Changelog</a>
@@ -123,16 +102,16 @@ can directly supply to <code><a href="../reference/brm_formula.html">brm_formula
 <span><span class="co">#&gt; # A tibble: 1,200 × 4</span></span>
 <span><span class="co">#&gt;    response group   time   patient    </span></span>
 <span><span class="co">#&gt;       &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;  &lt;chr&gt;      </span></span>
-<span><span class="co">#&gt;  1    1.11  group_1 time_1 patient_1  </span></span>
-<span><span class="co">#&gt;  2    2.15  group_1 time_2 patient_1  </span></span>
-<span><span class="co">#&gt;  3    2.54  group_1 time_3 patient_1  </span></span>
-<span><span class="co">#&gt;  4   -1.73  group_1 time_4 patient_1  </span></span>
-<span><span class="co">#&gt;  5   -0.180 group_1 time_1 patient_10 </span></span>
-<span><span class="co">#&gt;  6    0.626 group_1 time_2 patient_10 </span></span>
-<span><span class="co">#&gt;  7   -0.221 group_1 time_3 patient_10 </span></span>
-<span><span class="co">#&gt;  8   -1.53  group_1 time_4 patient_10 </span></span>
-<span><span class="co">#&gt;  9    0.393 group_1 time_1 patient_100</span></span>
-<span><span class="co">#&gt; 10    0.442 group_1 time_2 patient_100</span></span>
+<span><span class="co">#&gt;  1    1.11  group_1 time_1 patient_001</span></span>
+<span><span class="co">#&gt;  2    2.15  group_1 time_2 patient_001</span></span>
+<span><span class="co">#&gt;  3    2.54  group_1 time_3 patient_001</span></span>
+<span><span class="co">#&gt;  4   -1.73  group_1 time_4 patient_001</span></span>
+<span><span class="co">#&gt;  5    1.11  group_1 time_1 patient_002</span></span>
+<span><span class="co">#&gt;  6    2.64  group_1 time_2 patient_002</span></span>
+<span><span class="co">#&gt;  7    1.69  group_1 time_3 patient_002</span></span>
+<span><span class="co">#&gt;  8    0.783 group_1 time_4 patient_002</span></span>
+<span><span class="co">#&gt;  9    0.118 group_1 time_1 patient_003</span></span>
+<span><span class="co">#&gt; 10    2.48  group_1 time_2 patient_003</span></span>
 <span><span class="co">#&gt; # ℹ 1,190 more rows</span></span></code></pre></div>
 <p>The <code>parameters</code> element has the corresponding parameter
 values simulated from the joint prior. Arguments to
@@ -170,16 +149,16 @@ baseline time point of <code>"time_1"</code></p>
 <span><span class="co">#&gt; # A tibble: 1,200 × 4</span></span>
 <span><span class="co">#&gt;    response group   time   patient    </span></span>
 <span><span class="co">#&gt;       &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;  &lt;chr&gt;      </span></span>
-<span><span class="co">#&gt;  1    1.11  group_1 time_1 patient_1  </span></span>
-<span><span class="co">#&gt;  2    2.15  group_1 time_2 patient_1  </span></span>
-<span><span class="co">#&gt;  3    2.54  group_1 time_3 patient_1  </span></span>
-<span><span class="co">#&gt;  4   -1.73  group_1 time_4 patient_1  </span></span>
-<span><span class="co">#&gt;  5   -0.180 group_1 time_1 patient_10 </span></span>
-<span><span class="co">#&gt;  6    0.626 group_1 time_2 patient_10 </span></span>
-<span><span class="co">#&gt;  7   -0.221 group_1 time_3 patient_10 </span></span>
-<span><span class="co">#&gt;  8   -1.53  group_1 time_4 patient_10 </span></span>
-<span><span class="co">#&gt;  9    0.393 group_1 time_1 patient_100</span></span>
-<span><span class="co">#&gt; 10    0.442 group_1 time_2 patient_100</span></span>
+<span><span class="co">#&gt;  1    1.11  group_1 time_1 patient_001</span></span>
+<span><span class="co">#&gt;  2    2.15  group_1 time_2 patient_001</span></span>
+<span><span class="co">#&gt;  3    2.54  group_1 time_3 patient_001</span></span>
+<span><span class="co">#&gt;  4   -1.73  group_1 time_4 patient_001</span></span>
+<span><span class="co">#&gt;  5    1.11  group_1 time_1 patient_002</span></span>
+<span><span class="co">#&gt;  6    2.64  group_1 time_2 patient_002</span></span>
+<span><span class="co">#&gt;  7    1.69  group_1 time_3 patient_002</span></span>
+<span><span class="co">#&gt;  8    0.783 group_1 time_4 patient_002</span></span>
+<span><span class="co">#&gt;  9    0.118 group_1 time_1 patient_003</span></span>
+<span><span class="co">#&gt; 10    2.48  group_1 time_2 patient_003</span></span>
 <span><span class="co">#&gt; # ℹ 1,190 more rows</span></span></code></pre></div>
 <p><code><a href="../reference/brm_data_change.html">brm_data_change()</a></code> subtracts baseline, replaces the raw
 response column with a new change from baseline column, adds a new
@@ -194,16 +173,16 @@ attributes of the classed object accordingly.</p>
 <span><span class="co">#&gt; # A tibble: 900 × 5</span></span>
 <span><span class="co">#&gt;    new_change new_baseline group   time   patient    </span></span>
 <span><span class="co">#&gt;         &lt;dbl&gt;        &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;  &lt;chr&gt;      </span></span>
-<span><span class="co">#&gt;  1     1.04          1.11  group_1 time_2 patient_1  </span></span>
-<span><span class="co">#&gt;  2     1.43          1.11  group_1 time_3 patient_1  </span></span>
-<span><span class="co">#&gt;  3    -2.84          1.11  group_1 time_4 patient_1  </span></span>
-<span><span class="co">#&gt;  4     0.806        -0.180 group_1 time_2 patient_10 </span></span>
-<span><span class="co">#&gt;  5    -0.0408       -0.180 group_1 time_3 patient_10 </span></span>
-<span><span class="co">#&gt;  6    -1.35         -0.180 group_1 time_4 patient_10 </span></span>
-<span><span class="co">#&gt;  7     0.0493        0.393 group_1 time_2 patient_100</span></span>
-<span><span class="co">#&gt;  8    -0.981         0.393 group_1 time_3 patient_100</span></span>
-<span><span class="co">#&gt;  9    -1.42          0.393 group_1 time_4 patient_100</span></span>
-<span><span class="co">#&gt; 10     0.208         1.81  group_1 time_2 patient_11 </span></span>
+<span><span class="co">#&gt;  1      1.04         1.11  group_1 time_2 patient_001</span></span>
+<span><span class="co">#&gt;  2      1.43         1.11  group_1 time_3 patient_001</span></span>
+<span><span class="co">#&gt;  3     -2.84         1.11  group_1 time_4 patient_001</span></span>
+<span><span class="co">#&gt;  4      1.53         1.11  group_1 time_2 patient_002</span></span>
+<span><span class="co">#&gt;  5      0.576        1.11  group_1 time_3 patient_002</span></span>
+<span><span class="co">#&gt;  6     -0.328        1.11  group_1 time_4 patient_002</span></span>
+<span><span class="co">#&gt;  7      2.37         0.118 group_1 time_2 patient_003</span></span>
+<span><span class="co">#&gt;  8      3.07         0.118 group_1 time_3 patient_003</span></span>
+<span><span class="co">#&gt;  9     -1.14         0.118 group_1 time_4 patient_003</span></span>
+<span><span class="co">#&gt; 10      1.57         1.29  group_1 time_2 patient_004</span></span>
 <span><span class="co">#&gt; # ℹ 890 more rows</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -230,16 +209,16 @@ simulated later.</p>
 <span><span class="co">#&gt; # A tibble: 800 × 5</span></span>
 <span><span class="co">#&gt;    response missing group   time   patient    </span></span>
 <span><span class="co">#&gt;       &lt;dbl&gt; &lt;lgl&gt;   &lt;chr&gt;   &lt;chr&gt;  &lt;chr&gt;      </span></span>
-<span><span class="co">#&gt;  1       NA FALSE   group_1 time_1 patient_1  </span></span>
-<span><span class="co">#&gt;  2       NA TRUE    group_1 time_2 patient_1  </span></span>
-<span><span class="co">#&gt;  3       NA TRUE    group_1 time_3 patient_1  </span></span>
-<span><span class="co">#&gt;  4       NA TRUE    group_1 time_4 patient_1  </span></span>
-<span><span class="co">#&gt;  5       NA FALSE   group_1 time_1 patient_10 </span></span>
-<span><span class="co">#&gt;  6       NA FALSE   group_1 time_2 patient_10 </span></span>
-<span><span class="co">#&gt;  7       NA FALSE   group_1 time_3 patient_10 </span></span>
-<span><span class="co">#&gt;  8       NA TRUE    group_1 time_4 patient_10 </span></span>
-<span><span class="co">#&gt;  9       NA FALSE   group_1 time_1 patient_100</span></span>
-<span><span class="co">#&gt; 10       NA FALSE   group_1 time_2 patient_100</span></span>
+<span><span class="co">#&gt;  1       NA FALSE   group_1 time_1 patient_001</span></span>
+<span><span class="co">#&gt;  2       NA TRUE    group_1 time_2 patient_001</span></span>
+<span><span class="co">#&gt;  3       NA TRUE    group_1 time_3 patient_001</span></span>
+<span><span class="co">#&gt;  4       NA TRUE    group_1 time_4 patient_001</span></span>
+<span><span class="co">#&gt;  5       NA FALSE   group_1 time_1 patient_002</span></span>
+<span><span class="co">#&gt;  6       NA FALSE   group_1 time_2 patient_002</span></span>
+<span><span class="co">#&gt;  7       NA TRUE    group_1 time_3 patient_002</span></span>
+<span><span class="co">#&gt;  8       NA TRUE    group_1 time_4 patient_002</span></span>
+<span><span class="co">#&gt;  9       NA FALSE   group_1 time_1 patient_003</span></span>
+<span><span class="co">#&gt; 10       NA FALSE   group_1 time_2 patient_003</span></span>
 <span><span class="co">#&gt; # ℹ 790 more rows</span></span></code></pre></div>
 <p>Optionally add random continuous covariates
 <code><a href="../reference/brm_simulate_continuous.html">brm_simulate_continuous()</a></code> and random categorical covariates
@@ -256,18 +235,18 @@ unique value.</p>
 <span></span>
 <span><span class="va">data</span></span>
 <span><span class="co">#&gt; # A tibble: 800 × 9</span></span>
-<span><span class="co">#&gt;    response missing group   time   patient  biomarker1 biomarker2 status1 status2</span></span>
-<span><span class="co">#&gt;       &lt;dbl&gt; &lt;lgl&gt;   &lt;chr&gt;   &lt;chr&gt;  &lt;chr&gt;         &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;  </span></span>
-<span><span class="co">#&gt;  1       NA FALSE   group_1 time_1 patient…      0.328     -0.655 present absent </span></span>
-<span><span class="co">#&gt;  2       NA TRUE    group_1 time_2 patient…      0.328     -0.655 present absent </span></span>
-<span><span class="co">#&gt;  3       NA TRUE    group_1 time_3 patient…      0.328     -0.655 present absent </span></span>
-<span><span class="co">#&gt;  4       NA TRUE    group_1 time_4 patient…      0.328     -0.655 present absent </span></span>
-<span><span class="co">#&gt;  5       NA FALSE   group_1 time_1 patient…      1.04      -0.779 absent  absent </span></span>
-<span><span class="co">#&gt;  6       NA FALSE   group_1 time_2 patient…      1.04      -0.779 absent  absent </span></span>
-<span><span class="co">#&gt;  7       NA FALSE   group_1 time_3 patient…      1.04      -0.779 absent  absent </span></span>
-<span><span class="co">#&gt;  8       NA TRUE    group_1 time_4 patient…      1.04      -0.779 absent  absent </span></span>
-<span><span class="co">#&gt;  9       NA FALSE   group_1 time_1 patient…      0.717     -0.954 present absent </span></span>
-<span><span class="co">#&gt; 10       NA FALSE   group_1 time_2 patient…      0.717     -0.954 present absent </span></span>
+<span><span class="co">#&gt;    response missing group   time   patient     biomarker1 biomarker2 status1 status2</span></span>
+<span><span class="co">#&gt;       &lt;dbl&gt; &lt;lgl&gt;   &lt;chr&gt;   &lt;chr&gt;  &lt;chr&gt;            &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;  </span></span>
+<span><span class="co">#&gt;  1       NA FALSE   group_1 time_1 patient_001      0.328     -0.655 present absent </span></span>
+<span><span class="co">#&gt;  2       NA TRUE    group_1 time_2 patient_001      0.328     -0.655 present absent </span></span>
+<span><span class="co">#&gt;  3       NA TRUE    group_1 time_3 patient_001      0.328     -0.655 present absent </span></span>
+<span><span class="co">#&gt;  4       NA TRUE    group_1 time_4 patient_001      0.328     -0.655 present absent </span></span>
+<span><span class="co">#&gt;  5       NA FALSE   group_1 time_1 patient_002      1.04      -0.779 absent  absent </span></span>
+<span><span class="co">#&gt;  6       NA FALSE   group_1 time_2 patient_002      1.04      -0.779 absent  absent </span></span>
+<span><span class="co">#&gt;  7       NA TRUE    group_1 time_3 patient_002      1.04      -0.779 absent  absent </span></span>
+<span><span class="co">#&gt;  8       NA TRUE    group_1 time_4 patient_002      1.04      -0.779 absent  absent </span></span>
+<span><span class="co">#&gt;  9       NA FALSE   group_1 time_1 patient_003      0.717     -0.954 present absent </span></span>
+<span><span class="co">#&gt; 10       NA FALSE   group_1 time_2 patient_003      0.717     -0.954 present absent </span></span>
 <span><span class="co">#&gt; # ℹ 790 more rows</span></span></code></pre></div>
 <p>As described in the next section, <code>brms.mmrm</code> has a
 convenient function <code><a href="../reference/brm_simulate_prior.html">brm_simulate_prior()</a></code> to simulate the
@@ -282,7 +261,7 @@ something non-missing, and you may wish to specify a custom prior.</p>
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/paul-buerkner/brms" class="external-link">brms</a></span><span class="op">)</span></span>
 <span><span class="va">formula</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/brm_formula.html">brm_formula</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">data</span><span class="op">)</span></span>
 <span><span class="va">formula</span></span>
-<span><span class="co">#&gt; response ~ time + group + group:time + biomarker1 + biomarker2 + status1 + status2 + unstr(time = time, gr = patient) </span></span>
+<span><span class="co">#&gt; response ~ group + group:time + time + biomarker1 + biomarker2 + status1 + status2 + unstr(time = time, gr = patient) </span></span>
 <span><span class="co">#&gt; sigma ~ 0 + time</span></span>
 <span></span>
 <span><span class="va">stan_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://paul-buerkner.github.io/brms/reference/make_standata.html" class="external-link">make_standata</a></span><span class="op">(</span></span>
@@ -291,27 +270,20 @@ something non-missing, and you may wish to specify a custom prior.</p>
 <span><span class="op">)</span></span>
 <span><span class="va">model_matrix</span> <span class="op">&lt;-</span> <span class="va">stan_data</span><span class="op">$</span><span class="va">X</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">model_matrix</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   Intercept timetime_2 timetime_3 timetime_4 groupgroup_2 biomarker1 biomarker2</span></span>
-<span><span class="co">#&gt; 1         1          0          0          0            0  0.3283275 -0.6547971</span></span>
-<span><span class="co">#&gt; 2         1          1          0          0            0  0.3283275 -0.6547971</span></span>
-<span><span class="co">#&gt; 3         1          0          1          0            0  0.3283275 -0.6547971</span></span>
-<span><span class="co">#&gt; 4         1          0          0          1            0  0.3283275 -0.6547971</span></span>
-<span><span class="co">#&gt; 5         1          0          0          0            0  1.0385746 -0.7793828</span></span>
-<span><span class="co">#&gt; 6         1          1          0          0            0  1.0385746 -0.7793828</span></span>
-<span><span class="co">#&gt;   status1present status2present timetime_2:groupgroup_2 timetime_3:groupgroup_2</span></span>
-<span><span class="co">#&gt; 1              1              0                       0                       0</span></span>
-<span><span class="co">#&gt; 2              1              0                       0                       0</span></span>
-<span><span class="co">#&gt; 3              1              0                       0                       0</span></span>
-<span><span class="co">#&gt; 4              1              0                       0                       0</span></span>
-<span><span class="co">#&gt; 5              0              0                       0                       0</span></span>
-<span><span class="co">#&gt; 6              0              0                       0                       0</span></span>
-<span><span class="co">#&gt;   timetime_4:groupgroup_2</span></span>
-<span><span class="co">#&gt; 1                       0</span></span>
-<span><span class="co">#&gt; 2                       0</span></span>
-<span><span class="co">#&gt; 3                       0</span></span>
-<span><span class="co">#&gt; 4                       0</span></span>
-<span><span class="co">#&gt; 5                       0</span></span>
-<span><span class="co">#&gt; 6                       0</span></span></code></pre></div>
+<span><span class="co">#&gt;   Intercept groupgroup_2 timetime_2 timetime_3 timetime_4 biomarker1 biomarker2 status1present</span></span>
+<span><span class="co">#&gt; 1         1            0          0          0          0  0.3283275 -0.6547971              1</span></span>
+<span><span class="co">#&gt; 2         1            0          1          0          0  0.3283275 -0.6547971              1</span></span>
+<span><span class="co">#&gt; 3         1            0          0          1          0  0.3283275 -0.6547971              1</span></span>
+<span><span class="co">#&gt; 4         1            0          0          0          1  0.3283275 -0.6547971              1</span></span>
+<span><span class="co">#&gt; 5         1            0          0          0          0  1.0385746 -0.7793828              0</span></span>
+<span><span class="co">#&gt; 6         1            0          1          0          0  1.0385746 -0.7793828              0</span></span>
+<span><span class="co">#&gt;   status2present groupgroup_2:timetime_2 groupgroup_2:timetime_3 groupgroup_2:timetime_4</span></span>
+<span><span class="co">#&gt; 1              0                       0                       0                       0</span></span>
+<span><span class="co">#&gt; 2              0                       0                       0                       0</span></span>
+<span><span class="co">#&gt; 3              0                       0                       0                       0</span></span>
+<span><span class="co">#&gt; 4              0                       0                       0                       0</span></span>
+<span><span class="co">#&gt; 5              0                       0                       0                       0</span></span>
+<span><span class="co">#&gt; 6              0                       0                       0                       0</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="prior">Prior<a class="anchor" aria-label="anchor" href="#prior"></a>
@@ -351,9 +323,7 @@ You can pass <code>sim$model</code> to functions from <code>brms</code>
 and <code>bayesplot</code> such as <code><a href="https://mc-stan.org/bayesplot/reference/pp_check.html" class="external-link">pp_check()</a></code>.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "data"         "model"       </span></span>
-<span><span class="co">#&gt; [3] "model_matrix" "outcome"     </span></span>
-<span><span class="co">#&gt; [5] "parameters"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "data"         "model"        "model_matrix" "outcome"      "parameters"</span></span></code></pre></div>
 <p>In addition, <code>sim$data</code> has a copy of the original
 dataset, but with the outcome variable taken from the final draw from
 the prior predictive distribution. In addition, the missingness pattern
@@ -363,23 +333,19 @@ is automatically applied so that <code>sim$data$response</code> is
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span><span class="op">$</span><span class="va">data</span></span>
 <span><span class="co">#&gt; # A tibble: 800 × 9</span></span>
-<span><span class="co">#&gt;    response missing group   time  </span></span>
-<span><span class="co">#&gt;       &lt;dbl&gt; &lt;lgl&gt;   &lt;chr&gt;   &lt;chr&gt; </span></span>
-<span><span class="co">#&gt;  1   -1.47  FALSE   group_1 time_1</span></span>
-<span><span class="co">#&gt;  2   NA     TRUE    group_1 time_2</span></span>
-<span><span class="co">#&gt;  3   NA     TRUE    group_1 time_3</span></span>
-<span><span class="co">#&gt;  4   NA     TRUE    group_1 time_4</span></span>
-<span><span class="co">#&gt;  5    2.53  FALSE   group_1 time_1</span></span>
-<span><span class="co">#&gt;  6   -0.739 FALSE   group_1 time_2</span></span>
-<span><span class="co">#&gt;  7    3.41  FALSE   group_1 time_3</span></span>
-<span><span class="co">#&gt;  8   NA     TRUE    group_1 time_4</span></span>
-<span><span class="co">#&gt;  9    6.93  FALSE   group_1 time_1</span></span>
-<span><span class="co">#&gt; 10   -2.07  FALSE   group_1 time_2</span></span>
-<span><span class="co">#&gt; # ℹ 790 more rows</span></span>
-<span><span class="co">#&gt; # ℹ 5 more variables: patient &lt;chr&gt;,</span></span>
-<span><span class="co">#&gt; #   biomarker1 &lt;dbl&gt;,</span></span>
-<span><span class="co">#&gt; #   biomarker2 &lt;dbl&gt;, status1 &lt;chr&gt;,</span></span>
-<span><span class="co">#&gt; #   status2 &lt;chr&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt;    response missing group   time   patient     biomarker1 biomarker2 status1 status2</span></span>
+<span><span class="co">#&gt;       &lt;dbl&gt; &lt;lgl&gt;   &lt;chr&gt;   &lt;chr&gt;  &lt;chr&gt;            &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;  </span></span>
+<span><span class="co">#&gt;  1    3.90  FALSE   group_1 time_1 patient_001      0.328     -0.655 present absent </span></span>
+<span><span class="co">#&gt;  2   NA     TRUE    group_1 time_2 patient_001      0.328     -0.655 present absent </span></span>
+<span><span class="co">#&gt;  3   NA     TRUE    group_1 time_3 patient_001      0.328     -0.655 present absent </span></span>
+<span><span class="co">#&gt;  4   NA     TRUE    group_1 time_4 patient_001      0.328     -0.655 present absent </span></span>
+<span><span class="co">#&gt;  5    3.46  FALSE   group_1 time_1 patient_002      1.04      -0.779 absent  absent </span></span>
+<span><span class="co">#&gt;  6    2.66  FALSE   group_1 time_2 patient_002      1.04      -0.779 absent  absent </span></span>
+<span><span class="co">#&gt;  7   NA     TRUE    group_1 time_3 patient_002      1.04      -0.779 absent  absent </span></span>
+<span><span class="co">#&gt;  8   NA     TRUE    group_1 time_4 patient_002      1.04      -0.779 absent  absent </span></span>
+<span><span class="co">#&gt;  9    5.28  FALSE   group_1 time_1 patient_003      0.717     -0.954 present absent </span></span>
+<span><span class="co">#&gt; 10    0.120 FALSE   group_1 time_2 patient_003      0.717     -0.954 present absent </span></span>
+<span><span class="co">#&gt; # ℹ 790 more rows</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="posterior">Posterior<a class="anchor" aria-label="anchor" href="#posterior"></a>
@@ -399,7 +365,7 @@ posterior predictive draws, with one row per draw and one column per
 non-missing observation (row) in the original data.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">outcome_draws</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:4000, 1:659] 5.345 -0.891 -0.328 -6.063 -4.928 ...</span></span>
+<span><span class="co">#&gt;  num [1:4000, 1:659] 4.69 3.71 3.88 3.07 3.33 ...</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 800   9</span></span>
