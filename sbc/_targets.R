@@ -23,7 +23,7 @@ tar_option_set(
     seconds_launch = 1800,
     launch_max = 3L,
     processes = 4,
-    aws_batch_job_definition = Sys.getenv("JOB_DEFINITION", unset = "job"),
+    aws_batch_job_definition = "brms-mmrm-sbc",
     aws_batch_job_queue = Sys.getenv("JOB_QUEUE", unset = "queue")
   ),
   repository = "aws",
