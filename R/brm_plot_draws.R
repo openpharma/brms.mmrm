@@ -15,13 +15,13 @@
 #'   group = "group",
 #'   time = "time",
 #'   patient = "patient",
-#'   level_control = "group_1",
-#'   level_baseline = "time_1"
+#'   reference_group = "group_1",
+#'   reference_time = "time_1"
 #' )
 #' formula <- brm_formula(
 #'   data = data,
-#'   effect_baseline = FALSE,
-#'   interaction_base = FALSE
+#'   baseline = FALSE,
+#'   baseline_time = FALSE
 #' )
 #' tmp <- utils::capture.output(
 #'   suppressMessages(
@@ -37,7 +37,7 @@
 #'   )
 #' )
 #' draws <- brm_marginal_draws(model = model, data = data)
-#' brm_plot_draws(draws = draws$change)
+#' brm_plot_draws(draws = draws$difference_time)
 #' }
 brm_plot_draws <- function(draws) {
   assert(is.data.frame(draws), message = "draws argument must be a data frame.")
@@ -45,14 +45,38 @@ brm_plot_draws <- function(draws) {
   for (name in names_mcmc) {
     draws[[name]] <- NULL
   }
+  names_group <- as.list(names_component(colnames(draws), "group"))
+  names_time <- as.list(names_component(colnames(draws), "time"))
+  names(names_group) <- colnames(draws)
+  names(names_time) <- colnames(draws)
+  use_subgroup <- names_have_subgroup(colnames(draws))
+  if (use_subgroup) {
+    names_subgroup <- as.list(names_component(colnames(draws), "subgroup"))
+    names(names_subgroup) <- colnames(draws)
+  }
   draws <- pivot_longer(
     data = draws,
     cols = tidyselect::everything(),
-    names_to = "name",
+    names_to = "name", # cannot use names_sep (regexp) with brm_sep() (fixed)
     values_to = "value"
   )
-  draws$group <- gsub_group(draws$name)
-  draws$time <- gsub_time(draws$name)
+  draws$group <- vapply(
+    draws$name,
+    function(x) names_group[[x]],
+    FUN.VALUE = character(1L)
+  )
+  if (use_subgroup) {
+    draws$subgroup <- vapply(
+      draws$name,
+      function(x) names_subgroup[[x]],
+      FUN.VALUE = character(1L)
+    )
+  }
+  draws$time <- vapply(
+    draws$name,
+    function(x) names_time[[x]],
+    FUN.VALUE = character(1L)
+  )
   draws$name <- NULL
   ggplot2::ggplot(draws) +
     ggridges::geom_density_ridges2(
@@ -61,7 +85,11 @@ brm_plot_draws <- function(draws) {
       stat = "binline",
       bins = 20
     ) +
-    ggplot2::facet_wrap(~ group) +
     ggplot2::theme_gray(16) +
-    ggplot2::coord_flip()
+    ggplot2::coord_flip() +
+    if_any(
+      use_subgroup,
+      ggplot2::facet_grid(subgroup ~ group),
+      ggplot2::facet_wrap(~ group)
+    )
 }

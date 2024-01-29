@@ -7,6 +7,7 @@
 #'   `Prob(treatment effect < threshold | data)`. It has one row per
 #'   probability and the following columns:
 #'     * `group`: treatment group.
+#'     * `subgroup`: subgroup level, if applicable.
 #'     * `time`: discrete time point,
 #'     * `direction`: direction of the comparison in the marginal probability:
 #'       `"greater"` for `>`, `"less"` for `<`
@@ -34,13 +35,13 @@
 #'   group = "group",
 #'   time = "time",
 #'   patient = "patient",
-#'   level_control = "group_1",
-#'   level_baseline = "time_1"
+#'   reference_group = "group_1",
+#'   reference_time = "time_1"
 #' )
 #' formula <- brm_formula(
 #'   data = data,
-#'   effect_baseline = FALSE,
-#'   interaction_baseline = FALSE
+#'   baseline = FALSE,
+#'   baseline_time = FALSE
 #' )
 #' tmp <- utils::capture.output(
 #'   suppressMessages(
@@ -85,7 +86,7 @@ brm_marginal_probabilities <- function(
     length(direction) == length(threshold),
     message = "direction and threshold must have the same length"
   )
-  draws <- tibble::as_tibble(draws$difference)
+  draws <- tibble::as_tibble(draws$difference_group)
   for (name in names_mcmc) {
     draws[[name]] <- NULL
   }
@@ -98,7 +99,14 @@ brm_marginal_probabilities <- function(
       threshold = .y
     )
   )
-  columns <- c("direction", "threshold", "group", "time", "value")
+  columns <- c(
+    "direction",
+    "threshold",
+    "group",
+    if_any(names_have_subgroup(colnames(draws)), "subgroup", character(0L)),
+    "time",
+    "value"
+  )
   out <- out[, columns]
   args <- lapply(setdiff(columns, "value"), as.symbol)
   args$.data <- out
@@ -110,14 +118,19 @@ summarize_probabilities <- function(draws, direction, threshold) {
     draws,
     ~marginal_probability(.x, direction, threshold)
   )
-  out <- tibble::tibble(
-    group = names_group(draws),
-    time = names_time(draws),
+  args <- list(
+    group = names_component(names(draws), "group"),
+    subgroup = if_any(
+      names_have_subgroup(names(draws)),
+      names_component(names(draws), "subgroup"),
+      NULL
+    ),
+    time = names_component(names(draws), "time"),
     direction = direction,
     threshold = threshold,
     value = values
   )
-  out <- unname_df(out)
+  out <- unname_df(do.call(what = tibble::tibble, args = args))
 }
 
 marginal_probability <- function(difference, direction, threshold) {

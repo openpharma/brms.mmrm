@@ -25,13 +25,13 @@
 #'   group = "group",
 #'   time = "time",
 #'   patient = "patient",
-#'   level_control = "group_1",
-#'   level_baseline = "time_1"
+#'   reference_group = "group_1",
+#'   reference_time = "time_1"
 #' )
 #' formula <- brm_formula(
 #'   data = data,
-#'   effect_baseline = FALSE,
-#'   interaction_baseline = FALSE
+#'   baseline = FALSE,
+#'   baseline_time = FALSE
 #' )
 #' # Optional: set the contrast option, which determines the model matrix.
 #' options(contrasts = c(unordered = "contr.SAS", ordered = "contr.poly"))
@@ -65,7 +65,7 @@
 #' }
 brm_model <- function(
   data,
-  formula = brms.mmrm::brm_formula(),
+  formula,
   prior = NULL,
   ...
 ) {

@@ -27,6 +27,7 @@ change from baseline scale and \code{"difference"} for treatment difference.
 \item \code{statistic}: type of summary statistic. \code{"lower"} and \code{"upper"}
 are bounds of an equal-tailed quantile-based credible interval.
 \item \code{group}: treatment group.
+\item \code{subgroup}: subgroup level, if applicable.
 \item \code{time}: discrete time point.
 \item \code{value}: numeric value of the estimate.
 \item \code{mcse}: Monte Carlo standard error of the estimate.
@@ -53,13 +54,13 @@ data <- brm_data(
   group = "group",
   time = "time",
   patient = "patient",
-  level_control = "group_1",
-  level_baseline = "time_1"
+  reference_group = "group_1",
+  reference_time = "time_1"
 )
 formula <- brm_formula(
   data = data,
-  effect_baseline = FALSE,
-  interaction_baseline = FALSE
+  baseline = FALSE,
+  baseline_time = FALSE
 )
 tmp <- utils::capture.output(
   suppressMessages(

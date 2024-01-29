@@ -47,8 +47,7 @@ issues](https://github.com/openpharma/brms.mmrm), respectively.
 
 ## Thanks
 
-Thanks to the [ASA Biopharmaceutical Section Software Engineering
-Working Group](https://rconsortium.github.io/asa-biop-swe-wg/) and [R
+Thanks to the [`openstatsware`](https://www.openstatsware.org/) and [R
 Consortium](https://www.r-consortium.org/) for providing professional
 networks to recruit skilled statisticians and developers.
 
@@ -64,16 +63,18 @@ By contributing to this project, you agree to abide by its terms.
     To cite package 'brms.mmrm' in publications use:
 
       Landau WM, Kunzmann K, Sidi Y, Stock C (????). _brms.mmrm: Bayesian
-      MMRMs using 'brms'_. R package version 0.0.0.9002,
-      <https://github.com/openpharma/brms.mmrm>.
+      MMRMs using 'brms'_. R package version 0.0.2.9002,
+      https://github.com/openpharma/brms.mmrm,
+      <https://openpharma.github.io/brms.mmrm/>.
 
     A BibTeX entry for LaTeX users is
 
       @Manual{,
         title = {brms.mmrm: Bayesian MMRMs using 'brms'},
         author = {William Michael Landau and Kevin Kunzmann and Yoni Sidi and Christian Stock},
-        note = {R package version 0.0.0.9002},
-        url = {https://github.com/openpharma/brms.mmrm},
+        note = {R package version 0.0.2.9002, 
+    https://github.com/openpharma/brms.mmrm},
+        url = {https://openpharma.github.io/brms.mmrm/},
       }
 
 ## References

@@ -4,7 +4,7 @@
 \alias{brm_model}
 \title{Basic MMRM}
 \usage{
-brm_model(data, formula = brms.mmrm::brm_formula(), prior = NULL, ...)
+brm_model(data, formula, prior = NULL, ...)
 }
 \arguments{
 \item{data}{A tidy data frame with one row per patient per discrete
@@ -51,13 +51,13 @@ data <- brm_data(
   group = "group",
   time = "time",
   patient = "patient",
-  level_control = "group_1",
-  level_baseline = "time_1"
+  reference_group = "group_1",
+  reference_time = "time_1"
 )
 formula <- brm_formula(
   data = data,
-  effect_baseline = FALSE,
-  interaction_baseline = FALSE
+  baseline = FALSE,
+  baseline_time = FALSE
 )
 # Optional: set the contrast option, which determines the model matrix.
 options(contrasts = c(unordered = "contr.SAS", ordered = "contr.poly"))

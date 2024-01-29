@@ -1,6 +1,6 @@
 Package: brms.mmrm
 Title: Bayesian MMRMs using 'brms'
-Version: 0.0.2.9001
+Version: 0.0.2.9002
 Authors@R: c(
   person(c("William", "Michael"), "Landau", , "will.landau@gmail.com", role = c("aut", "cre"),
   comment = c(ORCID = "0000-0003-1878-3253")),
@@ -66,5 +66,5 @@ Config/testthat/edition: 3
 Encoding: UTF-8
 Language: en-US
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.0
 LazyData: true

@@ -67,4 +67,8 @@ Inference in `brms.mmrm`, uses the estimated marginal posterior distribution of 
 
 The `brm_marginal_draws()` function, described in the usage vignette, derives posterior draws of the marginals using posterior draws of the model coefficients $\beta_p$. Then, downstream functions like `brm_marginal_probabilities()` compute numerical summaries of these marginal draws.
 
+# Subgroup analysis
+
+The model above supports subgroup analysis through the addition of a categorical variable in the data to denote subgroup levels. To analyze the subgroup, new fixed effects parameters $\beta_p$ and columns of the model matrices $X_i$ are added to the model to describe the additive effect of the subgroup and plausible two-way and three-way interactions with treatment group, discrete time, and baseline (if applicable). Marginal means may include subgroup-specific terms, and model comparison via the widely applicable information criterion (WAIC) and expected log predictive density (ELPD) is implemented via R packages `loo` and `brms` (@GabryVisualization2019, @GelmanData2007, @VehtariPractical2017, @VehtariPareto2019).
+
 # References

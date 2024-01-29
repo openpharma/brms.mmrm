@@ -1,4 +1,4 @@
-test_that("brm_plot_compare()", {
+test_that("brm_plot_compare() without subgroup", {
   skip_on_cran()
   set.seed(0L)
   data <- brm_data(
@@ -8,13 +8,54 @@ test_that("brm_plot_compare()", {
     group = "group",
     time = "time",
     patient = "patient",
-    level_control = "group_1",
-    level_baseline = "time_1"
+    reference_group = "group_1",
+    reference_time = "time_1"
   )
   formula <- brm_formula(
     data = data,
-    effect_base = FALSE,
-    interaction_base = FALSE
+    baseline = FALSE,
+    baseline_time = FALSE
+  )
+  tmp <- utils::capture.output(
+    suppressMessages(
+      suppressWarnings(
+        model <- brm_model(
+          data = data,
+          formula = formula,
+          chains = 1,
+          iter = 100,
+          refresh = 0
+        )
+      )
+    )
+  )
+  draws <- brm_marginal_draws(
+    model = model,
+    data = data
+  )
+  suppressWarnings(summaries_draws <- brm_marginal_summaries(draws))
+  summaries_data <- brm_marginal_data(data)
+  out <- brm_plot_compare(
+    summaries_draws = summaries_draws,
+    summaries_data = summaries_data
+  )
+  expect_s3_class(out, "ggplot")
+})
+
+test_that("brm_plot_compare() with subgroups", {
+  skip_on_cran()
+  set.seed(0L)
+  data <- brm_simulate_outline(
+    n_group = 2L,
+    n_subgroup = 2L,
+    n_patient = 25L,
+    n_time = 4L
+  )
+  data$response <- rnorm(n = nrow(data))
+  formula <- brm_formula(
+    data = data,
+    baseline = FALSE,
+    baseline_time = FALSE
   )
   tmp <- utils::capture.output(
     suppressMessages(

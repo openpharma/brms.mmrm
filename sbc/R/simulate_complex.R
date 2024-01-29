@@ -27,7 +27,7 @@ simulate_complex <- function(prior, chains, warmup, iter) {
     effect_baseline = FALSE,
     effect_group = TRUE,
     effect_time = TRUE,
-    interaction_baseline = TRUE,
+    interaction_baseline = FALSE,
     interaction_group = TRUE,
     correlation = "unstructured"
   )

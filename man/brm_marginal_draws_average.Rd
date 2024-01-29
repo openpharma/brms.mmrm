@@ -7,7 +7,7 @@
 brm_marginal_draws_average(draws, data, times = NULL, label = "average")
 }
 \arguments{
-\item{draws}{Fitted \code{brms} model object from \code{\link[=brm_model]{brm_model()}}.}
+\item{draws}{List of posterior draws from \code{\link[=brm_marginal_draws]{brm_marginal_draws()}}.}
 
 \item{data}{Classed tibble with preprocessed data from \code{\link[=brm_data]{brm_data()}}.}
 
@@ -24,18 +24,29 @@ after the label and time points are sanitized.}
 }
 \value{
 A named list of tibbles of MCMC draws of the marginal posterior
-distribution of each treatment group.
+distribution of each treatment group and time point
+(or group-by-subgroup-by-time, if applicable).
+In each tibble, there is 1 row per posterior sample sand one column for
+each type of marginal distribution (i.e. each combination of treatment
+group and discrete time point. The specific \code{tibble}s in the returned
+list are described below:
 \itemize{
 \item \code{response}: on the scale of the response variable.
-\item \code{change}: change from baseline, where the \code{baseline} argument determines
-the time point at baseline. Only returned if the \code{role} argument is
+\item \code{difference_time}: change from baseline: the
+\code{response} at a particular time minus the \code{response} at baseline
+(\code{reference_time}).
+Only returned if the \code{role} argument of \code{\link[=brm_data]{brm_data()}} was
 \code{"response"}. (If \code{role} is \code{"change"}, then \code{response} already
 represents change from baseline.)
-\item \code{difference}: treatment effect of change from baseline, where the
-\code{control} argument identifies the placebo or active control group.
-In each tibble, there is 1 row per posterior sample and one column for
-each treatment group. There is a time point label which is called
-\code{"average"} by default.
+\item \code{difference_group}: treatment effect: the
+the \code{difference_time} at each active group minus the \code{difference_time}
+at the control group (\code{reference_group}).
+If \code{role} is \code{"change"}, then treatment group
+is instead the difference between \code{response} at each active group minus
+the \code{response} at the control group.
+\item \code{difference_subgroup}: subgroup differences: the \code{difference_group}
+at each subgroup level minus the \code{difference_group} at the subgroup
+reference level (\code{reference_subgroup}).
 }
 }
 \description{
@@ -62,13 +73,13 @@ data <- brm_data(
   group = "group",
   time = "time",
   patient = "patient",
-  level_control = "group_1",
-  level_baseline = "time_1"
+  reference_group = "group_1",
+  reference_time = "time_1"
 )
 formula <- brm_formula(
   data = data,
-  effect_baseline = FALSE,
-  interaction_baseline = FALSE
+  baseline = FALSE,
+  baseline_time = FALSE
 )
 tmp <- utils::capture.output(
   suppressMessages(

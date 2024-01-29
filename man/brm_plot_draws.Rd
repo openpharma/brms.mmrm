@@ -26,13 +26,13 @@ data <- brm_data(
   group = "group",
   time = "time",
   patient = "patient",
-  level_control = "group_1",
-  level_baseline = "time_1"
+  reference_group = "group_1",
+  reference_time = "time_1"
 )
 formula <- brm_formula(
   data = data,
-  effect_baseline = FALSE,
-  interaction_base = FALSE
+  baseline = FALSE,
+  baseline_time = FALSE
 )
 tmp <- utils::capture.output(
   suppressMessages(
@@ -48,7 +48,7 @@ tmp <- utils::capture.output(
   )
 )
 draws <- brm_marginal_draws(model = model, data = data)
-brm_plot_draws(draws = draws$change)
+brm_plot_draws(draws = draws$difference_time)
 }
 }
 \seealso{

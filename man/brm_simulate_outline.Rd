@@ -6,6 +6,7 @@
 \usage{
 brm_simulate_outline(
   n_group = 2L,
+  n_subgroup = NULL,
   n_patient = 100L,
   n_time = 4L,
   rate_dropout = 0.1,
@@ -15,8 +16,15 @@ brm_simulate_outline(
 \arguments{
 \item{n_group}{Positive integer of length 1, number of treatment groups.}
 
-\item{n_patient}{Positive integer of length 1, number of patients
-per treatment group.}
+\item{n_subgroup}{Positive integer of length 1, number of subgroup levels.
+Set to \code{NULL} to omit the subgroup entirely.}
+
+\item{n_patient}{Positive integer of length 1.
+If \code{n_subgroup} is \code{NULL}, then \code{n_patient} is the number of patients
+per treatment group. Otherwise, \code{n_patient} is the number of patients
+per treatment group \emph{per subgroup}. In both cases, the total number of
+patients in the whole simulated dataset is usually much greater than the
+\code{n_patients} argument of \code{\link[=brm_simulate_outline]{brm_simulate_outline()}}.}
 
 \item{n_time}{Positive integer of length 1, number of discrete
 time points (e.g. scheduled study visits) per patient.}

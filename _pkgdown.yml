@@ -1,4 +1,17 @@
 destination: docs/
+articles:
+- title: Methods
+  contents:
+  - methods
+- title: Usage
+  contents:
+  - usage
+  - subgroup
+  - simulation
+- title: Validation
+  contents:
+  - sbc
+  - comparison
 reference:
 - title: Help
   contents:
@@ -14,6 +27,9 @@ reference:
   - '`brm_simulate_outline`'
   - '`brm_simulate_prior`'
   - '`brm_simulate_simple`'
+- title: Priors
+  contents:
+  - '`brm_prior_simple`'
 - title: Models
   contents:
   - '`brm_formula`'

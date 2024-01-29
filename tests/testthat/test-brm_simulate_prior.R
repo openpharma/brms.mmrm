@@ -5,8 +5,8 @@ test_that("brm_simulate_prior() runs", {
   data <- brm_simulate_continuous(data, names = c("age", "biomarker"))
   formula <- brm_formula(
     data = data,
-    effect_baseline = FALSE,
-    interaction_baseline = FALSE
+    baseline = FALSE,
+    baseline_time = FALSE
   )
   tmp <- utils::capture.output(
     suppressMessages(

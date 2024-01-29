@@ -7,36 +7,86 @@
 brm_formula(
   data,
   intercept = TRUE,
-  effect_baseline = TRUE,
-  effect_group = TRUE,
-  effect_time = TRUE,
-  interaction_baseline = TRUE,
-  interaction_group = TRUE,
-  correlation = "unstructured"
+  baseline = !is.null(attr(data, "brm_baseline")),
+  baseline_subgroup = !is.null(attr(data, "brm_baseline")) && !is.null(attr(data,
+    "brm_subgroup")),
+  baseline_subgroup_time = !is.null(attr(data, "brm_baseline")) && !is.null(attr(data,
+    "brm_subgroup")),
+  baseline_time = !is.null(attr(data, "brm_baseline")),
+  group = TRUE,
+  group_subgroup = !is.null(attr(data, "brm_subgroup")),
+  group_subgroup_time = !is.null(attr(data, "brm_subgroup")),
+  group_time = TRUE,
+  subgroup = !is.null(attr(data, "brm_subgroup")),
+  subgroup_time = !is.null(attr(data, "brm_subgroup")),
+  time = TRUE,
+  correlation = "unstructured",
+  effect_baseline = NULL,
+  effect_group = NULL,
+  effect_time = NULL,
+  interaction_baseline = NULL,
+  interaction_group = NULL
 )
 }
 \arguments{
 \item{data}{A classed data frame from \code{\link[=brm_data]{brm_data()}}.}
 
-\item{intercept}{\code{TRUE} to include an intercept, \code{FALSE} to omit.}
+\item{intercept}{Logical of length 1.
+\code{TRUE} to include an intercept, \code{FALSE} to omit.}
 
-\item{effect_baseline}{\code{TRUE} to include an additive effect for baseline
+\item{baseline}{Logical of length 1.
+\code{TRUE} to include an additive effect for baseline
 response, \code{FALSE} to omit.}
 
-\item{effect_group}{\code{TRUE} to include an additive effects for treatment
-groups, \code{FALSE} to omit.}
+\item{baseline_subgroup}{Logical of length 1.
+\code{TRUE} to include baseline-by-subgroup interaction, \code{FALSE} to omit.}
 
-\item{effect_time}{\code{TRUE} to include a additive effect for discrete
-time points, \code{FALSE} to omit.}
-
-\item{interaction_baseline}{\code{TRUE} to include baseline-by-time interaction,
+\item{baseline_subgroup_time}{Logical of length 1.
+\code{TRUE} to include baseline-by-subgroup-by-time interaction,
 \code{FALSE} to omit.}
 
-\item{interaction_group}{\code{TRUE} to include treatment-group-by-time
-interaction, \code{FALSE} to omit.}
+\item{baseline_time}{Logical of length 1.
+\code{TRUE} to include baseline-by-time interaction, \code{FALSE} to omit.}
+
+\item{group}{Logical of length 1.
+\code{TRUE} to include additive effects for treatment groups, \code{FALSE} to omit.}
+
+\item{group_subgroup}{Logical of length 1.
+\code{TRUE} to include group-by-subgroup interaction, \code{FALSE} to omit.}
+
+\item{group_subgroup_time}{Logical of length 1.
+\code{TRUE} to include group-by-subgroup-by-time interaction, \code{FALSE} to omit.}
+
+\item{group_time}{Logical of length 1.
+\code{TRUE} to include group-by-time interaction, \code{FALSE} to omit.}
+
+\item{subgroup}{Logical of length 1.
+\code{TRUE} to include additive fixed effects for subgroup levels,
+\code{FALSE} to omit.}
+
+\item{subgroup_time}{Logical of length 1.
+\code{TRUE} to include subgroup-by-time interaction, \code{FALSE} to omit.}
+
+\item{time}{Logical of length 1.
+\code{TRUE} to include a additive effect for discrete time, \code{FALSE} to omit.}
 
 \item{correlation}{Character of length 1, name of the correlation
 structure. Only \code{"unstructured"} is currently supported.}
+
+\item{effect_baseline}{Deprecated on 2024-01-16 (version 0.0.2.9002).
+Use \code{baseline} instead.}
+
+\item{effect_group}{Deprecated on 2024-01-16 (version 0.0.2.9002).
+Use \code{group} instead.}
+
+\item{effect_time}{Deprecated on 2024-01-16 (version 0.0.2.9002).
+Use \code{time} instead.}
+
+\item{interaction_baseline}{Deprecated on 2024-01-16 (version 0.0.2.9002).
+Use \code{baseline_time} instead.}
+
+\item{interaction_group}{Deprecated on 2024-01-16 (version 0.0.2.9002).
+Use \code{group_time} instead.}
 }
 \value{
 An object of class \code{"brmsformula"} returned from
@@ -45,6 +95,23 @@ correlation structure, and residual variance structure.
 }
 \description{
 Build a model formula for an MMRM.
+}
+\details{
+\code{\link[=brm_formula]{brm_formula()}} builds an R formula for an MMRM based on
+the details in the data and your choice of parameterization.
+Customize your parameterization by toggling on or off
+the various \code{TRUE}/\code{FALSE} arguments of \code{\link[=brm_formula]{brm_formula()}},
+such as \code{intercept}, \code{baseline}, and \code{group_time}.
+All plausible additive effects, two-way interactions, and
+three-way interactions can be specified. The following interactions
+are not supported:
+\itemize{
+\item Any interactions with the concomitant covariates you specified in the
+\code{covariates} argument of \code{\link[=brm_data]{brm_data()}}.
+\item Any interactions which include baseline response and treatment
+group together. Rationale: in a randomized controlled experiment,
+baseline and treatment group assignment should be uncorrelated.
+}
 }
 \section{Parameterization}{
 
@@ -68,16 +135,16 @@ data <- brm_data(
   group = "group",
   time = "time",
   patient = "patient",
-  level_control = "group_1",
-  level_baseline = "time_1"
+  reference_group = "group_1",
+  reference_time = "time_1"
 )
 brm_formula(data)
-brm_formula(data = data, intercept = FALSE, effect_baseline = FALSE)
+brm_formula(data = data, intercept = FALSE, baseline = FALSE)
 formula <- brm_formula(
   data = data,
   intercept = FALSE,
-  effect_baseline = FALSE,
-  interaction_group = FALSE
+  baseline = FALSE,
+  group = FALSE
 )
 formula
 # Optional: set the contrast option, which determines the model matrix.

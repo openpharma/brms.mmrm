@@ -14,6 +14,7 @@
 #'    * `statistic`: type of summary statistic. `"lower"` and `"upper"`
 #'      are bounds of an equal-tailed quantile-based credible interval.
 #'    * `group`: treatment group.
+#'    * `subgroup`: subgroup level, if applicable.
 #'    * `time`: discrete time point.
 #'    * `value`: numeric value of the estimate.
 #'    * `mcse`: Monte Carlo standard error of the estimate.
@@ -39,13 +40,13 @@
 #'   group = "group",
 #'   time = "time",
 #'   patient = "patient",
-#'   level_control = "group_1",
-#'   level_baseline = "time_1"
+#'   reference_group = "group_1",
+#'   reference_time = "time_1"
 #' )
 #' formula <- brm_formula(
 #'   data = data,
-#'   effect_baseline = FALSE,
-#'   interaction_baseline = FALSE
+#'   baseline = FALSE,
+#'   baseline_time = FALSE
 #' )
 #' tmp <- utils::capture.output(
 #'   suppressMessages(
@@ -74,22 +75,37 @@ brm_marginal_summaries <- function(
   assert_num(level, "level arg must be a length-1 numeric between 0 and 1")
   assert(level, . >= 0, . <= 1, message = "level arg must be between 0 and 1")
   table_response <- summarize_marginals(draws$response, level)
-  table_change <- if_any(
-    "change" %in% names(draws),
-    summarize_marginals(draws$change, level),
+  table_difference_time <- if_any(
+    "difference_time" %in% names(draws),
+    summarize_marginals(draws$difference_time, level),
     NULL
   )
-  table_difference <- summarize_marginals(draws$difference, level)
+  table_difference_group <- summarize_marginals(draws$difference_group, level)
   table_effect <- summarize_marginals(draws$effect, level)
-  out <- dplyr::bind_rows(
+  args <- list(
     response = table_response,
-    change = table_change,
-    difference = table_difference,
+    difference_time = table_difference_time,
+    difference_group = table_difference_group,
+    difference_subgroup = if_any(
+      is.null(draws$difference_subgroup),
+      NULL,
+      summarize_marginals(draws$difference_subgroup, level)
+    ),
     effect = table_effect,
     .id = "marginal"
   )
-  columns <- c("marginal", "statistic", "group", "time", "value", "mcse")
-  out <- out[, columns]
+  out <- do.call(what = dplyr::bind_rows, args = args)
+  columns <- c(
+    "marginal",
+    "statistic",
+    "group",
+    "subgroup",
+    "time",
+    "value",
+    "mcse"
+  )
+  columns <- intersect(x = columns, y = colnames(out))
+  out <- out[, columns, drop = FALSE]
   args <- lapply(setdiff(columns, c("value", "mcse")), as.symbol)
   args$.data <- out
   do.call(what = dplyr::arrange, args = args)
@@ -98,10 +114,18 @@ brm_marginal_summaries <- function(
 summarize_marginals <- function(draws, level) {
   level_lower <- (1 - level) / 2
   level_upper <- 1 - level_lower
+  draws <- tibble::as_tibble(draws)
   draws[names_mcmc] <- NULL
+  use_subgroup <- names_have_subgroup(colnames(draws))
+  names_subgroup <- if_any(
+    use_subgroup,
+    names_component(names(draws), "subgroup"),
+    NULL
+  )
   value <- tibble::tibble(
-    group = names_group(draws),
-    time = names_time(draws),
+    group = names_component(names(draws), "group"),
+    subgroup = names_subgroup,
+    time = names_component(names(draws), "time"),
     mean = purrr::map_dbl(draws, mean),
     median = purrr::map_dbl(draws, median),
     sd = purrr::map_dbl(draws, sd),
@@ -109,30 +133,32 @@ summarize_marginals <- function(draws, level) {
     upper = purrr::map_dbl(draws, ~quantile(.x, level_upper))
   )
   mcse <- tibble::tibble(
-    group = names_group(draws),
-    time = names_time(draws),
+    group = names_component(names(draws), "group"),
+    subgroup = names_subgroup,
+    time = names_component(names(draws), "time"),
     mean = purrr::map_dbl(draws, posterior::mcse_mean),
     median = purrr::map_dbl(draws, posterior::mcse_median),
     sd = purrr::map_dbl(draws, posterior::mcse_sd),
     lower = purrr::map_dbl(draws, ~posterior::mcse_quantile(.x, level_lower)),
     upper = purrr::map_dbl(draws, ~posterior::mcse_quantile(.x, level_upper))
   )
+  columns <- c("group", if_any(use_subgroup, "subgroup", NULL), "time")
   value <- tidyr::pivot_longer(
     data = value,
-    cols = -tidyselect::any_of(c("group", "time")),
+    cols = -tidyselect::any_of(columns),
     names_to = "statistic",
     values_to = "value"
   )
   mcse <- tidyr::pivot_longer(
     data = mcse,
-    cols = -tidyselect::any_of(c("group", "time")),
+    cols = -tidyselect::any_of(columns),
     names_to = "statistic",
     values_to = "mcse"
   )
   out <- dplyr::left_join(
     x = value,
     y = mcse,
-    by = c("group", "time", "statistic")
+    by = c(columns, "statistic")
   )
   unname_df(out)
 }

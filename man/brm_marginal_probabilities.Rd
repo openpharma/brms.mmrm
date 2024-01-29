@@ -29,6 +29,7 @@ A tibble of probabilities of the form
 \verb{Prob(treatment effect < threshold | data)}. It has one row per
 probability and the following columns:
 * \code{group}: treatment group.
+* \code{subgroup}: subgroup level, if applicable.
 * \code{time}: discrete time point,
 * \code{direction}: direction of the comparison in the marginal probability:
 \code{"greater"} for \code{>}, \code{"less"} for \code{<}
@@ -48,13 +49,13 @@ data <- brm_data(
   group = "group",
   time = "time",
   patient = "patient",
-  level_control = "group_1",
-  level_baseline = "time_1"
+  reference_group = "group_1",
+  reference_time = "time_1"
 )
 formula <- brm_formula(
   data = data,
-  effect_baseline = FALSE,
-  interaction_baseline = FALSE
+  baseline = FALSE,
+  baseline_time = FALSE
 )
 tmp <- utils::capture.output(
   suppressMessages(
