@@ -630,7 +630,7 @@ brm_marginal_probabilities(
 #> 12 less            0.1 group_3 time_4 0.926
 ```
 
-Finally, the `brm_marignals_data()` computes marginal means and confidence intervals on the response variable in the data, along with other summary statistics.
+Finally, `brm_marignal_data()` computes marginal means and confidence intervals on the response variable in the data, along with other summary statistics.
 
 
 ```r

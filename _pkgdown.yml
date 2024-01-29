@@ -1,4 +1,17 @@
 destination: docs/
+articles:
+- title: Methods
+  contents:
+  - methods
+- title: Usage
+  contents:
+  - usage
+  - subgroup
+  - simulation
+- title: Validation
+  contents:
+  - sbc
+  - comparison
 reference:
 - title: Help
   contents:
