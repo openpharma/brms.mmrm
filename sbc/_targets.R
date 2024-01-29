@@ -30,7 +30,7 @@ tar_option_set(
   resources = tar_resources(
     aws = tar_resources_aws(
       bucket = Sys.getenv("BUCKET", unset = "bucket"),
-      prefix = Sys.getenv("PREFIX", unset = "prefix"),
+      prefix = file.path(Sys.getenv("USER"), "brms-mmrm-sbc"),
       region = Sys.getenv("REGION", unset = "region")
     )
   )
