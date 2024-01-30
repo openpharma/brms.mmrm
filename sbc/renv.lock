@@ -1644,7 +1644,7 @@
     },
     "qs": {
       "Package": "qs",
-      "Version": "0.25.7",
+      "Version": "0.25.4",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
