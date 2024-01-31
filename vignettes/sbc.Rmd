@@ -16,8 +16,8 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.width = 7,
-  fig.height = 5
+  fig.width = 8,
+  fig.height = 6
 )
 library(brms.mmrm)
 library(dplyr)
@@ -61,7 +61,7 @@ brms.mmrm::brm_formula(
 The prior was randomly generated and used for both simulation and analysis:
 
 ```{r, paged.print = FALSE}
-tibble::as_tibble(fst::read_fst("sbc/prior_simple.fst"))
+fst::read_fst("sbc/prior_simple.fst")
 ```
 
 The following histograms show the SBC rank statistics which compare the prior parameter draws draws to the posterior draws. If the data simulation code and modeling code are both correct and consistent, then the rank statistics should be uniformly distributed.
@@ -88,8 +88,7 @@ plot_ranks <- function(ranks) {
       aes(x = rank),
       breaks = seq(from = 0, to = max(ranks$rank), length.out = 10)
     ) +
-    facet_wrap(~parameter) +
-    theme_gray(16)
+    facet_wrap(~parameter)
 }
 ```
 
@@ -123,14 +122,16 @@ simple_ranks %>%
 
 # Complex scenario
 
-In the complex scenario, we simulate datasets from the prior predictive distribution assuming 2 treatment groups, 3 time points, 150 patients per treatment group, adjustment for two continuous and two categorical baseline covariates, 30% dropout, and an 8% rate of independent/sporadic missing values. The model formula is:
+In the complex scenario, we simulate datasets from the prior predictive distribution assuming 2 treatment groups, 2 subgroup levels, 3 time points, 150 patients per treatment group, adjustment for two continuous and two categorical baseline covariates, 30% dropout, and an 8% rate of independent/sporadic missing values. The model formula is:
 
 ```{r, echo = FALSE}
 n_group <- 2L
+n_subgroup <- 2L
 n_patient <- 150L
 n_time <- 3L
 outline <- brms.mmrm::brm_simulate_outline(
   n_group = n_group,
+  n_subgroup = n_subgroup,
   n_patient = n_patient,
   n_time = n_time,
   rate_dropout = 0.3,
@@ -150,11 +151,6 @@ outline <- brms.mmrm::brm_simulate_outline(
   )
 brms.mmrm::brm_formula(
   data = outline,
-  intercept = TRUE,
-  baseline = FALSE,
-  group = TRUE,
-  time = TRUE,
-  group_time = TRUE,
   correlation = "unstructured"
 )
 ```
@@ -162,7 +158,7 @@ brms.mmrm::brm_formula(
 The prior was randomly generated and used for both simulation and analysis:
 
 ```{r, paged.print = FALSE}
-tibble::as_tibble(fst::read_fst("sbc/prior_complex.fst"))
+fst::read_fst("sbc/prior_complex.fst")
 ```
 
 The following histograms show the SBC rank statistics which compare the prior parameter draws draws to the posterior draws. If the data simulation code and modeling code are both correct and consistent, then the rank statistics should be uniformly distributed.
@@ -197,6 +193,6 @@ complex_ranks %>%
 
 # Conclusion
 
-The SBC rank statistics look uniformly distributed. In other words, the posterior distribution from the `brms`/Stan MMRM modeling code matches the prior from which the datasets were simulated. This is evidence that the model in `brms.mmrm` is implemented correctly.
+The SBC rank statistics look uniformly distributed. In other words, the posterior distribution from the `brms`/Stan MMRM modeling code matches the prior from which the datasets were simulated. This is evidence that both the subgroup and non-subgroup models in `brms.mmrm` are implemented correctly.
 
 # References
