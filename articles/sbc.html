@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">brms.mmrm</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.2.9002</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.2.9003</span>
       </span>
     </div>
 
@@ -106,21 +106,19 @@ missing responses. The model formula is:</p>
 <p>The prior was randomly generated and used for both simulation and
 analysis:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="fu">fst</span><span class="fu">::</span><span class="fu"><a href="http://www.fstpackage.org/reference/write_fst.html" class="external-link">read_fst</a></span><span class="op">(</span><span class="st">"sbc/prior_simple.fst"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 11 × 4</span></span></span>
-<span><span class="co">#&gt;    prior                     class    coef           dpar   </span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> lkj_corr_cholesky(1.3841) Lcortime <span style="color: #949494;">""</span>             <span style="color: #949494;">""</span>     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> normal(0.1689, 2.5044)    b        <span style="color: #949494;">"</span>groupgroup_2<span style="color: #949494;">"</span> <span style="color: #949494;">""</span>     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> normal(0.1214, 1.4494)    b        <span style="color: #949494;">"</span>groupgroup_3<span style="color: #949494;">"</span> <span style="color: #949494;">""</span>     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> normal(0.128, 1.3121)     b        <span style="color: #949494;">"</span>timetime_1<span style="color: #949494;">"</span>   <span style="color: #949494;">""</span>     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> normal(-0.1185, 1.4261)   b        <span style="color: #949494;">"</span>timetime_2<span style="color: #949494;">"</span>   <span style="color: #949494;">""</span>     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> normal(-0.1265, 1.0435)   b        <span style="color: #949494;">"</span>timetime_3<span style="color: #949494;">"</span>   <span style="color: #949494;">""</span>     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> normal(-0.0028, 1.4913)   b        <span style="color: #949494;">"</span>timetime_4<span style="color: #949494;">"</span>   <span style="color: #949494;">""</span>     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> normal(0.173, 1.2153)     b        <span style="color: #949494;">"</span>timetime_1<span style="color: #949494;">"</span>   <span style="color: #949494;">"</span>sigma<span style="color: #949494;">"</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> normal(0.1612, 1.2679)    b        <span style="color: #949494;">"</span>timetime_2<span style="color: #949494;">"</span>   <span style="color: #949494;">"</span>sigma<span style="color: #949494;">"</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> normal(0.1899, 1.7307)    b        <span style="color: #949494;">"</span>timetime_3<span style="color: #949494;">"</span>   <span style="color: #949494;">"</span>sigma<span style="color: #949494;">"</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> normal(-0.0949, 1.3566)   b        <span style="color: #949494;">"</span>timetime_4<span style="color: #949494;">"</span>   <span style="color: #949494;">"</span>sigma<span style="color: #949494;">"</span></span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">fst</span><span class="fu">::</span><span class="fu"><a href="http://www.fstpackage.org/reference/write_fst.html" class="external-link">read_fst</a></span><span class="op">(</span><span class="st">"sbc/prior_simple.fst"</span><span class="op">)</span></span>
+<span><span class="co">#&gt;                        prior    class         coef  dpar</span></span>
+<span><span class="co">#&gt; 1  lkj_corr_cholesky(1.1759) Lcortime                   </span></span>
+<span><span class="co">#&gt; 2     normal(-0.108, 1.9497)        b groupgroup_1      </span></span>
+<span><span class="co">#&gt; 3     normal(0.0441, 1.3727)        b groupgroup_2      </span></span>
+<span><span class="co">#&gt; 4    normal(-0.2303, 0.2806)        b groupgroup_3      </span></span>
+<span><span class="co">#&gt; 5     normal(0.0631, 1.6016)        b   timetime_2      </span></span>
+<span><span class="co">#&gt; 6       normal(0.16, 1.4724)        b   timetime_3      </span></span>
+<span><span class="co">#&gt; 7     normal(0.0631, 1.7156)        b   timetime_4      </span></span>
+<span><span class="co">#&gt; 8     normal(0.0389, 2.2844)        b   timetime_1 sigma</span></span>
+<span><span class="co">#&gt; 9      normal(0.1793, 1.808)        b   timetime_2 sigma</span></span>
+<span><span class="co">#&gt; 10    normal(0.1637, 1.4719)        b   timetime_3 sigma</span></span>
+<span><span class="co">#&gt; 11    normal(0.0186, 0.7794)        b   timetime_4 sigma</span></span></code></pre></div>
 <p>The following histograms show the SBC rank statistics which compare
 the prior parameter draws draws to the posterior draws. If the data
 simulation code and modeling code are both correct and consistent, then
@@ -147,8 +145,7 @@ the rank statistics should be uniformly distributed.</p>
 <span>      <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">rank</span><span class="op">)</span>,</span>
 <span>      breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span>from <span class="op">=</span> <span class="fl">0</span>, to <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">ranks</span><span class="op">$</span><span class="va">rank</span><span class="op">)</span>, length.out <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span>    <span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">parameter</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_gray</a></span><span class="op">(</span><span class="fl">16</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">parameter</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">simple_ranks</span> <span class="op">&lt;-</span> <span class="fu">read_ranks</span><span class="op">(</span><span class="st">"sbc/simple.fst"</span><span class="op">)</span></span></code></pre></div>
@@ -158,53 +155,81 @@ the rank statistics should be uniformly distributed.</p>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"^b_"</span>, <span class="va">parameter</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"^b_sigma"</span>, <span class="va">parameter</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu">plot_ranks</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="sbc_files/figure-html/unnamed-chunk-6-1.png" width="672">
+<p><img src="sbc_files/figure-html/unnamed-chunk-6-1.png" width="768">
 Log-scale standard deviation parameter ranks:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">simple_ranks</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"b_sigma"</span>, <span class="va">parameter</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu">plot_ranks</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="sbc_files/figure-html/unnamed-chunk-7-1.png" width="672"></p>
+<p><img src="sbc_files/figure-html/unnamed-chunk-7-1.png" width="768"></p>
 <p>Correlation parameter ranks:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">simple_ranks</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"cortime_"</span>, <span class="va">parameter</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu">plot_ranks</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="sbc_files/figure-html/unnamed-chunk-8-1.png" width="672"></p>
+<p><img src="sbc_files/figure-html/unnamed-chunk-8-1.png" width="768"></p>
 </div>
 <div class="section level2">
 <h2 id="complex-scenario">Complex scenario<a class="anchor" aria-label="anchor" href="#complex-scenario"></a>
 </h2>
 <p>In the complex scenario, we simulate datasets from the prior
-predictive distribution assuming 2 treatment groups, 3 time points, 150
-patients per treatment group, adjustment for two continuous and two
-categorical baseline covariates, 30% dropout, and an 8% rate of
-independent/sporadic missing values. The model formula is:</p>
-<pre><code><span><span class="co">#&gt; response ~ group + group:time + time + continuous1 + continuous2 + balanced + unbalanced + unstr(time = time, gr = patient) </span></span>
+predictive distribution assuming 2 treatment groups, 2 subgroup levels,
+3 time points, 150 patients per treatment group, adjustment for two
+continuous and two categorical baseline covariates, 30% dropout, and an
+8% rate of independent/sporadic missing values. The model formula
+is:</p>
+<pre><code><span><span class="co">#&gt; response ~ group + group:subgroup + group:subgroup:time + group:time + subgroup + subgroup:time + time + continuous1 + continuous2 + balanced + unbalanced + unstr(time = time, gr = patient) </span></span>
 <span><span class="co">#&gt; sigma ~ 0 + time</span></span></code></pre>
 <p>The prior was randomly generated and used for both simulation and
 analysis:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="fu">fst</span><span class="fu">::</span><span class="fu"><a href="http://www.fstpackage.org/reference/write_fst.html" class="external-link">read_fst</a></span><span class="op">(</span><span class="st">"sbc/prior_complex.fst"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 16 × 4</span></span></span>
-<span><span class="co">#&gt;    prior                     class     coef                      dpar   </span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> lkj_corr_cholesky(1.4798) Lcortime  <span style="color: #949494;">""</span>                        <span style="color: #949494;">""</span>     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> normal(-0.0596, 1.8135)   Intercept <span style="color: #949494;">""</span>                        <span style="color: #949494;">""</span>     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> normal(-0.1652, 0.6118)   b         <span style="color: #949494;">"</span>balancedlevel2<span style="color: #949494;">"</span>          <span style="color: #949494;">""</span>     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> normal(0.2447, 1.9717)    b         <span style="color: #949494;">"</span>balancedlevel3<span style="color: #949494;">"</span>          <span style="color: #949494;">""</span>     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> normal(-0.074, 0.7745)    b         <span style="color: #949494;">"</span>continuous1<span style="color: #949494;">"</span>             <span style="color: #949494;">""</span>     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> normal(-0.0766, 0.9556)   b         <span style="color: #949494;">"</span>continuous2<span style="color: #949494;">"</span>             <span style="color: #949494;">""</span>     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> normal(-0.1736, 1.2109)   b         <span style="color: #949494;">"</span>groupgroup_2<span style="color: #949494;">"</span>            <span style="color: #949494;">""</span>     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> normal(-0.1923, 2.2843)   b         <span style="color: #949494;">"</span>timetime_2<span style="color: #949494;">"</span>              <span style="color: #949494;">""</span>     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> normal(0.0334, 0.4699)    b         <span style="color: #949494;">"</span>timetime_2:groupgroup_2<span style="color: #949494;">"</span> <span style="color: #949494;">""</span>     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> normal(0.0309, 2.3703)    b         <span style="color: #949494;">"</span>timetime_3<span style="color: #949494;">"</span>              <span style="color: #949494;">""</span>     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> normal(0.1742, 1.722)     b         <span style="color: #949494;">"</span>timetime_3:groupgroup_2<span style="color: #949494;">"</span> <span style="color: #949494;">""</span>     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span> normal(-0.2019, 2.9989)   b         <span style="color: #949494;">"</span>unbalancedlevel2<span style="color: #949494;">"</span>        <span style="color: #949494;">""</span>     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">13</span> normal(-0.0413, 1.1137)   b         <span style="color: #949494;">"</span>unbalancedlevel3<span style="color: #949494;">"</span>        <span style="color: #949494;">""</span>     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">14</span> normal(-0.2011, 1.0844)   b         <span style="color: #949494;">"</span>timetime_1<span style="color: #949494;">"</span>              <span style="color: #949494;">"</span>sigma<span style="color: #949494;">"</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">15</span> normal(-0.1601, 2.648)    b         <span style="color: #949494;">"</span>timetime_2<span style="color: #949494;">"</span>              <span style="color: #949494;">"</span>sigma<span style="color: #949494;">"</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">16</span> normal(-0.2176, 2.0724)   b         <span style="color: #949494;">"</span>timetime_3<span style="color: #949494;">"</span>              <span style="color: #949494;">"</span>sigma<span style="color: #949494;">"</span></span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">fst</span><span class="fu">::</span><span class="fu"><a href="http://www.fstpackage.org/reference/write_fst.html" class="external-link">read_fst</a></span><span class="op">(</span><span class="st">"sbc/prior_complex.fst"</span><span class="op">)</span></span>
+<span><span class="co">#&gt;                        prior     class</span></span>
+<span><span class="co">#&gt; 1  lkj_corr_cholesky(1.4621)  Lcortime</span></span>
+<span><span class="co">#&gt; 2    normal(-0.1661, 2.3091) Intercept</span></span>
+<span><span class="co">#&gt; 3    normal(-0.1831, 1.8732)         b</span></span>
+<span><span class="co">#&gt; 4     normal(0.1578, 2.8225)         b</span></span>
+<span><span class="co">#&gt; 5    normal(-0.1069, 1.7987)         b</span></span>
+<span><span class="co">#&gt; 6    normal(-0.1071, 0.5407)         b</span></span>
+<span><span class="co">#&gt; 7     normal(-0.1028, 0.464)         b</span></span>
+<span><span class="co">#&gt; 8     normal(-0.007, 0.7129)         b</span></span>
+<span><span class="co">#&gt; 9     normal(0.1007, 1.8179)         b</span></span>
+<span><span class="co">#&gt; 10   normal(-0.1965, 2.9243)         b</span></span>
+<span><span class="co">#&gt; 11   normal(-0.0911, 1.5937)         b</span></span>
+<span><span class="co">#&gt; 12    normal(0.0536, 0.7669)         b</span></span>
+<span><span class="co">#&gt; 13    normal(0.0973, 0.5859)         b</span></span>
+<span><span class="co">#&gt; 14    normal(0.0741, 2.3458)         b</span></span>
+<span><span class="co">#&gt; 15     normal(-0.17, 2.9882)         b</span></span>
+<span><span class="co">#&gt; 16    normal(0.1211, 0.7527)         b</span></span>
+<span><span class="co">#&gt; 17    normal(-0.234, 2.0401)         b</span></span>
+<span><span class="co">#&gt; 18   normal(-0.0457, 2.2697)         b</span></span>
+<span><span class="co">#&gt; 19    normal(-0.181, 2.8068)         b</span></span>
+<span><span class="co">#&gt; 20    normal(0.1093, 2.3647)         b</span></span>
+<span><span class="co">#&gt; 21    normal(-0.0878, 1.165)         b</span></span>
+<span><span class="co">#&gt; 22   normal(-0.2374, 1.5208)         b</span></span>
+<span><span class="co">#&gt;                                          coef  dpar</span></span>
+<span><span class="co">#&gt; 1                                                  </span></span>
+<span><span class="co">#&gt; 2                                                  </span></span>
+<span><span class="co">#&gt; 3                              balancedlevel2      </span></span>
+<span><span class="co">#&gt; 4                              balancedlevel3      </span></span>
+<span><span class="co">#&gt; 5                                 continuous1      </span></span>
+<span><span class="co">#&gt; 6                                 continuous2      </span></span>
+<span><span class="co">#&gt; 7                                groupgroup_2      </span></span>
+<span><span class="co">#&gt; 8             groupgroup_2:subgroupsubgroup_2      </span></span>
+<span><span class="co">#&gt; 9  groupgroup_2:subgroupsubgroup_2:timetime_2      </span></span>
+<span><span class="co">#&gt; 10 groupgroup_2:subgroupsubgroup_2:timetime_3      </span></span>
+<span><span class="co">#&gt; 11                    groupgroup_2:timetime_2      </span></span>
+<span><span class="co">#&gt; 12                    groupgroup_2:timetime_3      </span></span>
+<span><span class="co">#&gt; 13                         subgroupsubgroup_2      </span></span>
+<span><span class="co">#&gt; 14              subgroupsubgroup_2:timetime_2      </span></span>
+<span><span class="co">#&gt; 15              subgroupsubgroup_2:timetime_3      </span></span>
+<span><span class="co">#&gt; 16                                 timetime_2      </span></span>
+<span><span class="co">#&gt; 17                                 timetime_3      </span></span>
+<span><span class="co">#&gt; 18                           unbalancedlevel2      </span></span>
+<span><span class="co">#&gt; 19                           unbalancedlevel3      </span></span>
+<span><span class="co">#&gt; 20                                 timetime_1 sigma</span></span>
+<span><span class="co">#&gt; 21                                 timetime_2 sigma</span></span>
+<span><span class="co">#&gt; 22                                 timetime_3 sigma</span></span></code></pre></div>
 <p>The following histograms show the SBC rank statistics which compare
 the prior parameter draws draws to the posterior draws. If the data
 simulation code and modeling code are both correct and consistent, then
@@ -217,19 +242,19 @@ the rank statistics should be uniformly distributed.</p>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"^b_"</span>, <span class="va">parameter</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"^b_sigma"</span>, <span class="va">parameter</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu">plot_ranks</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="sbc_files/figure-html/unnamed-chunk-12-1.png" width="672">
+<p><img src="sbc_files/figure-html/unnamed-chunk-12-1.png" width="768">
 Log-scale standard deviation parameter ranks:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">complex_ranks</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"b_sigma"</span>, <span class="va">parameter</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu">plot_ranks</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="sbc_files/figure-html/unnamed-chunk-13-1.png" width="672"></p>
+<p><img src="sbc_files/figure-html/unnamed-chunk-13-1.png" width="768"></p>
 <p>Correlation parameter ranks:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">complex_ranks</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"cortime_"</span>, <span class="va">parameter</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu">plot_ranks</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="sbc_files/figure-html/unnamed-chunk-14-1.png" width="672"></p>
+<p><img src="sbc_files/figure-html/unnamed-chunk-14-1.png" width="768"></p>
 </div>
 <div class="section level2">
 <h2 id="conclusion">Conclusion<a class="anchor" aria-label="anchor" href="#conclusion"></a>
@@ -237,8 +262,8 @@ Log-scale standard deviation parameter ranks:</p>
 <p>The SBC rank statistics look uniformly distributed. In other words,
 the posterior distribution from the <code>brms</code>/Stan MMRM modeling
 code matches the prior from which the datasets were simulated. This is
-evidence that the model in <code>brms.mmrm</code> is implemented
-correctly.</p>
+evidence that both the subgroup and non-subgroup models in
+<code>brms.mmrm</code> are implemented correctly.</p>
 </div>
 <div class="section level2">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>

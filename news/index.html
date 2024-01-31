@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">brms.mmrm</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.2.9002</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.2.9003</span>
       </span>
     </div>
 
@@ -51,11 +51,11 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.0.2.9002" id="brmsmmrm-0029002-development">brms.mmrm 0.0.2.9002 (development)<a class="anchor" aria-label="anchor" href="#brmsmmrm-0029002-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.0.2.9003" id="brmsmmrm-0029003-development">brms.mmrm 0.0.2.9003 (development)<a class="anchor" aria-label="anchor" href="#brmsmmrm-0029003-development"></a></h2>
 <ul><li>Deprecate <code><a href="../reference/brm_simulate.html">brm_simulate()</a></code> in favor of <code><a href="../reference/brm_simulate_simple.html">brm_simulate_simple()</a></code> (<a href="https://github.com/openpharma/brms.mmrm/issues/3" class="external-link">#3</a>). The latter has a more specific name to disambiguate it from other simulation functions, and its parameterization conforms to the one in the methods vignette.</li>
 <li>Add new functions for nuanced simulations: <code><a href="../reference/brm_simulate_outline.html">brm_simulate_outline()</a></code>, <code><a href="../reference/brm_simulate_continuous.html">brm_simulate_continuous()</a></code>, <code><a href="../reference/brm_simulate_categorical.html">brm_simulate_categorical()</a></code> (<a href="https://github.com/openpharma/brms.mmrm/issues/3" class="external-link">#3</a>).</li>
 <li>In <code><a href="../reference/brm_model.html">brm_model()</a></code>, remove rows with missing responses. These rows are automatically removed by <code>brms</code> anyway, and by handling by handling this in <code>brms.mmrm</code>, we avoid a warning.</li>
-<li>Add subgroup analysis functionality (<a href="https://github.com/openpharma/brms.mmrm/issues/18" class="external-link">#18</a>).</li>
+<li>Add subgroup analysis functionality and validate the subgroup model with simulation-based calibration (<a href="https://github.com/openpharma/brms.mmrm/issues/18" class="external-link">#18</a>).</li>
 <li>Zero-pad numeric indexes in simulated data so the levels sort as expected.</li>
 <li>In <code><a href="../reference/brm_data.html">brm_data()</a></code>, deprecate <code>level_control</code> in favor of <code>reference_group</code>.</li>
 <li>In <code><a href="../reference/brm_data.html">brm_data()</a></code>, deprecate <code>level_baseline</code> in favor of <code>reference_time</code>.</li>
