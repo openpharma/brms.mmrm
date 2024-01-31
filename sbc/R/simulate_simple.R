@@ -12,11 +12,11 @@ simulate_simple <- function(prior, chains, warmup, iter) {
   formula <- brms.mmrm::brm_formula(
     data = outline,
     intercept = FALSE,
-    effect_baseline = FALSE,
-    effect_group = TRUE,
-    effect_time = TRUE,
-    interaction_baseline = FALSE,
-    interaction_group = FALSE,
+    baseline = FALSE,
+    group = TRUE,
+    time = TRUE,
+    baseline_time = FALSE,
+    group_time = FALSE,
     correlation = "unstructured"
   )
   run_simulation(
@@ -34,9 +34,9 @@ get_prior_simple <- function() {
   n_time <- 4L
   prior <- new_prior_lkj(dimension = n_time)
   terms <- c(
+    "groupgroup_1",
     "groupgroup_2",
     "groupgroup_3",
-    "timetime_1",
     "timetime_2",
     "timetime_3",
     "timetime_4"

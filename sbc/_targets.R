@@ -18,19 +18,20 @@ tar_option_set(
   workspace_on_error = TRUE,
   controller = crew_controller_aws_batch(
     name = "brms-mmrm-sbc",
-    workers = 200L,
+    workers = 100L,
     seconds_idle = 120,
     seconds_launch = 1800,
     launch_max = 3L,
-    processes = 4,
-    aws_batch_job_definition = Sys.getenv("JOB_DEFINITION", unset = "job"),
-    aws_batch_job_queue = Sys.getenv("JOB_QUEUE", unset = "queue")
+    processes = 2,
+    aws_batch_job_definition = "brms-mmrm-sbc",
+    aws_batch_job_queue = Sys.getenv("JOB_QUEUE", unset = "queue"),
+    aws_batch_region = Sys.getenv("REGION", unset = "region")
   ),
   repository = "aws",
   resources = tar_resources(
     aws = tar_resources_aws(
       bucket = Sys.getenv("BUCKET", unset = "bucket"),
-      prefix = Sys.getenv("PREFIX", unset = "prefix"),
+      prefix = file.path(Sys.getenv("USER"), "brms-mmrm-sbc"),
       region = Sys.getenv("REGION", unset = "region")
     )
   )

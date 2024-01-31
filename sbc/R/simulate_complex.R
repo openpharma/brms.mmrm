@@ -1,9 +1,11 @@
 simulate_complex <- function(prior, chains, warmup, iter) {
   n_group <- 2L
+  n_subgroup <- 2L
   n_patient <- 150L
   n_time <- 3L
   outline <- brms.mmrm::brm_simulate_outline(
     n_group = n_group,
+    n_subgroup = n_subgroup,
     n_patient = n_patient,
     n_time = n_time,
     rate_dropout = 0.3,
@@ -23,12 +25,6 @@ simulate_complex <- function(prior, chains, warmup, iter) {
     )
   formula <- brms.mmrm::brm_formula(
     data = outline,
-    intercept = TRUE,
-    effect_baseline = FALSE,
-    effect_group = TRUE,
-    effect_time = TRUE,
-    interaction_baseline = FALSE,
-    interaction_group = TRUE,
     correlation = "unstructured"
   )
   run_simulation(
@@ -49,12 +45,18 @@ get_prior_complex <- function() {
     "balancedlevel2",
     "balancedlevel3",
     "continuous1",
-    "continuous2",
+    "continuous2", 
     "groupgroup_2",
+    "groupgroup_2:subgroupsubgroup_2",
+    "groupgroup_2:subgroupsubgroup_2:timetime_2",
+    "groupgroup_2:subgroupsubgroup_2:timetime_3",
+    "groupgroup_2:timetime_2", 
+    "groupgroup_2:timetime_3",
+    "subgroupsubgroup_2",
+    "subgroupsubgroup_2:timetime_2", 
+    "subgroupsubgroup_2:timetime_3",
     "timetime_2",
-    "timetime_2:groupgroup_2",
-    "timetime_3",
-    "timetime_3:groupgroup_2",
+    "timetime_3", 
     "unbalancedlevel2",
     "unbalancedlevel3"
   )
