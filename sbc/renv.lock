@@ -548,14 +548,14 @@
     },
     "crew": {
       "Package": "crew",
-      "Version": "0.8.0.9002",
+      "Version": "0.8.0.9003",
       "Source": "GitHub",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
-      "RemoteRepo": "crew",
       "RemoteUsername": "wlandau",
-      "RemoteRef": "HEAD",
-      "RemoteSha": "87f4824a1bbbbda88158b276a356b4a1f8715513",
+      "RemoteRepo": "crew",
+      "RemoteRef": "main",
+      "RemoteSha": "5040de924bda8a4de7d8d446878838befafc8e64",
       "Requirements": [
         "R",
         "R6",
@@ -573,7 +573,7 @@
         "tools",
         "utils"
       ],
-      "Hash": "d7f97a0ed11195f6cd41cb00b848be5f"
+      "Hash": "fb54f743688c0da34ab780568d113b59"
     },
     "crew.aws.batch": {
       "Package": "crew.aws.batch",
@@ -1653,7 +1653,7 @@
         "Rcpp",
         "stringfish"
       ],
-      "Hash": "f5adb766329cc757980d943ce472e831"
+      "Hash": "ffc0d1d65ca061b04ab23e790828d897"
     },
     "quadprog": {
       "Package": "quadprog",
@@ -2021,12 +2021,13 @@
       "Package": "targets",
       "Version": "1.4.1.9002",
       "Source": "GitHub",
+      "Remotes": "wlandau/crew",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
       "RemoteRepo": "targets",
       "RemoteUsername": "ropensci",
-      "RemoteRef": "HEAD",
-      "RemoteSha": "de16fb7777967d2d97011761129ae17f922ed06d",
+      "RemoteRef": "1220",
+      "RemoteSha": "ce78ac189fb00562bdd12764b31900094c3dacec",
       "Requirements": [
         "R",
         "R6",
@@ -2048,7 +2049,7 @@
         "vctrs",
         "yaml"
       ],
-      "Hash": "02b5575e7f049bf63bf948bfd4cef47e"
+      "Hash": "c655019ee136939103aa34cf7a15f165"
     },
     "tensorA": {
       "Package": "tensorA",
