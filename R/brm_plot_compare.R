@@ -10,6 +10,18 @@
 #'   `tibble`s in the `...` argument.
 #'   Only applies to MCMC output, the data is always on the scale of the
 #'   response variable.
+#' @param versus Character of length 1 identifying the quantity to plot
+#'   the marginals against. Must be be one of `"time"` or `"group"` if
+#'   the marginal summaries are not subgroup-specific. If the marginals
+#'   are subgroup-specific, then `versus` must be one of
+#'   `"time"`, `"group"`, or `"subgroup"`.
+#' @param facet Character vector of length 1 or 2 with quantities to
+#'   generate facets. Each element must be `"time"`, `"group"`,
+#'   or `"subgroup"`, and `c(versus, facet)` must all have unique elements.
+#'   `"subgroup"` is automatically removed if the marginals have no
+#'   subgroup. If `facet` has length 1, then faceting is wrapped.
+#'   If `facet` has length 2, then faceting is in a grid,
+#'   and the first element is horizontal facet.
 #' @examples
 #' if (identical(Sys.getenv("BRM_EXAMPLES", unset = ""), "true")) {
 #' set.seed(0L)
@@ -55,9 +67,27 @@
 #'   marginal = "difference"
 #' )
 #' }
-brm_plot_compare <- function(..., marginal = "response") {
+brm_plot_compare <- function(
+  ...,
+  marginal = "response",
+  versus = "time",
+  facet = c("group", "subgroup")
+) {
   data <- list(...)
   assert_chr_vec(names(data), message = "arguments must be named.")
+  assert_chr(versus, "'versus' must be a single nonempty character string")
+  assert_chr_vec(
+    facet,
+    "'facet' must be a nonempty character vector with 1 or 2 elements"
+  )
+  assert(
+    versus %in% c("time", "group", "subgroup"),
+    message = "'versus' must be \"time\", \"group\", or \"subgroup\""
+  )
+  assert(
+    facet %in% c("time", "group", "subgroup"),
+    message = "each 'facet' must be in \"time\", \"group\", or \"subgroup\""
+  )
   assert_chr(marginal, "marginal arg must be a nonempty character string.")
   marginal <- if_any(marginal == "change", "difference_time", marginal)
   marginal <- if_any(marginal == "difference", "difference_group", marginal)
@@ -70,6 +100,29 @@ brm_plot_compare <- function(..., marginal = "response") {
   }
   data <- dplyr::bind_rows(data, .id = "source")
   use_subgroup <- "subgroup" %in% colnames(data)
+  if (!use_subgroup) {
+    facet <- setdiff(facet, "subgroup")
+  }
+  assert(
+    length(facet) %in% 1L + use_subgroup,
+    message = paste(
+      "'facet' must have 1 element if the marginal summaries have no",
+      "subgroup, but 2 unique elements if there is a subgroup."
+    )
+  )
+  assert(
+    length(unique(c(versus, facet))) == 2L + use_subgroup,
+    message = paste(
+      "'versus' and 'facet' must include \"time\" and \"group\", as well as",
+      "\"subgroup\" if the marginal summaries have a subgroup."
+    )
+  )
+  assert(
+    use_subgroup || (versus != "subgroup"),
+    message = paste(
+      "'versus' cannot be \"subgroup\" when the summaries have no subgroup."
+    )
+  )
   subgroup <- if_any(use_subgroup, "subgroup", character(0L))
   data <- tidyr::pivot_wider(
     data = data,
@@ -79,19 +132,25 @@ brm_plot_compare <- function(..., marginal = "response") {
   )
   ggplot2::ggplot(data) +
     ggplot2::geom_point(
-      ggplot2::aes(x = time, y = mean, color = source),
+      ggplot2::aes(x = !!as.symbol(versus), y = mean, color = source),
       position = ggplot2::position_dodge(width = 0.5)
     ) +
     ggplot2::geom_errorbar(
-      ggplot2::aes(x = time, ymin = lower, ymax = upper, color = source),
+      ggplot2::aes(
+        x = !!as.symbol(versus),
+        ymin = lower,
+        ymax = upper,
+        color = source
+      ),
       position = ggplot2::position_dodge(width = 0.5)
     ) +
     ggplot2::ylab(marginal) +
-    ggplot2::theme_gray(16) +
     if_any(
       use_subgroup,
-      ggplot2::facet_grid(subgroup ~ group),
-      ggplot2::facet_wrap(~ group)
+      ggplot2::facet_grid(
+        as.formula(sprintf("%s ~ %s", facet[2L], facet[1L]))
+      ),
+      ggplot2::facet_wrap(as.formula(paste("~", facet)))
     )
 }
 

@@ -4,7 +4,12 @@
 \alias{brm_plot_compare}
 \title{Visually compare the marginals of models and datasets.}
 \usage{
-brm_plot_compare(..., marginal = "response")
+brm_plot_compare(
+  ...,
+  marginal = "response",
+  versus = "time",
+  facet = c("group", "subgroup")
+)
 }
 \arguments{
 \item{...}{Named \code{tibble}s of marginals posterior summaries
@@ -15,6 +20,20 @@ to visualize. Must be a value in the \code{marginal} column of the supplied
 \code{tibble}s in the \code{...} argument.
 Only applies to MCMC output, the data is always on the scale of the
 response variable.}
+
+\item{versus}{Character of length 1 identifying the quantity to plot
+the marginals against. Must be be one of \code{"time"} or \code{"group"} if
+the marginal summaries are not subgroup-specific. If the marginals
+are subgroup-specific, then \code{versus} must be one of
+\code{"time"}, \code{"group"}, or \code{"subgroup"}.}
+
+\item{facet}{Character vector of length 1 or 2 with quantities to
+generate facets. Each element must be \code{"time"}, \code{"group"},
+or \code{"subgroup"}, and \code{c(versus, facet)} must all have unique elements.
+\code{"subgroup"} is automatically removed if the marginals have no
+subgroup. If \code{facet} has length 1, then faceting is wrapped.
+If \code{facet} has length 2, then faceting is in a grid,
+and the first element is horizontal facet.}
 }
 \value{
 A \code{ggplot} object.
