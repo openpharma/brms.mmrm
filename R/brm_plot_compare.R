@@ -10,8 +10,8 @@
 #'   `tibble`s in the `...` argument.
 #'   Only applies to MCMC output, the data is always on the scale of the
 #'   response variable.
-#' @param versus Character of length 1 identifying the quantity to plot
-#'   the marginals against. Must be be one of `"time"` or `"group"` if
+#' @param versus Character of length 1 identifying the quantity to put
+#'   on the horizontal axis. Must be be one of `"time"` or `"group"` if
 #'   the marginal summaries are not subgroup-specific. If the marginals
 #'   are subgroup-specific, then `versus` must be one of
 #'   `"time"`, `"group"`, or `"subgroup"`.

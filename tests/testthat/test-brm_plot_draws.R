@@ -33,8 +33,26 @@ test_that("brm_plot_draws() without subgroup", {
     model = model,
     data = data
   )
-  out <- brm_plot_draws(draws = draws$difference_time)
-  expect_s3_class(out, "ggplot")
+  expect_s3_class(
+    brm_plot_draws(draws = draws$difference_time),
+    "ggplot"
+  )
+  expect_s3_class(
+    brm_plot_draws(
+      draws = draws$difference_time,
+      versus = "time",
+      facet = "group"
+    ),
+    "ggplot"
+  )
+  expect_s3_class(
+    brm_plot_draws(
+      draws = draws$difference_time,
+      versus = "group",
+      facet = "time"
+    ),
+    "ggplot"
+  )
 })
 
 test_that("brm_plot_draws() with subgroup", {
@@ -69,6 +87,40 @@ test_that("brm_plot_draws() with subgroup", {
     model = model,
     data = data
   )
-  out <- brm_plot_draws(draws = draws$difference_time)
-  expect_s3_class(out, "ggplot")
+  expect_s3_class(
+    brm_plot_draws(draws = draws$difference_time),
+    "ggplot"
+  )
+  expect_s3_class(
+    brm_plot_draws(
+      draws = draws$difference_time,
+      versus = "time",
+      facet = c("group", "subgroup")
+    ),
+    "ggplot"
+  )
+  expect_s3_class(
+    brm_plot_draws(
+      draws = draws$difference_time,
+      versus = "time",
+      facet = c("subgroup", "group")
+    ),
+    "ggplot"
+  )
+  expect_s3_class(
+    brm_plot_draws(
+      draws = draws$difference_time,
+      versus = "group",
+      facet = c("time", "subgroup")
+    ),
+    "ggplot"
+  )
+  expect_s3_class(
+    brm_plot_draws(
+      draws = draws$difference_time,
+      versus = "subgroup",
+      facet = c("time", "group")
+    ),
+    "ggplot"
+  )
 })

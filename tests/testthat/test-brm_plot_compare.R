@@ -35,11 +35,31 @@ test_that("brm_plot_compare() without subgroup", {
   )
   suppressWarnings(summaries_draws <- brm_marginal_summaries(draws))
   summaries_data <- brm_marginal_data(data)
-  out <- brm_plot_compare(
-    summaries_draws = summaries_draws,
-    summaries_data = summaries_data
+  expect_s3_class(
+    brm_plot_compare(
+      summaries_draws = summaries_draws,
+      summaries_data = summaries_data
+    ),
+    "ggplot"
   )
-  expect_s3_class(out, "ggplot")
+  expect_s3_class(
+    brm_plot_compare(
+      summaries_draws = summaries_draws,
+      summaries_data = summaries_data,
+      versus = "time",
+      facet = "group"
+    ),
+    "ggplot"
+  )
+  expect_s3_class(
+    brm_plot_compare(
+      summaries_draws = summaries_draws,
+      summaries_data = summaries_data,
+      versus = "group",
+      facet = "time"
+    ),
+    "ggplot"
+  )
 })
 
 test_that("brm_plot_compare() with subgroups", {
@@ -76,9 +96,47 @@ test_that("brm_plot_compare() with subgroups", {
   )
   suppressWarnings(summaries_draws <- brm_marginal_summaries(draws))
   summaries_data <- brm_marginal_data(data)
-  out <- brm_plot_compare(
-    summaries_draws = summaries_draws,
-    summaries_data = summaries_data
+  expect_s3_class(
+    brm_plot_compare(
+      summaries_draws = summaries_draws,
+      summaries_data = summaries_data
+    ),
+    "ggplot"
   )
-  expect_s3_class(out, "ggplot")
+  expect_s3_class(
+    brm_plot_compare(
+      summaries_draws = summaries_draws,
+      summaries_data = summaries_data,
+      versus = "time",
+      facet = c("group", "subgroup")
+    ),
+    "ggplot"
+  )
+  expect_s3_class(
+    brm_plot_compare(
+      summaries_draws = summaries_draws,
+      summaries_data = summaries_data,
+      versus = "time",
+      facet = c("subgroup", "group")
+    ),
+    "ggplot"
+  )
+  expect_s3_class(
+    brm_plot_compare(
+      summaries_draws = summaries_draws,
+      summaries_data = summaries_data,
+      versus = "group",
+      facet = c("time", "subgroup")
+    ),
+    "ggplot"
+  )
+  expect_s3_class(
+    brm_plot_compare(
+      summaries_draws = summaries_draws,
+      summaries_data = summaries_data,
+      versus = "subgroup",
+      facet = c("time", "group")
+    ),
+    "ggplot"
+  )
 })

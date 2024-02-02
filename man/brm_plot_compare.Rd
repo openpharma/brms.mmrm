@@ -21,8 +21,8 @@ to visualize. Must be a value in the \code{marginal} column of the supplied
 Only applies to MCMC output, the data is always on the scale of the
 response variable.}
 
-\item{versus}{Character of length 1 identifying the quantity to plot
-the marginals against. Must be be one of \code{"time"} or \code{"group"} if
+\item{versus}{Character of length 1 identifying the quantity to put
+on the horizontal axis. Must be be one of \code{"time"} or \code{"group"} if
 the marginal summaries are not subgroup-specific. If the marginals
 are subgroup-specific, then \code{versus} must be one of
 \code{"time"}, \code{"group"}, or \code{"subgroup"}.}

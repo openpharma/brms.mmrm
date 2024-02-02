@@ -5,6 +5,7 @@
 #' @return A `ggplot` object.
 #' @param draws A data frame of draws from an element of
 #'   the output list of [brm_marginal_summaries()].
+#' @inheritParams brm_plot_compare
 #' @examples
 #' if (identical(Sys.getenv("BRM_EXAMPLES", unset = ""), "true")) {
 #' set.seed(0L)
@@ -39,8 +40,25 @@
 #' draws <- brm_marginal_draws(model = model, data = data)
 #' brm_plot_draws(draws = draws$difference_time)
 #' }
-brm_plot_draws <- function(draws) {
+brm_plot_draws <- function(
+  draws,
+  versus = "time",
+  facet = c("group", "subgroup")
+) {
   assert(is.data.frame(draws), message = "draws argument must be a data frame.")
+  assert_chr(versus, "'versus' must be a single nonempty character string")
+  assert_chr_vec(
+    facet,
+    "'facet' must be a nonempty character vector with 1 or 2 elements"
+  )
+  assert(
+    versus %in% c("time", "group", "subgroup"),
+    message = "'versus' must be \"time\", \"group\", or \"subgroup\""
+  )
+  assert(
+    facet %in% c("time", "group", "subgroup"),
+    message = "each 'facet' must be in \"time\", \"group\", or \"subgroup\""
+  )
   draws <- tibble::as_tibble(draws)
   for (name in names_mcmc) {
     draws[[name]] <- NULL
@@ -53,7 +71,29 @@ brm_plot_draws <- function(draws) {
   if (use_subgroup) {
     names_subgroup <- as.list(names_component(colnames(draws), "subgroup"))
     names(names_subgroup) <- colnames(draws)
+  } else {
+    facet <- setdiff(facet, "subgroup")
   }
+  assert(
+    length(facet) %in% 1L + use_subgroup,
+    message = paste(
+      "'facet' must have 1 element if the marginal summaries have no",
+      "subgroup, but 2 unique elements if there is a subgroup."
+    )
+  )
+  assert(
+    length(unique(c(versus, facet))) == 2L + use_subgroup,
+    message = paste(
+      "'versus' and 'facet' must include \"time\" and \"group\", as well as",
+      "\"subgroup\" if the marginal summaries have a subgroup."
+    )
+  )
+  assert(
+    use_subgroup || (versus != "subgroup"),
+    message = paste(
+      "'versus' cannot be \"subgroup\" when the summaries have no subgroup."
+    )
+  )
   draws <- pivot_longer(
     data = draws,
     cols = tidyselect::everything(),
@@ -80,16 +120,17 @@ brm_plot_draws <- function(draws) {
   draws$name <- NULL
   ggplot2::ggplot(draws) +
     ggridges::geom_density_ridges2(
-      ggplot2::aes(x = value, y = time),
+      ggplot2::aes(x = value, y = !!as.symbol(versus)),
       scale = 0.9,
       stat = "binline",
       bins = 20
     ) +
-    ggplot2::theme_gray(16) +
     ggplot2::coord_flip() +
     if_any(
       use_subgroup,
-      ggplot2::facet_grid(subgroup ~ group),
-      ggplot2::facet_wrap(~ group)
+      ggplot2::facet_grid(
+        as.formula(sprintf("%s ~ %s", facet[2L], facet[1L]))
+      ),
+      ggplot2::facet_wrap(as.formula(paste("~", facet)))
     )
 }
