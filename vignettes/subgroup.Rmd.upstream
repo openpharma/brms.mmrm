@@ -24,11 +24,11 @@ library(dplyr)
 library(magrittr)
 ```
 
-`brms.mmrm` can perform subgroup analysis on datasets with subgroups. The usual functions in `brms.mmrm` functions can summarize subgroup-specific and non-subgroup-specific marginal means of subgroup-enabled models, and metrics from `brms` can compare a subgroup model to its analogous non-subgroup reduced model.
+This vignette explains how to incorporate a subgroup variable into an MMRM using the `brms.mmrm` package. Here, we assume the subgroup variable has already been selected in advance. Subgroup variable selection is a thorough process that requires deep domain knowledge and careful adjustments for multiplicity, all of which belong outside the scope of this vignette. The subgroup MMRM analysis described below should not take place until there is sufficient prior justification for the choice of the subgroup variable.
 
 # Data
 
-For subgroup analysis, the dataset must have a single categorical variable to denote subgroup levels. 
+The subgroup variable must be categorical.
 
 ```{r}
 library(brms.mmrm)
@@ -48,7 +48,7 @@ raw_data <- brm_simulate_outline(
 raw_data
 ```
 
-Each subgroup level should have adequate representation among all treatment groups at all discrete time points. Otherwise, some marginal means of interest may not be estimable.
+Each categorical subgroup level should have adequate representation among all treatment groups at all discrete time points. Otherwise, some marginal means of interest may not be estimable.
 
 ```{r}
 count(raw_data, group, subgroup, time)
@@ -58,7 +58,7 @@ When you create the special classed dataset for `brms.mmrm` using `brm_data()`, 
 
 ```{r}
 data <- brm_data(
-  data = data,
+  data = raw_data,
   outcome = "response",
   role = "response",
   baseline = NULL,
@@ -102,6 +102,14 @@ formula_reduced <- brm_formula(
 formula_reduced
 ```
 
+# Regularization
+
+This analysis assumes there is already sufficient justification for the choice of the subgroup variable in the dataset. Nonetheless, a subgroup may appear significant due to random chance alone, and the inherent statistical multiplicity of subgroup selection increases the risk of this false positive outcome. If this is not a concern in your specific situation, then direct mitigation may not be necessary. Otherwise, one possible strategy is to express prior skepticism of a treatment-by-subgroup interaction: that is, to shrink the treatment-by-subgroup interaction fixed effects toward zero in the prior. A horseshoe prior is one possible shrinkage technique.^[Please be aware that horseshoe cannot be applied to individual scalar parameters. It must apply to an entire parameter class as a whole. Please read <https://paul-buerkner.github.io/brms/reference/horseshoe.html> to adjust the hyperparameters for your specific use case.]
+
+```{r, paged.print = FALSE}
+prior <- brms::set_prior(prior = "horseshoe(df = 1)",  class = "b")
+```
+
 # Models
 
 To run the full subgroup and reduced non-subgroup models, use `brm_model()` as usual. Remember to supply the appropriate formula to each case.
@@ -110,6 +118,12 @@ To run the full subgroup and reduced non-subgroup models, use `brm_model()` as u
 model_subgroup <- brm_model(
   data = data,
   formula = formula_subgroup,
+  # Uncomment the prior to use a the horseshoe shrinkage prior described above
+  # to express skepticism about treatment-subgroup interactions.
+  # This prior is commented out below for the vignette
+  # because it causes divergent transitions in Stan. In some cases,
+  # this can be mitigated by raising the horseshoe degrees of freedom.
+  # prior = prior,
   refresh = 0
 )
 ```
@@ -118,6 +132,8 @@ model_subgroup <- brm_model(
 model_reduced <- brm_model(
   data = data,
   formula = formula_reduced,
+  # Uncomment the prior if you uncommented it for the subgroup model above.
+  # prior = prior,
   refresh = 0
 )
 ```
@@ -250,17 +266,40 @@ loo::loo_compare(loo_subgroup, loo_reduced)
 
 `brm_plot_draws()` is aware of any subgroup-specific marginal means.
 
-```{r compare}
+```{r draws}
 brm_plot_draws(draws_subgroup_specific$difference_group)
 ```
 
-Likewise with `brm_plot_compare()`. The following function call compares the subgroup model results against the subgroup data.
+You can adjust visual aesthetics to compare subgroup levels side by side if subgroup level is the primary comparison of interest.
+
+```{r drawscustom}
+brm_plot_draws(
+  draws_subgroup_specific$difference_group,
+  axis = "subgroup",
+  facet = c("time", "group")
+)
+```
+
+The following function call compares the subgroup model results against the subgroup data.
 
 ```{r subgroup-vs-data}
 brm_plot_compare(
   data = summaries_data_subgroup,
   model = summaries_subgroup_specific,
   marginal = "response"
+)
+```
+
+You can adjust plot aesthetics to view subgroup levels side by side as the primary comparison of interest.
+
+```{r subgroup-vs-data-levels}
+brm_plot_compare(
+  data = summaries_data_subgroup,
+  model = summaries_subgroup_specific,
+  marginal = "response",
+  compare = "subgroup",
+  axis = "time",
+  facet = c("group", "source")
 )
 ```
 
