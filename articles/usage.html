@@ -242,34 +242,27 @@ effects model matrix <code>X</code>. Note the differences in the
 the one above.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">brms</span><span class="fu">::</span><span class="fu"><a href="https://paul-buerkner.github.io/brms/reference/make_standata.html" class="external-link">make_standata</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="va">formula</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span><span class="op">$</span><span class="va">X</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   Intercept groupgroup_1 groupgroup_2 timetime_1 timetime_2 timetime_3</span></span>
-<span><span class="co">#&gt; 1         1            1            0          1          0          0</span></span>
-<span><span class="co">#&gt; 2         1            1            0          0          1          0</span></span>
-<span><span class="co">#&gt; 3         1            1            0          0          0          1</span></span>
-<span><span class="co">#&gt; 4         1            1            0          0          0          0</span></span>
-<span><span class="co">#&gt; 5         1            1            0          1          0          0</span></span>
-<span><span class="co">#&gt; 6         1            1            0          0          1          0</span></span>
-<span><span class="co">#&gt;   biomarker1 biomarker2 groupgroup_1:timetime_1 groupgroup_2:timetime_1</span></span>
-<span><span class="co">#&gt; 1  1.3126508 -0.3608809                       1                       0</span></span>
-<span><span class="co">#&gt; 2  1.3126508 -0.3608809                       0                       0</span></span>
-<span><span class="co">#&gt; 3  1.3126508 -0.3608809                       0                       0</span></span>
-<span><span class="co">#&gt; 4  1.3126508 -0.3608809                       0                       0</span></span>
-<span><span class="co">#&gt; 5  0.1068624 -2.4441488                       1                       0</span></span>
-<span><span class="co">#&gt; 6  0.1068624 -2.4441488                       0                       0</span></span>
-<span><span class="co">#&gt;   groupgroup_1:timetime_2 groupgroup_2:timetime_2 groupgroup_1:timetime_3</span></span>
+<span><span class="co">#&gt;   Intercept groupgroup_1 groupgroup_2 timetime_1 timetime_2 timetime_3 biomarker1</span></span>
+<span><span class="co">#&gt; 1         1            1            0          1          0          0  1.3126508</span></span>
+<span><span class="co">#&gt; 2         1            1            0          0          1          0  1.3126508</span></span>
+<span><span class="co">#&gt; 3         1            1            0          0          0          1  1.3126508</span></span>
+<span><span class="co">#&gt; 4         1            1            0          0          0          0  1.3126508</span></span>
+<span><span class="co">#&gt; 5         1            1            0          1          0          0  0.1068624</span></span>
+<span><span class="co">#&gt; 6         1            1            0          0          1          0  0.1068624</span></span>
+<span><span class="co">#&gt;   biomarker2 groupgroup_1:timetime_1 groupgroup_2:timetime_1 groupgroup_1:timetime_2</span></span>
+<span><span class="co">#&gt; 1 -0.3608809                       1                       0                       0</span></span>
+<span><span class="co">#&gt; 2 -0.3608809                       0                       0                       1</span></span>
+<span><span class="co">#&gt; 3 -0.3608809                       0                       0                       0</span></span>
+<span><span class="co">#&gt; 4 -0.3608809                       0                       0                       0</span></span>
+<span><span class="co">#&gt; 5 -2.4441488                       1                       0                       0</span></span>
+<span><span class="co">#&gt; 6 -2.4441488                       0                       0                       1</span></span>
+<span><span class="co">#&gt;   groupgroup_2:timetime_2 groupgroup_1:timetime_3 groupgroup_2:timetime_3</span></span>
 <span><span class="co">#&gt; 1                       0                       0                       0</span></span>
-<span><span class="co">#&gt; 2                       1                       0                       0</span></span>
-<span><span class="co">#&gt; 3                       0                       0                       1</span></span>
+<span><span class="co">#&gt; 2                       0                       0                       0</span></span>
+<span><span class="co">#&gt; 3                       0                       1                       0</span></span>
 <span><span class="co">#&gt; 4                       0                       0                       0</span></span>
 <span><span class="co">#&gt; 5                       0                       0                       0</span></span>
-<span><span class="co">#&gt; 6                       1                       0                       0</span></span>
-<span><span class="co">#&gt;   groupgroup_2:timetime_3</span></span>
-<span><span class="co">#&gt; 1                       0</span></span>
-<span><span class="co">#&gt; 2                       0</span></span>
-<span><span class="co">#&gt; 3                       0</span></span>
-<span><span class="co">#&gt; 4                       0</span></span>
-<span><span class="co">#&gt; 5                       0</span></span>
-<span><span class="co">#&gt; 6                       0</span></span></code></pre></div>
+<span><span class="co">#&gt; 6                       0                       0                       0</span></span></code></pre></div>
 <p>If you choose a different contrast method, a different model matrix
 may result.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
@@ -278,34 +271,27 @@ may result.</p>
 <span><span class="op">)</span></span>
 <span><span class="co"># different model matrix than before:</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">brms</span><span class="fu">::</span><span class="fu"><a href="https://paul-buerkner.github.io/brms/reference/make_standata.html" class="external-link">make_standata</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="va">formula</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span><span class="op">$</span><span class="va">X</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   Intercept groupgroup_2 groupgroup_3 timetime_2 timetime_3 timetime_4</span></span>
-<span><span class="co">#&gt; 1         1            0            0          0          0          0</span></span>
-<span><span class="co">#&gt; 2         1            0            0          1          0          0</span></span>
-<span><span class="co">#&gt; 3         1            0            0          0          1          0</span></span>
-<span><span class="co">#&gt; 4         1            0            0          0          0          1</span></span>
-<span><span class="co">#&gt; 5         1            0            0          0          0          0</span></span>
-<span><span class="co">#&gt; 6         1            0            0          1          0          0</span></span>
-<span><span class="co">#&gt;   biomarker1 biomarker2 groupgroup_2:timetime_2 groupgroup_3:timetime_2</span></span>
-<span><span class="co">#&gt; 1  1.3126508 -0.3608809                       0                       0</span></span>
-<span><span class="co">#&gt; 2  1.3126508 -0.3608809                       0                       0</span></span>
-<span><span class="co">#&gt; 3  1.3126508 -0.3608809                       0                       0</span></span>
-<span><span class="co">#&gt; 4  1.3126508 -0.3608809                       0                       0</span></span>
-<span><span class="co">#&gt; 5  0.1068624 -2.4441488                       0                       0</span></span>
-<span><span class="co">#&gt; 6  0.1068624 -2.4441488                       0                       0</span></span>
-<span><span class="co">#&gt;   groupgroup_2:timetime_3 groupgroup_3:timetime_3 groupgroup_2:timetime_4</span></span>
+<span><span class="co">#&gt;   Intercept groupgroup_2 groupgroup_3 timetime_2 timetime_3 timetime_4 biomarker1</span></span>
+<span><span class="co">#&gt; 1         1            0            0          0          0          0  1.3126508</span></span>
+<span><span class="co">#&gt; 2         1            0            0          1          0          0  1.3126508</span></span>
+<span><span class="co">#&gt; 3         1            0            0          0          1          0  1.3126508</span></span>
+<span><span class="co">#&gt; 4         1            0            0          0          0          1  1.3126508</span></span>
+<span><span class="co">#&gt; 5         1            0            0          0          0          0  0.1068624</span></span>
+<span><span class="co">#&gt; 6         1            0            0          1          0          0  0.1068624</span></span>
+<span><span class="co">#&gt;   biomarker2 groupgroup_2:timetime_2 groupgroup_3:timetime_2 groupgroup_2:timetime_3</span></span>
+<span><span class="co">#&gt; 1 -0.3608809                       0                       0                       0</span></span>
+<span><span class="co">#&gt; 2 -0.3608809                       0                       0                       0</span></span>
+<span><span class="co">#&gt; 3 -0.3608809                       0                       0                       0</span></span>
+<span><span class="co">#&gt; 4 -0.3608809                       0                       0                       0</span></span>
+<span><span class="co">#&gt; 5 -2.4441488                       0                       0                       0</span></span>
+<span><span class="co">#&gt; 6 -2.4441488                       0                       0                       0</span></span>
+<span><span class="co">#&gt;   groupgroup_3:timetime_3 groupgroup_2:timetime_4 groupgroup_3:timetime_4</span></span>
 <span><span class="co">#&gt; 1                       0                       0                       0</span></span>
 <span><span class="co">#&gt; 2                       0                       0                       0</span></span>
 <span><span class="co">#&gt; 3                       0                       0                       0</span></span>
 <span><span class="co">#&gt; 4                       0                       0                       0</span></span>
 <span><span class="co">#&gt; 5                       0                       0                       0</span></span>
-<span><span class="co">#&gt; 6                       0                       0                       0</span></span>
-<span><span class="co">#&gt;   groupgroup_3:timetime_4</span></span>
-<span><span class="co">#&gt; 1                       0</span></span>
-<span><span class="co">#&gt; 2                       0</span></span>
-<span><span class="co">#&gt; 3                       0</span></span>
-<span><span class="co">#&gt; 4                       0</span></span>
-<span><span class="co">#&gt; 5                       0</span></span>
-<span><span class="co">#&gt; 6                       0</span></span></code></pre></div>
+<span><span class="co">#&gt; 6                       0                       0                       0</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="priors">Priors<a class="anchor" aria-label="anchor" href="#priors"></a>
@@ -321,50 +307,50 @@ the joint prior distribution of your model, you can pass it to the
 dataset and model formula.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">brms</span><span class="fu">::</span><span class="fu"><a href="https://paul-buerkner.github.io/brms/reference/get_prior.html" class="external-link">get_prior</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">data</span>, formula <span class="op">=</span> <span class="va">formula</span><span class="op">)</span></span>
-<span><span class="co">#&gt;                   prior     class                    coef group resp  dpar</span></span>
-<span><span class="co">#&gt;                  (flat)         b                                         </span></span>
-<span><span class="co">#&gt;                  (flat)         b              biomarker1                 </span></span>
-<span><span class="co">#&gt;                  (flat)         b              biomarker2                 </span></span>
-<span><span class="co">#&gt;                  (flat)         b            groupgroup_2                 </span></span>
-<span><span class="co">#&gt;                  (flat)         b groupgroup_2:timetime_2                 </span></span>
-<span><span class="co">#&gt;                  (flat)         b groupgroup_2:timetime_3                 </span></span>
-<span><span class="co">#&gt;                  (flat)         b groupgroup_2:timetime_4                 </span></span>
-<span><span class="co">#&gt;                  (flat)         b            groupgroup_3                 </span></span>
-<span><span class="co">#&gt;                  (flat)         b groupgroup_3:timetime_2                 </span></span>
-<span><span class="co">#&gt;                  (flat)         b groupgroup_3:timetime_3                 </span></span>
-<span><span class="co">#&gt;                  (flat)         b groupgroup_3:timetime_4                 </span></span>
-<span><span class="co">#&gt;                  (flat)         b              timetime_2                 </span></span>
-<span><span class="co">#&gt;                  (flat)         b              timetime_3                 </span></span>
-<span><span class="co">#&gt;                  (flat)         b              timetime_4                 </span></span>
-<span><span class="co">#&gt;                  lkj(1)   cortime                                         </span></span>
-<span><span class="co">#&gt;  student_t(3, 0.9, 2.5) Intercept                                         </span></span>
-<span><span class="co">#&gt;                  (flat)         b                                    sigma</span></span>
-<span><span class="co">#&gt;                  (flat)         b              timetime_1            sigma</span></span>
-<span><span class="co">#&gt;                  (flat)         b              timetime_2            sigma</span></span>
-<span><span class="co">#&gt;                  (flat)         b              timetime_3            sigma</span></span>
-<span><span class="co">#&gt;                  (flat)         b              timetime_4            sigma</span></span>
-<span><span class="co">#&gt;  nlpar lb ub       source</span></span>
-<span><span class="co">#&gt;                   default</span></span>
-<span><span class="co">#&gt;              (vectorized)</span></span>
-<span><span class="co">#&gt;              (vectorized)</span></span>
-<span><span class="co">#&gt;              (vectorized)</span></span>
-<span><span class="co">#&gt;              (vectorized)</span></span>
-<span><span class="co">#&gt;              (vectorized)</span></span>
-<span><span class="co">#&gt;              (vectorized)</span></span>
-<span><span class="co">#&gt;              (vectorized)</span></span>
-<span><span class="co">#&gt;              (vectorized)</span></span>
-<span><span class="co">#&gt;              (vectorized)</span></span>
-<span><span class="co">#&gt;              (vectorized)</span></span>
-<span><span class="co">#&gt;              (vectorized)</span></span>
-<span><span class="co">#&gt;              (vectorized)</span></span>
-<span><span class="co">#&gt;              (vectorized)</span></span>
-<span><span class="co">#&gt;                   default</span></span>
-<span><span class="co">#&gt;                   default</span></span>
-<span><span class="co">#&gt;                   default</span></span>
-<span><span class="co">#&gt;              (vectorized)</span></span>
-<span><span class="co">#&gt;              (vectorized)</span></span>
-<span><span class="co">#&gt;              (vectorized)</span></span>
-<span><span class="co">#&gt;              (vectorized)</span></span></code></pre></div>
+<span><span class="co">#&gt;                   prior     class                    coef group resp  dpar nlpar lb ub</span></span>
+<span><span class="co">#&gt;                  (flat)         b                                                     </span></span>
+<span><span class="co">#&gt;                  (flat)         b              biomarker1                             </span></span>
+<span><span class="co">#&gt;                  (flat)         b              biomarker2                             </span></span>
+<span><span class="co">#&gt;                  (flat)         b            groupgroup_2                             </span></span>
+<span><span class="co">#&gt;                  (flat)         b groupgroup_2:timetime_2                             </span></span>
+<span><span class="co">#&gt;                  (flat)         b groupgroup_2:timetime_3                             </span></span>
+<span><span class="co">#&gt;                  (flat)         b groupgroup_2:timetime_4                             </span></span>
+<span><span class="co">#&gt;                  (flat)         b            groupgroup_3                             </span></span>
+<span><span class="co">#&gt;                  (flat)         b groupgroup_3:timetime_2                             </span></span>
+<span><span class="co">#&gt;                  (flat)         b groupgroup_3:timetime_3                             </span></span>
+<span><span class="co">#&gt;                  (flat)         b groupgroup_3:timetime_4                             </span></span>
+<span><span class="co">#&gt;                  (flat)         b              timetime_2                             </span></span>
+<span><span class="co">#&gt;                  (flat)         b              timetime_3                             </span></span>
+<span><span class="co">#&gt;                  (flat)         b              timetime_4                             </span></span>
+<span><span class="co">#&gt;                  lkj(1)   cortime                                                     </span></span>
+<span><span class="co">#&gt;  student_t(3, 0.9, 2.5) Intercept                                                     </span></span>
+<span><span class="co">#&gt;                  (flat)         b                                    sigma            </span></span>
+<span><span class="co">#&gt;                  (flat)         b              timetime_1            sigma            </span></span>
+<span><span class="co">#&gt;                  (flat)         b              timetime_2            sigma            </span></span>
+<span><span class="co">#&gt;                  (flat)         b              timetime_3            sigma            </span></span>
+<span><span class="co">#&gt;                  (flat)         b              timetime_4            sigma            </span></span>
+<span><span class="co">#&gt;        source</span></span>
+<span><span class="co">#&gt;       default</span></span>
+<span><span class="co">#&gt;  (vectorized)</span></span>
+<span><span class="co">#&gt;  (vectorized)</span></span>
+<span><span class="co">#&gt;  (vectorized)</span></span>
+<span><span class="co">#&gt;  (vectorized)</span></span>
+<span><span class="co">#&gt;  (vectorized)</span></span>
+<span><span class="co">#&gt;  (vectorized)</span></span>
+<span><span class="co">#&gt;  (vectorized)</span></span>
+<span><span class="co">#&gt;  (vectorized)</span></span>
+<span><span class="co">#&gt;  (vectorized)</span></span>
+<span><span class="co">#&gt;  (vectorized)</span></span>
+<span><span class="co">#&gt;  (vectorized)</span></span>
+<span><span class="co">#&gt;  (vectorized)</span></span>
+<span><span class="co">#&gt;  (vectorized)</span></span>
+<span><span class="co">#&gt;       default</span></span>
+<span><span class="co">#&gt;       default</span></span>
+<span><span class="co">#&gt;       default</span></span>
+<span><span class="co">#&gt;  (vectorized)</span></span>
+<span><span class="co">#&gt;  (vectorized)</span></span>
+<span><span class="co">#&gt;  (vectorized)</span></span>
+<span><span class="co">#&gt;  (vectorized)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="model">Model<a class="anchor" aria-label="anchor" href="#model"></a>
@@ -387,60 +373,34 @@ formula and prior you set in the <code>formula</code> and
 <span><span class="co">#&gt;          total post-warmup draws = 4000</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Correlation Structures:</span></span>
-<span><span class="co">#&gt;                        Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS</span></span>
-<span><span class="co">#&gt; cortime(time_1,time_2)     0.42      0.05     0.33     0.51 1.00     3382</span></span>
-<span><span class="co">#&gt; cortime(time_1,time_3)    -0.80      0.02    -0.84    -0.76 1.00     2556</span></span>
-<span><span class="co">#&gt; cortime(time_2,time_3)    -0.54      0.04    -0.62    -0.46 1.00     3662</span></span>
-<span><span class="co">#&gt; cortime(time_1,time_4)    -0.29      0.05    -0.39    -0.18 1.00     3986</span></span>
-<span><span class="co">#&gt; cortime(time_2,time_4)     0.03      0.06    -0.08     0.14 1.00     3173</span></span>
-<span><span class="co">#&gt; cortime(time_3,time_4)    -0.10      0.06    -0.21     0.01 1.00     3969</span></span>
-<span><span class="co">#&gt;                        Tail_ESS</span></span>
-<span><span class="co">#&gt; cortime(time_1,time_2)     2852</span></span>
-<span><span class="co">#&gt; cortime(time_1,time_3)     2895</span></span>
-<span><span class="co">#&gt; cortime(time_2,time_3)     3516</span></span>
-<span><span class="co">#&gt; cortime(time_1,time_4)     2962</span></span>
-<span><span class="co">#&gt; cortime(time_2,time_4)     2746</span></span>
-<span><span class="co">#&gt; cortime(time_3,time_4)     2808</span></span>
+<span><span class="co">#&gt;                        Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS</span></span>
+<span><span class="co">#&gt; cortime(time_1,time_2)     0.42      0.05     0.33     0.51 1.00     3382     2852</span></span>
+<span><span class="co">#&gt; cortime(time_1,time_3)    -0.80      0.02    -0.84    -0.76 1.00     2556     2895</span></span>
+<span><span class="co">#&gt; cortime(time_2,time_3)    -0.54      0.04    -0.62    -0.46 1.00     3662     3516</span></span>
+<span><span class="co">#&gt; cortime(time_1,time_4)    -0.29      0.05    -0.39    -0.18 1.00     3986     2962</span></span>
+<span><span class="co">#&gt; cortime(time_2,time_4)     0.03      0.06    -0.08     0.14 1.00     3173     2746</span></span>
+<span><span class="co">#&gt; cortime(time_3,time_4)    -0.10      0.06    -0.21     0.01 1.00     3969     2808</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Regression Coefficients:</span></span>
-<span><span class="co">#&gt;                         Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS</span></span>
-<span><span class="co">#&gt; Intercept                   1.22      0.09     1.05     1.39 1.01     1362</span></span>
-<span><span class="co">#&gt; groupgroup_2               -1.54      0.13    -1.78    -1.30 1.01     1402</span></span>
-<span><span class="co">#&gt; groupgroup_3                0.18      0.12    -0.06     0.42 1.00     1547</span></span>
-<span><span class="co">#&gt; timetime_2                  1.31      0.10     1.11     1.51 1.00     1807</span></span>
-<span><span class="co">#&gt; timetime_3                  0.51      0.17     0.17     0.84 1.00     1538</span></span>
-<span><span class="co">#&gt; timetime_4                 -1.45      0.17    -1.79    -1.12 1.01     1539</span></span>
-<span><span class="co">#&gt; biomarker1                 -0.01      0.01    -0.03     0.01 1.00     5220</span></span>
-<span><span class="co">#&gt; biomarker2                  0.02      0.01     0.00     0.04 1.00     5408</span></span>
-<span><span class="co">#&gt; groupgroup_2:timetime_2     0.04      0.15    -0.24     0.33 1.00     2001</span></span>
-<span><span class="co">#&gt; groupgroup_3:timetime_2     0.03      0.14    -0.25     0.30 1.00     2139</span></span>
-<span><span class="co">#&gt; groupgroup_2:timetime_3    -0.16      0.25    -0.64     0.32 1.00     1566</span></span>
-<span><span class="co">#&gt; groupgroup_3:timetime_3    -0.19      0.25    -0.68     0.29 1.00     1784</span></span>
-<span><span class="co">#&gt; groupgroup_2:timetime_4    -0.06      0.24    -0.54     0.42 1.00     1691</span></span>
-<span><span class="co">#&gt; groupgroup_3:timetime_4    -0.25      0.24    -0.71     0.22 1.00     1789</span></span>
-<span><span class="co">#&gt; sigma_timetime_1           -0.12      0.04    -0.20    -0.04 1.00     2528</span></span>
-<span><span class="co">#&gt; sigma_timetime_2            0.00      0.04    -0.07     0.09 1.00     3831</span></span>
-<span><span class="co">#&gt; sigma_timetime_3           -0.05      0.04    -0.13     0.03 1.00     2345</span></span>
-<span><span class="co">#&gt; sigma_timetime_4            0.21      0.04     0.13     0.29 1.00     3631</span></span>
-<span><span class="co">#&gt;                         Tail_ESS</span></span>
-<span><span class="co">#&gt; Intercept                   2352</span></span>
-<span><span class="co">#&gt; groupgroup_2                2349</span></span>
-<span><span class="co">#&gt; groupgroup_3                2209</span></span>
-<span><span class="co">#&gt; timetime_2                  2158</span></span>
-<span><span class="co">#&gt; timetime_3                  2286</span></span>
-<span><span class="co">#&gt; timetime_4                  2284</span></span>
-<span><span class="co">#&gt; biomarker1                  3207</span></span>
-<span><span class="co">#&gt; biomarker2                  2900</span></span>
-<span><span class="co">#&gt; groupgroup_2:timetime_2     2680</span></span>
-<span><span class="co">#&gt; groupgroup_3:timetime_2     2806</span></span>
-<span><span class="co">#&gt; groupgroup_2:timetime_3     2224</span></span>
-<span><span class="co">#&gt; groupgroup_3:timetime_3     2678</span></span>
-<span><span class="co">#&gt; groupgroup_2:timetime_4     2437</span></span>
-<span><span class="co">#&gt; groupgroup_3:timetime_4     2256</span></span>
-<span><span class="co">#&gt; sigma_timetime_1            2525</span></span>
-<span><span class="co">#&gt; sigma_timetime_2            2891</span></span>
-<span><span class="co">#&gt; sigma_timetime_3            2748</span></span>
-<span><span class="co">#&gt; sigma_timetime_4            2831</span></span>
+<span><span class="co">#&gt; Population-Level Effects: </span></span>
+<span><span class="co">#&gt;                         Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS</span></span>
+<span><span class="co">#&gt; Intercept                   1.22      0.09     1.05     1.39 1.01     1362     2352</span></span>
+<span><span class="co">#&gt; groupgroup_2               -1.54      0.13    -1.78    -1.30 1.01     1402     2349</span></span>
+<span><span class="co">#&gt; groupgroup_3                0.18      0.12    -0.06     0.42 1.00     1547     2209</span></span>
+<span><span class="co">#&gt; timetime_2                  1.31      0.10     1.11     1.51 1.00     1807     2158</span></span>
+<span><span class="co">#&gt; timetime_3                  0.51      0.17     0.17     0.84 1.00     1538     2286</span></span>
+<span><span class="co">#&gt; timetime_4                 -1.45      0.17    -1.79    -1.12 1.01     1539     2284</span></span>
+<span><span class="co">#&gt; biomarker1                 -0.01      0.01    -0.03     0.01 1.00     5220     3207</span></span>
+<span><span class="co">#&gt; biomarker2                  0.02      0.01     0.00     0.04 1.00     5408     2900</span></span>
+<span><span class="co">#&gt; groupgroup_2:timetime_2     0.04      0.15    -0.24     0.33 1.00     2001     2680</span></span>
+<span><span class="co">#&gt; groupgroup_3:timetime_2     0.03      0.14    -0.25     0.30 1.00     2139     2806</span></span>
+<span><span class="co">#&gt; groupgroup_2:timetime_3    -0.16      0.25    -0.64     0.32 1.00     1566     2224</span></span>
+<span><span class="co">#&gt; groupgroup_3:timetime_3    -0.19      0.25    -0.68     0.29 1.00     1784     2678</span></span>
+<span><span class="co">#&gt; groupgroup_2:timetime_4    -0.06      0.24    -0.54     0.42 1.00     1691     2437</span></span>
+<span><span class="co">#&gt; groupgroup_3:timetime_4    -0.25      0.24    -0.71     0.22 1.00     1789     2256</span></span>
+<span><span class="co">#&gt; sigma_timetime_1           -0.12      0.04    -0.20    -0.04 1.00     2528     2525</span></span>
+<span><span class="co">#&gt; sigma_timetime_2            0.00      0.04    -0.07     0.09 1.00     3831     2891</span></span>
+<span><span class="co">#&gt; sigma_timetime_3           -0.05      0.04    -0.13     0.03 1.00     2345     2748</span></span>
+<span><span class="co">#&gt; sigma_timetime_4            0.21      0.04     0.13     0.29 1.00     3631     2831</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Draws were sampled using sampling(NUTS). For each parameter, Bulk_ESS</span></span>
 <span><span class="co">#&gt; and Tail_ESS are effective sample size measures, and Rhat is the potential</span></span>
@@ -742,11 +702,33 @@ change from baseline or the treatment effect.</p>
 <span>  marginal <span class="op">=</span> <span class="st">"difference_group"</span> <span class="co"># treatment effect</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="usage/difference-1.png"></p>
+<p>Additional arguments let you control the primary comparison of
+interest (the color aesthetic), the horizontal axis, and the faceting
+variable.</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/brm_plot_compare.html">brm_plot_compare</a></span><span class="op">(</span></span>
+<span>  model1 <span class="op">=</span> <span class="va">summaries</span>,</span>
+<span>  model2 <span class="op">=</span> <span class="va">summaries</span>,</span>
+<span>  marginal <span class="op">=</span> <span class="st">"difference_group"</span>,</span>
+<span>  compare <span class="op">=</span> <span class="st">"group"</span>,</span>
+<span>  axis <span class="op">=</span> <span class="st">"time"</span>,</span>
+<span>  facet <span class="op">=</span> <span class="st">"source"</span> <span class="co"># model1 vs model2</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><img src="usage/differencecustom-1.png"></p>
 <p>Finally, <code><a href="../reference/brm_plot_draws.html">brm_plot_draws()</a></code> can plot the posterior draws
 of the response, change from baseline, or treatment difference.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/brm_plot_draws.html">brm_plot_draws</a></span><span class="op">(</span>draws <span class="op">=</span> <span class="va">draws</span><span class="op">$</span><span class="va">difference_group</span><span class="op">)</span></span></code></pre></div>
 <p><img src="usage/draws-1.png"></p>
+<p>The <code>axis</code> and <code>facet</code> arguments customize the
+horizontal axis and faceting variable, respectively.</p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/brm_plot_draws.html">brm_plot_draws</a></span><span class="op">(</span></span>
+<span>  draws <span class="op">=</span> <span class="va">draws</span><span class="op">$</span><span class="va">difference_group</span>,</span>
+<span>  axis <span class="op">=</span> <span class="st">"group"</span>,</span>
+<span>  facet <span class="op">=</span> <span class="st">"time"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><img src="usage/drawscustom-1.png"></p>
 </div>
 <div class="footnotes footnotes-end-of-document">
 <hr>
