@@ -4,21 +4,21 @@
 \alias{brm_plot_draws}
 \title{Visualize posterior draws of marginals.}
 \usage{
-brm_plot_draws(draws, versus = "time", facet = c("group", "subgroup"))
+brm_plot_draws(draws, axis = "time", facet = c("group", "subgroup"))
 }
 \arguments{
 \item{draws}{A data frame of draws from an element of
 the output list of \code{\link[=brm_marginal_summaries]{brm_marginal_summaries()}}.}
 
-\item{versus}{Character of length 1 identifying the quantity to put
+\item{axis}{Character of length 1 identifying the quantity to put
 on the horizontal axis. Must be be one of \code{"time"} or \code{"group"} if
 the marginal summaries are not subgroup-specific. If the marginals
-are subgroup-specific, then \code{versus} must be one of
+are subgroup-specific, then \code{axis} must be one of
 \code{"time"}, \code{"group"}, or \code{"subgroup"}.}
 
 \item{facet}{Character vector of length 1 or 2 with quantities to
 generate facets. Each element must be \code{"time"}, \code{"group"},
-or \code{"subgroup"}, and \code{c(versus, facet)} must all have unique elements.
+or \code{"subgroup"}, and \code{c(axis, facet)} must all have unique elements.
 \code{"subgroup"} is automatically removed if the marginals have no
 subgroup. If \code{facet} has length 1, then faceting is wrapped.
 If \code{facet} has length 2, then faceting is in a grid,

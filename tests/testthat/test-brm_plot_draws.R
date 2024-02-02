@@ -40,7 +40,7 @@ test_that("brm_plot_draws() without subgroup", {
   expect_s3_class(
     brm_plot_draws(
       draws = draws$difference_time,
-      versus = "time",
+      axis = "time",
       facet = "group"
     ),
     "ggplot"
@@ -48,7 +48,7 @@ test_that("brm_plot_draws() without subgroup", {
   expect_s3_class(
     brm_plot_draws(
       draws = draws$difference_time,
-      versus = "group",
+      axis = "group",
       facet = "time"
     ),
     "ggplot"
@@ -94,7 +94,7 @@ test_that("brm_plot_draws() with subgroup", {
   expect_s3_class(
     brm_plot_draws(
       draws = draws$difference_time,
-      versus = "time",
+      axis = "time",
       facet = c("group", "subgroup")
     ),
     "ggplot"
@@ -102,7 +102,7 @@ test_that("brm_plot_draws() with subgroup", {
   expect_s3_class(
     brm_plot_draws(
       draws = draws$difference_time,
-      versus = "time",
+      axis = "time",
       facet = c("subgroup", "group")
     ),
     "ggplot"
@@ -110,7 +110,7 @@ test_that("brm_plot_draws() with subgroup", {
   expect_s3_class(
     brm_plot_draws(
       draws = draws$difference_time,
-      versus = "group",
+      axis = "group",
       facet = c("time", "subgroup")
     ),
     "ggplot"
@@ -118,7 +118,7 @@ test_that("brm_plot_draws() with subgroup", {
   expect_s3_class(
     brm_plot_draws(
       draws = draws$difference_time,
-      versus = "subgroup",
+      axis = "subgroup",
       facet = c("time", "group")
     ),
     "ggplot"

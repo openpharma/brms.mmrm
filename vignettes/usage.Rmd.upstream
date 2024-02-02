@@ -246,8 +246,31 @@ brm_plot_compare(
 )
 ```
 
+Additional arguments let you control the primary comparison of interest (the color aesthetic), the horizontal axis, and the faceting variable.
+
+```{r differencecustom}
+brm_plot_compare(
+  model1 = summaries,
+  model2 = summaries,
+  marginal = "difference_group",
+  compare = "group",
+  axis = "time",
+  facet = "source" # model1 vs model2
+)
+```
+
 Finally, `brm_plot_draws()` can plot the posterior draws of the response, change from baseline, or treatment difference.
 
 ```{r draws}
 brm_plot_draws(draws = draws$difference_group)
+```
+
+The `axis` and `facet` arguments customize the horizontal axis and faceting variable, respectively.
+
+```{r drawscustom}
+brm_plot_draws(
+  draws = draws$difference_group,
+  axis = "group",
+  facet = "time"
+)
 ```

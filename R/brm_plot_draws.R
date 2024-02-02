@@ -5,14 +5,14 @@
 #' @return A `ggplot` object.
 #' @param draws A data frame of draws from an element of
 #'   the output list of [brm_marginal_summaries()].
-#' @param versus Character of length 1 identifying the quantity to put
+#' @param axis Character of length 1 identifying the quantity to put
 #'   on the horizontal axis. Must be be one of `"time"` or `"group"` if
 #'   the marginal summaries are not subgroup-specific. If the marginals
-#'   are subgroup-specific, then `versus` must be one of
+#'   are subgroup-specific, then `axis` must be one of
 #'   `"time"`, `"group"`, or `"subgroup"`.
 #' @param facet Character vector of length 1 or 2 with quantities to
 #'   generate facets. Each element must be `"time"`, `"group"`,
-#'   or `"subgroup"`, and `c(versus, facet)` must all have unique elements.
+#'   or `"subgroup"`, and `c(axis, facet)` must all have unique elements.
 #'   `"subgroup"` is automatically removed if the marginals have no
 #'   subgroup. If `facet` has length 1, then faceting is wrapped.
 #'   If `facet` has length 2, then faceting is in a grid,
@@ -53,18 +53,18 @@
 #' }
 brm_plot_draws <- function(
   draws,
-  versus = "time",
+  axis = "time",
   facet = c("group", "subgroup")
 ) {
   assert(is.data.frame(draws), message = "draws argument must be a data frame.")
-  assert_chr(versus, "'versus' must be a single nonempty character string")
+  assert_chr(axis, "'axis' must be a single nonempty character string")
   assert_chr_vec(
     facet,
     "'facet' must be a nonempty character vector with 1 or 2 elements"
   )
   assert(
-    versus %in% c("time", "group", "subgroup"),
-    message = "'versus' must be \"time\", \"group\", or \"subgroup\""
+    axis %in% c("time", "group", "subgroup"),
+    message = "'axis' must be \"time\", \"group\", or \"subgroup\""
   )
   assert(
     facet %in% c("time", "group", "subgroup"),
@@ -93,16 +93,16 @@ brm_plot_draws <- function(
     )
   )
   assert(
-    length(unique(c(versus, facet))) == 2L + use_subgroup,
+    length(unique(c(axis, facet))) == 2L + use_subgroup,
     message = paste(
-      "'versus' and 'facet' must include \"time\" and \"group\", as well as",
+      "'axis' and 'facet' must include \"time\" and \"group\", as well as",
       "\"subgroup\" if the marginal summaries have a subgroup."
     )
   )
   assert(
-    use_subgroup || (versus != "subgroup"),
+    use_subgroup || (axis != "subgroup"),
     message = paste(
-      "'versus' cannot be \"subgroup\" when the summaries have no subgroup."
+      "'axis' cannot be \"subgroup\" when the summaries have no subgroup."
     )
   )
   draws <- pivot_longer(
@@ -131,7 +131,7 @@ brm_plot_draws <- function(
   draws$name <- NULL
   ggplot2::ggplot(draws) +
     ggridges::geom_density_ridges2(
-      ggplot2::aes(x = value, y = !!as.symbol(versus)),
+      ggplot2::aes(x = value, y = !!as.symbol(axis)),
       scale = 0.9,
       stat = "binline",
       bins = 20

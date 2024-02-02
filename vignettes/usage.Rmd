@@ -165,34 +165,27 @@ The `make_standata()` function lets you see the data that `brms` will generate f
 
 ```r
 head(brms::make_standata(formula = formula, data = data)$X)
-#>   Intercept groupgroup_1 groupgroup_2 timetime_1 timetime_2 timetime_3
-#> 1         1            1            0          1          0          0
-#> 2         1            1            0          0          1          0
-#> 3         1            1            0          0          0          1
-#> 4         1            1            0          0          0          0
-#> 5         1            1            0          1          0          0
-#> 6         1            1            0          0          1          0
-#>   biomarker1 biomarker2 groupgroup_1:timetime_1 groupgroup_2:timetime_1
-#> 1  1.3126508 -0.3608809                       1                       0
-#> 2  1.3126508 -0.3608809                       0                       0
-#> 3  1.3126508 -0.3608809                       0                       0
-#> 4  1.3126508 -0.3608809                       0                       0
-#> 5  0.1068624 -2.4441488                       1                       0
-#> 6  0.1068624 -2.4441488                       0                       0
-#>   groupgroup_1:timetime_2 groupgroup_2:timetime_2 groupgroup_1:timetime_3
+#>   Intercept groupgroup_1 groupgroup_2 timetime_1 timetime_2 timetime_3 biomarker1
+#> 1         1            1            0          1          0          0  1.3126508
+#> 2         1            1            0          0          1          0  1.3126508
+#> 3         1            1            0          0          0          1  1.3126508
+#> 4         1            1            0          0          0          0  1.3126508
+#> 5         1            1            0          1          0          0  0.1068624
+#> 6         1            1            0          0          1          0  0.1068624
+#>   biomarker2 groupgroup_1:timetime_1 groupgroup_2:timetime_1 groupgroup_1:timetime_2
+#> 1 -0.3608809                       1                       0                       0
+#> 2 -0.3608809                       0                       0                       1
+#> 3 -0.3608809                       0                       0                       0
+#> 4 -0.3608809                       0                       0                       0
+#> 5 -2.4441488                       1                       0                       0
+#> 6 -2.4441488                       0                       0                       1
+#>   groupgroup_2:timetime_2 groupgroup_1:timetime_3 groupgroup_2:timetime_3
 #> 1                       0                       0                       0
-#> 2                       1                       0                       0
-#> 3                       0                       0                       1
+#> 2                       0                       0                       0
+#> 3                       0                       1                       0
 #> 4                       0                       0                       0
 #> 5                       0                       0                       0
-#> 6                       1                       0                       0
-#>   groupgroup_2:timetime_3
-#> 1                       0
-#> 2                       0
-#> 3                       0
-#> 4                       0
-#> 5                       0
-#> 6                       0
+#> 6                       0                       0                       0
 ```
 
 If you choose a different contrast method, a different model matrix may result.
@@ -204,34 +197,27 @@ options(
 )
 # different model matrix than before:
 head(brms::make_standata(formula = formula, data = data)$X)
-#>   Intercept groupgroup_2 groupgroup_3 timetime_2 timetime_3 timetime_4
-#> 1         1            0            0          0          0          0
-#> 2         1            0            0          1          0          0
-#> 3         1            0            0          0          1          0
-#> 4         1            0            0          0          0          1
-#> 5         1            0            0          0          0          0
-#> 6         1            0            0          1          0          0
-#>   biomarker1 biomarker2 groupgroup_2:timetime_2 groupgroup_3:timetime_2
-#> 1  1.3126508 -0.3608809                       0                       0
-#> 2  1.3126508 -0.3608809                       0                       0
-#> 3  1.3126508 -0.3608809                       0                       0
-#> 4  1.3126508 -0.3608809                       0                       0
-#> 5  0.1068624 -2.4441488                       0                       0
-#> 6  0.1068624 -2.4441488                       0                       0
-#>   groupgroup_2:timetime_3 groupgroup_3:timetime_3 groupgroup_2:timetime_4
+#>   Intercept groupgroup_2 groupgroup_3 timetime_2 timetime_3 timetime_4 biomarker1
+#> 1         1            0            0          0          0          0  1.3126508
+#> 2         1            0            0          1          0          0  1.3126508
+#> 3         1            0            0          0          1          0  1.3126508
+#> 4         1            0            0          0          0          1  1.3126508
+#> 5         1            0            0          0          0          0  0.1068624
+#> 6         1            0            0          1          0          0  0.1068624
+#>   biomarker2 groupgroup_2:timetime_2 groupgroup_3:timetime_2 groupgroup_2:timetime_3
+#> 1 -0.3608809                       0                       0                       0
+#> 2 -0.3608809                       0                       0                       0
+#> 3 -0.3608809                       0                       0                       0
+#> 4 -0.3608809                       0                       0                       0
+#> 5 -2.4441488                       0                       0                       0
+#> 6 -2.4441488                       0                       0                       0
+#>   groupgroup_3:timetime_3 groupgroup_2:timetime_4 groupgroup_3:timetime_4
 #> 1                       0                       0                       0
 #> 2                       0                       0                       0
 #> 3                       0                       0                       0
 #> 4                       0                       0                       0
 #> 5                       0                       0                       0
 #> 6                       0                       0                       0
-#>   groupgroup_3:timetime_4
-#> 1                       0
-#> 2                       0
-#> 3                       0
-#> 4                       0
-#> 5                       0
-#> 6                       0
 ```
 
 # Priors
@@ -241,50 +227,50 @@ Some analyses require informative priors, others require non-informative ones. P
 
 ```r
 brms::get_prior(data = data, formula = formula)
-#>                   prior     class                    coef group resp  dpar
-#>                  (flat)         b                                         
-#>                  (flat)         b              biomarker1                 
-#>                  (flat)         b              biomarker2                 
-#>                  (flat)         b            groupgroup_2                 
-#>                  (flat)         b groupgroup_2:timetime_2                 
-#>                  (flat)         b groupgroup_2:timetime_3                 
-#>                  (flat)         b groupgroup_2:timetime_4                 
-#>                  (flat)         b            groupgroup_3                 
-#>                  (flat)         b groupgroup_3:timetime_2                 
-#>                  (flat)         b groupgroup_3:timetime_3                 
-#>                  (flat)         b groupgroup_3:timetime_4                 
-#>                  (flat)         b              timetime_2                 
-#>                  (flat)         b              timetime_3                 
-#>                  (flat)         b              timetime_4                 
-#>                  lkj(1)   cortime                                         
-#>  student_t(3, 0.9, 2.5) Intercept                                         
-#>                  (flat)         b                                    sigma
-#>                  (flat)         b              timetime_1            sigma
-#>                  (flat)         b              timetime_2            sigma
-#>                  (flat)         b              timetime_3            sigma
-#>                  (flat)         b              timetime_4            sigma
-#>  nlpar lb ub       source
-#>                   default
-#>              (vectorized)
-#>              (vectorized)
-#>              (vectorized)
-#>              (vectorized)
-#>              (vectorized)
-#>              (vectorized)
-#>              (vectorized)
-#>              (vectorized)
-#>              (vectorized)
-#>              (vectorized)
-#>              (vectorized)
-#>              (vectorized)
-#>              (vectorized)
-#>                   default
-#>                   default
-#>                   default
-#>              (vectorized)
-#>              (vectorized)
-#>              (vectorized)
-#>              (vectorized)
+#>                   prior     class                    coef group resp  dpar nlpar lb ub
+#>                  (flat)         b                                                     
+#>                  (flat)         b              biomarker1                             
+#>                  (flat)         b              biomarker2                             
+#>                  (flat)         b            groupgroup_2                             
+#>                  (flat)         b groupgroup_2:timetime_2                             
+#>                  (flat)         b groupgroup_2:timetime_3                             
+#>                  (flat)         b groupgroup_2:timetime_4                             
+#>                  (flat)         b            groupgroup_3                             
+#>                  (flat)         b groupgroup_3:timetime_2                             
+#>                  (flat)         b groupgroup_3:timetime_3                             
+#>                  (flat)         b groupgroup_3:timetime_4                             
+#>                  (flat)         b              timetime_2                             
+#>                  (flat)         b              timetime_3                             
+#>                  (flat)         b              timetime_4                             
+#>                  lkj(1)   cortime                                                     
+#>  student_t(3, 0.9, 2.5) Intercept                                                     
+#>                  (flat)         b                                    sigma            
+#>                  (flat)         b              timetime_1            sigma            
+#>                  (flat)         b              timetime_2            sigma            
+#>                  (flat)         b              timetime_3            sigma            
+#>                  (flat)         b              timetime_4            sigma            
+#>        source
+#>       default
+#>  (vectorized)
+#>  (vectorized)
+#>  (vectorized)
+#>  (vectorized)
+#>  (vectorized)
+#>  (vectorized)
+#>  (vectorized)
+#>  (vectorized)
+#>  (vectorized)
+#>  (vectorized)
+#>  (vectorized)
+#>  (vectorized)
+#>  (vectorized)
+#>       default
+#>       default
+#>       default
+#>  (vectorized)
+#>  (vectorized)
+#>  (vectorized)
+#>  (vectorized)
 ```
 
 # Model
@@ -312,60 +298,34 @@ model
 #>          total post-warmup draws = 4000
 #> 
 #> Correlation Structures:
-#>                        Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS
-#> cortime(time_1,time_2)     0.42      0.05     0.33     0.51 1.00     3382
-#> cortime(time_1,time_3)    -0.80      0.02    -0.84    -0.76 1.00     2556
-#> cortime(time_2,time_3)    -0.54      0.04    -0.62    -0.46 1.00     3662
-#> cortime(time_1,time_4)    -0.29      0.05    -0.39    -0.18 1.00     3986
-#> cortime(time_2,time_4)     0.03      0.06    -0.08     0.14 1.00     3173
-#> cortime(time_3,time_4)    -0.10      0.06    -0.21     0.01 1.00     3969
-#>                        Tail_ESS
-#> cortime(time_1,time_2)     2852
-#> cortime(time_1,time_3)     2895
-#> cortime(time_2,time_3)     3516
-#> cortime(time_1,time_4)     2962
-#> cortime(time_2,time_4)     2746
-#> cortime(time_3,time_4)     2808
+#>                        Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+#> cortime(time_1,time_2)     0.42      0.05     0.33     0.51 1.00     3382     2852
+#> cortime(time_1,time_3)    -0.80      0.02    -0.84    -0.76 1.00     2556     2895
+#> cortime(time_2,time_3)    -0.54      0.04    -0.62    -0.46 1.00     3662     3516
+#> cortime(time_1,time_4)    -0.29      0.05    -0.39    -0.18 1.00     3986     2962
+#> cortime(time_2,time_4)     0.03      0.06    -0.08     0.14 1.00     3173     2746
+#> cortime(time_3,time_4)    -0.10      0.06    -0.21     0.01 1.00     3969     2808
 #> 
-#> Regression Coefficients:
-#>                         Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS
-#> Intercept                   1.22      0.09     1.05     1.39 1.01     1362
-#> groupgroup_2               -1.54      0.13    -1.78    -1.30 1.01     1402
-#> groupgroup_3                0.18      0.12    -0.06     0.42 1.00     1547
-#> timetime_2                  1.31      0.10     1.11     1.51 1.00     1807
-#> timetime_3                  0.51      0.17     0.17     0.84 1.00     1538
-#> timetime_4                 -1.45      0.17    -1.79    -1.12 1.01     1539
-#> biomarker1                 -0.01      0.01    -0.03     0.01 1.00     5220
-#> biomarker2                  0.02      0.01     0.00     0.04 1.00     5408
-#> groupgroup_2:timetime_2     0.04      0.15    -0.24     0.33 1.00     2001
-#> groupgroup_3:timetime_2     0.03      0.14    -0.25     0.30 1.00     2139
-#> groupgroup_2:timetime_3    -0.16      0.25    -0.64     0.32 1.00     1566
-#> groupgroup_3:timetime_3    -0.19      0.25    -0.68     0.29 1.00     1784
-#> groupgroup_2:timetime_4    -0.06      0.24    -0.54     0.42 1.00     1691
-#> groupgroup_3:timetime_4    -0.25      0.24    -0.71     0.22 1.00     1789
-#> sigma_timetime_1           -0.12      0.04    -0.20    -0.04 1.00     2528
-#> sigma_timetime_2            0.00      0.04    -0.07     0.09 1.00     3831
-#> sigma_timetime_3           -0.05      0.04    -0.13     0.03 1.00     2345
-#> sigma_timetime_4            0.21      0.04     0.13     0.29 1.00     3631
-#>                         Tail_ESS
-#> Intercept                   2352
-#> groupgroup_2                2349
-#> groupgroup_3                2209
-#> timetime_2                  2158
-#> timetime_3                  2286
-#> timetime_4                  2284
-#> biomarker1                  3207
-#> biomarker2                  2900
-#> groupgroup_2:timetime_2     2680
-#> groupgroup_3:timetime_2     2806
-#> groupgroup_2:timetime_3     2224
-#> groupgroup_3:timetime_3     2678
-#> groupgroup_2:timetime_4     2437
-#> groupgroup_3:timetime_4     2256
-#> sigma_timetime_1            2525
-#> sigma_timetime_2            2891
-#> sigma_timetime_3            2748
-#> sigma_timetime_4            2831
+#> Population-Level Effects: 
+#>                         Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+#> Intercept                   1.22      0.09     1.05     1.39 1.01     1362     2352
+#> groupgroup_2               -1.54      0.13    -1.78    -1.30 1.01     1402     2349
+#> groupgroup_3                0.18      0.12    -0.06     0.42 1.00     1547     2209
+#> timetime_2                  1.31      0.10     1.11     1.51 1.00     1807     2158
+#> timetime_3                  0.51      0.17     0.17     0.84 1.00     1538     2286
+#> timetime_4                 -1.45      0.17    -1.79    -1.12 1.01     1539     2284
+#> biomarker1                 -0.01      0.01    -0.03     0.01 1.00     5220     3207
+#> biomarker2                  0.02      0.01     0.00     0.04 1.00     5408     2900
+#> groupgroup_2:timetime_2     0.04      0.15    -0.24     0.33 1.00     2001     2680
+#> groupgroup_3:timetime_2     0.03      0.14    -0.25     0.30 1.00     2139     2806
+#> groupgroup_2:timetime_3    -0.16      0.25    -0.64     0.32 1.00     1566     2224
+#> groupgroup_3:timetime_3    -0.19      0.25    -0.68     0.29 1.00     1784     2678
+#> groupgroup_2:timetime_4    -0.06      0.24    -0.54     0.42 1.00     1691     2437
+#> groupgroup_3:timetime_4    -0.25      0.24    -0.71     0.22 1.00     1789     2256
+#> sigma_timetime_1           -0.12      0.04    -0.20    -0.04 1.00     2528     2525
+#> sigma_timetime_2            0.00      0.04    -0.07     0.09 1.00     3831     2891
+#> sigma_timetime_3           -0.05      0.04    -0.13     0.03 1.00     2345     2748
+#> sigma_timetime_4            0.21      0.04     0.13     0.29 1.00     3631     2831
 #> 
 #> Draws were sampled using sampling(NUTS). For each parameter, Bulk_ESS
 #> and Tail_ESS are effective sample size measures, and Rhat is the potential
@@ -681,6 +641,22 @@ brm_plot_compare(
 
 ![](usage/difference-1.png)
 
+Additional arguments let you control the primary comparison of interest (the color aesthetic), the horizontal axis, and the faceting variable.
+
+
+```r
+brm_plot_compare(
+  model1 = summaries,
+  model2 = summaries,
+  marginal = "difference_group",
+  compare = "group",
+  axis = "time",
+  facet = "source" # model1 vs model2
+)
+```
+
+![](usage/differencecustom-1.png)
+
 Finally, `brm_plot_draws()` can plot the posterior draws of the response, change from baseline, or treatment difference.
 
 
@@ -689,3 +665,16 @@ brm_plot_draws(draws = draws$difference_group)
 ```
 
 ![](usage/draws-1.png)
+
+The `axis` and `facet` arguments customize the horizontal axis and faceting variable, respectively.
+
+
+```r
+brm_plot_draws(
+  draws = draws$difference_group,
+  axis = "group",
+  facet = "time"
+)
+```
+
+![](usage/drawscustom-1.png)
