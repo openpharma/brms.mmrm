@@ -1,7 +1,12 @@
-#' @title Visually compare the marginals of models and datasets.
+#' @title Visually compare the marginals of multiple models and/or datasets.
 #' @export
 #' @family visualization
-#' @description Visually compare the marginals of models and datasets.
+#' @description Visually compare the marginals of multiple models
+#'    and/or datasets.
+#' @details By default, [brm_plot_compare()] compares multiple models
+#'   and/or datasets side-by-side. The `compare` argument selects the primary
+#'   comparison of interest, and arguments `axis` and `facet` control
+#'   the arrangement of various other components of the plot.
 #' @return A `ggplot` object.
 #' @param ... Named `tibble`s of marginals posterior summaries
 #'   from [brm_marginal_summaries()] and/or [brm_marginal_data()].
@@ -10,14 +15,26 @@
 #'   `tibble`s in the `...` argument.
 #'   Only applies to MCMC output, the data is always on the scale of the
 #'   response variable.
-#' @param versus Character of length 1 identifying the quantity to put
-#'   on the horizontal axis. Must be be one of `"time"` or `"group"` if
-#'   the marginal summaries are not subgroup-specific. If the marginals
-#'   are subgroup-specific, then `versus` must be one of
-#'   `"time"`, `"group"`, or `"subgroup"`.
+#' @param compare Character of length 1 identifying the variable to display
+#'   using back-to-back interval plots of different colors. This is
+#'   the primary comparison of interest. Must be one of
+#'   `"source"` (the source of the marginal summaries,
+#'   e.g. a model or dataset), `"time"` or `"group"`
+#'   (in the non-subgroup case). Can also be `"subgroup"`
+#'   if the marginal summaries are subgroup-specific.
+#'   The value must not be in `axis` or `facet`.
+#' @param axis Character of length 1 identifying the quantity to put
+#'   on the horizontal axis. Must be be one of `"source"`
+#'   (the source of the marginal summaries,
+#'   e.g. a model or dataset), `"time"`,
+#'   or `"group"` (in the non-subgroup case). If the marginals
+#'   are subgroup-specific, then `axis` can also be `"subgroup"`.
+#'   The value must not be in `compare` or `facet`.
 #' @param facet Character vector of length 1 or 2 with quantities to
-#'   generate facets. Each element must be `"time"`, `"group"`,
-#'   or `"subgroup"`, and `c(versus, facet)` must all have unique elements.
+#'   generate facets. Each element must be `"source"`
+#'   (the source of the marginal summaries,
+#'   e.g. a model or dataset), `"time"`, `"group"`,
+#'   or `"subgroup"`, and `c(axis, facet)` must all have unique elements.
 #'   `"subgroup"` is automatically removed if the marginals have no
 #'   subgroup. If `facet` has length 1, then faceting is wrapped.
 #'   If `facet` has length 2, then faceting is in a grid,
@@ -70,23 +87,32 @@
 brm_plot_compare <- function(
   ...,
   marginal = "response",
-  versus = "time",
+  compare = "source",
+  axis = "time",
   facet = c("group", "subgroup")
 ) {
   data <- list(...)
   assert_chr_vec(names(data), message = "arguments must be named.")
-  assert_chr(versus, "'versus' must be a single nonempty character string")
+  assert_chr(compare, "'compare' must be a single nonempty character string")
+  assert_chr(axis, "'axis' must be a single nonempty character string")
   assert_chr_vec(
     facet,
     "'facet' must be a nonempty character vector with 1 or 2 elements"
   )
   assert(
-    versus %in% c("time", "group", "subgroup"),
-    message = "'versus' must be \"time\", \"group\", or \"subgroup\""
+    compare %in% c("source", "time", "group", "subgroup"),
+    message = "'axis' must be \"source\", \"time\", \"group\", or \"subgroup\""
   )
   assert(
-    facet %in% c("time", "group", "subgroup"),
-    message = "each 'facet' must be in \"time\", \"group\", or \"subgroup\""
+    axis %in% c("source", "time", "group", "subgroup"),
+    message = "'axis' must be \"source\", \"time\", \"group\", or \"subgroup\""
+  )
+  assert(
+    facet %in% c("source", "time", "group", "subgroup"),
+    message = paste(
+      "each element of 'facet' must be",
+      "\"source\", \"time\", \"group\", or \"subgroup\""
+    )
   )
   assert_chr(marginal, "marginal arg must be a nonempty character string.")
   marginal <- if_any(marginal == "change", "difference_time", marginal)
@@ -111,16 +137,23 @@ brm_plot_compare <- function(
     )
   )
   assert(
-    length(unique(c(versus, facet))) == 2L + use_subgroup,
+    length(unique(c(compare, axis, facet))) == 3L + use_subgroup,
     message = paste(
-      "'versus' and 'facet' must include \"time\" and \"group\", as well as",
-      "\"subgroup\" if the marginal summaries have a subgroup."
+      "'compare', 'axis', and 'facet' must have all unique values.",
+      "\"subgroup\" must be included somewhere if and only if",
+      "the marginal summaries are subgroup-specific."
     )
   )
   assert(
-    use_subgroup || (versus != "subgroup"),
+    use_subgroup || (compare != "subgroup"),
     message = paste(
-      "'versus' cannot be \"subgroup\" when the summaries have no subgroup."
+      "'compare' cannot be \"subgroup\" when the summaries have no subgroup."
+    )
+  )
+  assert(
+    use_subgroup || (axis != "subgroup"),
+    message = paste(
+      "'axis' cannot be \"subgroup\" when the summaries have no subgroup."
     )
   )
   subgroup <- if_any(use_subgroup, "subgroup", character(0L))
@@ -132,15 +165,19 @@ brm_plot_compare <- function(
   )
   ggplot2::ggplot(data) +
     ggplot2::geom_point(
-      ggplot2::aes(x = !!as.symbol(versus), y = mean, color = source),
+      ggplot2::aes(
+        x = !!as.symbol(axis),
+        y = mean,
+        color = !!as.symbol(compare)
+      ),
       position = ggplot2::position_dodge(width = 0.5)
     ) +
     ggplot2::geom_errorbar(
       ggplot2::aes(
-        x = !!as.symbol(versus),
+        x = !!as.symbol(axis),
         ymin = lower,
         ymax = upper,
-        color = source
+        color = !!as.symbol(compare)
       ),
       position = ggplot2::position_dodge(width = 0.5)
     ) +

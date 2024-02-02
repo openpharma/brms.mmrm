@@ -11,6 +11,7 @@
 * Propagate values in the `missing` column in `brm_data_change()` such that a value in the change from baseline is labeled missing if either the baseline response is missing or the post-baseline response is missing.
 * Change the names in the output of `brm_marginal_draws()` to be more internally consistent and fit better with the addition of subgroup-specific marginals (#18).
 * Allow `brm_plot_compare()` and `brm_plot_draws()` to select the x axis variable and faceting variables.
+* Allow `brm_plot_compare()` to choose the primary comparison of interest (source of the data, discrete time, treatment group, or subgroup level).
 
 # brms.mmrm 0.0.2
 

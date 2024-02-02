@@ -5,7 +5,18 @@
 #' @return A `ggplot` object.
 #' @param draws A data frame of draws from an element of
 #'   the output list of [brm_marginal_summaries()].
-#' @inheritParams brm_plot_compare
+#' @param versus Character of length 1 identifying the quantity to put
+#'   on the horizontal axis. Must be be one of `"time"` or `"group"` if
+#'   the marginal summaries are not subgroup-specific. If the marginals
+#'   are subgroup-specific, then `versus` must be one of
+#'   `"time"`, `"group"`, or `"subgroup"`.
+#' @param facet Character vector of length 1 or 2 with quantities to
+#'   generate facets. Each element must be `"time"`, `"group"`,
+#'   or `"subgroup"`, and `c(versus, facet)` must all have unique elements.
+#'   `"subgroup"` is automatically removed if the marginals have no
+#'   subgroup. If `facet` has length 1, then faceting is wrapped.
+#'   If `facet` has length 2, then faceting is in a grid,
+#'   and the first element is horizontal facet.
 #' @examples
 #' if (identical(Sys.getenv("BRM_EXAMPLES", unset = ""), "true")) {
 #' set.seed(0L)

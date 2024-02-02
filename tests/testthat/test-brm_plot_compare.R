@@ -46,7 +46,8 @@ test_that("brm_plot_compare() without subgroup", {
     brm_plot_compare(
       summaries_draws = summaries_draws,
       summaries_data = summaries_data,
-      versus = "time",
+      compare = "source",
+      axis = "time",
       facet = "group"
     ),
     "ggplot"
@@ -55,8 +56,39 @@ test_that("brm_plot_compare() without subgroup", {
     brm_plot_compare(
       summaries_draws = summaries_draws,
       summaries_data = summaries_data,
-      versus = "group",
+      compare = "source",
+      axis = "group",
       facet = "time"
+    ),
+    "ggplot"
+  )
+  expect_s3_class(
+    brm_plot_compare(
+      summaries_draws = summaries_draws,
+      summaries_data = summaries_data,
+      compare = "group",
+      axis = "time",
+      facet = "source"
+    ),
+    "ggplot"
+  )
+  expect_s3_class(
+    brm_plot_compare(
+      summaries_draws = summaries_draws,
+      summaries_data = summaries_data,
+      compare = "time",
+      axis = "source",
+      facet = "group"
+    ),
+    "ggplot"
+  )
+  expect_s3_class(
+    brm_plot_compare(
+      summaries_draws = summaries_draws,
+      summaries_data = summaries_data,
+      compare = "time",
+      axis = "group",
+      facet = "source"
     ),
     "ggplot"
   )
@@ -107,7 +139,8 @@ test_that("brm_plot_compare() with subgroups", {
     brm_plot_compare(
       summaries_draws = summaries_draws,
       summaries_data = summaries_data,
-      versus = "time",
+      compare = "source",
+      axis = "time",
       facet = c("group", "subgroup")
     ),
     "ggplot"
@@ -116,7 +149,18 @@ test_that("brm_plot_compare() with subgroups", {
     brm_plot_compare(
       summaries_draws = summaries_draws,
       summaries_data = summaries_data,
-      versus = "time",
+      compare = "subgroup",
+      axis = "time",
+      facet = c("source", "group")
+    ),
+    "ggplot"
+  )
+  expect_s3_class(
+    brm_plot_compare(
+      summaries_draws = summaries_draws,
+      summaries_data = summaries_data,
+      compare = "source",
+      axis = "time",
       facet = c("subgroup", "group")
     ),
     "ggplot"
@@ -125,7 +169,8 @@ test_that("brm_plot_compare() with subgroups", {
     brm_plot_compare(
       summaries_draws = summaries_draws,
       summaries_data = summaries_data,
-      versus = "group",
+      compare = "source",
+      axis = "group",
       facet = c("time", "subgroup")
     ),
     "ggplot"
@@ -134,7 +179,8 @@ test_that("brm_plot_compare() with subgroups", {
     brm_plot_compare(
       summaries_draws = summaries_draws,
       summaries_data = summaries_data,
-      versus = "subgroup",
+      compare = "source",
+      axis = "subgroup",
       facet = c("time", "group")
     ),
     "ggplot"

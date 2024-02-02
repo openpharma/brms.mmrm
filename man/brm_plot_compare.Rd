@@ -2,12 +2,13 @@
 % Please edit documentation in R/brm_plot_compare.R
 \name{brm_plot_compare}
 \alias{brm_plot_compare}
-\title{Visually compare the marginals of models and datasets.}
+\title{Visually compare the marginals of multiple models and/or datasets.}
 \usage{
 brm_plot_compare(
   ...,
   marginal = "response",
-  versus = "time",
+  compare = "source",
+  axis = "time",
   facet = c("group", "subgroup")
 )
 }
@@ -21,15 +22,28 @@ to visualize. Must be a value in the \code{marginal} column of the supplied
 Only applies to MCMC output, the data is always on the scale of the
 response variable.}
 
-\item{versus}{Character of length 1 identifying the quantity to put
-on the horizontal axis. Must be be one of \code{"time"} or \code{"group"} if
-the marginal summaries are not subgroup-specific. If the marginals
-are subgroup-specific, then \code{versus} must be one of
-\code{"time"}, \code{"group"}, or \code{"subgroup"}.}
+\item{compare}{Character of length 1 identifying the variable to display
+using back-to-back interval plots of different colors. This is
+the primary comparison of interest. Must be one of
+\code{"source"} (the source of the marginal summaries,
+e.g. a model or dataset), \code{"time"} or \code{"group"}
+(in the non-subgroup case). Can also be \code{"subgroup"}
+if the marginal summaries are subgroup-specific.
+The value must not be in \code{axis} or \code{facet}.}
+
+\item{axis}{Character of length 1 identifying the quantity to put
+on the horizontal axis. Must be be one of \code{"source"}
+(the source of the marginal summaries,
+e.g. a model or dataset), \code{"time"},
+or \code{"group"} (in the non-subgroup case). If the marginals
+are subgroup-specific, then \code{axis} can also be \code{"subgroup"}.
+The value must not be in \code{compare} or \code{facet}.}
 
 \item{facet}{Character vector of length 1 or 2 with quantities to
-generate facets. Each element must be \code{"time"}, \code{"group"},
-or \code{"subgroup"}, and \code{c(versus, facet)} must all have unique elements.
+generate facets. Each element must be \code{"source"}
+(the source of the marginal summaries,
+e.g. a model or dataset), \code{"time"}, \code{"group"},
+or \code{"subgroup"}, and \code{c(axis, facet)} must all have unique elements.
 \code{"subgroup"} is automatically removed if the marginals have no
 subgroup. If \code{facet} has length 1, then faceting is wrapped.
 If \code{facet} has length 2, then faceting is in a grid,
@@ -39,7 +53,14 @@ and the first element is horizontal facet.}
 A \code{ggplot} object.
 }
 \description{
-Visually compare the marginals of models and datasets.
+Visually compare the marginals of multiple models
+and/or datasets.
+}
+\details{
+By default, \code{\link[=brm_plot_compare]{brm_plot_compare()}} compares multiple models
+and/or datasets side-by-side. The \code{compare} argument selects the primary
+comparison of interest, and arguments \code{axis} and \code{facet} control
+the arrangement of various other components of the plot.
 }
 \examples{
 if (identical(Sys.getenv("BRM_EXAMPLES", unset = ""), "true")) {
