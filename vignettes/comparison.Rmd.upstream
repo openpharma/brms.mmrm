@@ -19,7 +19,6 @@ editor_options:
 ---
 
 ```{r setup, eval=TRUE, include=FALSE, warning=FALSE, message=FALSE}
-rm(list = ls())
 library(knitr)
 knitr::opts_chunk$set(
   echo = TRUE,
@@ -27,7 +26,7 @@ knitr::opts_chunk$set(
   warning = FALSE,
   message = FALSE,
   prompt = TRUE,
-  comment = NA,
+  comment = "#>",
   size = "scriptsize",
   fig.height = 5,
   fig.width = 6,
@@ -42,13 +41,12 @@ knitr::opts_chunk$set(
 This vignette provides an example comparison of a Bayesian MMRM fit, 
 obtained by `brms.mmrm::brm_model()`, and a frequentist MMRM fit, 
 obtained by `mmrm::mmrm()`. An overview of parameter estimates and 
-differences by type of MMRM is given in the [summary (Table 4)](#Summary) 
+differences by type of MMRM is given in the [summary (Tables 4 and 5)](#Summary) 
 at the end.
-
 
 # Prerequisites
 
-Load required packages:
+This comparison workflow requires the following packages.
 
 ```{r load_gen_pkgs, eval=TRUE, echo=TRUE, class.source = NULL}
 packages <- c(
@@ -67,7 +65,8 @@ packages <- c(
 invisible(lapply(packages, library, character.only = TRUE))
 ```
 
-Set seed:
+We set a seed for the random number generator to ensure statistical reproducibility.
+
 ```{r set_seed, eval=TRUE, echo=TRUE, class.source = NULL}
 set.seed(123L)
 ```
@@ -76,7 +75,8 @@ set.seed(123L)
 
 ## Pre-processing
 
-The `fev_dat` dataset is used that is contained in the `mmrm`-package:
+This analysis exercise uses the `fev_dat` dataset contained in the `mmrm`-package:
+
 ```{r fev_dat_1, eval=TRUE, echo=TRUE, class.source = NULL}
 data(fev_data, package = "mmrm")
 ```
@@ -98,13 +98,16 @@ The dataset is a `tibble` with 800 rows and 7 variables:
 * `FEV1` (FEV1 at study visits),
 * `WEIGHT` (weighting variable).
 
-In this analysis, change from baseline in `FEV1` is used as an endpoint and
-a corresponding new variable (`FEV1_CHG`) is created.
+The primary endpoint for the analysis is change from baseline in `FEV1`, which we derive below and denote `FEV1_CHG`.
 
-Create and preprocess dataset for MMRM analysis:
 ```{r fev_dat_2, eval=TRUE, echo=TRUE, class.source = NULL}
 fev_data <- fev_data |>
   mutate("FEV1_CHG" = FEV1 - FEV1_BL)
+```
+
+The rest of the pre-processing steps create factors for the study arm and visit and apply the usual checking and standardization steps of `brms.mmrm::brm_data()`.
+
+```{r }
 fev_data <- brm_data(
   data = fev_data,
   outcome = "FEV1_CHG",
@@ -119,16 +122,18 @@ fev_data <- brm_data(
   mutate(ARMCD = factor(ARMCD), AVISIT = factor(AVISIT))
 ```
 
-First rows of dataset:
+The following table shows the first rows of the dataset.
+
 ```{r fev_dat_3, eval=TRUE, echo=TRUE, class.source = NULL}
 head(fev_data) |>
   gt() |>
-  tab_caption(caption = md("Table 1. First rows of dataset."))
+  tab_caption(caption = md("Table 1. First rows of the pre-processed `fev_dat` dataset."))
 ```
 
 ## Descriptive statistics
 
 Table of baseline characteristics:
+
 ```{r descr_1, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
 fev_data |>
   select(ARMCD, USUBJID, SEX, RACE, FEV1_BL) |>
@@ -145,6 +150,7 @@ fev_data |>
 ```
 
 Table of change from baseline in FEV1 over 52 weeks:
+
 ```{r descr_2, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
 fev_data |>
   pull(AVISIT) |>
@@ -157,9 +163,11 @@ fev_data |>
         by = ARMCD,
         include = FEV1_CHG,
         type = FEV1_CHG ~ "continuous2",
-        statistic = FEV1_CHG ~ c("{mean} ({sd})",
-                                 "{median} ({p25}, {p75})",
-                                 "{min}, {max}"),
+        statistic = FEV1_CHG ~ c(
+          "{mean} ({sd})",
+          "{median} ({p25}, {p75})",
+          "{min}, {max}"
+        ),
         label = list(FEV1_CHG = paste("Visit ", .x))
       )
   ) |>
@@ -167,15 +175,19 @@ fev_data |>
   modify_caption("Table 3. Change from baseline.")
 ```
 
+The following figure shows the primary endpoint over the four study visits in the data.
+
 ```{r descr_3, eval=TRUE, echo=TRUE, fig.align='center', out.width="75%", fig.dim = c(8, 5), fig.fig.keep='all', fig.pos="!ht", fig.cap="Figure 1. Change from baseline in FEV1 over 4 visit time points."}
 fev_data |>
   group_by(ARMCD) |>
   ggplot(aes(x = AVISIT, y = FEV1_CHG, fill = factor(ARMCD))) +
-  geom_hline(yintercept = 0, col = "grey", size = 1.2) +
+  geom_hline(yintercept = 0, col = "grey", linewidth = 1.2) +
   geom_boxplot(na.rm = TRUE) +
-  labs(x = "Visit",
-       y = "Change from baseline in FEV1",
-       fill = "Treatment") +
+  labs(
+    x = "Visit",
+    y = "Change from baseline in FEV1",
+    fill = "Treatment"
+  ) +
   scale_fill_manual(values = c("darkgoldenrod2", "coral2")) +
   theme_bw()
 ```
@@ -184,7 +196,8 @@ fev_data |>
 
 ## Bayesian model
 
-Model formula:
+The formula for the Bayesian model includes additive effects for baseline, study visit, and the `RACE` and `SEX` covariates, as well as study-arm-by-visit interaction.
+
 ```{r bayes_mmrm_1, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
 b_mmrm_formula <- brm_formula(
   data = fev_data,
@@ -199,54 +212,56 @@ b_mmrm_formula <- brm_formula(
 print(b_mmrm_formula)
 ```
 
-Fit model (using multiple cores, if available, to avoid long runtime):
-```{r bayes_mmrm_2a, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
-n_cores <- ifelse(
-  test = detectCores() > 1,
-  yes = min(2, detectCores()),
-  no = 1
-)
-```
+We fit the model using `brms.mmrm::brm_model()`. To ensure a good basis of comparison with the frequentist model, we put an extremely diffuse priors on the intercept and log-scale standard deviation parameters. The parameters already have diffuse flexible priors by default.
 
 ```{r bayes_mmrm_2b, eval=TRUE, echo=TRUE, cache=FALSE, class.source = 'fold-hide'}
 b_mmrm_fit <- brm_model(
   data = filter(fev_data, !is.na(FEV1_CHG)),
   formula = b_mmrm_formula,
-  iter = 1500,
-  chains = max(1, n_cores),
-  cores = n_cores,
+  prior = brms::prior(class = "Intercept", prior = "student_t(3, 0, 1000)"),
+  iter = 10000,
+  warmup = 2000,
+  chains = 4,
+  cores = 1 + (detectCores() > 1),
   refresh = 0
 )
 ```
 
-Summary of results:
+Here is a posterior summary of model parameters, including fixed effects and pairwise correlation among visits within patients.
+
 ```{r bayes_mmrm_3, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
 summary(b_mmrm_fit)
 ```
 
-
 ## Frequentist model
 
-Fit model:
+The formula for the frequentist model is the same, except for the different syntax for specifying the covariance structure of the MMRM. We fit the model below.
+
 ```{r freq_mmrm_1, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
 f_mmrm_fit <- mmrm::mmrm(
-  formula = FEV1_CHG ~ FEV1_BL + AVISIT + ARMCD:AVISIT + RACE + SEX +
+  formula = FEV1_CHG ~ FEV1_BL + ARMCD:AVISIT + AVISIT + RACE + SEX +
     us(AVISIT | USUBJID),
   data = fev_data
 )
 ```
 
-Summary of results:
+The parameter summaries of the frequentist model are below.
+
 ```{r freq_mmrm_2, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
 summary(f_mmrm_fit)
 ```
 
-
 # Comparison 
 
+This section compares the Bayesian posterior parameter estimates from `brms.mmrm` to the frequentist parameter estimates of the `mmrm` package.
+
 ## Extract estimates from Bayesian model
+
+We extract and standardize the Bayesian estimates.
+
 ```{r comparison_1a, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
-b_mmrm_draws <- b_mmrm_fit |> as_draws_df()
+b_mmrm_draws <- b_mmrm_fit |>
+  as_draws_df()
 visit_levels <- sort(unique(as.character(fev_data$AVISIT)))
 for (level in visit_levels) {
   name <- paste0("b_sigma_AVISIT", level)
@@ -268,6 +283,9 @@ b_mmrm_summary <- b_mmrm_draws |>
 ```
 
 ## Extract estimates from frequentist model
+
+We extract and standardize the frequentist estimates.
+
 ```{r comparison_2a, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
 f_mmrm_fixed <- summary(f_mmrm_fit)$coefficients |>
   as_tibble(rownames = "variable") |>
@@ -296,49 +314,89 @@ f_mmrm_correlation <- f_corr_matrix |>
   as.data.frame() |>
   as_tibble() |>
   mutate(x1 = visit_levels) |>
-  pivot_longer(cols = -any_of("x1"),
-               names_to = "x2",
-               values_to = "freq_estimate") |>
-  filter(as.numeric(gsub("[^0-9]", "", x1)) <
-           as.numeric(gsub("[^0-9]", "", x2))) |>
+  pivot_longer(
+    cols = -any_of("x1"),
+    names_to = "x2",
+    values_to = "freq_estimate"
+  ) |>
+  filter(
+    as.numeric(gsub("[^0-9]", "", x1)) < as.numeric(gsub("[^0-9]", "", x2))
+  ) |>
   mutate(variable = sprintf("correlation_%s_%s", x1, x2)) |>
   select(variable, freq_estimate)
 ```
 
 ```{r comparison_2e, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
-f_mmrm_summary <- bind_rows(f_mmrm_fixed,
-                            f_mmrm_variance,
-                            f_mmrm_correlation) |>
+f_mmrm_summary <- bind_rows(
+  f_mmrm_fixed,
+  f_mmrm_variance,
+  f_mmrm_correlation
+) |>
   mutate(variable = gsub("\\s+", "", variable) |> tolower())
 ```
 
-
 ## Summary {#Summary}
+
+The first table below summarizes the parameter estimates from each model and the differences between estimates (Bayesian minus frequentist). The second table shows the standard errors of these estimates and differences betweens standard errors. In each table, the "Relative" column shows the relative difference (the difference divided by the frequentist quantity).
+
+Because of the different statistical paradigms and estimation prodecures, especially regarding the covariance parameters, it would not be realistic to expect the Bayesian and frequentist approaches to yield virtually identical results. Nevertheless, the absolute and relative differences in the table below show strong agreement between `brms.mmrm` and `mmrm`.
+
 ```{r comparison_3a, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
-b_f_comparison <- full_join(x = b_mmrm_summary,
-                            y = f_mmrm_summary,
-                            by = "variable") |>
-  mutate(diff_estimate = bayes_estimate - freq_estimate,
-         diff_se = bayes_se - freq_se) |>
+b_f_comparison <- full_join(
+  x = b_mmrm_summary,
+  y = f_mmrm_summary,
+  by = "variable"
+) |>
+  mutate(
+    diff_estimate = bayes_estimate - freq_estimate,
+    diff_relative_estimate = diff_estimate / freq_estimate,
+    diff_se = bayes_se - freq_se,
+    diff_relative_se = diff_se / freq_se
+  ) |>
   select(variable, ends_with("estimate"), ends_with("se"))
 ```
 
 ```{r comparison_3b, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
-gt(b_f_comparison) |>
+table_estimates <- b_f_comparison |>
+  select(variable, ends_with("estimate"))
+gt(table_estimates) |>
   fmt_number(decimals = 4) |>
   tab_caption(
-    caption = md("Table 4. Contrasting Bayesian and frequentist MMRM fits.")
+    caption = md(
+      paste(
+        "Table 4. Comparison of parameter estimates between",
+        "Bayesian and frequentist MMRM models."
+      )
+    )
   ) |>
-  tab_spanner(label = "Estimate", columns = ends_with("estimate")) |>
-  tab_spanner(label = "Standard error", columns = ends_with("se")) |>
   cols_label(
     variable = "Variable",
     bayes_estimate = "Bayesian",
     freq_estimate = "Frequentist",
     diff_estimate = "Difference",
-    bayes_se = "Bayesian",
-    freq_se = "Frequentist",
-    diff_se = "Difference",
+    diff_relative_estimate = "Relative"
   )
 ```
 
+```{r comparison_3c, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
+table_se <- b_f_comparison |>
+  select(variable, ends_with("se")) |>
+  filter(!is.na(freq_se))
+gt(table_se) |>
+  fmt_number(decimals = 4) |>
+  tab_caption(
+    caption = md(
+      paste(
+        "Table 5. Comparison of parameter standard errors between",
+        "Bayesian and frequentist MMRM models."
+      )
+    )
+  ) |>
+  cols_label(
+    variable = "Variable",
+    bayes_se = "Bayesian",
+    freq_se = "Frequentist",
+    diff_se = "Difference",
+    diff_relative_se = "Relative"
+  )
+```
