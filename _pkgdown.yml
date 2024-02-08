@@ -1,47 +1,51 @@
 destination: docs/
+template:
+  bootstrap: 5
 articles:
 - title: Methods
   contents:
   - methods
 - title: Usage
+  navbar: Usage
   contents:
   - usage
   - subgroup
   - simulation
 - title: Validation
+  navbar: Validation
   contents:
   - sbc
   - comparison
 reference:
 - title: Help
   contents:
-  - '`brms.mmrm-package`'
+  - 'brms.mmrm-package'
 - title: Data
   contents:
-  - '`brm_data`'
-  - '`brm_data_change`'
+  - 'brm_data'
+  - 'brm_data_change'
 - title: Simulation
   contents:
-  - '`brm_simulate_categorical`'
-  - '`brm_simulate_continuous`'
-  - '`brm_simulate_outline`'
-  - '`brm_simulate_prior`'
-  - '`brm_simulate_simple`'
+  - 'brm_simulate_categorical'
+  - 'brm_simulate_continuous'
+  - 'brm_simulate_outline'
+  - 'brm_simulate_prior'
+  - 'brm_simulate_simple'
 - title: Priors
   contents:
-  - '`brm_prior_simple`'
+  - 'brm_prior_simple'
 - title: Models
   contents:
-  - '`brm_formula`'
-  - '`brm_model`'
+  - 'brm_formula'
+  - 'brm_model'
 - title: Marginals
   contents:
-  - '`brm_marginal_data`'
-  - '`brm_marginal_draws`'
-  - '`brm_marginal_draws_average`'
-  - '`brm_marginal_summaries`'
-  - '`brm_marginal_probabilities`'
+  - 'brm_marginal_data'
+  - 'brm_marginal_draws'
+  - 'brm_marginal_draws_average'
+  - 'brm_marginal_summaries'
+  - 'brm_marginal_probabilities'
 - title: Visualization
   contents:
-  - '`brm_plot_compare`'
-  - '`brm_plot_draws`'
+  - 'brm_plot_compare'
+  - 'brm_plot_draws'
