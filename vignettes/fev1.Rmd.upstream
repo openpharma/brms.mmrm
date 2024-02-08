@@ -1,5 +1,5 @@
 ---
-title: Comparison of Bayesian and frequentist MMRM fits
+title: FEV1 data comparison between Bayesian and frequentist MMRMs
 date: "`r format(Sys.time(), '%d/%m/%Y')`"
 output:
   rmarkdown::html_document:
@@ -9,7 +9,7 @@ output:
     toc_float: yes
     number_sections: true 
 vignette: >
-  %\VignetteIndexEntry{Comparison of Bayesian and frequentist MMRM fits}
+  %\VignetteIndexEntry{FEV1 data comparison between Bayesian and frequentist MMRMs}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 editor_options:
@@ -32,7 +32,7 @@ knitr::opts_chunk$set(
   fig.width = 6,
   dpi = 320,
   fig.align = "center",
-  fig.path = "comparison_figures/"
+  fig.path = "fev1_figures/"
 )
 ```
 
