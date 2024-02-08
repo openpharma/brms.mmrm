@@ -12,7 +12,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-The `brms.mmrm` R package implements a mixed model of repeated measures (MMRM) [@mallinckrodt2008], a popular and flexible model to analyze continuous longitudinal outcomes. `brms.mmrm` focuses on marginal MMRMs for randomized controlled parallel studies with discrete time points, where each subject shares the same set of time points. Whereas the [`mmrm`](https://openpharma.github.io/mmrm/) package is frequentist, `brms.mmrm` fits models in Bayesian fashion using [`brms`](https://paul-buerkner.github.io/brms/) [@burkner2017].
+The `brms.mmrm` R package implements a mixed model of repeated measures (MMRM), a popular and flexible model to analyze continuous longitudinal outcomes (@mallinckrodt2008, @mallinckrodt2017). `brms.mmrm` focuses on marginal MMRMs for randomized controlled parallel studies with discrete time points, where each subject shares the same set of time points. Whereas the [`mmrm`](https://openpharma.github.io/mmrm/) package is frequentist, `brms.mmrm` fits models in Bayesian fashion using [`brms`](https://paul-buerkner.github.io/brms/) [@burkner2017].
 
 # Model
 

@@ -77,8 +77,8 @@ brm_marginal_probabilities(draws, direction = "greater", threshold = 0)
 \seealso{
 Other marginals: 
 \code{\link{brm_marginal_data}()},
-\code{\link{brm_marginal_draws_average}()},
 \code{\link{brm_marginal_draws}()},
+\code{\link{brm_marginal_draws_average}()},
 \code{\link{brm_marginal_summaries}()}
 }
 \concept{marginals}
