@@ -618,7 +618,10 @@ is created.</p>
 }
 </style>
 <table class="table gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-<caption>Table 1. First rows of dataset.</caption>
+<caption class="gt_caption">
+Table 1. First rows of dataset.
+</caption>
+
   <thead><tr class="gt_col_headings">
 <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="FEV1_CHG">FEV1_CHG</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="FEV1_BL">FEV1_BL</th>
@@ -1144,7 +1147,10 @@ is created.</p>
 }
 </style>
 <table class="table gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-<caption>Table 2. Baseline characteristics.</caption>
+<caption class="gt_caption">
+Table 2. Baseline characteristics.
+</caption>
+
   <thead><tr class="gt_col_headings">
 <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="&lt;strong&gt;Characteristic&lt;/strong&gt;"><strong>Characteristic</strong></th>
       <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id='&lt;strong&gt;PBO&lt;/strong&gt;, N = 105&lt;span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/span&gt;'>
@@ -1663,7 +1669,10 @@ is created.</p>
 }
 </style>
 <table class="table gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-<caption>Table 3. Change from baseline.</caption>
+<caption class="gt_caption">
+Table 3. Change from baseline.
+</caption>
+
   <thead><tr class="gt_col_headings">
 <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="&lt;strong&gt;Characteristic&lt;/strong&gt;"><strong>Characteristic</strong></th>
       <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="&lt;strong&gt;PBO&lt;/strong&gt;, N = 105">
@@ -1839,52 +1848,35 @@ runtime):</p>
 <span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>Correlation Structures<span class="sc">:</span></span>
 <span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>                   Estimate Est.Error l<span class="dv">-95</span><span class="sc">% CI u-95%</span> CI Rhat Bulk_ESS Tail_ESS</span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="fu">cortime</span>(VIS1,VIS2)     <span class="fl">0.36</span>      <span class="fl">0.09</span>     <span class="fl">0.18</span>     <span class="fl">0.51</span> <span class="fl">1.00</span>     <span class="dv">2717</span>      <span class="dv">945</span></span>
-<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="fu">cortime</span>(VIS1,VIS3)     <span class="fl">0.14</span>      <span class="fl">0.10</span>    <span class="sc">-</span><span class="fl">0.05</span>     <span class="fl">0.32</span> <span class="fl">1.00</span>     <span class="dv">3216</span>     <span class="dv">1115</span></span>
-<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a><span class="fu">cortime</span>(VIS2,VIS3)     <span class="fl">0.04</span>      <span class="fl">0.10</span>    <span class="sc">-</span><span class="fl">0.16</span>     <span class="fl">0.23</span> <span class="fl">1.00</span>     <span class="dv">2830</span>      <span class="dv">923</span></span>
-<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="fu">cortime</span>(VIS1,VIS4)     <span class="fl">0.16</span>      <span class="fl">0.12</span>    <span class="sc">-</span><span class="fl">0.07</span>     <span class="fl">0.39</span> <span class="fl">1.00</span>     <span class="dv">2484</span>     <span class="dv">1126</span></span>
-<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a><span class="fu">cortime</span>(VIS2,VIS4)     <span class="fl">0.11</span>      <span class="fl">0.09</span>    <span class="sc">-</span><span class="fl">0.06</span>     <span class="fl">0.27</span> <span class="fl">1.00</span>     <span class="dv">2572</span>     <span class="dv">1137</span></span>
-<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a><span class="fu">cortime</span>(VIS3,VIS4)     <span class="fl">0.01</span>      <span class="fl">0.10</span>    <span class="sc">-</span><span class="fl">0.18</span>     <span class="fl">0.21</span> <span class="fl">1.01</span>     <span class="dv">2370</span>     <span class="dv">1099</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="fu">cortime</span>(VIS1,VIS2)     <span class="fl">0.36</span>      <span class="fl">0.08</span>     <span class="fl">0.19</span>     <span class="fl">0.52</span> <span class="fl">1.00</span>     <span class="dv">2550</span>     <span class="dv">1229</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="fu">cortime</span>(VIS1,VIS3)     <span class="fl">0.14</span>      <span class="fl">0.10</span>    <span class="sc">-</span><span class="fl">0.06</span>     <span class="fl">0.31</span> <span class="fl">1.00</span>     <span class="dv">3032</span>     <span class="dv">1305</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a><span class="fu">cortime</span>(VIS2,VIS3)     <span class="fl">0.04</span>      <span class="fl">0.10</span>    <span class="sc">-</span><span class="fl">0.16</span>     <span class="fl">0.23</span> <span class="fl">1.00</span>     <span class="dv">1928</span>     <span class="dv">1012</span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="fu">cortime</span>(VIS1,VIS4)     <span class="fl">0.17</span>      <span class="fl">0.11</span>    <span class="sc">-</span><span class="fl">0.06</span>     <span class="fl">0.39</span> <span class="fl">1.00</span>     <span class="dv">2638</span>     <span class="dv">1262</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a><span class="fu">cortime</span>(VIS2,VIS4)     <span class="fl">0.11</span>      <span class="fl">0.09</span>    <span class="sc">-</span><span class="fl">0.06</span>     <span class="fl">0.28</span> <span class="fl">1.00</span>     <span class="dv">2404</span>     <span class="dv">1204</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a><span class="fu">cortime</span>(VIS3,VIS4)     <span class="fl">0.01</span>      <span class="fl">0.10</span>    <span class="sc">-</span><span class="fl">0.17</span>     <span class="fl">0.21</span> <span class="fl">1.01</span>     <span class="dv">2579</span>      <span class="dv">855</span></span>
 <span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>Population<span class="sc">-</span>Level Effects<span class="sc">:</span> </span>
-<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>                           Estimate Est.Error l<span class="dv">-95</span><span class="sc">% CI u-95%</span> CI Rhat Bulk_ESS</span>
-<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>Intercept                     <span class="fl">24.41</span>      <span class="fl">1.45</span>    <span class="fl">21.56</span>    <span class="fl">27.12</span> <span class="fl">1.00</span>     <span class="dv">2811</span></span>
-<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>FEV1_BL                       <span class="sc">-</span><span class="fl">0.84</span>      <span class="fl">0.03</span>    <span class="sc">-</span><span class="fl">0.90</span>    <span class="sc">-</span><span class="fl">0.78</span> <span class="fl">1.00</span>     <span class="dv">2806</span></span>
-<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>AVISITVIS2                     <span class="fl">4.74</span>      <span class="fl">0.83</span>     <span class="fl">3.07</span>     <span class="fl">6.33</span> <span class="fl">1.00</span>     <span class="dv">1646</span></span>
-<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>AVISITVIS3                    <span class="fl">10.32</span>      <span class="fl">0.82</span>     <span class="fl">8.72</span>    <span class="fl">11.98</span> <span class="fl">1.00</span>     <span class="dv">1674</span></span>
-<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>AVISITVIS4                    <span class="fl">15.13</span>      <span class="fl">1.35</span>    <span class="fl">12.47</span>    <span class="fl">17.74</span> <span class="fl">1.00</span>     <span class="dv">1897</span></span>
-<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>RACEBlackorAfricanAmerican     <span class="fl">1.41</span>      <span class="fl">0.59</span>     <span class="fl">0.28</span>     <span class="fl">2.59</span> <span class="fl">1.01</span>     <span class="dv">2945</span></span>
-<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>RACEWhite                      <span class="fl">5.45</span>      <span class="fl">0.63</span>     <span class="fl">4.19</span>     <span class="fl">6.64</span> <span class="fl">1.00</span>     <span class="dv">2417</span></span>
-<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>SEXFemale                      <span class="fl">0.35</span>      <span class="fl">0.51</span>    <span class="sc">-</span><span class="fl">0.68</span>     <span class="fl">1.34</span> <span class="fl">1.00</span>     <span class="dv">3347</span></span>
-<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>AVISITVIS1<span class="sc">:</span>ARMCDTRT            <span class="fl">3.95</span>      <span class="fl">1.06</span>     <span class="fl">1.78</span>     <span class="fl">6.09</span> <span class="fl">1.00</span>     <span class="dv">1631</span></span>
-<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>AVISITVIS2<span class="sc">:</span>ARMCDTRT            <span class="fl">3.94</span>      <span class="fl">0.87</span>     <span class="fl">2.27</span>     <span class="fl">5.68</span> <span class="fl">1.00</span>     <span class="dv">2474</span></span>
-<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>AVISITVIS3<span class="sc">:</span>ARMCDTRT            <span class="fl">2.98</span>      <span class="fl">0.69</span>     <span class="fl">1.65</span>     <span class="fl">4.29</span> <span class="fl">1.00</span>     <span class="dv">2826</span></span>
-<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a>AVISITVIS4<span class="sc">:</span>ARMCDTRT            <span class="fl">4.45</span>      <span class="fl">1.73</span>     <span class="fl">0.99</span>     <span class="fl">7.80</span> <span class="fl">1.00</span>     <span class="dv">1931</span></span>
-<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a>sigma_AVISITVIS1               <span class="fl">1.83</span>      <span class="fl">0.06</span>     <span class="fl">1.72</span>     <span class="fl">1.95</span> <span class="fl">1.00</span>     <span class="dv">3211</span></span>
-<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a>sigma_AVISITVIS2               <span class="fl">1.59</span>      <span class="fl">0.06</span>     <span class="fl">1.47</span>     <span class="fl">1.72</span> <span class="fl">1.00</span>     <span class="dv">2383</span></span>
-<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a>sigma_AVISITVIS3               <span class="fl">1.33</span>      <span class="fl">0.06</span>     <span class="fl">1.20</span>     <span class="fl">1.46</span> <span class="fl">1.00</span>     <span class="dv">2518</span></span>
-<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a>sigma_AVISITVIS4               <span class="fl">2.28</span>      <span class="fl">0.06</span>     <span class="fl">2.16</span>     <span class="fl">2.41</span> <span class="fl">1.00</span>     <span class="dv">2770</span></span>
-<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a>                           Tail_ESS</span>
-<span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a>Intercept                      <span class="dv">1050</span></span>
-<span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a>FEV1_BL                        <span class="dv">1139</span></span>
-<span id="cb12-40"><a href="#cb12-40" aria-hidden="true" tabindex="-1"></a>AVISITVIS2                     <span class="dv">1068</span></span>
-<span id="cb12-41"><a href="#cb12-41" aria-hidden="true" tabindex="-1"></a>AVISITVIS3                     <span class="dv">1122</span></span>
-<span id="cb12-42"><a href="#cb12-42" aria-hidden="true" tabindex="-1"></a>AVISITVIS4                     <span class="dv">1001</span></span>
-<span id="cb12-43"><a href="#cb12-43" aria-hidden="true" tabindex="-1"></a>RACEBlackorAfricanAmerican     <span class="dv">1155</span></span>
-<span id="cb12-44"><a href="#cb12-44" aria-hidden="true" tabindex="-1"></a>RACEWhite                      <span class="dv">1176</span></span>
-<span id="cb12-45"><a href="#cb12-45" aria-hidden="true" tabindex="-1"></a>SEXFemale                      <span class="dv">1333</span></span>
-<span id="cb12-46"><a href="#cb12-46" aria-hidden="true" tabindex="-1"></a>AVISITVIS1<span class="sc">:</span>ARMCDTRT            <span class="dv">1131</span></span>
-<span id="cb12-47"><a href="#cb12-47" aria-hidden="true" tabindex="-1"></a>AVISITVIS2<span class="sc">:</span>ARMCDTRT             <span class="dv">841</span></span>
-<span id="cb12-48"><a href="#cb12-48" aria-hidden="true" tabindex="-1"></a>AVISITVIS3<span class="sc">:</span>ARMCDTRT             <span class="dv">900</span></span>
-<span id="cb12-49"><a href="#cb12-49" aria-hidden="true" tabindex="-1"></a>AVISITVIS4<span class="sc">:</span>ARMCDTRT            <span class="dv">1207</span></span>
-<span id="cb12-50"><a href="#cb12-50" aria-hidden="true" tabindex="-1"></a>sigma_AVISITVIS1               <span class="dv">1212</span></span>
-<span id="cb12-51"><a href="#cb12-51" aria-hidden="true" tabindex="-1"></a>sigma_AVISITVIS2               <span class="dv">1140</span></span>
-<span id="cb12-52"><a href="#cb12-52" aria-hidden="true" tabindex="-1"></a>sigma_AVISITVIS3               <span class="dv">1209</span></span>
-<span id="cb12-53"><a href="#cb12-53" aria-hidden="true" tabindex="-1"></a>sigma_AVISITVIS4                <span class="dv">797</span></span>
-<span id="cb12-54"><a href="#cb12-54" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-55"><a href="#cb12-55" aria-hidden="true" tabindex="-1"></a>Draws were sampled using <span class="fu">sampling</span>(NUTS). For each parameter, Bulk_ESS</span>
-<span id="cb12-56"><a href="#cb12-56" aria-hidden="true" tabindex="-1"></a>and Tail_ESS are effective sample size measures, and Rhat is the potential</span>
-<span id="cb12-57"><a href="#cb12-57" aria-hidden="true" tabindex="-1"></a>scale reduction factor on split <span class="fu">chains</span> (at convergence, <span class="at">Rhat =</span> <span class="dv">1</span>).</span></code></pre></div>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>                           Estimate Est.Error l<span class="dv">-95</span><span class="sc">% CI u-95%</span> CI Rhat Bulk_ESS Tail_ESS</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>Intercept                     <span class="fl">24.36</span>      <span class="fl">1.49</span>    <span class="fl">21.47</span>    <span class="fl">27.06</span> <span class="fl">1.00</span>     <span class="dv">2163</span>     <span class="dv">1045</span></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>FEV1_BL                       <span class="sc">-</span><span class="fl">0.84</span>      <span class="fl">0.03</span>    <span class="sc">-</span><span class="fl">0.90</span>    <span class="sc">-</span><span class="fl">0.78</span> <span class="fl">1.00</span>     <span class="dv">2979</span>     <span class="dv">1213</span></span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>AVISITVIS2                     <span class="fl">4.80</span>      <span class="fl">0.86</span>     <span class="fl">3.13</span>     <span class="fl">6.49</span> <span class="fl">1.00</span>     <span class="dv">1604</span>     <span class="dv">1119</span></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>AVISITVIS3                    <span class="fl">10.37</span>      <span class="fl">0.88</span>     <span class="fl">8.61</span>    <span class="fl">12.12</span> <span class="fl">1.00</span>     <span class="dv">1338</span>      <span class="dv">877</span></span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>AVISITVIS4                    <span class="fl">15.16</span>      <span class="fl">1.30</span>    <span class="fl">12.62</span>    <span class="fl">17.79</span> <span class="fl">1.00</span>     <span class="dv">1755</span>     <span class="dv">1273</span></span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>RACEBlackorAfricanAmerican     <span class="fl">1.40</span>      <span class="fl">0.58</span>     <span class="fl">0.29</span>     <span class="fl">2.54</span> <span class="fl">1.00</span>     <span class="dv">1983</span>     <span class="dv">1032</span></span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>RACEWhite                      <span class="fl">5.44</span>      <span class="fl">0.61</span>     <span class="fl">4.31</span>     <span class="fl">6.64</span> <span class="fl">1.00</span>     <span class="dv">2341</span>     <span class="dv">1238</span></span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>SEXFemale                      <span class="fl">0.35</span>      <span class="fl">0.51</span>    <span class="sc">-</span><span class="fl">0.63</span>     <span class="fl">1.36</span> <span class="fl">1.00</span>     <span class="dv">2932</span>      <span class="dv">965</span></span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>AVISITVIS1<span class="sc">:</span>ARMCDTRT            <span class="fl">3.98</span>      <span class="fl">1.10</span>     <span class="fl">1.78</span>     <span class="fl">6.10</span> <span class="fl">1.00</span>     <span class="dv">1586</span>      <span class="dv">960</span></span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>AVISITVIS2<span class="sc">:</span>ARMCDTRT            <span class="fl">3.93</span>      <span class="fl">0.86</span>     <span class="fl">2.22</span>     <span class="fl">5.53</span> <span class="fl">1.00</span>     <span class="dv">2091</span>      <span class="dv">838</span></span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>AVISITVIS3<span class="sc">:</span>ARMCDTRT            <span class="fl">2.98</span>      <span class="fl">0.67</span>     <span class="fl">1.66</span>     <span class="fl">4.33</span> <span class="fl">1.00</span>     <span class="dv">3024</span>     <span class="dv">1304</span></span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a>AVISITVIS4<span class="sc">:</span>ARMCDTRT            <span class="fl">4.46</span>      <span class="fl">1.66</span>     <span class="fl">1.22</span>     <span class="fl">7.72</span> <span class="fl">1.01</span>     <span class="dv">2110</span>     <span class="dv">1307</span></span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a>sigma_AVISITVIS1               <span class="fl">1.83</span>      <span class="fl">0.06</span>     <span class="fl">1.72</span>     <span class="fl">1.96</span> <span class="fl">1.00</span>     <span class="dv">2312</span>     <span class="dv">1088</span></span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a>sigma_AVISITVIS2               <span class="fl">1.59</span>      <span class="fl">0.06</span>     <span class="fl">1.48</span>     <span class="fl">1.71</span> <span class="fl">1.00</span>     <span class="dv">2553</span>     <span class="dv">1228</span></span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a>sigma_AVISITVIS3               <span class="fl">1.33</span>      <span class="fl">0.06</span>     <span class="fl">1.20</span>     <span class="fl">1.45</span> <span class="fl">1.00</span>     <span class="dv">2458</span>     <span class="dv">1188</span></span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a>sigma_AVISITVIS4               <span class="fl">2.28</span>      <span class="fl">0.06</span>     <span class="fl">2.17</span>     <span class="fl">2.40</span> <span class="fl">1.00</span>     <span class="dv">2565</span>     <span class="dv">1006</span></span>
+<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a>Draws were sampled using <span class="fu">sampling</span>(NUTS). For each parameter, Bulk_ESS</span>
+<span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a>and Tail_ESS are effective sample size measures, and Rhat is the potential</span>
+<span id="cb12-40"><a href="#cb12-40" aria-hidden="true" tabindex="-1"></a>scale reduction factor on split <span class="fu">chains</span> (at convergence, <span class="at">Rhat =</span> <span class="dv">1</span>).</span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="frequentist-model">Frequentist model<a class="anchor" aria-label="anchor" href="#frequentist-model"></a>
@@ -1899,56 +1891,40 @@ runtime):</p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r fold-hide"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">summary</span>(f_mmrm_fit)</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>mmrm fit</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>Formula<span class="sc">:</span>     </span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>FEV1_CHG <span class="sc">~</span> FEV1_BL <span class="sc">+</span> AVISIT <span class="sc">+</span> ARMCD<span class="sc">:</span>AVISIT <span class="sc">+</span> RACE <span class="sc">+</span> SEX <span class="sc">+</span> <span class="fu">us</span>(AVISIT <span class="sc">|</span>  </span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    USUBJID)</span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>Data<span class="sc">:</span>        <span class="fu">fev_data</span> (used <span class="dv">537</span> observations from <span class="dv">197</span> subjects with maximum <span class="dv">4</span> </span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>timepoints)</span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>Covariance<span class="sc">:</span>  <span class="fu">unstructured</span> (<span class="dv">10</span> variance parameters)</span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>Method<span class="sc">:</span>      Satterthwaite</span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>Vcov Method<span class="sc">:</span> Asymptotic</span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>Inference<span class="sc">:</span>   REML</span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>Model selection criteria<span class="sc">:</span></span>
-<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>     AIC      BIC   logLik deviance </span>
-<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>  <span class="fl">3381.4</span>   <span class="fl">3414.2</span>  <span class="sc">-</span><span class="fl">1680.7</span>   <span class="fl">3361.4</span> </span>
-<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>Coefficients<span class="sc">:</span> </span>
-<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>                               Estimate Std. Error        df t value <span class="fu">Pr</span>(<span class="sc">&gt;</span><span class="er">|</span>t<span class="sc">|</span>)</span>
-<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>(Intercept)                    <span class="fl">24.35366</span>    <span class="fl">1.40753</span> <span class="fl">257.97000</span>  <span class="fl">17.302</span>  <span class="sc">&lt;</span> <span class="fl">2e-16</span></span>
-<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>FEV1_BL                        <span class="sc">-</span><span class="fl">0.84022</span>    <span class="fl">0.02777</span> <span class="fl">190.27000</span> <span class="sc">-</span><span class="fl">30.251</span>  <span class="sc">&lt;</span> <span class="fl">2e-16</span></span>
-<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>AVISITVIS2                      <span class="fl">4.79040</span>    <span class="fl">0.79849</span> <span class="fl">144.82000</span>   <span class="fl">5.999</span> <span class="fl">1.51e-08</span></span>
-<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>AVISITVIS3                     <span class="fl">10.36605</span>    <span class="fl">0.81317</span> <span class="fl">157.08000</span>  <span class="fl">12.748</span>  <span class="sc">&lt;</span> <span class="fl">2e-16</span></span>
-<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>AVISITVIS4                     <span class="fl">15.19229</span>    <span class="fl">1.30864</span> <span class="fl">139.24000</span>  <span class="fl">11.609</span>  <span class="sc">&lt;</span> <span class="fl">2e-16</span></span>
-<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>RACEBlack or African American   <span class="fl">1.41923</span>    <span class="fl">0.57874</span> <span class="fl">169.56000</span>   <span class="fl">2.452</span> <span class="fl">0.015208</span></span>
-<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>RACEWhite                       <span class="fl">5.45679</span>    <span class="fl">0.61625</span> <span class="fl">157.54000</span>   <span class="fl">8.855</span> <span class="fl">1.65e-15</span></span>
-<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>SEXFemale                       <span class="fl">0.33812</span>    <span class="fl">0.49272</span> <span class="fl">166.43000</span>   <span class="fl">0.686</span> <span class="fl">0.493521</span></span>
-<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>AVISITVIS1<span class="sc">:</span>ARMCDTRT             <span class="fl">3.98346</span>    <span class="fl">1.04541</span> <span class="fl">142.32000</span>   <span class="fl">3.810</span> <span class="fl">0.000206</span></span>
-<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a>AVISITVIS2<span class="sc">:</span>ARMCDTRT             <span class="fl">3.93076</span>    <span class="fl">0.81351</span> <span class="fl">142.26000</span>   <span class="fl">4.832</span> <span class="fl">3.46e-06</span></span>
-<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a>AVISITVIS3<span class="sc">:</span>ARMCDTRT             <span class="fl">2.98374</span>    <span class="fl">0.66567</span> <span class="fl">129.61000</span>   <span class="fl">4.482</span> <span class="fl">1.61e-05</span></span>
-<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a>AVISITVIS4<span class="sc">:</span>ARMCDTRT             <span class="fl">4.40395</span>    <span class="fl">1.66049</span> <span class="fl">132.88000</span>   <span class="fl">2.652</span> <span class="fl">0.008970</span></span>
-<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a>                                 </span>
-<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a>(Intercept)                   <span class="sc">**</span><span class="er">*</span></span>
-<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a>FEV1_BL                       <span class="sc">**</span><span class="er">*</span></span>
-<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a>AVISITVIS2                    <span class="sc">**</span><span class="er">*</span></span>
-<span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a>AVISITVIS3                    <span class="sc">**</span><span class="er">*</span></span>
-<span id="cb14-37"><a href="#cb14-37" aria-hidden="true" tabindex="-1"></a>AVISITVIS4                    <span class="sc">**</span><span class="er">*</span></span>
-<span id="cb14-38"><a href="#cb14-38" aria-hidden="true" tabindex="-1"></a>RACEBlack or African American <span class="sc">*</span>  </span>
-<span id="cb14-39"><a href="#cb14-39" aria-hidden="true" tabindex="-1"></a>RACEWhite                     <span class="sc">**</span><span class="er">*</span></span>
-<span id="cb14-40"><a href="#cb14-40" aria-hidden="true" tabindex="-1"></a>SEXFemale                        </span>
-<span id="cb14-41"><a href="#cb14-41" aria-hidden="true" tabindex="-1"></a>AVISITVIS1<span class="sc">:</span>ARMCDTRT           <span class="sc">**</span><span class="er">*</span></span>
-<span id="cb14-42"><a href="#cb14-42" aria-hidden="true" tabindex="-1"></a>AVISITVIS2<span class="sc">:</span>ARMCDTRT           <span class="sc">**</span><span class="er">*</span></span>
-<span id="cb14-43"><a href="#cb14-43" aria-hidden="true" tabindex="-1"></a>AVISITVIS3<span class="sc">:</span>ARMCDTRT           <span class="sc">**</span><span class="er">*</span></span>
-<span id="cb14-44"><a href="#cb14-44" aria-hidden="true" tabindex="-1"></a>AVISITVIS4<span class="sc">:</span>ARMCDTRT           <span class="sc">**</span> </span>
-<span id="cb14-45"><a href="#cb14-45" aria-hidden="true" tabindex="-1"></a><span class="sc">---</span></span>
-<span id="cb14-46"><a href="#cb14-46" aria-hidden="true" tabindex="-1"></a>Signif. codes<span class="sc">:</span>  <span class="dv">0</span> <span class="st">'***'</span> <span class="fl">0.001</span> <span class="st">'**'</span> <span class="fl">0.01</span> <span class="st">'*'</span> <span class="fl">0.05</span> <span class="st">'.'</span> <span class="fl">0.1</span> <span class="st">' '</span> <span class="dv">1</span></span>
-<span id="cb14-47"><a href="#cb14-47" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-48"><a href="#cb14-48" aria-hidden="true" tabindex="-1"></a>Covariance estimate<span class="sc">:</span></span>
-<span id="cb14-49"><a href="#cb14-49" aria-hidden="true" tabindex="-1"></a>        VIS1    VIS2    VIS3    VIS4</span>
-<span id="cb14-50"><a href="#cb14-50" aria-hidden="true" tabindex="-1"></a>VIS1 <span class="fl">37.8303</span> <span class="fl">11.3253</span>  <span class="fl">3.4806</span> <span class="fl">10.6749</span></span>
-<span id="cb14-51"><a href="#cb14-51" aria-hidden="true" tabindex="-1"></a>VIS2 <span class="fl">11.3253</span> <span class="fl">23.5474</span>  <span class="fl">0.7754</span>  <span class="fl">5.5115</span></span>
-<span id="cb14-52"><a href="#cb14-52" aria-hidden="true" tabindex="-1"></a>VIS3  <span class="fl">3.4806</span>  <span class="fl">0.7754</span> <span class="fl">13.8038</span>  <span class="fl">0.5660</span></span>
-<span id="cb14-53"><a href="#cb14-53" aria-hidden="true" tabindex="-1"></a>VIS4 <span class="fl">10.6749</span>  <span class="fl">5.5115</span>  <span class="fl">0.5660</span> <span class="fl">92.9615</span></span></code></pre></div>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>Formula<span class="sc">:</span>     FEV1_CHG <span class="sc">~</span> FEV1_BL <span class="sc">+</span> AVISIT <span class="sc">+</span> ARMCD<span class="sc">:</span>AVISIT <span class="sc">+</span> RACE <span class="sc">+</span> SEX <span class="sc">+</span> <span class="fu">us</span>(AVISIT <span class="sc">|</span>      USUBJID)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>Data<span class="sc">:</span>        <span class="fu">fev_data</span> (used <span class="dv">537</span> observations from <span class="dv">197</span> subjects with maximum <span class="dv">4</span> timepoints)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>Covariance<span class="sc">:</span>  <span class="fu">unstructured</span> (<span class="dv">10</span> variance parameters)</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>Method<span class="sc">:</span>      Satterthwaite</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>Vcov Method<span class="sc">:</span> Asymptotic</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>Inference<span class="sc">:</span>   REML</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>Model selection criteria<span class="sc">:</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>     AIC      BIC   logLik deviance </span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  <span class="fl">3381.4</span>   <span class="fl">3414.2</span>  <span class="sc">-</span><span class="fl">1680.7</span>   <span class="fl">3361.4</span> </span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>Coefficients<span class="sc">:</span> </span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>                               Estimate Std. Error        df t value <span class="fu">Pr</span>(<span class="sc">&gt;</span><span class="er">|</span>t<span class="sc">|</span>)    </span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>(Intercept)                    <span class="fl">24.35372</span>    <span class="fl">1.40754</span> <span class="fl">257.97000</span>  <span class="fl">17.302</span>  <span class="sc">&lt;</span> <span class="fl">2e-16</span> <span class="sc">**</span><span class="er">*</span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>FEV1_BL                        <span class="sc">-</span><span class="fl">0.84022</span>    <span class="fl">0.02777</span> <span class="fl">190.27000</span> <span class="sc">-</span><span class="fl">30.251</span>  <span class="sc">&lt;</span> <span class="fl">2e-16</span> <span class="sc">**</span><span class="er">*</span></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>AVISITVIS2                      <span class="fl">4.79036</span>    <span class="fl">0.79848</span> <span class="fl">144.82000</span>   <span class="fl">5.999</span> <span class="fl">1.51e-08</span> <span class="sc">**</span><span class="er">*</span></span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>AVISITVIS3                     <span class="fl">10.36601</span>    <span class="fl">0.81318</span> <span class="fl">157.08000</span>  <span class="fl">12.748</span>  <span class="sc">&lt;</span> <span class="fl">2e-16</span> <span class="sc">**</span><span class="er">*</span></span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>AVISITVIS4                     <span class="fl">15.19231</span>    <span class="fl">1.30857</span> <span class="fl">139.25000</span>  <span class="fl">11.610</span>  <span class="sc">&lt;</span> <span class="fl">2e-16</span> <span class="sc">**</span><span class="er">*</span></span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>RACEBlack or African American   <span class="fl">1.41921</span>    <span class="fl">0.57874</span> <span class="fl">169.56000</span>   <span class="fl">2.452</span> <span class="fl">0.015211</span> <span class="sc">*</span>  </span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>RACEWhite                       <span class="fl">5.45679</span>    <span class="fl">0.61626</span> <span class="fl">157.54000</span>   <span class="fl">8.855</span> <span class="fl">1.65e-15</span> <span class="sc">**</span><span class="er">*</span></span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>SEXFemale                       <span class="fl">0.33812</span>    <span class="fl">0.49273</span> <span class="fl">166.43000</span>   <span class="fl">0.686</span> <span class="fl">0.493529</span>    </span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>AVISITVIS1<span class="sc">:</span>ARMCDTRT             <span class="fl">3.98329</span>    <span class="fl">1.04540</span> <span class="fl">142.32000</span>   <span class="fl">3.810</span> <span class="fl">0.000206</span> <span class="sc">**</span><span class="er">*</span></span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>AVISITVIS2<span class="sc">:</span>ARMCDTRT             <span class="fl">3.93076</span>    <span class="fl">0.81351</span> <span class="fl">142.26000</span>   <span class="fl">4.832</span> <span class="fl">3.46e-06</span> <span class="sc">**</span><span class="er">*</span></span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>AVISITVIS3<span class="sc">:</span>ARMCDTRT             <span class="fl">2.98372</span>    <span class="fl">0.66567</span> <span class="fl">129.61000</span>   <span class="fl">4.482</span> <span class="fl">1.61e-05</span> <span class="sc">**</span><span class="er">*</span></span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>AVISITVIS4<span class="sc">:</span>ARMCDTRT             <span class="fl">4.40400</span>    <span class="fl">1.66049</span> <span class="fl">132.88000</span>   <span class="fl">2.652</span> <span class="fl">0.008970</span> <span class="sc">**</span> </span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a><span class="sc">---</span></span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a>Signif. codes<span class="sc">:</span>  <span class="dv">0</span> <span class="st">'***'</span> <span class="fl">0.001</span> <span class="st">'**'</span> <span class="fl">0.01</span> <span class="st">'*'</span> <span class="fl">0.05</span> <span class="st">'.'</span> <span class="fl">0.1</span> <span class="st">' '</span> <span class="dv">1</span></span>
+<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a>Covariance estimate<span class="sc">:</span></span>
+<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a>        VIS1    VIS2    VIS3    VIS4</span>
+<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a>VIS1 <span class="fl">37.8301</span> <span class="fl">11.3255</span>  <span class="fl">3.4796</span> <span class="fl">10.6844</span></span>
+<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a>VIS2 <span class="fl">11.3255</span> <span class="fl">23.5476</span>  <span class="fl">0.7760</span>  <span class="fl">5.5103</span></span>
+<span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a>VIS3  <span class="fl">3.4796</span>  <span class="fl">0.7760</span> <span class="fl">13.8037</span>  <span class="fl">0.5683</span></span>
+<span id="cb14-37"><a href="#cb14-37" aria-hidden="true" tabindex="-1"></a>VIS4 <span class="fl">10.6844</span>  <span class="fl">5.5103</span>  <span class="fl">0.5683</span> <span class="fl">92.9625</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -2476,7 +2452,10 @@ runtime):</p>
 }
 </style>
 <table class="table gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-<caption>Table 4. Contrasting Bayesian and frequentist MMRM fits.</caption>
+<caption class="gt_caption">
+Table 4. Contrasting Bayesian and frequentist MMRM fits.
+</caption>
+
   <thead>
 <tr class="gt_col_headings gt_spanner_row">
 <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="2" colspan="1" scope="col" id="Variable">Variable</th>
@@ -2499,199 +2478,199 @@ runtime):</p>
 <tbody class="gt_table_body">
 <tr>
 <td headers="variable" class="gt_row gt_left">intercept</td>
-<td headers="bayes_estimate" class="gt_row gt_right">24.4117</td>
+<td headers="bayes_estimate" class="gt_row gt_right">24.3603</td>
 <td headers="freq_estimate" class="gt_row gt_right">24.3537</td>
-<td headers="diff_estimate" class="gt_row gt_right">0.0581</td>
-<td headers="bayes_se" class="gt_row gt_right">1.4456</td>
+<td headers="diff_estimate" class="gt_row gt_right">0.0066</td>
+<td headers="bayes_se" class="gt_row gt_right">1.4858</td>
 <td headers="freq_se" class="gt_row gt_right">1.4075</td>
-<td headers="diff_se" class="gt_row gt_right">0.0380</td>
+<td headers="diff_se" class="gt_row gt_right">0.0783</td>
 </tr>
 <tr>
 <td headers="variable" class="gt_row gt_left">fev1_bl</td>
-<td headers="bayes_estimate" class="gt_row gt_right">−0.8407</td>
+<td headers="bayes_estimate" class="gt_row gt_right">−0.8403</td>
 <td headers="freq_estimate" class="gt_row gt_right">−0.8402</td>
-<td headers="diff_estimate" class="gt_row gt_right">−0.0004</td>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0001</td>
 <td headers="bayes_se" class="gt_row gt_right">0.0300</td>
 <td headers="freq_se" class="gt_row gt_right">0.0278</td>
 <td headers="diff_se" class="gt_row gt_right">0.0023</td>
 </tr>
 <tr>
 <td headers="variable" class="gt_row gt_left">avisitvis2</td>
-<td headers="bayes_estimate" class="gt_row gt_right">4.7391</td>
+<td headers="bayes_estimate" class="gt_row gt_right">4.7974</td>
 <td headers="freq_estimate" class="gt_row gt_right">4.7904</td>
-<td headers="diff_estimate" class="gt_row gt_right">−0.0513</td>
-<td headers="bayes_se" class="gt_row gt_right">0.8328</td>
+<td headers="diff_estimate" class="gt_row gt_right">0.0071</td>
+<td headers="bayes_se" class="gt_row gt_right">0.8592</td>
 <td headers="freq_se" class="gt_row gt_right">0.7985</td>
-<td headers="diff_se" class="gt_row gt_right">0.0343</td>
+<td headers="diff_se" class="gt_row gt_right">0.0608</td>
 </tr>
 <tr>
 <td headers="variable" class="gt_row gt_left">avisitvis3</td>
-<td headers="bayes_estimate" class="gt_row gt_right">10.3177</td>
-<td headers="freq_estimate" class="gt_row gt_right">10.3661</td>
-<td headers="diff_estimate" class="gt_row gt_right">−0.0484</td>
-<td headers="bayes_se" class="gt_row gt_right">0.8247</td>
+<td headers="bayes_estimate" class="gt_row gt_right">10.3694</td>
+<td headers="freq_estimate" class="gt_row gt_right">10.3660</td>
+<td headers="diff_estimate" class="gt_row gt_right">0.0034</td>
+<td headers="bayes_se" class="gt_row gt_right">0.8766</td>
 <td headers="freq_se" class="gt_row gt_right">0.8132</td>
-<td headers="diff_se" class="gt_row gt_right">0.0116</td>
+<td headers="diff_se" class="gt_row gt_right">0.0634</td>
 </tr>
 <tr>
 <td headers="variable" class="gt_row gt_left">avisitvis4</td>
-<td headers="bayes_estimate" class="gt_row gt_right">15.1288</td>
+<td headers="bayes_estimate" class="gt_row gt_right">15.1647</td>
 <td headers="freq_estimate" class="gt_row gt_right">15.1923</td>
-<td headers="diff_estimate" class="gt_row gt_right">−0.0635</td>
-<td headers="bayes_se" class="gt_row gt_right">1.3488</td>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0276</td>
+<td headers="bayes_se" class="gt_row gt_right">1.2965</td>
 <td headers="freq_se" class="gt_row gt_right">1.3086</td>
-<td headers="diff_se" class="gt_row gt_right">0.0402</td>
+<td headers="diff_se" class="gt_row gt_right">−0.0121</td>
 </tr>
 <tr>
 <td headers="variable" class="gt_row gt_left">raceblackorafricanamerican</td>
-<td headers="bayes_estimate" class="gt_row gt_right">1.4095</td>
+<td headers="bayes_estimate" class="gt_row gt_right">1.4031</td>
 <td headers="freq_estimate" class="gt_row gt_right">1.4192</td>
-<td headers="diff_estimate" class="gt_row gt_right">−0.0098</td>
-<td headers="bayes_se" class="gt_row gt_right">0.5928</td>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0161</td>
+<td headers="bayes_se" class="gt_row gt_right">0.5791</td>
 <td headers="freq_se" class="gt_row gt_right">0.5787</td>
-<td headers="diff_se" class="gt_row gt_right">0.0141</td>
+<td headers="diff_se" class="gt_row gt_right">0.0004</td>
 </tr>
 <tr>
 <td headers="variable" class="gt_row gt_left">racewhite</td>
-<td headers="bayes_estimate" class="gt_row gt_right">5.4468</td>
+<td headers="bayes_estimate" class="gt_row gt_right">5.4414</td>
 <td headers="freq_estimate" class="gt_row gt_right">5.4568</td>
-<td headers="diff_estimate" class="gt_row gt_right">−0.0100</td>
-<td headers="bayes_se" class="gt_row gt_right">0.6280</td>
-<td headers="freq_se" class="gt_row gt_right">0.6162</td>
-<td headers="diff_se" class="gt_row gt_right">0.0117</td>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0153</td>
+<td headers="bayes_se" class="gt_row gt_right">0.6116</td>
+<td headers="freq_se" class="gt_row gt_right">0.6163</td>
+<td headers="diff_se" class="gt_row gt_right">−0.0047</td>
 </tr>
 <tr>
 <td headers="variable" class="gt_row gt_left">sexfemale</td>
-<td headers="bayes_estimate" class="gt_row gt_right">0.3504</td>
+<td headers="bayes_estimate" class="gt_row gt_right">0.3467</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.3381</td>
-<td headers="diff_estimate" class="gt_row gt_right">0.0123</td>
-<td headers="bayes_se" class="gt_row gt_right">0.5141</td>
+<td headers="diff_estimate" class="gt_row gt_right">0.0086</td>
+<td headers="bayes_se" class="gt_row gt_right">0.5137</td>
 <td headers="freq_se" class="gt_row gt_right">0.4927</td>
-<td headers="diff_se" class="gt_row gt_right">0.0214</td>
+<td headers="diff_se" class="gt_row gt_right">0.0210</td>
 </tr>
 <tr>
 <td headers="variable" class="gt_row gt_left">avisitvis1:armcdtrt</td>
-<td headers="bayes_estimate" class="gt_row gt_right">3.9513</td>
-<td headers="freq_estimate" class="gt_row gt_right">3.9835</td>
-<td headers="diff_estimate" class="gt_row gt_right">−0.0321</td>
-<td headers="bayes_se" class="gt_row gt_right">1.0611</td>
+<td headers="bayes_estimate" class="gt_row gt_right">3.9849</td>
+<td headers="freq_estimate" class="gt_row gt_right">3.9833</td>
+<td headers="diff_estimate" class="gt_row gt_right">0.0016</td>
+<td headers="bayes_se" class="gt_row gt_right">1.0980</td>
 <td headers="freq_se" class="gt_row gt_right">1.0454</td>
-<td headers="diff_se" class="gt_row gt_right">0.0157</td>
+<td headers="diff_se" class="gt_row gt_right">0.0526</td>
 </tr>
 <tr>
 <td headers="variable" class="gt_row gt_left">avisitvis2:armcdtrt</td>
-<td headers="bayes_estimate" class="gt_row gt_right">3.9442</td>
+<td headers="bayes_estimate" class="gt_row gt_right">3.9304</td>
 <td headers="freq_estimate" class="gt_row gt_right">3.9308</td>
-<td headers="diff_estimate" class="gt_row gt_right">0.0135</td>
-<td headers="bayes_se" class="gt_row gt_right">0.8716</td>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0004</td>
+<td headers="bayes_se" class="gt_row gt_right">0.8612</td>
 <td headers="freq_se" class="gt_row gt_right">0.8135</td>
-<td headers="diff_se" class="gt_row gt_right">0.0581</td>
+<td headers="diff_se" class="gt_row gt_right">0.0477</td>
 </tr>
 <tr>
 <td headers="variable" class="gt_row gt_left">avisitvis3:armcdtrt</td>
-<td headers="bayes_estimate" class="gt_row gt_right">2.9789</td>
+<td headers="bayes_estimate" class="gt_row gt_right">2.9806</td>
 <td headers="freq_estimate" class="gt_row gt_right">2.9837</td>
-<td headers="diff_estimate" class="gt_row gt_right">−0.0049</td>
-<td headers="bayes_se" class="gt_row gt_right">0.6941</td>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0031</td>
+<td headers="bayes_se" class="gt_row gt_right">0.6722</td>
 <td headers="freq_se" class="gt_row gt_right">0.6657</td>
-<td headers="diff_se" class="gt_row gt_right">0.0285</td>
+<td headers="diff_se" class="gt_row gt_right">0.0065</td>
 </tr>
 <tr>
 <td headers="variable" class="gt_row gt_left">avisitvis4:armcdtrt</td>
-<td headers="bayes_estimate" class="gt_row gt_right">4.4452</td>
-<td headers="freq_estimate" class="gt_row gt_right">4.4039</td>
-<td headers="diff_estimate" class="gt_row gt_right">0.0412</td>
-<td headers="bayes_se" class="gt_row gt_right">1.7294</td>
+<td headers="bayes_estimate" class="gt_row gt_right">4.4569</td>
+<td headers="freq_estimate" class="gt_row gt_right">4.4040</td>
+<td headers="diff_estimate" class="gt_row gt_right">0.0529</td>
+<td headers="bayes_se" class="gt_row gt_right">1.6552</td>
 <td headers="freq_se" class="gt_row gt_right">1.6605</td>
-<td headers="diff_se" class="gt_row gt_right">0.0689</td>
+<td headers="diff_se" class="gt_row gt_right">−0.0053</td>
 </tr>
 <tr>
 <td headers="variable" class="gt_row gt_left">sigma_avisitvis1</td>
-<td headers="bayes_estimate" class="gt_row gt_right">6.2548</td>
+<td headers="bayes_estimate" class="gt_row gt_right">6.2406</td>
 <td headers="freq_estimate" class="gt_row gt_right">6.1506</td>
-<td headers="diff_estimate" class="gt_row gt_right">0.1041</td>
-<td headers="bayes_se" class="gt_row gt_right">0.3853</td>
+<td headers="diff_estimate" class="gt_row gt_right">0.0900</td>
+<td headers="bayes_se" class="gt_row gt_right">0.3997</td>
 <td headers="freq_se" class="gt_row gt_right">NA</td>
 <td headers="diff_se" class="gt_row gt_right">NA</td>
 </tr>
 <tr>
 <td headers="variable" class="gt_row gt_left">sigma_avisitvis2</td>
-<td headers="bayes_estimate" class="gt_row gt_right">4.9262</td>
+<td headers="bayes_estimate" class="gt_row gt_right">4.9176</td>
 <td headers="freq_estimate" class="gt_row gt_right">4.8526</td>
-<td headers="diff_estimate" class="gt_row gt_right">0.0736</td>
-<td headers="bayes_se" class="gt_row gt_right">0.3149</td>
+<td headers="diff_estimate" class="gt_row gt_right">0.0650</td>
+<td headers="bayes_se" class="gt_row gt_right">0.3011</td>
 <td headers="freq_se" class="gt_row gt_right">NA</td>
 <td headers="diff_se" class="gt_row gt_right">NA</td>
 </tr>
 <tr>
 <td headers="variable" class="gt_row gt_left">sigma_avisitvis3</td>
-<td headers="bayes_estimate" class="gt_row gt_right">3.7787</td>
+<td headers="bayes_estimate" class="gt_row gt_right">3.7739</td>
 <td headers="freq_estimate" class="gt_row gt_right">3.7153</td>
-<td headers="diff_estimate" class="gt_row gt_right">0.0633</td>
-<td headers="bayes_se" class="gt_row gt_right">0.2451</td>
+<td headers="diff_estimate" class="gt_row gt_right">0.0586</td>
+<td headers="bayes_se" class="gt_row gt_right">0.2386</td>
 <td headers="freq_se" class="gt_row gt_right">NA</td>
 <td headers="diff_se" class="gt_row gt_right">NA</td>
 </tr>
 <tr>
 <td headers="variable" class="gt_row gt_left">sigma_avisitvis4</td>
-<td headers="bayes_estimate" class="gt_row gt_right">9.7911</td>
+<td headers="bayes_estimate" class="gt_row gt_right">9.7840</td>
 <td headers="freq_estimate" class="gt_row gt_right">9.6417</td>
-<td headers="diff_estimate" class="gt_row gt_right">0.1494</td>
-<td headers="bayes_se" class="gt_row gt_right">0.6269</td>
+<td headers="diff_estimate" class="gt_row gt_right">0.1423</td>
+<td headers="bayes_se" class="gt_row gt_right">0.5906</td>
 <td headers="freq_se" class="gt_row gt_right">NA</td>
 <td headers="diff_se" class="gt_row gt_right">NA</td>
 </tr>
 <tr>
 <td headers="variable" class="gt_row gt_left">correlation_vis1_vis2</td>
-<td headers="bayes_estimate" class="gt_row gt_right">0.3605</td>
+<td headers="bayes_estimate" class="gt_row gt_right">0.3617</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.3795</td>
-<td headers="diff_estimate" class="gt_row gt_right">−0.0190</td>
-<td headers="bayes_se" class="gt_row gt_right">0.0862</td>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0177</td>
+<td headers="bayes_se" class="gt_row gt_right">0.0843</td>
 <td headers="freq_se" class="gt_row gt_right">NA</td>
 <td headers="diff_se" class="gt_row gt_right">NA</td>
 </tr>
 <tr>
 <td headers="variable" class="gt_row gt_left">correlation_vis1_vis3</td>
-<td headers="bayes_estimate" class="gt_row gt_right">0.1410</td>
+<td headers="bayes_estimate" class="gt_row gt_right">0.1385</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.1523</td>
-<td headers="diff_estimate" class="gt_row gt_right">−0.0113</td>
-<td headers="bayes_se" class="gt_row gt_right">0.0988</td>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0138</td>
+<td headers="bayes_se" class="gt_row gt_right">0.0956</td>
 <td headers="freq_se" class="gt_row gt_right">NA</td>
 <td headers="diff_se" class="gt_row gt_right">NA</td>
 </tr>
 <tr>
 <td headers="variable" class="gt_row gt_left">correlation_vis2_vis3</td>
-<td headers="bayes_estimate" class="gt_row gt_right">0.0367</td>
+<td headers="bayes_estimate" class="gt_row gt_right">0.0400</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.0430</td>
-<td headers="diff_estimate" class="gt_row gt_right">−0.0063</td>
-<td headers="bayes_se" class="gt_row gt_right">0.1009</td>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0031</td>
+<td headers="bayes_se" class="gt_row gt_right">0.0980</td>
 <td headers="freq_se" class="gt_row gt_right">NA</td>
 <td headers="diff_se" class="gt_row gt_right">NA</td>
 </tr>
 <tr>
 <td headers="variable" class="gt_row gt_left">correlation_vis1_vis4</td>
-<td headers="bayes_estimate" class="gt_row gt_right">0.1649</td>
-<td headers="freq_estimate" class="gt_row gt_right">0.1800</td>
-<td headers="diff_estimate" class="gt_row gt_right">−0.0151</td>
-<td headers="bayes_se" class="gt_row gt_right">0.1163</td>
+<td headers="bayes_estimate" class="gt_row gt_right">0.1728</td>
+<td headers="freq_estimate" class="gt_row gt_right">0.1802</td>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0074</td>
+<td headers="bayes_se" class="gt_row gt_right">0.1138</td>
 <td headers="freq_se" class="gt_row gt_right">NA</td>
 <td headers="diff_se" class="gt_row gt_right">NA</td>
 </tr>
 <tr>
 <td headers="variable" class="gt_row gt_left">correlation_vis2_vis4</td>
-<td headers="bayes_estimate" class="gt_row gt_right">0.1088</td>
+<td headers="bayes_estimate" class="gt_row gt_right">0.1123</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.1178</td>
-<td headers="diff_estimate" class="gt_row gt_right">−0.0090</td>
-<td headers="bayes_se" class="gt_row gt_right">0.0871</td>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0054</td>
+<td headers="bayes_se" class="gt_row gt_right">0.0878</td>
 <td headers="freq_se" class="gt_row gt_right">NA</td>
 <td headers="diff_se" class="gt_row gt_right">NA</td>
 </tr>
 <tr>
 <td headers="variable" class="gt_row gt_left">correlation_vis3_vis4</td>
-<td headers="bayes_estimate" class="gt_row gt_right">0.0145</td>
-<td headers="freq_estimate" class="gt_row gt_right">0.0158</td>
-<td headers="diff_estimate" class="gt_row gt_right">−0.0013</td>
-<td headers="bayes_se" class="gt_row gt_right">0.0999</td>
+<td headers="bayes_estimate" class="gt_row gt_right">0.0132</td>
+<td headers="freq_estimate" class="gt_row gt_right">0.0159</td>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0026</td>
+<td headers="bayes_se" class="gt_row gt_right">0.0977</td>
 <td headers="freq_se" class="gt_row gt_right">NA</td>
 <td headers="diff_se" class="gt_row gt_right">NA</td>
 </tr>
