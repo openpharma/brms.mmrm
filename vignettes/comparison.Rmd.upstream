@@ -1,0 +1,344 @@
+---
+title: Comparison of Bayesian and frequentist MMRM fits
+date: "`r format(Sys.time(), '%d/%m/%Y')`"
+output:
+  rmarkdown::html_document:
+    theme: spacelab
+    highlight: default
+    toc: yes
+    toc_float: yes
+    number_sections: true 
+vignette: >
+  %\VignetteIndexEntry{Comparison of Bayesian and frequentist MMRM fits}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+editor_options:
+  chunk_output_type: console
+  markdown:
+    wrap: 72
+---
+
+```{r setup, eval=TRUE, include=FALSE, warning=FALSE, message=FALSE}
+rm(list = ls())
+library(knitr)
+knitr::opts_chunk$set(
+  echo = TRUE,
+  collapse = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  prompt = TRUE,
+  comment = NA,
+  size = "scriptsize",
+  fig.height = 5,
+  fig.width = 6,
+  dpi = 320,
+  fig.align = "center",
+  fig.path = "comparison_figures/"
+)
+```
+
+# About {.unnumbered}
+
+This vignette provides an example comparison of a Bayesian MMRM fit, 
+obtained by `brms.mmrm::brm_model()`, and a frequentist MMRM fit, 
+obtained by `mmrm::mmrm()`. An overview of parameter estimates and 
+differences by type of MMRM is given in the [summary (Table 4)](#Summary) 
+at the end.
+
+
+# Prerequisites
+
+Load required packages:
+
+```{r load_gen_pkgs, eval=TRUE, echo=TRUE, class.source = NULL}
+packages <- c(
+  "dplyr",
+  "tidyr",
+  "ggplot2",
+  "gt",
+  "gtsummary",
+  "purrr",
+  "parallel",
+  "brms.mmrm",
+  "mmrm",
+  "emmeans",
+  "posterior"
+)
+invisible(lapply(packages, library, character.only = TRUE))
+```
+
+Set seed:
+```{r set_seed, eval=TRUE, echo=TRUE, class.source = NULL}
+set.seed(123L)
+```
+
+# Data
+
+## Pre-processing
+
+The `fev_dat` dataset is used that is contained in the `mmrm`-package:
+```{r fev_dat_1, eval=TRUE, echo=TRUE, class.source = NULL}
+data(fev_data, package = "mmrm")
+```
+
+It is an artificial (simulated) dataset of a clinical trial investigating the 
+effect of an active treatment on `FEV1` (forced expired volume in one second),
+compared to placebo. `FEV1` is a measure of how quickly the lungs can be 
+emptied and low levels may indicate chronic obstructive pulmonary disease 
+(COPD). 
+
+The dataset is a `tibble` with 800 rows and 7 variables:
+
+* `USUBJID` (subject ID),
+* `AVISIT` (visit number),
+* `ARMCD` (treatment, `TRT` or `PBO`),
+* `RACE` (3-category race),
+* `SEX` (sex),
+* `FEV1_BL` (FEV1 at baseline, %),
+* `FEV1` (FEV1 at study visits),
+* `WEIGHT` (weighting variable).
+
+In this analysis, change from baseline in `FEV1` is used as an endpoint and
+a corresponding new variable (`FEV1_CHG`) is created.
+
+Create and preprocess dataset for MMRM analysis:
+```{r fev_dat_2, eval=TRUE, echo=TRUE, class.source = NULL}
+fev_data <- fev_data |>
+  mutate("FEV1_CHG" = FEV1 - FEV1_BL)
+fev_data <- brm_data(
+  data = fev_data,
+  outcome = "FEV1_CHG",
+  role = "change",
+  group = "ARMCD",
+  time = "AVISIT",
+  patient = "USUBJID",
+  baseline = "FEV1_BL",
+  reference_group = "PBO",
+  covariates = c("RACE", "SEX")
+) |>
+  mutate(ARMCD = factor(ARMCD), AVISIT = factor(AVISIT))
+```
+
+First rows of dataset:
+```{r fev_dat_3, eval=TRUE, echo=TRUE, class.source = NULL}
+head(fev_data) |>
+  gt() |>
+  tab_caption(caption = md("Table 1. First rows of dataset."))
+```
+
+## Descriptive statistics
+
+Table of baseline characteristics:
+```{r descr_1, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
+fev_data |>
+  select(ARMCD, USUBJID, SEX, RACE, FEV1_BL) |>
+  distinct() |>
+  select(-USUBJID) |>
+  tbl_summary(
+    by = c(ARMCD),
+    statistic = list(
+      all_continuous() ~ "{mean} ({sd})",
+      all_categorical() ~ "{n} / {N} ({p}%)"
+    )
+  ) |>
+  modify_caption("Table 2. Baseline characteristics.")
+```
+
+Table of change from baseline in FEV1 over 52 weeks:
+```{r descr_2, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
+fev_data |>
+  pull(AVISIT) |>
+  unique() |>
+  sort() |>
+  purrr::map(
+    .f = ~ fev_data |>
+      filter(AVISIT %in% .x) |>
+      tbl_summary(
+        by = ARMCD,
+        include = FEV1_CHG,
+        type = FEV1_CHG ~ "continuous2",
+        statistic = FEV1_CHG ~ c("{mean} ({sd})",
+                                 "{median} ({p25}, {p75})",
+                                 "{min}, {max}"),
+        label = list(FEV1_CHG = paste("Visit ", .x))
+      )
+  ) |>
+  tbl_stack(quiet = TRUE) |>
+  modify_caption("Table 3. Change from baseline.")
+```
+
+```{r descr_3, eval=TRUE, echo=TRUE, fig.align='center', out.width="75%", fig.dim = c(8, 5), fig.fig.keep='all', fig.pos="!ht", fig.cap="Figure 1. Change from baseline in FEV1 over 4 visit time points."}
+fev_data |>
+  group_by(ARMCD) |>
+  ggplot(aes(x = AVISIT, y = FEV1_CHG, fill = factor(ARMCD))) +
+  geom_hline(yintercept = 0, col = "grey", size = 1.2) +
+  geom_boxplot(na.rm = TRUE) +
+  labs(x = "Visit",
+       y = "Change from baseline in FEV1",
+       fill = "Treatment") +
+  scale_fill_manual(values = c("darkgoldenrod2", "coral2")) +
+  theme_bw()
+```
+
+# Fitting MMRMs
+
+## Bayesian model
+
+Model formula:
+```{r bayes_mmrm_1, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
+b_mmrm_formula <- brm_formula(
+  data = fev_data,
+  intercept = TRUE,
+  baseline = TRUE,
+  group = FALSE,
+  time = TRUE,
+  baseline_time = FALSE,
+  group_time = TRUE,
+  correlation = "unstructured"
+)
+print(b_mmrm_formula)
+```
+
+Fit model (using multiple cores, if available, to avoid long runtime):
+```{r bayes_mmrm_2a, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
+n_cores <- ifelse(
+  test = detectCores() > 1,
+  yes = min(2, detectCores()),
+  no = 1
+)
+```
+
+```{r bayes_mmrm_2b, eval=TRUE, echo=TRUE, cache=FALSE, class.source = 'fold-hide'}
+b_mmrm_fit <- brm_model(
+  data = filter(fev_data, !is.na(FEV1_CHG)),
+  formula = b_mmrm_formula,
+  iter = 1500,
+  chains = max(1, n_cores),
+  cores = n_cores,
+  refresh = 0
+)
+```
+
+Summary of results:
+```{r bayes_mmrm_3, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
+summary(b_mmrm_fit)
+```
+
+
+## Frequentist model
+
+Fit model:
+```{r freq_mmrm_1, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
+f_mmrm_fit <- mmrm::mmrm(
+  formula = FEV1_CHG ~ FEV1_BL + AVISIT + ARMCD:AVISIT + RACE + SEX +
+    us(AVISIT | USUBJID),
+  data = fev_data
+)
+```
+
+Summary of results:
+```{r freq_mmrm_2, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
+summary(f_mmrm_fit)
+```
+
+
+# Comparison 
+
+## Extract estimates from Bayesian model
+```{r comparison_1a, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
+b_mmrm_draws <- b_mmrm_fit |> as_draws_df()
+visit_levels <- sort(unique(as.character(fev_data$AVISIT)))
+for (level in visit_levels) {
+  name <- paste0("b_sigma_AVISIT", level)
+  b_mmrm_draws[[name]] <- exp(b_mmrm_draws[[name]])
+}
+b_mmrm_summary <- b_mmrm_draws |>
+  summarize_draws() |>
+  select(variable, mean, sd) |>
+  filter(!(variable %in% c("lprior", "lp__"))) |>
+  rename(bayes_estimate = mean, bayes_se = sd) |>
+  mutate(
+    variable = variable |>
+      tolower() |>
+      gsub(pattern = "b_", replacement = "") |>
+      gsub(pattern = "b_sigma_AVISIT", replacement = "sigma_") |>
+      gsub(pattern = "cortime", replacement = "correlation") |>
+      gsub(pattern = "__", replacement = "_")
+  )
+```
+
+## Extract estimates from frequentist model
+```{r comparison_2a, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
+f_mmrm_fixed <- summary(f_mmrm_fit)$coefficients |>
+  as_tibble(rownames = "variable") |>
+  mutate(variable = tolower(variable)) |>
+  mutate(variable = gsub("(", "", variable, fixed = TRUE)) |>
+  mutate(variable = gsub(")", "", variable, fixed = TRUE)) |>
+  rename(freq_estimate = Estimate, freq_se = `Std. Error`) |>
+  select(variable, freq_estimate, freq_se)
+```
+
+```{r comparison_2b, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
+f_mmrm_variance <- tibble(
+  variable = paste0("sigma_AVISIT", visit_levels) |> tolower(),
+  freq_estimate = sqrt(diag(f_mmrm_fit$cov))
+)
+```
+
+```{r comparison_2c, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
+f_diagonal_factor <- diag(1 / sqrt(diag(f_mmrm_fit$cov)))
+f_corr_matrix <- f_diagonal_factor %*% f_mmrm_fit$cov %*% f_diagonal_factor
+colnames(f_corr_matrix) <- visit_levels
+```
+
+```{r comparison_2d, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
+f_mmrm_correlation <- f_corr_matrix |>
+  as.data.frame() |>
+  as_tibble() |>
+  mutate(x1 = visit_levels) |>
+  pivot_longer(cols = -any_of("x1"),
+               names_to = "x2",
+               values_to = "freq_estimate") |>
+  filter(as.numeric(gsub("[^0-9]", "", x1)) <
+           as.numeric(gsub("[^0-9]", "", x2))) |>
+  mutate(variable = sprintf("correlation_%s_%s", x1, x2)) |>
+  select(variable, freq_estimate)
+```
+
+```{r comparison_2e, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
+f_mmrm_summary <- bind_rows(f_mmrm_fixed,
+                            f_mmrm_variance,
+                            f_mmrm_correlation) |>
+  mutate(variable = gsub("\\s+", "", variable) |> tolower())
+```
+
+
+## Summary {#Summary}
+```{r comparison_3a, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
+b_f_comparison <- full_join(x = b_mmrm_summary,
+                            y = f_mmrm_summary,
+                            by = "variable") |>
+  mutate(diff_estimate = bayes_estimate - freq_estimate,
+         diff_se = bayes_se - freq_se) |>
+  select(variable, ends_with("estimate"), ends_with("se"))
+```
+
+```{r comparison_3b, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
+gt(b_f_comparison) |>
+  fmt_number(decimals = 4) |>
+  tab_caption(
+    caption = md("Table 4. Contrasting Bayesian and frequentist MMRM fits.")
+  ) |>
+  tab_spanner(label = "Estimate", columns = ends_with("estimate")) |>
+  tab_spanner(label = "Standard error", columns = ends_with("se")) |>
+  cols_label(
+    variable = "Variable",
+    bayes_estimate = "Bayesian",
+    freq_estimate = "Frequentist",
+    diff_estimate = "Difference",
+    bayes_se = "Bayesian",
+    freq_se = "Frequentist",
+    diff_se = "Difference",
+  )
+```
+
