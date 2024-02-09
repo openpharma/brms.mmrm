@@ -1714,7 +1714,7 @@ The formula for the Bayesian model includes additive effects for baseline, study
 #> sigma ~ 0 + AVISIT
 ```
 
-We fit the model using `brms.mmrm::brm_model()`. To ensure a good basis of comparison with the frequentist model, we put an extremely diffuse priors on the intercept and log-scale standard deviation parameters. The parameters already have diffuse flexible priors by default.
+We fit the model using `brms.mmrm::brm_model()`. To ensure a good basis of comparison with the frequentist model, we put an extremely diffuse prior on the intercept. The parameters already have diffuse flexible priors by default.
 
 
 ```{.r .fold-hide}
