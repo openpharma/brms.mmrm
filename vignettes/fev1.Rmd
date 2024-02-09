@@ -1,5 +1,5 @@
 ---
-title: Comparison of Bayesian and frequentist MMRM fits
+title: FEV1 data comparison between Bayesian and frequentist MMRMs
 date: "08/02/2024"
 output:
   rmarkdown::html_document:
@@ -9,7 +9,7 @@ output:
     toc_float: yes
     number_sections: true 
 vignette: >
-  %\VignetteIndexEntry{Comparison of Bayesian and frequentist MMRM fits}
+  %\VignetteIndexEntry{FEV1 data comparison between Bayesian and frequentist MMRMs}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 editor_options:
@@ -25,13 +25,12 @@ editor_options:
 This vignette provides an example comparison of a Bayesian MMRM fit, 
 obtained by `brms.mmrm::brm_model()`, and a frequentist MMRM fit, 
 obtained by `mmrm::mmrm()`. An overview of parameter estimates and 
-differences by type of MMRM is given in the [summary (Table 4)](#Summary) 
+differences by type of MMRM is given in the [summary (Tables 4 and 5)](#Summary) 
 at the end.
-
 
 # Prerequisites
 
-Load required packages:
+This comparison workflow requires the following packages.
 
 
 ```r
@@ -51,7 +50,8 @@ Load required packages:
 > invisible(lapply(packages, library, character.only = TRUE))
 ```
 
-Set seed:
+We set a seed for the random number generator to ensure statistical reproducibility.
+
 
 ```r
 > set.seed(123L)
@@ -61,7 +61,8 @@ Set seed:
 
 ## Pre-processing
 
-The `fev_dat` dataset is used that is contained in the `mmrm`-package:
+This analysis exercise uses the `fev_dat` dataset contained in the `mmrm`-package:
+
 
 ```r
 > data(fev_data, package = "mmrm")
@@ -84,14 +85,18 @@ The dataset is a `tibble` with 800 rows and 7 variables:
 * `FEV1` (FEV1 at study visits),
 * `WEIGHT` (weighting variable).
 
-In this analysis, change from baseline in `FEV1` is used as an endpoint and
-a corresponding new variable (`FEV1_CHG`) is created.
+The primary endpoint for the analysis is change from baseline in `FEV1`, which we derive below and denote `FEV1_CHG`.
 
-Create and preprocess dataset for MMRM analysis:
 
 ```r
 > fev_data <- fev_data |>
 +   mutate("FEV1_CHG" = FEV1 - FEV1_BL)
+```
+
+The rest of the pre-processing steps create factors for the study arm and visit and apply the usual checking and standardization steps of `brms.mmrm::brm_data()`.
+
+
+```r
 > fev_data <- brm_data(
 +   data = fev_data,
 +   outcome = "FEV1_CHG",
@@ -106,12 +111,13 @@ Create and preprocess dataset for MMRM analysis:
 +   mutate(ARMCD = factor(ARMCD), AVISIT = factor(AVISIT))
 ```
 
-First rows of dataset:
+The following table shows the first rows of the dataset.
+
 
 ```r
 > head(fev_data) |>
 +   gt() |>
-+   tab_caption(caption = md("Table 1. First rows of dataset."))
++   tab_caption(caption = md("Table 1. First rows of the pre-processed `fev_dat` dataset."))
 ```
 
 <!--html_preserve--><div id="osncjrvket" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
@@ -555,7 +561,7 @@ First rows of dataset:
 }
 </style>
 <table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-  <!--/html_preserve--><caption class='gt_caption'>Table 1. First rows of dataset.</caption><!--html_preserve-->
+  <!--/html_preserve--><caption class='gt_caption'>Table 1. First rows of the pre-processed <code>fev_dat</code> dataset.</caption><!--html_preserve-->
   <thead>
     <tr class="gt_col_headings">
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="FEV1_CHG">FEV1_CHG</th>
@@ -619,6 +625,7 @@ First rows of dataset:
 ## Descriptive statistics
 
 Table of baseline characteristics:
+
 
 ```{.r .fold-hide}
 > fev_data |>
@@ -1121,6 +1128,7 @@ Table of baseline characteristics:
 
 Table of change from baseline in FEV1 over 52 weeks:
 
+
 ```{.r .fold-hide}
 > fev_data |>
 +   pull(AVISIT) |>
@@ -1133,9 +1141,11 @@ Table of change from baseline in FEV1 over 52 weeks:
 +         by = ARMCD,
 +         include = FEV1_CHG,
 +         type = FEV1_CHG ~ "continuous2",
-+         statistic = FEV1_CHG ~ c("{mean} ({sd})",
-+                                  "{median} ({p25}, {p75})",
-+                                  "{min}, {max}"),
++         statistic = FEV1_CHG ~ c(
++           "{mean} ({sd})",
++           "{median} ({p25}, {p75})",
++           "{min}, {max}"
++         ),
 +         label = list(FEV1_CHG = paste("Visit ", .x))
 +       )
 +   ) |>
@@ -1659,22 +1669,26 @@ Table of change from baseline in FEV1 over 52 weeks:
 </table>
 </div><!--/html_preserve-->
 
+The following figure shows the primary endpoint over the four study visits in the data.
+
 
 ```r
 > fev_data |>
 +   group_by(ARMCD) |>
 +   ggplot(aes(x = AVISIT, y = FEV1_CHG, fill = factor(ARMCD))) +
-+   geom_hline(yintercept = 0, col = "grey", size = 1.2) +
++   geom_hline(yintercept = 0, col = "grey", linewidth = 1.2) +
 +   geom_boxplot(na.rm = TRUE) +
-+   labs(x = "Visit",
-+        y = "Change from baseline in FEV1",
-+        fill = "Treatment") +
++   labs(
++     x = "Visit",
++     y = "Change from baseline in FEV1",
++     fill = "Treatment"
++   ) +
 +   scale_fill_manual(values = c("darkgoldenrod2", "coral2")) +
 +   theme_bw()
 ```
 
 <div class="figure" style="text-align: center">
-<img src="comparison_figures/descr_3-1.png" alt="Figure 1. Change from baseline in FEV1 over 4 visit time points." width="75%" />
+<img src="fev1_figures/descr_3-1.png" alt="Figure 1. Change from baseline in FEV1 over 4 visit time points." width="75%" />
 <p class="caption">Figure 1. Change from baseline in FEV1 over 4 visit time points.</p>
 </div>
 
@@ -1682,7 +1696,7 @@ Table of change from baseline in FEV1 over 52 weeks:
 
 ## Bayesian model
 
-Model formula:
+The formula for the Bayesian model includes additive effects for baseline, study visit, race, sex, and study-arm-by-visit interaction.
 
 ```{.r .fold-hide}
 > b_mmrm_formula <- brm_formula(
@@ -1696,139 +1710,159 @@ Model formula:
 +   correlation = "unstructured"
 + )
 > print(b_mmrm_formula)
-FEV1_CHG ~ FEV1_BL + ARMCD:AVISIT + AVISIT + RACE + SEX + unstr(time = AVISIT, gr = USUBJID) 
-sigma ~ 0 + AVISIT
+#> FEV1_CHG ~ FEV1_BL + ARMCD:AVISIT + AVISIT + RACE + SEX + unstr(time = AVISIT, gr = USUBJID) 
+#> sigma ~ 0 + AVISIT
 ```
 
-Fit model (using multiple cores, if available, to avoid long runtime):
-
-```{.r .fold-hide}
-> n_cores <- ifelse(
-+   test = detectCores() > 1,
-+   yes = min(2, detectCores()),
-+   no = 1
-+ )
-```
+We fit the model using `brms.mmrm::brm_model()`. To ensure a good basis of comparison with the frequentist model, we put an extremely diffuse prior on the intercept. The parameters already have diffuse flexible priors by default.
 
 
 ```{.r .fold-hide}
 > b_mmrm_fit <- brm_model(
 +   data = filter(fev_data, !is.na(FEV1_CHG)),
 +   formula = b_mmrm_formula,
-+   iter = 1500,
-+   chains = max(1, n_cores),
-+   cores = n_cores,
++   prior = brms::prior(class = "Intercept", prior = "student_t(3, 0, 1000)"),
++   iter = 10000,
++   warmup = 2000,
++   chains = 4,
++   cores = 1 + (detectCores() > 1),
 +   refresh = 0
 + )
 ```
 
-Summary of results:
+Here is a posterior summary of model parameters, including fixed effects and pairwise correlation among visits within patients.
+
 
 ```{.r .fold-hide}
 > summary(b_mmrm_fit)
- Family: gaussian 
-  Links: mu = identity; sigma = log 
-Formula: FEV1_CHG ~ FEV1_BL + ARMCD:AVISIT + AVISIT + RACE + SEX + unstr(time = AVISIT, gr = USUBJID) 
-         sigma ~ 0 + AVISIT
-   Data: data[!is.na(data[[attr(data, "brm_outcome")]]), ] (Number of observations: 537) 
-  Draws: 2 chains, each with iter = 1500; warmup = 750; thin = 1;
-         total post-warmup draws = 1500
-
-Correlation Structures:
-                   Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-cortime(VIS1,VIS2)     0.36      0.08     0.19     0.52 1.00     2550     1229
-cortime(VIS1,VIS3)     0.14      0.10    -0.06     0.31 1.00     3032     1305
-cortime(VIS2,VIS3)     0.04      0.10    -0.16     0.23 1.00     1928     1012
-cortime(VIS1,VIS4)     0.17      0.11    -0.06     0.39 1.00     2638     1262
-cortime(VIS2,VIS4)     0.11      0.09    -0.06     0.28 1.00     2404     1204
-cortime(VIS3,VIS4)     0.01      0.10    -0.17     0.21 1.01     2579      855
-
-Population-Level Effects: 
-                           Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-Intercept                     24.36      1.49    21.47    27.06 1.00     2163     1045
-FEV1_BL                       -0.84      0.03    -0.90    -0.78 1.00     2979     1213
-AVISITVIS2                     4.80      0.86     3.13     6.49 1.00     1604     1119
-AVISITVIS3                    10.37      0.88     8.61    12.12 1.00     1338      877
-AVISITVIS4                    15.16      1.30    12.62    17.79 1.00     1755     1273
-RACEBlackorAfricanAmerican     1.40      0.58     0.29     2.54 1.00     1983     1032
-RACEWhite                      5.44      0.61     4.31     6.64 1.00     2341     1238
-SEXFemale                      0.35      0.51    -0.63     1.36 1.00     2932      965
-AVISITVIS1:ARMCDTRT            3.98      1.10     1.78     6.10 1.00     1586      960
-AVISITVIS2:ARMCDTRT            3.93      0.86     2.22     5.53 1.00     2091      838
-AVISITVIS3:ARMCDTRT            2.98      0.67     1.66     4.33 1.00     3024     1304
-AVISITVIS4:ARMCDTRT            4.46      1.66     1.22     7.72 1.01     2110     1307
-sigma_AVISITVIS1               1.83      0.06     1.72     1.96 1.00     2312     1088
-sigma_AVISITVIS2               1.59      0.06     1.48     1.71 1.00     2553     1228
-sigma_AVISITVIS3               1.33      0.06     1.20     1.45 1.00     2458     1188
-sigma_AVISITVIS4               2.28      0.06     2.17     2.40 1.00     2565     1006
-
-Draws were sampled using sampling(NUTS). For each parameter, Bulk_ESS
-and Tail_ESS are effective sample size measures, and Rhat is the potential
-scale reduction factor on split chains (at convergence, Rhat = 1).
+#>  Family: gaussian 
+#>   Links: mu = identity; sigma = log 
+#> Formula: FEV1_CHG ~ FEV1_BL + ARMCD:AVISIT + AVISIT + RACE + SEX + unstr(time = AVISIT, gr = USUBJID) 
+#>          sigma ~ 0 + AVISIT
+#>    Data: data[!is.na(data[[attr(data, "brm_outcome")]]), ] (Number of observations: 537) 
+#>   Draws: 4 chains, each with iter = 10000; warmup = 2000; thin = 1;
+#>          total post-warmup draws = 32000
+#> 
+#> Correlation Structures:
+#>                    Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+#> cortime(VIS1,VIS2)     0.36      0.09     0.18     0.52 1.00    58585    24257
+#> cortime(VIS1,VIS3)     0.14      0.10    -0.05     0.33 1.00    58949    24788
+#> cortime(VIS2,VIS3)     0.04      0.10    -0.16     0.23 1.00    58824    25049
+#> cortime(VIS1,VIS4)     0.17      0.11    -0.06     0.38 1.00    55691    24520
+#> cortime(VIS2,VIS4)     0.11      0.09    -0.07     0.28 1.00    60277    25190
+#> cortime(VIS3,VIS4)     0.01      0.10    -0.18     0.21 1.00    56242    23561
+#> 
+#> Population-Level Effects: 
+#>                            Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS
+#> Intercept                     24.35      1.43    21.57    27.15 1.00    53068
+#> FEV1_BL                       -0.84      0.03    -0.90    -0.78 1.00    67901
+#> AVISITVIS2                     4.79      0.81     3.18     6.38 1.00    35700
+#> AVISITVIS3                    10.37      0.83     8.75    11.98 1.00    34375
+#> AVISITVIS4                    15.19      1.33    12.58    17.81 1.00    36737
+#> RACEBlackorAfricanAmerican     1.41      0.59     0.26     2.56 1.00    54782
+#> RACEWhite                      5.45      0.63     4.23     6.68 1.00    53516
+#> SEXFemale                      0.34      0.51    -0.66     1.34 1.00    59639
+#> AVISITVIS1:ARMCDTRT            3.98      1.07     1.86     6.06 1.00    33958
+#> AVISITVIS2:ARMCDTRT            3.94      0.83     2.31     5.57 1.00    55462
+#> AVISITVIS3:ARMCDTRT            2.99      0.68     1.64     4.32 1.00    56252
+#> AVISITVIS4:ARMCDTRT            4.40      1.69     1.07     7.71 1.00    48161
+#> sigma_AVISITVIS1               1.83      0.06     1.71     1.95 1.00    57840
+#> sigma_AVISITVIS2               1.59      0.06     1.47     1.71 1.00    56812
+#> sigma_AVISITVIS3               1.33      0.06     1.21     1.46 1.00    60143
+#> sigma_AVISITVIS4               2.28      0.06     2.16     2.41 1.00    57683
+#>                            Tail_ESS
+#> Intercept                     24821
+#> FEV1_BL                       23294
+#> AVISITVIS2                    25052
+#> AVISITVIS3                    26819
+#> AVISITVIS4                    25044
+#> RACEBlackorAfricanAmerican    25911
+#> RACEWhite                     26249
+#> SEXFemale                     25410
+#> AVISITVIS1:ARMCDTRT           26430
+#> AVISITVIS2:ARMCDTRT           25361
+#> AVISITVIS3:ARMCDTRT           24232
+#> AVISITVIS4:ARMCDTRT           24501
+#> sigma_AVISITVIS1              24175
+#> sigma_AVISITVIS2              22476
+#> sigma_AVISITVIS3              24006
+#> sigma_AVISITVIS4              24285
+#> 
+#> Draws were sampled using sampling(NUTS). For each parameter, Bulk_ESS
+#> and Tail_ESS are effective sample size measures, and Rhat is the potential
+#> scale reduction factor on split chains (at convergence, Rhat = 1).
 ```
-
 
 ## Frequentist model
 
-Fit model:
+The formula for the frequentist model is the same, except for the different syntax for specifying the covariance structure of the MMRM. We fit the model below.
+
 
 ```{.r .fold-hide}
 > f_mmrm_fit <- mmrm::mmrm(
-+   formula = FEV1_CHG ~ FEV1_BL + AVISIT + ARMCD:AVISIT + RACE + SEX +
++   formula = FEV1_CHG ~ FEV1_BL + ARMCD:AVISIT + AVISIT + RACE + SEX +
 +     us(AVISIT | USUBJID),
 +   data = fev_data
 + )
 ```
 
-Summary of results:
+The parameter summaries of the frequentist model are below.
+
 
 ```{.r .fold-hide}
 > summary(f_mmrm_fit)
-mmrm fit
-
-Formula:     FEV1_CHG ~ FEV1_BL + AVISIT + ARMCD:AVISIT + RACE + SEX + us(AVISIT |      USUBJID)
-Data:        fev_data (used 537 observations from 197 subjects with maximum 4 timepoints)
-Covariance:  unstructured (10 variance parameters)
-Method:      Satterthwaite
-Vcov Method: Asymptotic
-Inference:   REML
-
-Model selection criteria:
-     AIC      BIC   logLik deviance 
-  3381.4   3414.2  -1680.7   3361.4 
-
-Coefficients: 
-                               Estimate Std. Error        df t value Pr(>|t|)    
-(Intercept)                    24.35372    1.40754 257.97000  17.302  < 2e-16 ***
-FEV1_BL                        -0.84022    0.02777 190.27000 -30.251  < 2e-16 ***
-AVISITVIS2                      4.79036    0.79848 144.82000   5.999 1.51e-08 ***
-AVISITVIS3                     10.36601    0.81318 157.08000  12.748  < 2e-16 ***
-AVISITVIS4                     15.19231    1.30857 139.25000  11.610  < 2e-16 ***
-RACEBlack or African American   1.41921    0.57874 169.56000   2.452 0.015211 *  
-RACEWhite                       5.45679    0.61626 157.54000   8.855 1.65e-15 ***
-SEXFemale                       0.33812    0.49273 166.43000   0.686 0.493529    
-AVISITVIS1:ARMCDTRT             3.98329    1.04540 142.32000   3.810 0.000206 ***
-AVISITVIS2:ARMCDTRT             3.93076    0.81351 142.26000   4.832 3.46e-06 ***
-AVISITVIS3:ARMCDTRT             2.98372    0.66567 129.61000   4.482 1.61e-05 ***
-AVISITVIS4:ARMCDTRT             4.40400    1.66049 132.88000   2.652 0.008970 ** 
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-Covariance estimate:
-        VIS1    VIS2    VIS3    VIS4
-VIS1 37.8301 11.3255  3.4796 10.6844
-VIS2 11.3255 23.5476  0.7760  5.5103
-VIS3  3.4796  0.7760 13.8037  0.5683
-VIS4 10.6844  5.5103  0.5683 92.9625
+#> mmrm fit
+#> 
+#> Formula:     FEV1_CHG ~ FEV1_BL + ARMCD:AVISIT + AVISIT + RACE + SEX + us(AVISIT |  
+#>     USUBJID)
+#> Data:        fev_data (used 537 observations from 197 subjects with maximum 4 
+#> timepoints)
+#> Covariance:  unstructured (10 variance parameters)
+#> Method:      Satterthwaite
+#> Vcov Method: Asymptotic
+#> Inference:   REML
+#> 
+#> Model selection criteria:
+#>      AIC      BIC   logLik deviance 
+#>   3381.4   3414.2  -1680.7   3361.4 
+#> 
+#> Coefficients: 
+#>                                Estimate Std. Error        df t value Pr(>|t|)    
+#> (Intercept)                    24.35372    1.40754 257.97000  17.302  < 2e-16 ***
+#> FEV1_BL                        -0.84022    0.02777 190.27000 -30.251  < 2e-16 ***
+#> AVISITVIS2                      4.79036    0.79848 144.82000   5.999 1.51e-08 ***
+#> AVISITVIS3                     10.36601    0.81318 157.08000  12.748  < 2e-16 ***
+#> AVISITVIS4                     15.19231    1.30857 139.25000  11.610  < 2e-16 ***
+#> RACEBlack or African American   1.41921    0.57874 169.56000   2.452 0.015211 *  
+#> RACEWhite                       5.45679    0.61626 157.54000   8.855 1.65e-15 ***
+#> SEXFemale                       0.33812    0.49273 166.43000   0.686 0.493529    
+#> AVISITVIS1:ARMCDTRT             3.98329    1.04540 142.32000   3.810 0.000206 ***
+#> AVISITVIS2:ARMCDTRT             3.93076    0.81351 142.26000   4.832 3.46e-06 ***
+#> AVISITVIS3:ARMCDTRT             2.98372    0.66567 129.61000   4.482 1.61e-05 ***
+#> AVISITVIS4:ARMCDTRT             4.40400    1.66049 132.88000   2.652 0.008970 ** 
+#> ---
+#> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+#> 
+#> Covariance estimate:
+#>         VIS1    VIS2    VIS3    VIS4
+#> VIS1 37.8301 11.3255  3.4796 10.6844
+#> VIS2 11.3255 23.5476  0.7760  5.5103
+#> VIS3  3.4796  0.7760 13.8037  0.5683
+#> VIS4 10.6844  5.5103  0.5683 92.9625
 ```
-
 
 # Comparison 
 
+This section compares the Bayesian posterior parameter estimates from `brms.mmrm` to the frequentist parameter estimates of the `mmrm` package.
+
 ## Extract estimates from Bayesian model
 
+We extract and standardize the Bayesian estimates.
+
+
 ```{.r .fold-hide}
-> b_mmrm_draws <- b_mmrm_fit |> as_draws_df()
+> b_mmrm_draws <- b_mmrm_fit |>
++   as_draws_df()
 > visit_levels <- sort(unique(as.character(fev_data$AVISIT)))
 > for (level in visit_levels) {
 +   name <- paste0("b_sigma_AVISIT", level)
@@ -1850,6 +1884,9 @@ VIS4 10.6844  5.5103  0.5683 92.9625
 ```
 
 ## Extract estimates from frequentist model
+
+We extract and standardize the frequentist estimates.
+
 
 ```{.r .fold-hide}
 > f_mmrm_fixed <- summary(f_mmrm_fit)$coefficients |>
@@ -1882,72 +1919,90 @@ VIS4 10.6844  5.5103  0.5683 92.9625
 +   as.data.frame() |>
 +   as_tibble() |>
 +   mutate(x1 = visit_levels) |>
-+   pivot_longer(cols = -any_of("x1"),
-+                names_to = "x2",
-+                values_to = "freq_estimate") |>
-+   filter(as.numeric(gsub("[^0-9]", "", x1)) <
-+            as.numeric(gsub("[^0-9]", "", x2))) |>
++   pivot_longer(
++     cols = -any_of("x1"),
++     names_to = "x2",
++     values_to = "freq_estimate"
++   ) |>
++   filter(
++     as.numeric(gsub("[^0-9]", "", x1)) < as.numeric(gsub("[^0-9]", "", x2))
++   ) |>
 +   mutate(variable = sprintf("correlation_%s_%s", x1, x2)) |>
 +   select(variable, freq_estimate)
 ```
 
 
 ```{.r .fold-hide}
-> f_mmrm_summary <- bind_rows(f_mmrm_fixed,
-+                             f_mmrm_variance,
-+                             f_mmrm_correlation) |>
+> f_mmrm_summary <- bind_rows(
++   f_mmrm_fixed,
++   f_mmrm_variance,
++   f_mmrm_correlation
++ ) |>
 +   mutate(variable = gsub("\\s+", "", variable) |> tolower())
 ```
 
-
 ## Summary {#Summary}
 
+The first table below summarizes the parameter estimates from each model and the differences between estimates (Bayesian minus frequentist). The second table shows the standard errors of these estimates and differences between standard errors. In each table, the "Relative" column shows the relative difference (the difference divided by the frequentist quantity).
+
+Because of the different statistical paradigms and estimation procedures, especially regarding the covariance parameters, it would not be realistic to expect the Bayesian and frequentist approaches to yield virtually identical results. Nevertheless, the absolute and relative differences in the table below show strong agreement between `brms.mmrm` and `mmrm`.
+
+
 ```{.r .fold-hide}
-> b_f_comparison <- full_join(x = b_mmrm_summary,
-+                             y = f_mmrm_summary,
-+                             by = "variable") |>
-+   mutate(diff_estimate = bayes_estimate - freq_estimate,
-+          diff_se = bayes_se - freq_se) |>
+> b_f_comparison <- full_join(
++   x = b_mmrm_summary,
++   y = f_mmrm_summary,
++   by = "variable"
++ ) |>
++   mutate(
++     diff_estimate = bayes_estimate - freq_estimate,
++     diff_relative_estimate = diff_estimate / freq_estimate,
++     diff_se = bayes_se - freq_se,
++     diff_relative_se = diff_se / freq_se
++   ) |>
 +   select(variable, ends_with("estimate"), ends_with("se"))
 ```
 
 
 ```{.r .fold-hide}
-> gt(b_f_comparison) |>
+> table_estimates <- b_f_comparison |>
++   select(variable, ends_with("estimate"))
+> gt(table_estimates) |>
 +   fmt_number(decimals = 4) |>
 +   tab_caption(
-+     caption = md("Table 4. Contrasting Bayesian and frequentist MMRM fits.")
++     caption = md(
++       paste(
++         "Table 4. Comparison of parameter estimates between",
++         "Bayesian and frequentist MMRMs."
++       )
++     )
 +   ) |>
-+   tab_spanner(label = "Estimate", columns = ends_with("estimate")) |>
-+   tab_spanner(label = "Standard error", columns = ends_with("se")) |>
 +   cols_label(
 +     variable = "Variable",
 +     bayes_estimate = "Bayesian",
 +     freq_estimate = "Frequentist",
 +     diff_estimate = "Difference",
-+     bayes_se = "Bayesian",
-+     freq_se = "Frequentist",
-+     diff_se = "Difference",
++     diff_relative_estimate = "Relative"
 +   )
 ```
 
-<!--html_preserve--><div id="wvzouehsjr" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#wvzouehsjr table {
+<!--html_preserve--><div id="hplyncngcw" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#hplyncngcw table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#wvzouehsjr thead, #wvzouehsjr tbody, #wvzouehsjr tfoot, #wvzouehsjr tr, #wvzouehsjr td, #wvzouehsjr th {
+#hplyncngcw thead, #hplyncngcw tbody, #hplyncngcw tfoot, #hplyncngcw tr, #hplyncngcw td, #hplyncngcw th {
   border-style: none;
 }
 
-#wvzouehsjr p {
+#hplyncngcw p {
   margin: 0;
   padding: 0;
 }
 
-#wvzouehsjr .gt_table {
+#hplyncngcw .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -1973,12 +2028,12 @@ VIS4 10.6844  5.5103  0.5683 92.9625
   border-left-color: #D3D3D3;
 }
 
-#wvzouehsjr .gt_caption {
+#hplyncngcw .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#wvzouehsjr .gt_title {
+#hplyncngcw .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1990,7 +2045,7 @@ VIS4 10.6844  5.5103  0.5683 92.9625
   border-bottom-width: 0;
 }
 
-#wvzouehsjr .gt_subtitle {
+#hplyncngcw .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -2002,7 +2057,7 @@ VIS4 10.6844  5.5103  0.5683 92.9625
   border-top-width: 0;
 }
 
-#wvzouehsjr .gt_heading {
+#hplyncngcw .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -2014,13 +2069,13 @@ VIS4 10.6844  5.5103  0.5683 92.9625
   border-right-color: #D3D3D3;
 }
 
-#wvzouehsjr .gt_bottom_border {
+#hplyncngcw .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#wvzouehsjr .gt_col_headings {
+#hplyncngcw .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2035,7 +2090,7 @@ VIS4 10.6844  5.5103  0.5683 92.9625
   border-right-color: #D3D3D3;
 }
 
-#wvzouehsjr .gt_col_heading {
+#hplyncngcw .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2055,7 +2110,7 @@ VIS4 10.6844  5.5103  0.5683 92.9625
   overflow-x: hidden;
 }
 
-#wvzouehsjr .gt_column_spanner_outer {
+#hplyncngcw .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2067,15 +2122,15 @@ VIS4 10.6844  5.5103  0.5683 92.9625
   padding-right: 4px;
 }
 
-#wvzouehsjr .gt_column_spanner_outer:first-child {
+#hplyncngcw .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#wvzouehsjr .gt_column_spanner_outer:last-child {
+#hplyncngcw .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#wvzouehsjr .gt_column_spanner {
+#hplyncngcw .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -2087,11 +2142,11 @@ VIS4 10.6844  5.5103  0.5683 92.9625
   width: 100%;
 }
 
-#wvzouehsjr .gt_spanner_row {
+#hplyncngcw .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#wvzouehsjr .gt_group_heading {
+#hplyncngcw .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2117,7 +2172,7 @@ VIS4 10.6844  5.5103  0.5683 92.9625
   text-align: left;
 }
 
-#wvzouehsjr .gt_empty_group_heading {
+#hplyncngcw .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -2132,15 +2187,15 @@ VIS4 10.6844  5.5103  0.5683 92.9625
   vertical-align: middle;
 }
 
-#wvzouehsjr .gt_from_md > :first-child {
+#hplyncngcw .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#wvzouehsjr .gt_from_md > :last-child {
+#hplyncngcw .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#wvzouehsjr .gt_row {
+#hplyncngcw .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2159,7 +2214,7 @@ VIS4 10.6844  5.5103  0.5683 92.9625
   overflow-x: hidden;
 }
 
-#wvzouehsjr .gt_stub {
+#hplyncngcw .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2172,7 +2227,7 @@ VIS4 10.6844  5.5103  0.5683 92.9625
   padding-right: 5px;
 }
 
-#wvzouehsjr .gt_stub_row_group {
+#hplyncngcw .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2186,15 +2241,15 @@ VIS4 10.6844  5.5103  0.5683 92.9625
   vertical-align: top;
 }
 
-#wvzouehsjr .gt_row_group_first td {
+#hplyncngcw .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#wvzouehsjr .gt_row_group_first th {
+#hplyncngcw .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#wvzouehsjr .gt_summary_row {
+#hplyncngcw .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2204,16 +2259,16 @@ VIS4 10.6844  5.5103  0.5683 92.9625
   padding-right: 5px;
 }
 
-#wvzouehsjr .gt_first_summary_row {
+#hplyncngcw .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#wvzouehsjr .gt_first_summary_row.thick {
+#hplyncngcw .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#wvzouehsjr .gt_last_summary_row {
+#hplyncngcw .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2223,7 +2278,7 @@ VIS4 10.6844  5.5103  0.5683 92.9625
   border-bottom-color: #D3D3D3;
 }
 
-#wvzouehsjr .gt_grand_summary_row {
+#hplyncngcw .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2233,7 +2288,7 @@ VIS4 10.6844  5.5103  0.5683 92.9625
   padding-right: 5px;
 }
 
-#wvzouehsjr .gt_first_grand_summary_row {
+#hplyncngcw .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2243,7 +2298,7 @@ VIS4 10.6844  5.5103  0.5683 92.9625
   border-top-color: #D3D3D3;
 }
 
-#wvzouehsjr .gt_last_grand_summary_row_top {
+#hplyncngcw .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2253,11 +2308,11 @@ VIS4 10.6844  5.5103  0.5683 92.9625
   border-bottom-color: #D3D3D3;
 }
 
-#wvzouehsjr .gt_striped {
+#hplyncngcw .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#wvzouehsjr .gt_table_body {
+#hplyncngcw .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2266,7 +2321,7 @@ VIS4 10.6844  5.5103  0.5683 92.9625
   border-bottom-color: #D3D3D3;
 }
 
-#wvzouehsjr .gt_footnotes {
+#hplyncngcw .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2280,7 +2335,7 @@ VIS4 10.6844  5.5103  0.5683 92.9625
   border-right-color: #D3D3D3;
 }
 
-#wvzouehsjr .gt_footnote {
+#hplyncngcw .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -2289,7 +2344,7 @@ VIS4 10.6844  5.5103  0.5683 92.9625
   padding-right: 5px;
 }
 
-#wvzouehsjr .gt_sourcenotes {
+#hplyncngcw .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2303,7 +2358,7 @@ VIS4 10.6844  5.5103  0.5683 92.9625
   border-right-color: #D3D3D3;
 }
 
-#wvzouehsjr .gt_sourcenote {
+#hplyncngcw .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -2311,245 +2366,732 @@ VIS4 10.6844  5.5103  0.5683 92.9625
   padding-right: 5px;
 }
 
-#wvzouehsjr .gt_left {
+#hplyncngcw .gt_left {
   text-align: left;
 }
 
-#wvzouehsjr .gt_center {
+#hplyncngcw .gt_center {
   text-align: center;
 }
 
-#wvzouehsjr .gt_right {
+#hplyncngcw .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#wvzouehsjr .gt_font_normal {
+#hplyncngcw .gt_font_normal {
   font-weight: normal;
 }
 
-#wvzouehsjr .gt_font_bold {
+#hplyncngcw .gt_font_bold {
   font-weight: bold;
 }
 
-#wvzouehsjr .gt_font_italic {
+#hplyncngcw .gt_font_italic {
   font-style: italic;
 }
 
-#wvzouehsjr .gt_super {
+#hplyncngcw .gt_super {
   font-size: 65%;
 }
 
-#wvzouehsjr .gt_footnote_marks {
+#hplyncngcw .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#wvzouehsjr .gt_asterisk {
+#hplyncngcw .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#wvzouehsjr .gt_indent_1 {
+#hplyncngcw .gt_indent_1 {
   text-indent: 5px;
 }
 
-#wvzouehsjr .gt_indent_2 {
+#hplyncngcw .gt_indent_2 {
   text-indent: 10px;
 }
 
-#wvzouehsjr .gt_indent_3 {
+#hplyncngcw .gt_indent_3 {
   text-indent: 15px;
 }
 
-#wvzouehsjr .gt_indent_4 {
+#hplyncngcw .gt_indent_4 {
   text-indent: 20px;
 }
 
-#wvzouehsjr .gt_indent_5 {
+#hplyncngcw .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
 <table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-  <!--/html_preserve--><caption class='gt_caption'>Table 4. Contrasting Bayesian and frequentist MMRM fits.</caption><!--html_preserve-->
+  <!--/html_preserve--><caption class='gt_caption'>Table 4. Comparison of parameter estimates between Bayesian and frequentist MMRMs.</caption><!--html_preserve-->
   <thead>
-    <tr class="gt_col_headings gt_spanner_row">
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="2" colspan="1" scope="col" id="Variable">Variable</th>
-      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="3" scope="colgroup" id="Estimate">
-        <span class="gt_column_spanner">Estimate</span>
-      </th>
-      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="3" scope="colgroup" id="Standard error">
-        <span class="gt_column_spanner">Standard error</span>
-      </th>
-    </tr>
     <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Variable">Variable</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Bayesian">Bayesian</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Frequentist">Frequentist</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Difference">Difference</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Bayesian">Bayesian</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Frequentist">Frequentist</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Difference">Difference</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Relative">Relative</th>
     </tr>
   </thead>
   <tbody class="gt_table_body">
     <tr><td headers="variable" class="gt_row gt_left">intercept</td>
-<td headers="bayes_estimate" class="gt_row gt_right">24.3603</td>
+<td headers="bayes_estimate" class="gt_row gt_right">24.3474</td>
 <td headers="freq_estimate" class="gt_row gt_right">24.3537</td>
-<td headers="diff_estimate" class="gt_row gt_right">0.0066</td>
-<td headers="bayes_se" class="gt_row gt_right">1.4858</td>
-<td headers="freq_se" class="gt_row gt_right">1.4075</td>
-<td headers="diff_se" class="gt_row gt_right">0.0783</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0063</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0003</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">fev1_bl</td>
-<td headers="bayes_estimate" class="gt_row gt_right">−0.8403</td>
+<td headers="bayes_estimate" class="gt_row gt_right">−0.8400</td>
 <td headers="freq_estimate" class="gt_row gt_right">−0.8402</td>
-<td headers="diff_estimate" class="gt_row gt_right">−0.0001</td>
-<td headers="bayes_se" class="gt_row gt_right">0.0300</td>
-<td headers="freq_se" class="gt_row gt_right">0.0278</td>
-<td headers="diff_se" class="gt_row gt_right">0.0023</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">0.0002</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0002</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">avisitvis2</td>
-<td headers="bayes_estimate" class="gt_row gt_right">4.7974</td>
+<td headers="bayes_estimate" class="gt_row gt_right">4.7895</td>
 <td headers="freq_estimate" class="gt_row gt_right">4.7904</td>
-<td headers="diff_estimate" class="gt_row gt_right">0.0071</td>
-<td headers="bayes_se" class="gt_row gt_right">0.8592</td>
-<td headers="freq_se" class="gt_row gt_right">0.7985</td>
-<td headers="diff_se" class="gt_row gt_right">0.0608</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0008</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0002</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">avisitvis3</td>
-<td headers="bayes_estimate" class="gt_row gt_right">10.3694</td>
+<td headers="bayes_estimate" class="gt_row gt_right">10.3658</td>
 <td headers="freq_estimate" class="gt_row gt_right">10.3660</td>
-<td headers="diff_estimate" class="gt_row gt_right">0.0034</td>
-<td headers="bayes_se" class="gt_row gt_right">0.8766</td>
-<td headers="freq_se" class="gt_row gt_right">0.8132</td>
-<td headers="diff_se" class="gt_row gt_right">0.0634</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0003</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">0.0000</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">avisitvis4</td>
-<td headers="bayes_estimate" class="gt_row gt_right">15.1647</td>
+<td headers="bayes_estimate" class="gt_row gt_right">15.1886</td>
 <td headers="freq_estimate" class="gt_row gt_right">15.1923</td>
-<td headers="diff_estimate" class="gt_row gt_right">−0.0276</td>
-<td headers="bayes_se" class="gt_row gt_right">1.2965</td>
-<td headers="freq_se" class="gt_row gt_right">1.3086</td>
-<td headers="diff_se" class="gt_row gt_right">−0.0121</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0037</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0002</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">raceblackorafricanamerican</td>
-<td headers="bayes_estimate" class="gt_row gt_right">1.4031</td>
+<td headers="bayes_estimate" class="gt_row gt_right">1.4129</td>
 <td headers="freq_estimate" class="gt_row gt_right">1.4192</td>
-<td headers="diff_estimate" class="gt_row gt_right">−0.0161</td>
-<td headers="bayes_se" class="gt_row gt_right">0.5791</td>
-<td headers="freq_se" class="gt_row gt_right">0.5787</td>
-<td headers="diff_se" class="gt_row gt_right">0.0004</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0064</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0045</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">racewhite</td>
-<td headers="bayes_estimate" class="gt_row gt_right">5.4414</td>
+<td headers="bayes_estimate" class="gt_row gt_right">5.4500</td>
 <td headers="freq_estimate" class="gt_row gt_right">5.4568</td>
-<td headers="diff_estimate" class="gt_row gt_right">−0.0153</td>
-<td headers="bayes_se" class="gt_row gt_right">0.6116</td>
-<td headers="freq_se" class="gt_row gt_right">0.6163</td>
-<td headers="diff_se" class="gt_row gt_right">−0.0047</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0068</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0012</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">sexfemale</td>
-<td headers="bayes_estimate" class="gt_row gt_right">0.3467</td>
+<td headers="bayes_estimate" class="gt_row gt_right">0.3403</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.3381</td>
-<td headers="diff_estimate" class="gt_row gt_right">0.0086</td>
-<td headers="bayes_se" class="gt_row gt_right">0.5137</td>
-<td headers="freq_se" class="gt_row gt_right">0.4927</td>
-<td headers="diff_se" class="gt_row gt_right">0.0210</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">0.0022</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">0.0064</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">avisitvis1:armcdtrt</td>
-<td headers="bayes_estimate" class="gt_row gt_right">3.9849</td>
+<td headers="bayes_estimate" class="gt_row gt_right">3.9833</td>
 <td headers="freq_estimate" class="gt_row gt_right">3.9833</td>
-<td headers="diff_estimate" class="gt_row gt_right">0.0016</td>
-<td headers="bayes_se" class="gt_row gt_right">1.0980</td>
-<td headers="freq_se" class="gt_row gt_right">1.0454</td>
-<td headers="diff_se" class="gt_row gt_right">0.0526</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">0.0000</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">0.0000</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">avisitvis2:armcdtrt</td>
-<td headers="bayes_estimate" class="gt_row gt_right">3.9304</td>
+<td headers="bayes_estimate" class="gt_row gt_right">3.9386</td>
 <td headers="freq_estimate" class="gt_row gt_right">3.9308</td>
-<td headers="diff_estimate" class="gt_row gt_right">−0.0004</td>
-<td headers="bayes_se" class="gt_row gt_right">0.8612</td>
-<td headers="freq_se" class="gt_row gt_right">0.8135</td>
-<td headers="diff_se" class="gt_row gt_right">0.0477</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">0.0078</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">0.0020</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">avisitvis3:armcdtrt</td>
-<td headers="bayes_estimate" class="gt_row gt_right">2.9806</td>
+<td headers="bayes_estimate" class="gt_row gt_right">2.9881</td>
 <td headers="freq_estimate" class="gt_row gt_right">2.9837</td>
-<td headers="diff_estimate" class="gt_row gt_right">−0.0031</td>
-<td headers="bayes_se" class="gt_row gt_right">0.6722</td>
-<td headers="freq_se" class="gt_row gt_right">0.6657</td>
-<td headers="diff_se" class="gt_row gt_right">0.0065</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">0.0044</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">0.0015</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">avisitvis4:armcdtrt</td>
-<td headers="bayes_estimate" class="gt_row gt_right">4.4569</td>
+<td headers="bayes_estimate" class="gt_row gt_right">4.4024</td>
 <td headers="freq_estimate" class="gt_row gt_right">4.4040</td>
-<td headers="diff_estimate" class="gt_row gt_right">0.0529</td>
-<td headers="bayes_se" class="gt_row gt_right">1.6552</td>
-<td headers="freq_se" class="gt_row gt_right">1.6605</td>
-<td headers="diff_se" class="gt_row gt_right">−0.0053</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0016</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0004</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">sigma_avisitvis1</td>
-<td headers="bayes_estimate" class="gt_row gt_right">6.2406</td>
+<td headers="bayes_estimate" class="gt_row gt_right">6.2307</td>
 <td headers="freq_estimate" class="gt_row gt_right">6.1506</td>
-<td headers="diff_estimate" class="gt_row gt_right">0.0900</td>
-<td headers="bayes_se" class="gt_row gt_right">0.3997</td>
-<td headers="freq_se" class="gt_row gt_right">NA</td>
-<td headers="diff_se" class="gt_row gt_right">NA</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">0.0801</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">0.0130</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">sigma_avisitvis2</td>
-<td headers="bayes_estimate" class="gt_row gt_right">4.9176</td>
+<td headers="bayes_estimate" class="gt_row gt_right">4.9153</td>
 <td headers="freq_estimate" class="gt_row gt_right">4.8526</td>
-<td headers="diff_estimate" class="gt_row gt_right">0.0650</td>
-<td headers="bayes_se" class="gt_row gt_right">0.3011</td>
-<td headers="freq_se" class="gt_row gt_right">NA</td>
-<td headers="diff_se" class="gt_row gt_right">NA</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">0.0627</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">0.0129</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">sigma_avisitvis3</td>
-<td headers="bayes_estimate" class="gt_row gt_right">3.7739</td>
+<td headers="bayes_estimate" class="gt_row gt_right">3.7771</td>
 <td headers="freq_estimate" class="gt_row gt_right">3.7153</td>
-<td headers="diff_estimate" class="gt_row gt_right">0.0586</td>
-<td headers="bayes_se" class="gt_row gt_right">0.2386</td>
-<td headers="freq_se" class="gt_row gt_right">NA</td>
-<td headers="diff_se" class="gt_row gt_right">NA</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">0.0617</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">0.0166</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">sigma_avisitvis4</td>
-<td headers="bayes_estimate" class="gt_row gt_right">9.7840</td>
+<td headers="bayes_estimate" class="gt_row gt_right">9.8014</td>
 <td headers="freq_estimate" class="gt_row gt_right">9.6417</td>
-<td headers="diff_estimate" class="gt_row gt_right">0.1423</td>
-<td headers="bayes_se" class="gt_row gt_right">0.5906</td>
-<td headers="freq_se" class="gt_row gt_right">NA</td>
-<td headers="diff_se" class="gt_row gt_right">NA</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">0.1597</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">0.0166</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">correlation_vis1_vis2</td>
-<td headers="bayes_estimate" class="gt_row gt_right">0.3617</td>
+<td headers="bayes_estimate" class="gt_row gt_right">0.3607</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.3795</td>
-<td headers="diff_estimate" class="gt_row gt_right">−0.0177</td>
-<td headers="bayes_se" class="gt_row gt_right">0.0843</td>
-<td headers="freq_se" class="gt_row gt_right">NA</td>
-<td headers="diff_se" class="gt_row gt_right">NA</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0187</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0494</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">correlation_vis1_vis3</td>
-<td headers="bayes_estimate" class="gt_row gt_right">0.1385</td>
+<td headers="bayes_estimate" class="gt_row gt_right">0.1418</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.1523</td>
-<td headers="diff_estimate" class="gt_row gt_right">−0.0138</td>
-<td headers="bayes_se" class="gt_row gt_right">0.0956</td>
-<td headers="freq_se" class="gt_row gt_right">NA</td>
-<td headers="diff_se" class="gt_row gt_right">NA</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0105</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0687</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">correlation_vis2_vis3</td>
-<td headers="bayes_estimate" class="gt_row gt_right">0.0400</td>
+<td headers="bayes_estimate" class="gt_row gt_right">0.0395</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.0430</td>
-<td headers="diff_estimate" class="gt_row gt_right">−0.0031</td>
-<td headers="bayes_se" class="gt_row gt_right">0.0980</td>
-<td headers="freq_se" class="gt_row gt_right">NA</td>
-<td headers="diff_se" class="gt_row gt_right">NA</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0036</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0829</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">correlation_vis1_vis4</td>
-<td headers="bayes_estimate" class="gt_row gt_right">0.1728</td>
+<td headers="bayes_estimate" class="gt_row gt_right">0.1679</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.1802</td>
-<td headers="diff_estimate" class="gt_row gt_right">−0.0074</td>
-<td headers="bayes_se" class="gt_row gt_right">0.1138</td>
-<td headers="freq_se" class="gt_row gt_right">NA</td>
-<td headers="diff_se" class="gt_row gt_right">NA</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0123</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0683</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">correlation_vis2_vis4</td>
-<td headers="bayes_estimate" class="gt_row gt_right">0.1123</td>
+<td headers="bayes_estimate" class="gt_row gt_right">0.1110</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.1178</td>
-<td headers="diff_estimate" class="gt_row gt_right">−0.0054</td>
-<td headers="bayes_se" class="gt_row gt_right">0.0878</td>
-<td headers="freq_se" class="gt_row gt_right">NA</td>
-<td headers="diff_se" class="gt_row gt_right">NA</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0068</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0573</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">correlation_vis3_vis4</td>
-<td headers="bayes_estimate" class="gt_row gt_right">0.0132</td>
+<td headers="bayes_estimate" class="gt_row gt_right">0.0137</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.0159</td>
-<td headers="diff_estimate" class="gt_row gt_right">−0.0026</td>
-<td headers="bayes_se" class="gt_row gt_right">0.0977</td>
-<td headers="freq_se" class="gt_row gt_right">NA</td>
-<td headers="diff_se" class="gt_row gt_right">NA</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0021</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.1352</td></tr>
   </tbody>
   
   
 </table>
 </div><!--/html_preserve-->
 
+
+```{.r .fold-hide}
+> table_se <- b_f_comparison |>
++   select(variable, ends_with("se")) |>
++   filter(!is.na(freq_se))
+> gt(table_se) |>
++   fmt_number(decimals = 4) |>
++   tab_caption(
++     caption = md(
++       paste(
++         "Table 5. Comparison of parameter standard errors between",
++         "Bayesian and frequentist MMRMs."
++       )
++     )
++   ) |>
++   cols_label(
++     variable = "Variable",
++     bayes_se = "Bayesian",
++     freq_se = "Frequentist",
++     diff_se = "Difference",
++     diff_relative_se = "Relative"
++   )
+```
+
+<!--html_preserve--><div id="sjrjlbjvlt" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#sjrjlbjvlt table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#sjrjlbjvlt thead, #sjrjlbjvlt tbody, #sjrjlbjvlt tfoot, #sjrjlbjvlt tr, #sjrjlbjvlt td, #sjrjlbjvlt th {
+  border-style: none;
+}
+
+#sjrjlbjvlt p {
+  margin: 0;
+  padding: 0;
+}
+
+#sjrjlbjvlt .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#sjrjlbjvlt .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#sjrjlbjvlt .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#sjrjlbjvlt .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#sjrjlbjvlt .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#sjrjlbjvlt .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#sjrjlbjvlt .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#sjrjlbjvlt .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#sjrjlbjvlt .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#sjrjlbjvlt .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#sjrjlbjvlt .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#sjrjlbjvlt .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#sjrjlbjvlt .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#sjrjlbjvlt .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#sjrjlbjvlt .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#sjrjlbjvlt .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#sjrjlbjvlt .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#sjrjlbjvlt .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#sjrjlbjvlt .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#sjrjlbjvlt .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#sjrjlbjvlt .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#sjrjlbjvlt .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#sjrjlbjvlt .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#sjrjlbjvlt .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#sjrjlbjvlt .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#sjrjlbjvlt .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#sjrjlbjvlt .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#sjrjlbjvlt .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#sjrjlbjvlt .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#sjrjlbjvlt .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#sjrjlbjvlt .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#sjrjlbjvlt .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#sjrjlbjvlt .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#sjrjlbjvlt .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#sjrjlbjvlt .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#sjrjlbjvlt .gt_left {
+  text-align: left;
+}
+
+#sjrjlbjvlt .gt_center {
+  text-align: center;
+}
+
+#sjrjlbjvlt .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#sjrjlbjvlt .gt_font_normal {
+  font-weight: normal;
+}
+
+#sjrjlbjvlt .gt_font_bold {
+  font-weight: bold;
+}
+
+#sjrjlbjvlt .gt_font_italic {
+  font-style: italic;
+}
+
+#sjrjlbjvlt .gt_super {
+  font-size: 65%;
+}
+
+#sjrjlbjvlt .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#sjrjlbjvlt .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#sjrjlbjvlt .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#sjrjlbjvlt .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#sjrjlbjvlt .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#sjrjlbjvlt .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#sjrjlbjvlt .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <!--/html_preserve--><caption class='gt_caption'>Table 5. Comparison of parameter standard errors between Bayesian and frequentist MMRMs.</caption><!--html_preserve-->
+  <thead>
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Variable">Variable</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Bayesian">Bayesian</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Frequentist">Frequentist</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Difference">Difference</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Relative">Relative</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="variable" class="gt_row gt_left">intercept</td>
+<td headers="bayes_se" class="gt_row gt_right">1.4255</td>
+<td headers="freq_se" class="gt_row gt_right">1.4075</td>
+<td headers="diff_se" class="gt_row gt_right">0.0180</td>
+<td headers="diff_relative_se" class="gt_row gt_right">0.0128</td></tr>
+    <tr><td headers="variable" class="gt_row gt_left">fev1_bl</td>
+<td headers="bayes_se" class="gt_row gt_right">0.0284</td>
+<td headers="freq_se" class="gt_row gt_right">0.0278</td>
+<td headers="diff_se" class="gt_row gt_right">0.0006</td>
+<td headers="diff_relative_se" class="gt_row gt_right">0.0212</td></tr>
+    <tr><td headers="variable" class="gt_row gt_left">avisitvis2</td>
+<td headers="bayes_se" class="gt_row gt_right">0.8115</td>
+<td headers="freq_se" class="gt_row gt_right">0.7985</td>
+<td headers="diff_se" class="gt_row gt_right">0.0131</td>
+<td headers="diff_relative_se" class="gt_row gt_right">0.0164</td></tr>
+    <tr><td headers="variable" class="gt_row gt_left">avisitvis3</td>
+<td headers="bayes_se" class="gt_row gt_right">0.8250</td>
+<td headers="freq_se" class="gt_row gt_right">0.8132</td>
+<td headers="diff_se" class="gt_row gt_right">0.0119</td>
+<td headers="diff_relative_se" class="gt_row gt_right">0.0146</td></tr>
+    <tr><td headers="variable" class="gt_row gt_left">avisitvis4</td>
+<td headers="bayes_se" class="gt_row gt_right">1.3291</td>
+<td headers="freq_se" class="gt_row gt_right">1.3086</td>
+<td headers="diff_se" class="gt_row gt_right">0.0205</td>
+<td headers="diff_relative_se" class="gt_row gt_right">0.0157</td></tr>
+    <tr><td headers="variable" class="gt_row gt_left">raceblackorafricanamerican</td>
+<td headers="bayes_se" class="gt_row gt_right">0.5858</td>
+<td headers="freq_se" class="gt_row gt_right">0.5787</td>
+<td headers="diff_se" class="gt_row gt_right">0.0071</td>
+<td headers="diff_relative_se" class="gt_row gt_right">0.0123</td></tr>
+    <tr><td headers="variable" class="gt_row gt_left">racewhite</td>
+<td headers="bayes_se" class="gt_row gt_right">0.6259</td>
+<td headers="freq_se" class="gt_row gt_right">0.6163</td>
+<td headers="diff_se" class="gt_row gt_right">0.0097</td>
+<td headers="diff_relative_se" class="gt_row gt_right">0.0157</td></tr>
+    <tr><td headers="variable" class="gt_row gt_left">sexfemale</td>
+<td headers="bayes_se" class="gt_row gt_right">0.5093</td>
+<td headers="freq_se" class="gt_row gt_right">0.4927</td>
+<td headers="diff_se" class="gt_row gt_right">0.0166</td>
+<td headers="diff_relative_se" class="gt_row gt_right">0.0336</td></tr>
+    <tr><td headers="variable" class="gt_row gt_left">avisitvis1:armcdtrt</td>
+<td headers="bayes_se" class="gt_row gt_right">1.0675</td>
+<td headers="freq_se" class="gt_row gt_right">1.0454</td>
+<td headers="diff_se" class="gt_row gt_right">0.0221</td>
+<td headers="diff_relative_se" class="gt_row gt_right">0.0211</td></tr>
+    <tr><td headers="variable" class="gt_row gt_left">avisitvis2:armcdtrt</td>
+<td headers="bayes_se" class="gt_row gt_right">0.8300</td>
+<td headers="freq_se" class="gt_row gt_right">0.8135</td>
+<td headers="diff_se" class="gt_row gt_right">0.0165</td>
+<td headers="diff_relative_se" class="gt_row gt_right">0.0203</td></tr>
+    <tr><td headers="variable" class="gt_row gt_left">avisitvis3:armcdtrt</td>
+<td headers="bayes_se" class="gt_row gt_right">0.6823</td>
+<td headers="freq_se" class="gt_row gt_right">0.6657</td>
+<td headers="diff_se" class="gt_row gt_right">0.0167</td>
+<td headers="diff_relative_se" class="gt_row gt_right">0.0250</td></tr>
+    <tr><td headers="variable" class="gt_row gt_left">avisitvis4:armcdtrt</td>
+<td headers="bayes_se" class="gt_row gt_right">1.6948</td>
+<td headers="freq_se" class="gt_row gt_right">1.6605</td>
+<td headers="diff_se" class="gt_row gt_right">0.0343</td>
+<td headers="diff_relative_se" class="gt_row gt_right">0.0207</td></tr>
+  </tbody>
+  
+  
+</table>
+</div><!--/html_preserve-->
