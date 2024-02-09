@@ -15,7 +15,7 @@
 #'   * Mallinckrodt, C. H., Lane, P. W., Schnell, D., and others (2008),
 #'     "Recommendations for the primary analysis of continuous endpoints
 #'     in longitudinal clinical trials,"
-#'     Ther Innov Regul Sci, 42, 303–319.
+#'     Therapeutic Innovation and Regulatory Science, 42, 303–319.
 #'     https://doi.org/10.1177/009286150804200402.
 #'   * Mallinckrodt, C. H., and Lipkovich, I. (2017),
 #'     Analyzing longitudinal clinical trial data: A practical guide,
