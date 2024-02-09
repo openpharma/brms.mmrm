@@ -337,9 +337,9 @@ f_mmrm_summary <- bind_rows(
 
 ## Summary {#Summary}
 
-The first table below summarizes the parameter estimates from each model and the differences between estimates (Bayesian minus frequentist). The second table shows the standard errors of these estimates and differences betweens standard errors. In each table, the "Relative" column shows the relative difference (the difference divided by the frequentist quantity).
+The first table below summarizes the parameter estimates from each model and the differences between estimates (Bayesian minus frequentist). The second table shows the standard errors of these estimates and differences between standard errors. In each table, the "Relative" column shows the relative difference (the difference divided by the frequentist quantity).
 
-Because of the different statistical paradigms and estimation prodecures, especially regarding the covariance parameters, it would not be realistic to expect the Bayesian and frequentist approaches to yield virtually identical results. Nevertheless, the absolute and relative differences in the table below show strong agreement between `brms.mmrm` and `mmrm`.
+Because of the different statistical paradigms and estimation procedures, especially regarding the covariance parameters, it would not be realistic to expect the Bayesian and frequentist approaches to yield virtually identical results. Nevertheless, the absolute and relative differences in the table below show strong agreement between `brms.mmrm` and `mmrm`.
 
 ```{r comparison_3a, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
 b_f_comparison <- full_join(
