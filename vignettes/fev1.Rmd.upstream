@@ -196,7 +196,7 @@ fev_data |>
 
 ## Bayesian model
 
-The formula for the Bayesian model includes additive effects for baseline, study visit, and the `RACE` and `SEX` covariates, as well as study-arm-by-visit interaction.
+The formula for the Bayesian model includes additive effects for baseline, study visit, race, sex, and study-arm-by-visit interaction.
 
 ```{r bayes_mmrm_1, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
 b_mmrm_formula <- brm_formula(
