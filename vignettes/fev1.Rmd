@@ -1973,7 +1973,7 @@ Because of the different statistical paradigms and estimation procedures, especi
 +     caption = md(
 +       paste(
 +         "Table 4. Comparison of parameter estimates between",
-+         "Bayesian and frequentist MMRM models."
++         "Bayesian and frequentist MMRMs."
 +       )
 +     )
 +   ) |>
@@ -2427,7 +2427,7 @@ Because of the different statistical paradigms and estimation procedures, especi
 }
 </style>
 <table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-  <!--/html_preserve--><caption class='gt_caption'>Table 4. Comparison of parameter estimates between Bayesian and frequentist MMRM models.</caption><!--html_preserve-->
+  <!--/html_preserve--><caption class='gt_caption'>Table 4. Comparison of parameter estimates between Bayesian and frequentist MMRMs.</caption><!--html_preserve-->
   <thead>
     <tr class="gt_col_headings">
       <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Variable">Variable</th>
@@ -2565,7 +2565,7 @@ Because of the different statistical paradigms and estimation procedures, especi
 +     caption = md(
 +       paste(
 +         "Table 5. Comparison of parameter standard errors between",
-+         "Bayesian and frequentist MMRM models."
++         "Bayesian and frequentist MMRMs."
 +       )
 +     )
 +   ) |>
@@ -3019,7 +3019,7 @@ Because of the different statistical paradigms and estimation procedures, especi
 }
 </style>
 <table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-  <!--/html_preserve--><caption class='gt_caption'>Table 5. Comparison of parameter standard errors between Bayesian and frequentist MMRM models.</caption><!--html_preserve-->
+  <!--/html_preserve--><caption class='gt_caption'>Table 5. Comparison of parameter standard errors between Bayesian and frequentist MMRMs.</caption><!--html_preserve-->
   <thead>
     <tr class="gt_col_headings">
       <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Variable">Variable</th>

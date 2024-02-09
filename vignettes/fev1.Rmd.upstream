@@ -365,7 +365,7 @@ gt(table_estimates) |>
     caption = md(
       paste(
         "Table 4. Comparison of parameter estimates between",
-        "Bayesian and frequentist MMRM models."
+        "Bayesian and frequentist MMRMs."
       )
     )
   ) |>
@@ -388,7 +388,7 @@ gt(table_se) |>
     caption = md(
       paste(
         "Table 5. Comparison of parameter standard errors between",
-        "Bayesian and frequentist MMRM models."
+        "Bayesian and frequentist MMRMs."
       )
     )
   ) |>
