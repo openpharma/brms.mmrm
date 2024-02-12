@@ -74,7 +74,7 @@ set.seed(123L)
 
 ## Pre-processing
 
-This analysis exercise uses the `bcva_data` dataset contained in the `mmrm`-package:
+This analysis exercise uses the `bcva_data` dataset contained in the `mmrm` package:
 
 ```{r bcva_dat_1, eval=TRUE, echo=TRUE, class.source = NULL}
 data(bcva_data, package = "mmrm")

@@ -60,7 +60,7 @@ We set a seed for the random number generator to ensure statistical reproducibil
 
 ## Pre-processing
 
-This analysis exercise uses the `bcva_data` dataset contained in the `mmrm`-package:
+This analysis exercise uses the `bcva_data` dataset contained in the `mmrm` package:
 
 
 ```r
