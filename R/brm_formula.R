@@ -32,32 +32,50 @@
 #' @param correlation Character of length 1, name of the correlation
 #'   structure. Only `"unstructured"` is currently supported.
 #' @param intercept Logical of length 1.
-#'   `TRUE` to include an intercept, `FALSE` to omit.
+#'   `TRUE` (default) to include an intercept, `FALSE` to omit.
 #' @param baseline Logical of length 1.
 #'   `TRUE` to include an additive effect for baseline
 #'   response, `FALSE` to omit.
+#'   Default is `TRUE` if [brm_data()] previously declared a baseline
+#'   variable in the dataset.
 #' @param baseline_subgroup Logical of length 1.
 #'   `TRUE` to include baseline-by-subgroup interaction, `FALSE` to omit.
+#'   Default is `TRUE` if [brm_data()] previously declared baseline
+#'   and subgroup variables in the dataset.
 #' @param baseline_subgroup_time Logical of length 1.
 #'   `TRUE` to include baseline-by-subgroup-by-time interaction,
 #'   `FALSE` to omit.
+#'   Default is `TRUE` if [brm_data()] previously declared baseline
+#'   and subgroup variables in the dataset.
 #' @param baseline_time Logical of length 1.
 #'   `TRUE` to include baseline-by-time interaction, `FALSE` to omit.
+#'   Default is `TRUE` if [brm_data()] previously declared a baseline
+#'   variable in the dataset.
 #' @param group Logical of length 1.
-#'   `TRUE` to include additive effects for treatment groups, `FALSE` to omit.
+#'   `TRUE` (default) to include additive effects for
+#'   treatment groups, `FALSE` to omit.
 #' @param group_subgroup Logical of length 1.
 #'   `TRUE` to include group-by-subgroup interaction, `FALSE` to omit.
+#'   Default is `TRUE` if [brm_data()] previously declared a subgroup
+#'   variable in the dataset.
 #' @param group_subgroup_time Logical of length 1.
 #'   `TRUE` to include group-by-subgroup-by-time interaction, `FALSE` to omit.
+#'   Default is `TRUE` if [brm_data()] previously declared a subgroup
+#'   variable in the dataset.
 #' @param group_time Logical of length 1.
-#'   `TRUE` to include group-by-time interaction, `FALSE` to omit.
+#'   `TRUE` (default) to include group-by-time interaction, `FALSE` to omit.
 #' @param subgroup Logical of length 1.
 #'   `TRUE` to include additive fixed effects for subgroup levels,
 #'   `FALSE` to omit.
+#'   Default is `TRUE` if [brm_data()] previously declared a subgroup
+#'   variable in the dataset.
 #' @param subgroup_time Logical of length 1.
 #'   `TRUE` to include subgroup-by-time interaction, `FALSE` to omit.
+#'   Default is `TRUE` if [brm_data()] previously declared a subgroup
+#'   variable in the dataset.
 #' @param time Logical of length 1.
-#'   `TRUE` to include a additive effect for discrete time, `FALSE` to omit.
+#'   `TRUE` (default) to include a additive effect for discrete time,
+#'   `FALSE` to omit.
 #' @param effect_baseline Deprecated on 2024-01-16 (version 0.0.2.9002).
 #'   Use `baseline` instead.
 #' @param effect_group Deprecated on 2024-01-16 (version 0.0.2.9002).

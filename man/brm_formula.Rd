@@ -32,43 +32,61 @@ brm_formula(
 \item{data}{A classed data frame from \code{\link[=brm_data]{brm_data()}}.}
 
 \item{intercept}{Logical of length 1.
-\code{TRUE} to include an intercept, \code{FALSE} to omit.}
+\code{TRUE} (default) to include an intercept, \code{FALSE} to omit.}
 
 \item{baseline}{Logical of length 1.
 \code{TRUE} to include an additive effect for baseline
-response, \code{FALSE} to omit.}
+response, \code{FALSE} to omit.
+Default is \code{TRUE} if \code{\link[=brm_data]{brm_data()}} previously declared a baseline
+variable in the dataset.}
 
 \item{baseline_subgroup}{Logical of length 1.
-\code{TRUE} to include baseline-by-subgroup interaction, \code{FALSE} to omit.}
+\code{TRUE} to include baseline-by-subgroup interaction, \code{FALSE} to omit.
+Default is \code{TRUE} if \code{\link[=brm_data]{brm_data()}} previously declared baseline
+and subgroup variables in the dataset.}
 
 \item{baseline_subgroup_time}{Logical of length 1.
 \code{TRUE} to include baseline-by-subgroup-by-time interaction,
-\code{FALSE} to omit.}
+\code{FALSE} to omit.
+Default is \code{TRUE} if \code{\link[=brm_data]{brm_data()}} previously declared baseline
+and subgroup variables in the dataset.}
 
 \item{baseline_time}{Logical of length 1.
-\code{TRUE} to include baseline-by-time interaction, \code{FALSE} to omit.}
+\code{TRUE} to include baseline-by-time interaction, \code{FALSE} to omit.
+Default is \code{TRUE} if \code{\link[=brm_data]{brm_data()}} previously declared a baseline
+variable in the dataset.}
 
 \item{group}{Logical of length 1.
-\code{TRUE} to include additive effects for treatment groups, \code{FALSE} to omit.}
+\code{TRUE} (default) to include additive effects for
+treatment groups, \code{FALSE} to omit.}
 
 \item{group_subgroup}{Logical of length 1.
-\code{TRUE} to include group-by-subgroup interaction, \code{FALSE} to omit.}
+\code{TRUE} to include group-by-subgroup interaction, \code{FALSE} to omit.
+Default is \code{TRUE} if \code{\link[=brm_data]{brm_data()}} previously declared a subgroup
+variable in the dataset.}
 
 \item{group_subgroup_time}{Logical of length 1.
-\code{TRUE} to include group-by-subgroup-by-time interaction, \code{FALSE} to omit.}
+\code{TRUE} to include group-by-subgroup-by-time interaction, \code{FALSE} to omit.
+Default is \code{TRUE} if \code{\link[=brm_data]{brm_data()}} previously declared a subgroup
+variable in the dataset.}
 
 \item{group_time}{Logical of length 1.
-\code{TRUE} to include group-by-time interaction, \code{FALSE} to omit.}
+\code{TRUE} (default) to include group-by-time interaction, \code{FALSE} to omit.}
 
 \item{subgroup}{Logical of length 1.
 \code{TRUE} to include additive fixed effects for subgroup levels,
-\code{FALSE} to omit.}
+\code{FALSE} to omit.
+Default is \code{TRUE} if \code{\link[=brm_data]{brm_data()}} previously declared a subgroup
+variable in the dataset.}
 
 \item{subgroup_time}{Logical of length 1.
-\code{TRUE} to include subgroup-by-time interaction, \code{FALSE} to omit.}
+\code{TRUE} to include subgroup-by-time interaction, \code{FALSE} to omit.
+Default is \code{TRUE} if \code{\link[=brm_data]{brm_data()}} previously declared a subgroup
+variable in the dataset.}
 
 \item{time}{Logical of length 1.
-\code{TRUE} to include a additive effect for discrete time, \code{FALSE} to omit.}
+\code{TRUE} (default) to include a additive effect for discrete time,
+\code{FALSE} to omit.}
 
 \item{correlation}{Character of length 1, name of the correlation
 structure. Only \code{"unstructured"} is currently supported.}
