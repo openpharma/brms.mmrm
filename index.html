@@ -93,7 +93,7 @@
   <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header"><h1 id="brmsmmrm">brms.mmrm<a class="anchor" aria-label="anchor" href="#brmsmmrm"></a>
 </h1></div>
-<p><a href="https://CRAN.R-project.org/package=brms.mmrm" class="external-link"><img src="https://www.r-pkg.org/badges/version/brms.mmrm" alt="CRAN"></a> <a href="https://www.repostatus.org/#wip" class="external-link"><img src="https://www.repostatus.org/badges/latest/wip.svg" alt="status"></a> <a href="https://github.com/openpharma/brms.mmrm/actions?query=workflow%3Acheck" class="external-link"><img src="https://github.com/openpharma/brms.mmrm/workflows/check/badge.svg" alt="check"></a> <a href="https://github.com/openpharma/brms.mmrm/actions?query=workflow%3Acover" class="external-link"><img src="https://github.com/openpharma/brms.mmrm/workflows/cover/badge.svg" alt="cover"></a> <a href="https://github.com/openpharma/brms.mmrm/actions?query=workflow%3Alint" class="external-link"><img src="https://github.com/openpharma/brms.mmrm/workflows/lint/badge.svg" alt="lint"></a></p>
+<p><a href="https://CRAN.R-project.org/package=brms.mmrm" class="external-link"><img src="https://www.r-pkg.org/badges/version/brms.mmrm" alt="CRAN"></a> <a href="https://www.repostatus.org/#active" class="external-link"><img src="https://www.repostatus.org/badges/latest/active.svg" alt="status"></a> <a href="https://github.com/openpharma/brms.mmrm/actions?query=workflow%3Acheck" class="external-link"><img src="https://github.com/openpharma/brms.mmrm/workflows/check/badge.svg" alt="check"></a> <a href="https://github.com/openpharma/brms.mmrm/actions?query=workflow%3Acover" class="external-link"><img src="https://github.com/openpharma/brms.mmrm/workflows/cover/badge.svg" alt="cover"></a> <a href="https://github.com/openpharma/brms.mmrm/actions?query=workflow%3Alint" class="external-link"><img src="https://github.com/openpharma/brms.mmrm/workflows/lint/badge.svg" alt="lint"></a></p>
 <p>The <a href="https://link.springer.com/article/10.1177/009286150804200402" class="external-link">mixed model for repeated measures (MMRM)</a> is a popular model for longitudinal clinical trial data with continuous endpoints, and <a href="https://paul-buerkner.github.io/brms/" class="external-link"><code>brms</code></a> is powerful and versatile package for fitting Bayesian regression models. The <code>brms.mmrm</code> R package leverages <a href="https://paul-buerkner.github.io/brms/" class="external-link"><code>brms</code></a> to run <a href="https://link.springer.com/article/10.1177/009286150804200402" class="external-link">MMRMs</a>, and it supports a simplified interfaced to reduce difficulty and align with best practices for the life sciences.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
@@ -134,13 +134,17 @@
 <p>The documentation website at <a href="https://openpharma.github.io/brms.mmrm/" class="external-link uri">https://openpharma.github.io/brms.mmrm/</a> has a complete function reference and tutorial vignettes.</p>
 </div>
 <div class="section level2">
-<h2 id="disclaimer">Disclaimer<a class="anchor" aria-label="anchor" href="#disclaimer"></a>
+<h2 id="validation">Validation<a class="anchor" aria-label="anchor" href="#validation"></a>
 </h2>
-<p>This package is still in its early development phase, which means:</p>
-<ol style="list-style-type: decimal">
-<li>It has not been validated for serious analyses, and</li>
-<li>The interface and output may still change in ways that are not compatible with previous versions.</li>
-</ol>
+<p>To ensure the correctness of the model and its implementation, this package has been validated using simulation-based calibration and comparisons against the frequentist <a href="https://openpharma.github.io/mmrm/latest-tag/" class="external-link"><code>mmrm</code></a> package on two example datasets. The analyses and results are described in the package vignettes linked below:</p>
+<ul>
+<li><a href="https://openpharma.github.io/brms.mmrm/articles/sbc.html" class="external-link">Simulation-based calibration</a></li>
+<li>
+<a href="https://openpharma.github.io/brms.mmrm/articles/fev1.html" class="external-link">FEV1 data comparison between Bayesian and frequentist MMRMs</a>.</li>
+<li>
+<a href="https://openpharma.github.io/brms.mmrm/articles/bcva.html" class="external-link">BCVA data comparison between Bayesian and frequentist MMRMs</a>.</li>
+</ul>
+<p>Notably, <a href="https://openpharma.github.io/mmrm/latest-tag/reference/fev_data.html" class="external-link">FEV1</a> and <a href="https://openpharma.github.io/mmrm/latest-tag/reference/bcva_data.html" class="external-link">BCVA</a> are the same datasets that <a href="https://openpharma.github.io/mmrm/latest-tag/" class="external-link"><code>mmrm</code></a> uses to compare itself against SAS in <a href="https://openpharma.github.io/mmrm/latest-tag/articles/mmrm_review_methods.html" class="external-link">this vignette</a>. For additional validation in your functional area or domain of expertise, you may choose to run the similar analyses on your own datasets to compare <code>brms.mmrm</code> against <a href="https://openpharma.github.io/mmrm/latest-tag/" class="external-link"><code>mmrm</code></a> and/or SAS.</p>
 </div>
 <div class="section level2">
 <h2 id="help">Help<a class="anchor" aria-label="anchor" href="#help"></a>
@@ -163,7 +167,7 @@
 <div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>To cite package <span class="st">'brms.mmrm'</span> <span class="cf">in</span> publications use<span class="sc">:</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  Landau WM, Kunzmann K, Sidi Y, Stock <span class="fu">C</span> (????). _brms.mmrm<span class="sc">:</span> Bayesian</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  MMRMs using <span class="st">'brms'</span>_. R package version <span class="dv">0</span>.<span class="dv">0</span>.<span class="fl">2.9002</span>,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  MMRMs using <span class="st">'brms'</span>_. R package version <span class="dv">0</span>.<span class="dv">0</span>.<span class="fl">2.9003</span>,</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  https<span class="sc">:</span><span class="er">//</span>github.com<span class="sc">/</span>openpharma<span class="sc">/</span>brms.mmrm,</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="sc">&lt;</span>https<span class="sc">:</span><span class="er">//</span>openpharma.github.io<span class="sc">/</span>brms.mmrm<span class="sc">/</span><span class="er">&gt;</span>.</span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
@@ -172,7 +176,7 @@
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="sc">@</span>Manual{,</span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    title <span class="ot">=</span> {brms.mmrm<span class="sc">:</span> Bayesian MMRMs using <span class="st">'brms'</span>},</span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    author <span class="ot">=</span> {William Michael Landau and Kevin Kunzmann and Yoni Sidi and Christian Stock},</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    note <span class="ot">=</span> {R package version <span class="dv">0</span>.<span class="dv">0</span>.<span class="fl">2.9002</span>, </span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    note <span class="ot">=</span> {R package version <span class="dv">0</span>.<span class="dv">0</span>.<span class="fl">2.9003</span>, </span>
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>https<span class="sc">:</span><span class="er">//</span>github.com<span class="sc">/</span>openpharma<span class="sc">/</span>brms.mmrm},</span>
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    url <span class="ot">=</span> {https<span class="sc">:</span><span class="er">//</span>openpharma.github.io<span class="sc">/</span>brms.mmrm<span class="sc">/</span>},</span>
 <span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  }</span></code></pre></div>
