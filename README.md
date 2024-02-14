@@ -2,7 +2,7 @@
 # brms.mmrm
 
 [![CRAN](https://www.r-pkg.org/badges/version/brms.mmrm)](https://CRAN.R-project.org/package=brms.mmrm)
-[![status](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
+[![status](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![check](https://github.com/openpharma/brms.mmrm/workflows/check/badge.svg)](https://github.com/openpharma/brms.mmrm/actions?query=workflow%3Acheck)
 [![cover](https://github.com/openpharma/brms.mmrm/workflows/cover/badge.svg)](https://github.com/openpharma/brms.mmrm/actions?query=workflow%3Acover)
 [![lint](https://github.com/openpharma/brms.mmrm/workflows/lint/badge.svg)](https://github.com/openpharma/brms.mmrm/actions?query=workflow%3Alint)
@@ -31,13 +31,34 @@ with best practices for the life sciences.
 The documentation website at <https://openpharma.github.io/brms.mmrm/>
 has a complete function reference and tutorial vignettes.
 
-## Disclaimer
+## Validation
 
-This package is still in its early development phase, which means:
+To ensure the correctness of the model and its implementation, this
+package has been validated using simulation-based calibration and
+comparisons against the frequentist
+[`mmrm`](https://openpharma.github.io/mmrm/latest-tag/) package on two
+example datasets. The analyses and results are described in the package
+vignettes linked below:
 
-1.  It has not been validated for serious analyses, and
-2.  The interface and output may still change in ways that are not
-    compatible with previous versions.
+- [Simulation-based
+  calibration](https://openpharma.github.io/brms.mmrm/articles/sbc.html)
+- [FEV1 data comparison between Bayesian and frequentist
+  MMRMs](https://openpharma.github.io/brms.mmrm/articles/fev1.html).
+- [BCVA data comparison between Bayesian and frequentist
+  MMRMs](https://openpharma.github.io/brms.mmrm/articles/bcva.html).
+
+Notably,
+[FEV1](https://openpharma.github.io/mmrm/latest-tag/reference/fev_data.html)
+and
+[BCVA](https://openpharma.github.io/mmrm/latest-tag/reference/bcva_data.html)
+are the same datasets that
+[`mmrm`](https://openpharma.github.io/mmrm/latest-tag/) uses to compare
+itself against SAS in [this
+vignette](https://openpharma.github.io/mmrm/latest-tag/articles/mmrm_review_methods.html).
+For additional validation in your functional area or domain of
+expertise, you may choose to run the similar analyses on your own
+datasets to compare `brms.mmrm` against
+[`mmrm`](https://openpharma.github.io/mmrm/latest-tag/) and/or SAS.
 
 ## Help
 
@@ -63,7 +84,7 @@ By contributing to this project, you agree to abide by its terms.
     To cite package 'brms.mmrm' in publications use:
 
       Landau WM, Kunzmann K, Sidi Y, Stock C (????). _brms.mmrm: Bayesian
-      MMRMs using 'brms'_. R package version 0.0.2.9002,
+      MMRMs using 'brms'_. R package version 0.0.2.9003,
       https://github.com/openpharma/brms.mmrm,
       <https://openpharma.github.io/brms.mmrm/>.
 
@@ -72,7 +93,7 @@ By contributing to this project, you agree to abide by its terms.
       @Manual{,
         title = {brms.mmrm: Bayesian MMRMs using 'brms'},
         author = {William Michael Landau and Kevin Kunzmann and Yoni Sidi and Christian Stock},
-        note = {R package version 0.0.2.9002, 
+        note = {R package version 0.0.2.9003, 
     https://github.com/openpharma/brms.mmrm},
         url = {https://openpharma.github.io/brms.mmrm/},
       }
