@@ -159,8 +159,8 @@ Optionally add random continuous covariates `brm_simulate_continuous()` and rand
 
 
 ```r
-data <- data %>%
-  brm_simulate_continuous(names = c("biomarker1", "biomarker2")) %>%
+data <- data |>
+  brm_simulate_continuous(names = c("biomarker1", "biomarker2")) |>
   brm_simulate_categorical(
     names = c("status1", "status2"),
     levels = c("present", "absent")

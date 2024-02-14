@@ -73,8 +73,8 @@ library(tibble)
 library(tidyr)
 
 read_ranks <- function(path) {
-  fst::read_fst(path) %>%
-    tibble::as_tibble() %>%
+  fst::read_fst(path) |>
+    tibble::as_tibble() |>
     pivot_longer(
       cols = everything(),
       names_to = "parameter",
@@ -99,24 +99,24 @@ simple_ranks <- read_ranks("sbc/simple.fst")
 Fixed effect parameter ranks:
 
 ```{r}
-simple_ranks %>%
-  filter(grepl("^b_", parameter)) %>%
-  filter(!grepl("^b_sigma", parameter)) %>%
+simple_ranks |>
+  filter(grepl("^b_", parameter)) |>
+  filter(!grepl("^b_sigma", parameter)) |>
   plot_ranks()
 ```
 Log-scale standard deviation parameter ranks:
 
 ```{r}
-simple_ranks %>%
-  filter(grepl("b_sigma", parameter)) %>%
+simple_ranks |>
+  filter(grepl("b_sigma", parameter)) |>
   plot_ranks()
 ```
 
 Correlation parameter ranks:
 
 ```{r}
-simple_ranks %>%
-  filter(grepl("cortime_", parameter)) %>%
+simple_ranks |>
+  filter(grepl("cortime_", parameter)) |>
   plot_ranks()
 ```
 
@@ -170,24 +170,24 @@ complex_ranks <- read_ranks("sbc/complex.fst")
 Fixed effect parameter ranks:
 
 ```{r}
-complex_ranks %>%
-  filter(grepl("^b_", parameter)) %>%
-  filter(!grepl("^b_sigma", parameter)) %>%
+complex_ranks |>
+  filter(grepl("^b_", parameter)) |>
+  filter(!grepl("^b_sigma", parameter)) |>
   plot_ranks()
 ```
 Log-scale standard deviation parameter ranks:
 
 ```{r}
-complex_ranks %>%
-  filter(grepl("b_sigma", parameter)) %>%
+complex_ranks |>
+  filter(grepl("b_sigma", parameter)) |>
   plot_ranks()
 ```
 
 Correlation parameter ranks:
 
 ```{r}
-complex_ranks %>%
-  filter(grepl("cortime_", parameter)) %>%
+complex_ranks |>
+  filter(grepl("cortime_", parameter)) |>
   plot_ranks()
 ```
 

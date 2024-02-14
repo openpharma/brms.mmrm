@@ -1,5 +1,7 @@
 ---
 title: "Subgroup analysis"
+bibliography: '`r system.file("bibliography.bib", package = "brms.mmrm")`'
+csl: '`r system.file("asa.csl", package = "brms.mmrm")`'
 output:
   rmarkdown::html_vignette:
     toc: true
@@ -24,11 +26,11 @@ library(dplyr)
 library(magrittr)
 ```
 
-`brms.mmrm` can perform subgroup analysis on datasets with subgroups. The usual functions in `brms.mmrm` functions can summarize subgroup-specific and non-subgroup-specific marginal means of subgroup-enabled models, and metrics from `brms` can compare a subgroup model to its analogous non-subgroup reduced model.
+This vignette explains how to incorporate a subgroup variable into an MMRM using the `brms.mmrm` package. Here, we assume the subgroup variable has already been selected in advance (perhaps pre-specified in a trial protocol) because interactions are anticipated or of particular interest. Especially if heterogeneous patient populations are studied, it is important to check that the estimated overall effect is broadly applicable to relevant subgroups (@ICH1998, @EMA2019). It is worth noting, however, that subgroup variable selection is a thorough process that requires deep domain knowledge, careful adjustments for multiplicity, and potentially different modeling approaches, all of which belongs outside the scope of this vignette. Limitations of one-variable-at-a-time subgroup analyses to detect treatment effect heterogeneity have been described in the literature [@Kent2023]. For literature on data-driven subgroup identification methods in clinical trials, we refer to @Lipkovich2017 and @Lipkovich2023.
 
 # Data
 
-For subgroup analysis, the dataset must have a single categorical variable to denote subgroup levels. 
+The subgroup variable must be categorical.
 
 ```{r}
 library(brms.mmrm)
@@ -42,13 +44,13 @@ raw_data <- brm_simulate_outline(
   n_time = 3,
   rate_dropout = 0,
   rate_lapse = 0
-) %>%
+) |>
   mutate(response = rnorm(n = n()))
   
 raw_data
 ```
 
-Each subgroup level should have adequate representation among all treatment groups at all discrete time points. Otherwise, some marginal means of interest may not be estimable.
+Each categorical subgroup level should have adequate representation among all treatment groups at all discrete time points. Otherwise, some marginal means of interest may not be estimable.
 
 ```{r}
 count(raw_data, group, subgroup, time)
@@ -58,7 +60,7 @@ When you create the special classed dataset for `brms.mmrm` using `brm_data()`, 
 
 ```{r}
 data <- brm_data(
-  data = data,
+  data = raw_data,
   outcome = "response",
   role = "response",
   baseline = NULL,
@@ -106,7 +108,7 @@ formula_reduced
 
 To run the full subgroup and reduced non-subgroup models, use `brm_model()` as usual. Remember to supply the appropriate formula to each case.
 
-```{r, eval = FALSE}
+```{r}
 model_subgroup <- brm_model(
   data = data,
   formula = formula_subgroup,
@@ -114,7 +116,7 @@ model_subgroup <- brm_model(
 )
 ```
 
-```{r, include = FALSE}
+```{r}
 model_reduced <- brm_model(
   data = data,
   formula = formula_reduced,
@@ -250,17 +252,40 @@ loo::loo_compare(loo_subgroup, loo_reduced)
 
 `brm_plot_draws()` is aware of any subgroup-specific marginal means.
 
-```{r compare}
+```{r draws}
 brm_plot_draws(draws_subgroup_specific$difference_group)
 ```
 
-Likewise with `brm_plot_compare()`. The following function call compares the subgroup model results against the subgroup data.
+You can adjust visual aesthetics to compare subgroup levels side by side if subgroup level is the primary comparison of interest.
+
+```{r drawscustom}
+brm_plot_draws(
+  draws_subgroup_specific$difference_group,
+  axis = "subgroup",
+  facet = c("time", "group")
+)
+```
+
+The following function call compares the subgroup model results against the subgroup data.
 
 ```{r subgroup-vs-data}
 brm_plot_compare(
   data = summaries_data_subgroup,
   model = summaries_subgroup_specific,
   marginal = "response"
+)
+```
+
+You can adjust plot aesthetics to view subgroup levels side by side as the primary comparison of interest.
+
+```{r subgroup-vs-data-levels}
+brm_plot_compare(
+  data = summaries_data_subgroup,
+  model = summaries_subgroup_specific,
+  marginal = "response",
+  compare = "subgroup",
+  axis = "time",
+  facet = c("group", "source")
 )
 ```
 
@@ -273,3 +298,6 @@ brm_plot_compare(
   marginal = "difference_group"
 )
 ```
+
+# References
+
