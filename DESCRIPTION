@@ -2,16 +2,41 @@ Package: brms.mmrm
 Title: Bayesian MMRMs using 'brms'
 Version: 0.1.0
 Authors@R: c(
-  person(c("William", "Michael"), "Landau", , "will.landau@gmail.com", role = c("aut", "cre"),
-  comment = c(ORCID = "0000-0003-1878-3253")),
-  person("Kevin", "Kunzmann", , "kevin.kunzmann@boehringer-ingelheim.com", role = "aut",
-  comment = c(ORCID = "0000-0002-1140-7143")),
-  person("Yoni", "Sidi", , "yoni.sidi@sagerx.com", role = "aut"),
-  person("Christian", "Stock", , "christian.stock@boehringer-ingelheim.com", role = "aut",
-  comment = c(ORCID = "0000-0002-3493-3234")),
-  person(, "Eli Lilly and Company", role = c("cph", "fnd")),
-  person("Boehringer Ingelheim Pharma GmbH & Co. KG", role = c("cph", "fnd"))
-  )
+  person(
+    given = c("William", "Michael"),
+    family = "Landau",
+    role = c("aut", "cre"),
+    email = "will.landau.oss@gmail.com",
+    comment = c(ORCID = "0000-0003-1878-3253")
+  ),
+  person(
+    given = "Kevin",
+    family = "Kunzmann",
+    role = "aut",
+    email = "kevin.kunzmann@boehringer-ingelheim.com",
+    comment = c(ORCID = "0000-0002-1140-7143")
+  ),
+  person(
+    given = "Yoni",
+    family = "Sidi",
+    role = "aut",
+    email = "yoni.sidi@sagerx.com"
+  ),
+  person(
+    given = "Christian",
+    family = "Stock",
+    role = "aut",
+    email = "christian.stock@boehringer-ingelheim.com",
+    comment = c(ORCID = "0000-0002-3493-3234")
+  ),
+  person(
+    family = "Eli Lilly and Company",
+    role = c("cph", "fnd")
+  ),
+  person(
+    "Boehringer Ingelheim Pharma GmbH & Co. KG",
+    role = c("cph", "fnd")
+  ))
 Description: The mixed model for repeated measures (MMRM) is a popular
   model for longitudinal clinical trial data with continuous endpoints,
   and 'brms' is a powerful and versatile package for fitting Bayesian
