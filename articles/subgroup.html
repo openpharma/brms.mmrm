@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">brms.mmrm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.2.9003</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -90,16 +90,25 @@
 
     
     
-<p><code>brms.mmrm</code> can perform subgroup analysis on datasets with
-subgroups. The usual functions in <code>brms.mmrm</code> functions can
-summarize subgroup-specific and non-subgroup-specific marginal means of
-subgroup-enabled models, and metrics from <code>brms</code> can compare
-a subgroup model to its analogous non-subgroup reduced model.</p>
+<p>This vignette explains how to incorporate a subgroup variable into an
+MMRM using the <code>brms.mmrm</code> package. Here, we assume the
+subgroup variable has already been selected in advance (perhaps
+pre-specified in a trial protocol) because interactions are anticipated
+or of particular interest. Especially if heterogeneous patient
+populations are studied, it is important to check that the estimated
+overall effect is broadly applicable to relevant subgroups (<span class="citation">ICH (1998)</span>, <span class="citation">EMA
+(2019)</span>). It is worth noting, however, that subgroup variable
+selection is a thorough process that requires deep domain knowledge,
+careful adjustments for multiplicity, and potentially different modeling
+approaches, all of which belongs outside the scope of this vignette.
+Limitations of one-variable-at-a-time subgroup analyses to detect
+treatment effect heterogeneity have been described in the literature
+<span class="citation">(Kent 2023)</span>. For literature on data-driven
+subgroup identification methods in clinical trials, we refer to <span class="citation">Lipkovich et al. (2017)</span> and <span class="citation">Lipkovich et al. (2023)</span>.</p>
 <div class="section level2">
 <h2 id="data">Data<a class="anchor" aria-label="anchor" href="#data"></a>
 </h2>
-<p>For subgroup analysis, the dataset must have a single categorical
-variable to denote subgroup levels.</p>
+<p>The subgroup variable must be categorical.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://openpharma.github.io/brms.mmrm/" class="external-link">brms.mmrm</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
@@ -112,7 +121,7 @@ variable to denote subgroup levels.</p>
 <span>  n_time <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>  rate_dropout <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  rate_lapse <span class="op">=</span> <span class="fl">0</span></span>
-<span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>response <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span>  </span>
 <span><span class="va">raw_data</span></span>
@@ -130,9 +139,9 @@ variable to denote subgroup levels.</p>
 <span><span class="co">#&gt;  9 -0.00577 FALSE   group_1 subgroup_1 time_3 patient_003</span></span>
 <span><span class="co">#&gt; 10  2.40    FALSE   group_1 subgroup_1 time_1 patient_004</span></span>
 <span><span class="co">#&gt; # ℹ 890 more rows</span></span></code></pre></div>
-<p>Each subgroup level should have adequate representation among all
-treatment groups at all discrete time points. Otherwise, some marginal
-means of interest may not be estimable.</p>
+<p>Each categorical subgroup level should have adequate representation
+among all treatment groups at all discrete time points. Otherwise, some
+marginal means of interest may not be estimable.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html" class="external-link">count</a></span><span class="op">(</span><span class="va">raw_data</span>, <span class="va">group</span>, <span class="va">subgroup</span>, <span class="va">time</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 18 × 4</span></span>
@@ -165,7 +174,7 @@ compare pairs of subgroups: for example, the treatment effect of
 subgroup level you choose.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/brm_data.html">brm_data</a></span><span class="op">(</span></span>
-<span>  data <span class="op">=</span> <span class="va">data</span>,</span>
+<span>  data <span class="op">=</span> <span class="va">raw_data</span>,</span>
 <span>  outcome <span class="op">=</span> <span class="st">"response"</span>,</span>
 <span>  role <span class="op">=</span> <span class="st">"response"</span>,</span>
 <span>  baseline <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -250,7 +259,17 @@ formula to each case.</p>
 <span>  data <span class="op">=</span> <span class="va">data</span>,</span>
 <span>  formula <span class="op">=</span> <span class="va">formula_subgroup</span>,</span>
 <span>  refresh <span class="op">=</span> <span class="fl">0</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; Compiling Stan program...</span></span>
+<span><span class="co">#&gt; Start sampling</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">model_reduced</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/brm_model.html">brm_model</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">data</span>,</span>
+<span>  formula <span class="op">=</span> <span class="va">formula_reduced</span>,</span>
+<span>  refresh <span class="op">=</span> <span class="fl">0</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; Compiling Stan program...</span></span>
+<span><span class="co">#&gt; Start sampling</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="marginals">Marginals<a class="anchor" aria-label="anchor" href="#marginals"></a>
@@ -259,19 +278,19 @@ formula to each case.</p>
 summarize subgroup-specific and non-subgroup-specific marginal means.
 The latter is useful for direct comparison with the non-subgroup reduced
 model.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">draws_subgroup_specific</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/brm_marginal_draws.html">brm_marginal_draws</a></span><span class="op">(</span></span>
 <span>  model <span class="op">=</span> <span class="va">model_subgroup</span>,</span>
 <span>  data <span class="op">=</span> <span class="va">data</span>,</span>
 <span>  use_subgroup <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">draws_subgroup_comparison</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/brm_marginal_draws.html">brm_marginal_draws</a></span><span class="op">(</span></span>
 <span>  model <span class="op">=</span> <span class="va">model_subgroup</span>,</span>
 <span>  data <span class="op">=</span> <span class="va">data</span>,</span>
 <span>  use_subgroup <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">draws_reduced</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/brm_marginal_draws.html">brm_marginal_draws</a></span><span class="op">(</span></span>
 <span>  model <span class="op">=</span> <span class="va">model_reduced</span>,</span>
 <span>  data <span class="op">=</span> <span class="va">data</span>,</span>
@@ -280,21 +299,21 @@ model.</p>
 <p>For <code>draws_subgroup_specific</code>, the marginals of the time
 difference (change from baseline) and treatment difference are the same
 as before, except now they are subgroup-specific.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="va">draws_subgroup_specific</span><span class="op">$</span><span class="va">difference_group</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 4,000 × 11</span></span>
-<span><span class="co">#&gt;    .chain .draw .iteration `group_2|subgroup_1|time_2` group_2|subgroup_1|t…¹</span></span>
-<span><span class="co">#&gt;     &lt;int&gt; &lt;int&gt;      &lt;int&gt;                       &lt;dbl&gt;                  &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1      1     1          1                    0.0863                  -0.0633</span></span>
-<span><span class="co">#&gt;  2      1     2          2                    0.414                   -0.0444</span></span>
-<span><span class="co">#&gt;  3      1     3          3                    0.0405                  -0.319 </span></span>
-<span><span class="co">#&gt;  4      1     4          4                   -0.0491                  -0.300 </span></span>
-<span><span class="co">#&gt;  5      1     5          5                    0.266                   -0.216 </span></span>
-<span><span class="co">#&gt;  6      1     6          6                   -0.000641                -0.150 </span></span>
-<span><span class="co">#&gt;  7      1     7          7                   -0.00792                 -0.129 </span></span>
-<span><span class="co">#&gt;  8      1     8          8                   -0.107                   -0.223 </span></span>
-<span><span class="co">#&gt;  9      1     9          9                   -0.0226                  -0.271 </span></span>
-<span><span class="co">#&gt; 10      1    10         10                   -0.0354                  -0.455 </span></span>
+<span><span class="co">#&gt;    .chain .draw .iteration `group_2|subgroup_1|time_2` group_2|subgroup_1|tim…¹</span></span>
+<span><span class="co">#&gt;     &lt;int&gt; &lt;int&gt;      &lt;int&gt;                       &lt;dbl&gt;                    &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1      1     1          1                     0.167                     0.0351</span></span>
+<span><span class="co">#&gt;  2      1     2          2                     0.160                    -0.143 </span></span>
+<span><span class="co">#&gt;  3      1     3          3                     0.182                    -0.125 </span></span>
+<span><span class="co">#&gt;  4      1     4          4                     0.288                    -0.179 </span></span>
+<span><span class="co">#&gt;  5      1     5          5                    -0.0850                   -0.314 </span></span>
+<span><span class="co">#&gt;  6      1     6          6                    -0.0195                   -0.278 </span></span>
+<span><span class="co">#&gt;  7      1     7          7                    -0.0925                   -0.314 </span></span>
+<span><span class="co">#&gt;  8      1     8          8                     0.421                    -0.0122</span></span>
+<span><span class="co">#&gt;  9      1     9          9                     0.222                    -0.136 </span></span>
+<span><span class="co">#&gt; 10      1    10         10                     0.00918                  -0.262 </span></span>
 <span><span class="co">#&gt; # ℹ 3,990 more rows</span></span>
 <span><span class="co">#&gt; # ℹ abbreviated name: ¹​`group_2|subgroup_1|time_3`</span></span>
 <span><span class="co">#&gt; # ℹ 6 more variables: `group_2|subgroup_2|time_2` &lt;dbl&gt;,</span></span>
@@ -306,21 +325,21 @@ The posterior samples in <code>difference_subgroup</code> measure the
 differences between each subgroup level and the reference subgroup level
 with respect to the treatment effects in
 <code>difference_group</code>.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="va">draws_subgroup_specific</span><span class="op">$</span><span class="va">difference_subgroup</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 4,000 × 7</span></span>
-<span><span class="co">#&gt;    .chain .draw .iteration `group_2|subgroup_2|time_2` group_2|subgroup_2|t…¹</span></span>
-<span><span class="co">#&gt;     &lt;int&gt; &lt;int&gt;      &lt;int&gt;                       &lt;dbl&gt;                  &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1      1     1          1                    0                      0       </span></span>
-<span><span class="co">#&gt;  2      1     2          2                    0                      0       </span></span>
-<span><span class="co">#&gt;  3      1     3          3                   -2.08e-17               5.55e-17</span></span>
-<span><span class="co">#&gt;  4      1     4          4                    0                      0       </span></span>
-<span><span class="co">#&gt;  5      1     5          5                   -5.55e-17              -2.78e-17</span></span>
-<span><span class="co">#&gt;  6      1     6          6                    0                      0       </span></span>
-<span><span class="co">#&gt;  7      1     7          7                    3.47e-17               2.78e-17</span></span>
-<span><span class="co">#&gt;  8      1     8          8                   -2.78e-17              -5.55e-17</span></span>
-<span><span class="co">#&gt;  9      1     9          9                    3.47e-18               0       </span></span>
-<span><span class="co">#&gt; 10      1    10         10                    1.39e-17               0       </span></span>
+<span><span class="co">#&gt;    .chain .draw .iteration `group_2|subgroup_2|time_2` group_2|subgroup_2|tim…¹</span></span>
+<span><span class="co">#&gt;     &lt;int&gt; &lt;int&gt;      &lt;int&gt;                       &lt;dbl&gt;                    &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1      1     1          1                    0                       -5.55e-17</span></span>
+<span><span class="co">#&gt;  2      1     2          2                    0                        0       </span></span>
+<span><span class="co">#&gt;  3      1     3          3                    5.55e-17                -2.78e-17</span></span>
+<span><span class="co">#&gt;  4      1     4          4                    0                        0       </span></span>
+<span><span class="co">#&gt;  5      1     5          5                    0                        0       </span></span>
+<span><span class="co">#&gt;  6      1     6          6                    0                       -5.55e-17</span></span>
+<span><span class="co">#&gt;  7      1     7          7                    0                        0       </span></span>
+<span><span class="co">#&gt;  8      1     8          8                    1.11e-16                 5.55e-17</span></span>
+<span><span class="co">#&gt;  9      1     9          9                    0                        5.55e-17</span></span>
+<span><span class="co">#&gt; 10      1    10         10                    0                        5.55e-17</span></span>
 <span><span class="co">#&gt; # ℹ 3,990 more rows</span></span>
 <span><span class="co">#&gt; # ℹ abbreviated name: ¹​`group_2|subgroup_2|time_3`</span></span>
 <span><span class="co">#&gt; # ℹ 2 more variables: `group_3|subgroup_2|time_2` &lt;dbl&gt;,</span></span>
@@ -331,7 +350,7 @@ subgroup-specific marginals from <code><a href="../reference/brm_marginal_draws.
 Notably, <code><a href="../reference/brm_marginal_summaries.html">brm_marginal_summaries()</a></code> summarizes the subgroup
 differences in the <code>difference_subgroup</code> table from
 <code><a href="../reference/brm_marginal_draws.html">brm_marginal_draws()</a></code>.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">summaries_subgroup_specific</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/brm_marginal_summaries.html">brm_marginal_summaries</a></span><span class="op">(</span></span>
 <span>  <span class="va">draws_subgroup_specific</span>,</span>
 <span>  level <span class="op">=</span> <span class="fl">0.95</span></span>
@@ -351,20 +370,20 @@ differences in the <code>difference_subgroup</code> table from
 <span><span class="co">#&gt; # A tibble: 250 × 7</span></span>
 <span><span class="co">#&gt;    marginal         statistic group   subgroup   time     value    mcse</span></span>
 <span><span class="co">#&gt;    &lt;chr&gt;            &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt;      &lt;chr&gt;    &lt;dbl&gt;   &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 difference_group lower     group_2 subgroup_1 time_2 -0.294  0.0164 </span></span>
-<span><span class="co">#&gt;  2 difference_group lower     group_2 subgroup_1 time_3 -0.541  0.00698</span></span>
-<span><span class="co">#&gt;  3 difference_group lower     group_2 subgroup_2 time_2 -0.294  0.0164 </span></span>
-<span><span class="co">#&gt;  4 difference_group lower     group_2 subgroup_2 time_3 -0.541  0.00698</span></span>
-<span><span class="co">#&gt;  5 difference_group lower     group_3 subgroup_1 time_2 -0.142  0.0126 </span></span>
-<span><span class="co">#&gt;  6 difference_group lower     group_3 subgroup_1 time_3 -0.272  0.0118 </span></span>
-<span><span class="co">#&gt;  7 difference_group lower     group_3 subgroup_2 time_2 -0.142  0.0126 </span></span>
-<span><span class="co">#&gt;  8 difference_group lower     group_3 subgroup_2 time_3 -0.272  0.0118 </span></span>
-<span><span class="co">#&gt;  9 difference_group mean      group_2 subgroup_1 time_2  0.0935 0.00435</span></span>
-<span><span class="co">#&gt; 10 difference_group mean      group_2 subgroup_1 time_3 -0.165  0.00429</span></span>
+<span><span class="co">#&gt;  1 difference_group lower     group_2 subgroup_1 time_2 -0.314  0.0116 </span></span>
+<span><span class="co">#&gt;  2 difference_group lower     group_2 subgroup_1 time_3 -0.542  0.00881</span></span>
+<span><span class="co">#&gt;  3 difference_group lower     group_2 subgroup_2 time_2 -0.314  0.0116 </span></span>
+<span><span class="co">#&gt;  4 difference_group lower     group_2 subgroup_2 time_3 -0.542  0.00881</span></span>
+<span><span class="co">#&gt;  5 difference_group lower     group_3 subgroup_1 time_2 -0.118  0.00782</span></span>
+<span><span class="co">#&gt;  6 difference_group lower     group_3 subgroup_1 time_3 -0.277  0.0152 </span></span>
+<span><span class="co">#&gt;  7 difference_group lower     group_3 subgroup_2 time_2 -0.118  0.00782</span></span>
+<span><span class="co">#&gt;  8 difference_group lower     group_3 subgroup_2 time_3 -0.277  0.0152 </span></span>
+<span><span class="co">#&gt;  9 difference_group mean      group_2 subgroup_1 time_2  0.0882 0.00443</span></span>
+<span><span class="co">#&gt; 10 difference_group mean      group_2 subgroup_1 time_3 -0.171  0.00412</span></span>
 <span><span class="co">#&gt; # ℹ 240 more rows</span></span></code></pre></div>
 <p><code><a href="../reference/brm_marginal_probabilities.html">brm_marginal_probabilities()</a></code> still focuses on treatment
 effects, not on differences between pairs of subgroup levels.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/brm_marginal_probabilities.html">brm_marginal_probabilities</a></span><span class="op">(</span></span>
 <span>  draws <span class="op">=</span> <span class="va">draws_subgroup_specific</span>,</span>
 <span>  threshold <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.1</span>, <span class="fl">0.1</span><span class="op">)</span>,</span>
@@ -373,25 +392,25 @@ effects, not on differences between pairs of subgroup levels.</p>
 <span><span class="co">#&gt; # A tibble: 16 × 6</span></span>
 <span><span class="co">#&gt;    direction threshold group   subgroup   time   value</span></span>
 <span><span class="co">#&gt;    &lt;chr&gt;         &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;chr&gt;  &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 greater        -0.1 group_2 subgroup_1 time_2 0.832</span></span>
-<span><span class="co">#&gt;  2 greater        -0.1 group_2 subgroup_1 time_3 0.366</span></span>
-<span><span class="co">#&gt;  3 greater        -0.1 group_2 subgroup_2 time_2 0.832</span></span>
-<span><span class="co">#&gt;  4 greater        -0.1 group_2 subgroup_2 time_3 0.366</span></span>
-<span><span class="co">#&gt;  5 greater        -0.1 group_3 subgroup_1 time_2 0.964</span></span>
-<span><span class="co">#&gt;  6 greater        -0.1 group_3 subgroup_1 time_3 0.863</span></span>
-<span><span class="co">#&gt;  7 greater        -0.1 group_3 subgroup_2 time_2 0.964</span></span>
-<span><span class="co">#&gt;  8 greater        -0.1 group_3 subgroup_2 time_3 0.863</span></span>
-<span><span class="co">#&gt;  9 less            0.1 group_2 subgroup_1 time_2 0.520</span></span>
-<span><span class="co">#&gt; 10 less            0.1 group_2 subgroup_1 time_3 0.915</span></span>
-<span><span class="co">#&gt; 11 less            0.1 group_2 subgroup_2 time_2 0.520</span></span>
-<span><span class="co">#&gt; 12 less            0.1 group_2 subgroup_2 time_3 0.915</span></span>
-<span><span class="co">#&gt; 13 less            0.1 group_3 subgroup_1 time_2 0.203</span></span>
-<span><span class="co">#&gt; 14 less            0.1 group_3 subgroup_1 time_3 0.498</span></span>
-<span><span class="co">#&gt; 15 less            0.1 group_3 subgroup_2 time_2 0.203</span></span>
-<span><span class="co">#&gt; 16 less            0.1 group_3 subgroup_2 time_3 0.498</span></span></code></pre></div>
+<span><span class="co">#&gt;  1 greater        -0.1 group_2 subgroup_1 time_2 0.825</span></span>
+<span><span class="co">#&gt;  2 greater        -0.1 group_2 subgroup_1 time_3 0.357</span></span>
+<span><span class="co">#&gt;  3 greater        -0.1 group_2 subgroup_2 time_2 0.825</span></span>
+<span><span class="co">#&gt;  4 greater        -0.1 group_2 subgroup_2 time_3 0.357</span></span>
+<span><span class="co">#&gt;  5 greater        -0.1 group_3 subgroup_1 time_2 0.968</span></span>
+<span><span class="co">#&gt;  6 greater        -0.1 group_3 subgroup_1 time_3 0.854</span></span>
+<span><span class="co">#&gt;  7 greater        -0.1 group_3 subgroup_2 time_2 0.968</span></span>
+<span><span class="co">#&gt;  8 greater        -0.1 group_3 subgroup_2 time_3 0.854</span></span>
+<span><span class="co">#&gt;  9 less            0.1 group_2 subgroup_1 time_2 0.525</span></span>
+<span><span class="co">#&gt; 10 less            0.1 group_2 subgroup_1 time_3 0.918</span></span>
+<span><span class="co">#&gt; 11 less            0.1 group_2 subgroup_2 time_2 0.525</span></span>
+<span><span class="co">#&gt; 12 less            0.1 group_2 subgroup_2 time_3 0.918</span></span>
+<span><span class="co">#&gt; 13 less            0.1 group_3 subgroup_1 time_2 0.205</span></span>
+<span><span class="co">#&gt; 14 less            0.1 group_3 subgroup_1 time_3 0.504</span></span>
+<span><span class="co">#&gt; 15 less            0.1 group_3 subgroup_2 time_2 0.205</span></span>
+<span><span class="co">#&gt; 16 less            0.1 group_3 subgroup_2 time_3 0.504</span></span></code></pre></div>
 <p><code>brm_marignal_data()</code> can produce either subgroup-specific
 or non-subgroup-specific summary statistics.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">summaries_data_subgroup</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/brm_marginal_data.html">brm_marginal_data</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">data</span>,</span>
 <span>  level <span class="op">=</span> <span class="fl">0.95</span>,</span>
@@ -413,7 +432,7 @@ or non-subgroup-specific summary statistics.</p>
 <span><span class="co">#&gt;  9 lower     group_2 subgroup_1 time_3 0.208</span></span>
 <span><span class="co">#&gt; 10 lower     group_2 subgroup_2 time_1 0.220</span></span>
 <span><span class="co">#&gt; # ℹ 116 more rows</span></span></code></pre></div>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">summaries_data_reduced</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/brm_marginal_data.html">brm_marginal_data</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">data</span>,</span>
 <span>  level <span class="op">=</span> <span class="fl">0.95</span>,</span>
@@ -443,96 +462,144 @@ or non-subgroup-specific summary statistics.</p>
 reduced non-subgroup model to assess the effect of the subgroup as a
 whole. We can easily compute the widely applicable information criterion
 (WAIC) of each model.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">brms</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/loo/reference/waic.html" class="external-link">waic</a></span><span class="op">(</span><span class="va">model_subgroup</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Computed from 4000 by 900 log-likelihood matrix</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;           Estimate   SE</span></span>
-<span><span class="co">#&gt; elpd_waic  -1275.5 20.0</span></span>
-<span><span class="co">#&gt; p_waic        19.8  1.0</span></span>
-<span><span class="co">#&gt; waic        2551.0 39.9</span></span></code></pre></div>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<span><span class="co">#&gt; elpd_waic  -1275.6 20.0</span></span>
+<span><span class="co">#&gt; p_waic        19.9  1.0</span></span>
+<span><span class="co">#&gt; waic        2551.2 39.9</span></span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">brms</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/loo/reference/waic.html" class="external-link">waic</a></span><span class="op">(</span><span class="va">model_reduced</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Computed from 4000 by 900 log-likelihood matrix</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;           Estimate   SE</span></span>
-<span><span class="co">#&gt; elpd_waic  -1273.9 20.0</span></span>
-<span><span class="co">#&gt; p_waic        17.1  0.9</span></span>
-<span><span class="co">#&gt; waic        2547.7 40.0</span></span></code></pre></div>
+<span><span class="co">#&gt; elpd_waic  -1274.1 20.0</span></span>
+<span><span class="co">#&gt; p_waic        17.3  0.9</span></span>
+<span><span class="co">#&gt; waic        2548.2 40.1</span></span></code></pre></div>
 <p>Likewise, we can compare the models in terms of the expected log
 predictive density (ELPD) based on approximate Pareto-smoothed
 leave-one-out cross-validation.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">loo_subgroup</span> <span class="op">&lt;-</span> <span class="fu">brms</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/loo/reference/loo.html" class="external-link">loo</a></span><span class="op">(</span><span class="va">model_subgroup</span><span class="op">)</span></span>
 <span><span class="va">loo_reduced</span> <span class="op">&lt;-</span> <span class="fu">brms</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/loo/reference/loo.html" class="external-link">loo</a></span><span class="op">(</span><span class="va">model_reduced</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">loo_subgroup</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Computed from 4000 by 900 log-likelihood matrix</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;          Estimate   SE</span></span>
-<span><span class="co">#&gt; elpd_loo  -1275.6 20.0</span></span>
+<span><span class="co">#&gt; elpd_loo  -1275.7 20.0</span></span>
 <span><span class="co">#&gt; p_loo        19.9  1.0</span></span>
-<span><span class="co">#&gt; looic      2551.1 39.9</span></span>
-<span><span class="co">#&gt; ------</span></span>
-<span><span class="co">#&gt; Monte Carlo SE of elpd_loo is 0.1.</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; All Pareto k estimates are good (k &lt; 0.5).</span></span>
-<span><span class="co">#&gt; See help('pareto-k-diagnostic') for details.</span></span></code></pre></div>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">loo_reduced</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Computed from 4000 by 900 log-likelihood matrix</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;          Estimate   SE</span></span>
-<span><span class="co">#&gt; elpd_loo  -1273.9 20.0</span></span>
-<span><span class="co">#&gt; p_loo        17.1  0.9</span></span>
-<span><span class="co">#&gt; looic      2547.8 40.0</span></span>
+<span><span class="co">#&gt; looic      2551.3 39.9</span></span>
 <span><span class="co">#&gt; ------</span></span>
 <span><span class="co">#&gt; Monte Carlo SE of elpd_loo is 0.1.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; All Pareto k estimates are good (k &lt; 0.5).</span></span>
 <span><span class="co">#&gt; See help('pareto-k-diagnostic') for details.</span></span></code></pre></div>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">loo_reduced</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Computed from 4000 by 900 log-likelihood matrix</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;          Estimate   SE</span></span>
+<span><span class="co">#&gt; elpd_loo  -1274.1 20.0</span></span>
+<span><span class="co">#&gt; p_loo        17.3  0.9</span></span>
+<span><span class="co">#&gt; looic      2548.3 40.1</span></span>
+<span><span class="co">#&gt; ------</span></span>
+<span><span class="co">#&gt; Monte Carlo SE of elpd_loo is 0.1.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; All Pareto k estimates are good (k &lt; 0.5).</span></span>
+<span><span class="co">#&gt; See help('pareto-k-diagnostic') for details.</span></span></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">loo</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/loo/reference/loo_compare.html" class="external-link">loo_compare</a></span><span class="op">(</span><span class="va">loo_subgroup</span>, <span class="va">loo_reduced</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                elpd_diff se_diff</span></span>
 <span><span class="co">#&gt; model_reduced   0.0       0.0   </span></span>
-<span><span class="co">#&gt; model_subgroup -1.7       1.5</span></span></code></pre></div>
+<span><span class="co">#&gt; model_subgroup -1.5       1.6</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="visualization">Visualization<a class="anchor" aria-label="anchor" href="#visualization"></a>
 </h2>
 <p><code><a href="../reference/brm_plot_draws.html">brm_plot_draws()</a></code> is aware of any subgroup-specific
 marginal means.</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/brm_plot_draws.html">brm_plot_draws</a></span><span class="op">(</span><span class="va">draws_subgroup_specific</span><span class="op">$</span><span class="va">difference_group</span><span class="op">)</span></span></code></pre></div>
-<div class="figure">
-<img src="subgroup/compare-1.png" alt=""><p class="caption">plot of chunk compare</p>
-</div>
-<p>Likewise with <code><a href="../reference/brm_plot_compare.html">brm_plot_compare()</a></code>. The following function
-call compares the subgroup model results against the subgroup data.</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/brm_plot_draws.html">brm_plot_draws</a></span><span class="op">(</span><span class="va">draws_subgroup_specific</span><span class="op">$</span><span class="va">difference_group</span><span class="op">)</span></span></code></pre></div>
+<p><img src="subgroup/draws-1.png"></p>
+<p>You can adjust visual aesthetics to compare subgroup levels side by
+side if subgroup level is the primary comparison of interest.</p>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/brm_plot_draws.html">brm_plot_draws</a></span><span class="op">(</span></span>
+<span>  <span class="va">draws_subgroup_specific</span><span class="op">$</span><span class="va">difference_group</span>,</span>
+<span>  axis <span class="op">=</span> <span class="st">"subgroup"</span>,</span>
+<span>  facet <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"time"</span>, <span class="st">"group"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><img src="subgroup/drawscustom-1.png"></p>
+<p>The following function call compares the subgroup model results
+against the subgroup data.</p>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/brm_plot_compare.html">brm_plot_compare</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">summaries_data_subgroup</span>,</span>
 <span>  model <span class="op">=</span> <span class="va">summaries_subgroup_specific</span>,</span>
 <span>  marginal <span class="op">=</span> <span class="st">"response"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<div class="figure">
-<img src="subgroup/subgroup-vs-data-1.png" alt=""><p class="caption">plot of chunk subgroup-vs-data</p>
-</div>
+<p><img src="subgroup/subgroup-vs-data-1.png"></p>
+<p>You can adjust plot aesthetics to view subgroup levels side by side
+as the primary comparison of interest.</p>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/brm_plot_compare.html">brm_plot_compare</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">summaries_data_subgroup</span>,</span>
+<span>  model <span class="op">=</span> <span class="va">summaries_subgroup_specific</span>,</span>
+<span>  marginal <span class="op">=</span> <span class="st">"response"</span>,</span>
+<span>  compare <span class="op">=</span> <span class="st">"subgroup"</span>,</span>
+<span>  axis <span class="op">=</span> <span class="st">"time"</span>,</span>
+<span>  facet <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"group"</span>, <span class="st">"source"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><img src="subgroup/subgroup-vs-data-levels-1.png"></p>
 <p>We can also visually compare the treatment effects of the full
 subgroup and reduced non-subgroup models, marginalizing over subgroup
 levels in both cases.</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/brm_plot_compare.html">brm_plot_compare</a></span><span class="op">(</span></span>
 <span>  subgroup <span class="op">=</span> <span class="va">summaries_subgroup_comparison</span>,</span>
 <span>  reduced <span class="op">=</span> <span class="va">summaries_reduced</span>,</span>
 <span>  marginal <span class="op">=</span> <span class="st">"difference_group"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<div class="figure">
-<img src="subgroup/reduced-model-comparison-1.png" alt=""><p class="caption">plot of chunk reduced-model-comparison</p>
+<p><img src="subgroup/reduced-model-comparison-1.png"></p>
+</div>
+<div class="section level2">
+<h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+</h2>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-EMA2019" class="csl-entry">
+EMA (2019), <em>Guideline on the investigation of subgroups in
+confirmatory clinical trials</em>, European Medicines Agency; <a href="https://www.ema.europa.eu/en/investigation-subgroups-confirmatory-clinical-trials-scientific-guideline" class="external-link uri">https://www.ema.europa.eu/en/investigation-subgroups-confirmatory-clinical-trials-scientific-guideline</a>.
+</div>
+<div id="ref-ICH1998" class="csl-entry">
+ICH (1998), <span>“International council for harmonisation of technical
+requirements for pharmaceuticals for human use (ICH) E9 guideline.
+Statistical principles for clinical trials,”</span> <a href="https://database.ich.org/sites/default/files/E9_Guideline.pdf" class="external-link uri">https://database.ich.org/sites/default/files/E9_Guideline.pdf</a>.
+</div>
+<div id="ref-Kent2023" class="csl-entry">
+Kent, D. M. (2023), <span>“<span class="nocase"><span>O</span>verall
+average treatment effects from clinical trials, one-variable-at-a-time
+subgroup analyses and predictive approaches to heterogeneous treatment
+effects: <span>T</span>oward a more patient-centered evidence-based
+medicine</span>,”</span> <em>Clin Trials</em>, 20, 328–337.
+</div>
+<div id="ref-Lipkovich2017" class="csl-entry">
+Lipkovich, I., Dmitrienko, A., and B, R. (2017), <span>“<span class="nocase"><span>T</span>utorial in biostatistics: data-driven
+subgroup identification and analysis in clinical trials</span>,”</span>
+<em>Stat Med</em>, 36, 136–196.
+</div>
+<div id="ref-Lipkovich2023" class="csl-entry">
+Lipkovich, I., Svensson, D., Ratitch, B., and Dmitrienko, A. (2023),
+<span>“<span class="nocase"><span>O</span>verview of modern approaches
+for identifying and evaluating heterogeneous treatment effects from
+clinical data</span>,”</span> <em>Clin Trials</em>, 20, 380–393.
+</div>
 </div>
 </div>
 

@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">brms.mmrm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.2.9003</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -100,65 +100,83 @@
 
 <dt>intercept</dt>
 <dd><p>Logical of length 1.
-<code>TRUE</code> to include an intercept, <code>FALSE</code> to omit.</p></dd>
+<code>TRUE</code> (default) to include an intercept, <code>FALSE</code> to omit.</p></dd>
 
 
 <dt>baseline</dt>
 <dd><p>Logical of length 1.
 <code>TRUE</code> to include an additive effect for baseline
-response, <code>FALSE</code> to omit.</p></dd>
+response, <code>FALSE</code> to omit.
+Default is <code>TRUE</code> if <code><a href="brm_data.html">brm_data()</a></code> previously declared a baseline
+variable in the dataset.</p></dd>
 
 
 <dt>baseline_subgroup</dt>
 <dd><p>Logical of length 1.
-<code>TRUE</code> to include baseline-by-subgroup interaction, <code>FALSE</code> to omit.</p></dd>
+<code>TRUE</code> to include baseline-by-subgroup interaction, <code>FALSE</code> to omit.
+Default is <code>TRUE</code> if <code><a href="brm_data.html">brm_data()</a></code> previously declared baseline
+and subgroup variables in the dataset.</p></dd>
 
 
 <dt>baseline_subgroup_time</dt>
 <dd><p>Logical of length 1.
 <code>TRUE</code> to include baseline-by-subgroup-by-time interaction,
-<code>FALSE</code> to omit.</p></dd>
+<code>FALSE</code> to omit.
+Default is <code>TRUE</code> if <code><a href="brm_data.html">brm_data()</a></code> previously declared baseline
+and subgroup variables in the dataset.</p></dd>
 
 
 <dt>baseline_time</dt>
 <dd><p>Logical of length 1.
-<code>TRUE</code> to include baseline-by-time interaction, <code>FALSE</code> to omit.</p></dd>
+<code>TRUE</code> to include baseline-by-time interaction, <code>FALSE</code> to omit.
+Default is <code>TRUE</code> if <code><a href="brm_data.html">brm_data()</a></code> previously declared a baseline
+variable in the dataset.</p></dd>
 
 
 <dt>group</dt>
 <dd><p>Logical of length 1.
-<code>TRUE</code> to include additive effects for treatment groups, <code>FALSE</code> to omit.</p></dd>
+<code>TRUE</code> (default) to include additive effects for
+treatment groups, <code>FALSE</code> to omit.</p></dd>
 
 
 <dt>group_subgroup</dt>
 <dd><p>Logical of length 1.
-<code>TRUE</code> to include group-by-subgroup interaction, <code>FALSE</code> to omit.</p></dd>
+<code>TRUE</code> to include group-by-subgroup interaction, <code>FALSE</code> to omit.
+Default is <code>TRUE</code> if <code><a href="brm_data.html">brm_data()</a></code> previously declared a subgroup
+variable in the dataset.</p></dd>
 
 
 <dt>group_subgroup_time</dt>
 <dd><p>Logical of length 1.
-<code>TRUE</code> to include group-by-subgroup-by-time interaction, <code>FALSE</code> to omit.</p></dd>
+<code>TRUE</code> to include group-by-subgroup-by-time interaction, <code>FALSE</code> to omit.
+Default is <code>TRUE</code> if <code><a href="brm_data.html">brm_data()</a></code> previously declared a subgroup
+variable in the dataset.</p></dd>
 
 
 <dt>group_time</dt>
 <dd><p>Logical of length 1.
-<code>TRUE</code> to include group-by-time interaction, <code>FALSE</code> to omit.</p></dd>
+<code>TRUE</code> (default) to include group-by-time interaction, <code>FALSE</code> to omit.</p></dd>
 
 
 <dt>subgroup</dt>
 <dd><p>Logical of length 1.
 <code>TRUE</code> to include additive fixed effects for subgroup levels,
-<code>FALSE</code> to omit.</p></dd>
+<code>FALSE</code> to omit.
+Default is <code>TRUE</code> if <code><a href="brm_data.html">brm_data()</a></code> previously declared a subgroup
+variable in the dataset.</p></dd>
 
 
 <dt>subgroup_time</dt>
 <dd><p>Logical of length 1.
-<code>TRUE</code> to include subgroup-by-time interaction, <code>FALSE</code> to omit.</p></dd>
+<code>TRUE</code> to include subgroup-by-time interaction, <code>FALSE</code> to omit.
+Default is <code>TRUE</code> if <code><a href="brm_data.html">brm_data()</a></code> previously declared a subgroup
+variable in the dataset.</p></dd>
 
 
 <dt>time</dt>
 <dd><p>Logical of length 1.
-<code>TRUE</code> to include a additive effect for discrete time, <code>FALSE</code> to omit.</p></dd>
+<code>TRUE</code> (default) to include a additive effect for discrete time,
+<code>FALSE</code> to omit.</p></dd>
 
 
 <dt>correlation</dt>
