@@ -1,6 +1,6 @@
 Package: brms.mmrm
 Title: Bayesian MMRMs using 'brms'
-Version: 0.0.2.9003
+Version: 0.1.0
 Authors@R: c(
   person(c("William", "Michael"), "Landau", , "will.landau@gmail.com", role = c("aut", "cre"),
   comment = c(ORCID = "0000-0003-1878-3253")),
