@@ -29,7 +29,7 @@ Otherwise, the subgroup is marginalized out.}
 A named list of tibbles of MCMC draws of the marginal posterior
 distribution of each treatment group and time point
 (or group-by-subgroup-by-time, if applicable).
-In each tibble, there is 1 row per posterior sample sand one column for
+In each tibble, there is 1 row per posterior sample and one column for
 each type of marginal distribution (i.e. each combination of treatment
 group and discrete time point. The specific \code{tibble}s in the returned
 list are described below:
