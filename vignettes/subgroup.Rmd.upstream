@@ -26,7 +26,7 @@ library(dplyr)
 library(magrittr)
 ```
 
-This vignette explains how to incorporate a subgroup variable into an MMRM using the `brms.mmrm` package. Here, we assume the subgroup variable has already been selected in advance (perhaps pre-specified in a trial protocol) because interactions are anticipated or of particular interest. Especially if heterogeneous patient populations are studied, it is important to check that the estimated overall effect is broadly applicable to relevant subgroups (@ICH1998, @EMA2019). It is worth noting, however, that subgroup variable selection is a thorough process that requires deep domain knowledge, careful adjustments for multiplicity, and potentially different modeling approaches, all of which belongs outside the scope of this vignette. Limitations of one-variable-at-a-time subgroup analyses to detect treatment effect heterogeneity have been described in the literature [@Kent2023]. For literature on data-driven subgroup identification methods in clinical trials, we refer to @Lipkovich2017 and Lipkovich2023.
+This vignette explains how to incorporate a subgroup variable into an MMRM using the `brms.mmrm` package. Here, we assume the subgroup variable has already been selected in advance (perhaps pre-specified in a trial protocol) because interactions are anticipated or of particular interest. Especially if heterogeneous patient populations are studied, it is important to check that the estimated overall effect is broadly applicable to relevant subgroups (@ICH1998, @EMA2019). It is worth noting, however, that subgroup variable selection is a thorough process that requires deep domain knowledge, careful adjustments for multiplicity, and potentially different modeling approaches, all of which belongs outside the scope of this vignette. Limitations of one-variable-at-a-time subgroup analyses to detect treatment effect heterogeneity have been described in the literature [@Kent2023]. For literature on data-driven subgroup identification methods in clinical trials, we refer to @Lipkovich2017 and @Lipkovich2023.
 
 # Data
 
@@ -104,38 +104,22 @@ formula_reduced <- brm_formula(
 formula_reduced
 ```
 
-# Regularization
-
-This analysis assumes there is already sufficient justification for the choice of the subgroup variable in the dataset. Nonetheless, a subgroup may appear significant due to random chance alone, and the inherent statistical multiplicity of subgroup selection increases the risk of this false positive outcome. If this is not a concern in your specific situation, then direct mitigation may not be necessary. Otherwise, one possible strategy is to express prior skepticism of a treatment-by-subgroup interaction: that is, to shrink the treatment-by-subgroup interaction fixed effects toward zero in the prior. A horseshoe prior is one possible shrinkage technique.^[Please be aware that horseshoe cannot be applied to individual scalar parameters. It must apply to an entire parameter class as a whole. Please read <https://paul-buerkner.github.io/brms/reference/horseshoe.html> to adjust the hyperparameters for your specific use case.]
-
-```{r, paged.print = FALSE}
-prior <- brms::set_prior(prior = "horseshoe(df = 1)",  class = "b")
-```
-
 # Models
 
 To run the full subgroup and reduced non-subgroup models, use `brm_model()` as usual. Remember to supply the appropriate formula to each case.
 
-```{r, eval = FALSE}
+```{r}
 model_subgroup <- brm_model(
   data = data,
   formula = formula_subgroup,
-  # Uncomment the prior to use a the horseshoe shrinkage prior described above
-  # to express skepticism about treatment-subgroup interactions.
-  # This prior is commented out below for the vignette
-  # because it causes divergent transitions in Stan. In some cases,
-  # this can be mitigated by raising the horseshoe degrees of freedom.
-  # prior = prior,
   refresh = 0
 )
 ```
 
-```{r, include = FALSE}
+```{r}
 model_reduced <- brm_model(
   data = data,
   formula = formula_reduced,
-  # Uncomment the prior if you uncommented it for the subgroup model above.
-  # prior = prior,
   refresh = 0
 )
 ```

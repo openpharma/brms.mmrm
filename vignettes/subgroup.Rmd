@@ -1,7 +1,7 @@
 ---
 title: "Subgroup analysis"
-bibliography: '`r system.file("bibliography.bib", package = "brms.mmrm")`'
-csl: '`r system.file("asa.csl", package = "brms.mmrm")`'
+bibliography: '/home/landau/R/R-4.3.2/library/brms.mmrm/bibliography.bib'
+csl: '/home/landau/R/R-4.3.2/library/brms.mmrm/asa.csl'
 output:
   rmarkdown::html_vignette:
     toc: true
@@ -12,11 +12,14 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+
+
 This vignette explains how to incorporate a subgroup variable into an MMRM using the `brms.mmrm` package. Here, we assume the subgroup variable has already been selected in advance (perhaps pre-specified in a trial protocol) because interactions are anticipated or of particular interest. Especially if heterogeneous patient populations are studied, it is important to check that the estimated overall effect is broadly applicable to relevant subgroups (@ICH1998, @EMA2019). It is worth noting, however, that subgroup variable selection is a thorough process that requires deep domain knowledge, careful adjustments for multiplicity, and potentially different modeling approaches, all of which belongs outside the scope of this vignette. Limitations of one-variable-at-a-time subgroup analyses to detect treatment effect heterogeneity have been described in the literature [@Kent2023]. For literature on data-driven subgroup identification methods in clinical trials, we refer to @Lipkovich2017 and @Lipkovich2023.
 
 # Data
 
 The subgroup variable must be categorical.
+
 
 ```r
 library(brms.mmrm)
@@ -155,15 +158,6 @@ formula_reduced
 #> sigma ~ 0 + time
 ```
 
-# Regularization
-
-This analysis assumes there is already sufficient justification for the choice of the subgroup variable in the dataset. Nonetheless, a subgroup may appear significant due to random chance alone, and the inherent statistical multiplicity of subgroup selection increases the risk of this false positive outcome. If this is not a concern in your specific situation, then direct mitigation may not be necessary. Otherwise, one possible strategy is to express prior skepticism of a treatment-by-subgroup interaction: that is, to shrink the treatment-by-subgroup interaction fixed effects toward zero in the prior. A horseshoe prior is one possible shrinkage technique.^[Please be aware that horseshoe cannot be applied to individual scalar parameters. It must apply to an entire parameter class as a whole. Please read <https://paul-buerkner.github.io/brms/reference/horseshoe.html> to adjust the hyperparameters for your specific use case.]
-
-
-```r
-prior <- brms::set_prior(prior = "horseshoe(df = 1)",  class = "b")
-```
-
 # Models
 
 To run the full subgroup and reduced non-subgroup models, use `brm_model()` as usual. Remember to supply the appropriate formula to each case.
@@ -173,17 +167,22 @@ To run the full subgroup and reduced non-subgroup models, use `brm_model()` as u
 model_subgroup <- brm_model(
   data = data,
   formula = formula_subgroup,
-  # Uncomment the prior to use a the horseshoe shrinkage prior described above
-  # to express skepticism about treatment-subgroup interactions.
-  # This prior is commented out below for the vignette
-  # because it causes divergent transitions in Stan. In some cases,
-  # this can be mitigated by raising the horseshoe degrees of freedom.
-  # prior = prior,
   refresh = 0
 )
+#> Compiling Stan program...
+#> Start sampling
 ```
 
 
+```r
+model_reduced <- brm_model(
+  data = data,
+  formula = formula_reduced,
+  refresh = 0
+)
+#> Compiling Stan program...
+#> Start sampling
+```
 
 # Marginals
 
@@ -222,19 +221,20 @@ For `draws_subgroup_specific`, the marginals of the time difference (change from
 ```r
 tibble::as_tibble(draws_subgroup_specific$difference_group)
 #> # A tibble: 4,000 × 11
-#>    .chain .draw .iteration `group_2|subgroup_1|time_2` `group_2|subgroup_1|time_3`
-#>     <int> <int>      <int>                       <dbl>                       <dbl>
-#>  1      1     1          1                      0.118                      -0.105 
-#>  2      1     2          2                      0.186                      -0.219 
-#>  3      1     3          3                      0.0693                     -0.213 
-#>  4      1     4          4                      0.174                      -0.281 
-#>  5      1     5          5                     -0.570                      -0.492 
-#>  6      1     6          6                      0.223                      -0.170 
-#>  7      1     7          7                     -0.347                      -0.530 
-#>  8      1     8          8                     -0.334                      -0.524 
-#>  9      1     9          9                      0.0139                     -0.314 
-#> 10      1    10         10                      0.308                       0.0336
+#>    .chain .draw .iteration `group_2|subgroup_1|time_2` group_2|subgroup_1|tim…¹
+#>     <int> <int>      <int>                       <dbl>                    <dbl>
+#>  1      1     1          1                     0.167                     0.0351
+#>  2      1     2          2                     0.160                    -0.143 
+#>  3      1     3          3                     0.182                    -0.125 
+#>  4      1     4          4                     0.288                    -0.179 
+#>  5      1     5          5                    -0.0850                   -0.314 
+#>  6      1     6          6                    -0.0195                   -0.278 
+#>  7      1     7          7                    -0.0925                   -0.314 
+#>  8      1     8          8                     0.421                    -0.0122
+#>  9      1     9          9                     0.222                    -0.136 
+#> 10      1    10         10                     0.00918                  -0.262 
 #> # ℹ 3,990 more rows
+#> # ℹ abbreviated name: ¹​`group_2|subgroup_1|time_3`
 #> # ℹ 6 more variables: `group_2|subgroup_2|time_2` <dbl>,
 #> #   `group_2|subgroup_2|time_3` <dbl>, `group_3|subgroup_1|time_2` <dbl>,
 #> #   `group_3|subgroup_1|time_3` <dbl>, `group_3|subgroup_2|time_2` <dbl>,
@@ -247,19 +247,20 @@ In addition, there is a new `difference_subgroup` table. The posterior samples i
 ```r
 tibble::as_tibble(draws_subgroup_specific$difference_subgroup)
 #> # A tibble: 4,000 × 7
-#>    .chain .draw .iteration `group_2|subgroup_2|time_2` `group_2|subgroup_2|time_3`
-#>     <int> <int>      <int>                       <dbl>                       <dbl>
-#>  1      1     1          1                    0                          -1.39e-17
-#>  2      1     2          2                    0                          -2.78e-17
-#>  3      1     3          3                    1.39e-17                    0       
-#>  4      1     4          4                    0                           0       
-#>  5      1     5          5                    0                           0       
-#>  6      1     6          6                    0                           0       
-#>  7      1     7          7                    1.67e-16                    0       
-#>  8      1     8          8                    5.55e-17                    0       
-#>  9      1     9          9                    2.78e-17                   -1.11e-16
-#> 10      1    10         10                    0                           0       
+#>    .chain .draw .iteration `group_2|subgroup_2|time_2` group_2|subgroup_2|tim…¹
+#>     <int> <int>      <int>                       <dbl>                    <dbl>
+#>  1      1     1          1                    0                       -5.55e-17
+#>  2      1     2          2                    0                        0       
+#>  3      1     3          3                    5.55e-17                -2.78e-17
+#>  4      1     4          4                    0                        0       
+#>  5      1     5          5                    0                        0       
+#>  6      1     6          6                    0                       -5.55e-17
+#>  7      1     7          7                    0                        0       
+#>  8      1     8          8                    1.11e-16                 5.55e-17
+#>  9      1     9          9                    0                        5.55e-17
+#> 10      1    10         10                    0                        5.55e-17
 #> # ℹ 3,990 more rows
+#> # ℹ abbreviated name: ¹​`group_2|subgroup_2|time_3`
 #> # ℹ 2 more variables: `group_3|subgroup_2|time_2` <dbl>,
 #> #   `group_3|subgroup_2|time_3` <dbl>
 ```
@@ -287,16 +288,16 @@ summaries_subgroup_specific
 #> # A tibble: 250 × 7
 #>    marginal         statistic group   subgroup   time     value    mcse
 #>    <chr>            <chr>     <chr>   <chr>      <chr>    <dbl>   <dbl>
-#>  1 difference_group lower     group_2 subgroup_1 time_2 -0.313  0.00842
-#>  2 difference_group lower     group_2 subgroup_1 time_3 -0.560  0.0106 
-#>  3 difference_group lower     group_2 subgroup_2 time_2 -0.313  0.00842
-#>  4 difference_group lower     group_2 subgroup_2 time_3 -0.560  0.0106 
-#>  5 difference_group lower     group_3 subgroup_1 time_2 -0.127  0.00989
-#>  6 difference_group lower     group_3 subgroup_1 time_3 -0.268  0.00860
-#>  7 difference_group lower     group_3 subgroup_2 time_2 -0.127  0.00989
-#>  8 difference_group lower     group_3 subgroup_2 time_3 -0.268  0.00860
-#>  9 difference_group mean      group_2 subgroup_1 time_2  0.0920 0.00448
-#> 10 difference_group mean      group_2 subgroup_1 time_3 -0.171  0.00455
+#>  1 difference_group lower     group_2 subgroup_1 time_2 -0.314  0.0116 
+#>  2 difference_group lower     group_2 subgroup_1 time_3 -0.542  0.00881
+#>  3 difference_group lower     group_2 subgroup_2 time_2 -0.314  0.0116 
+#>  4 difference_group lower     group_2 subgroup_2 time_3 -0.542  0.00881
+#>  5 difference_group lower     group_3 subgroup_1 time_2 -0.118  0.00782
+#>  6 difference_group lower     group_3 subgroup_1 time_3 -0.277  0.0152 
+#>  7 difference_group lower     group_3 subgroup_2 time_2 -0.118  0.00782
+#>  8 difference_group lower     group_3 subgroup_2 time_3 -0.277  0.0152 
+#>  9 difference_group mean      group_2 subgroup_1 time_2  0.0882 0.00443
+#> 10 difference_group mean      group_2 subgroup_1 time_3 -0.171  0.00412
 #> # ℹ 240 more rows
 ```
 
@@ -312,22 +313,22 @@ brm_marginal_probabilities(
 #> # A tibble: 16 × 6
 #>    direction threshold group   subgroup   time   value
 #>    <chr>         <dbl> <chr>   <chr>      <chr>  <dbl>
-#>  1 greater        -0.1 group_2 subgroup_1 time_2 0.826
-#>  2 greater        -0.1 group_2 subgroup_1 time_3 0.358
-#>  3 greater        -0.1 group_2 subgroup_2 time_2 0.826
-#>  4 greater        -0.1 group_2 subgroup_2 time_3 0.358
-#>  5 greater        -0.1 group_3 subgroup_1 time_2 0.967
-#>  6 greater        -0.1 group_3 subgroup_1 time_3 0.849
-#>  7 greater        -0.1 group_3 subgroup_2 time_2 0.967
-#>  8 greater        -0.1 group_3 subgroup_2 time_3 0.849
-#>  9 less            0.1 group_2 subgroup_1 time_2 0.514
+#>  1 greater        -0.1 group_2 subgroup_1 time_2 0.825
+#>  2 greater        -0.1 group_2 subgroup_1 time_3 0.357
+#>  3 greater        -0.1 group_2 subgroup_2 time_2 0.825
+#>  4 greater        -0.1 group_2 subgroup_2 time_3 0.357
+#>  5 greater        -0.1 group_3 subgroup_1 time_2 0.968
+#>  6 greater        -0.1 group_3 subgroup_1 time_3 0.854
+#>  7 greater        -0.1 group_3 subgroup_2 time_2 0.968
+#>  8 greater        -0.1 group_3 subgroup_2 time_3 0.854
+#>  9 less            0.1 group_2 subgroup_1 time_2 0.525
 #> 10 less            0.1 group_2 subgroup_1 time_3 0.918
-#> 11 less            0.1 group_2 subgroup_2 time_2 0.514
+#> 11 less            0.1 group_2 subgroup_2 time_2 0.525
 #> 12 less            0.1 group_2 subgroup_2 time_3 0.918
-#> 13 less            0.1 group_3 subgroup_1 time_2 0.212
-#> 14 less            0.1 group_3 subgroup_1 time_3 0.505
-#> 15 less            0.1 group_3 subgroup_2 time_2 0.212
-#> 16 less            0.1 group_3 subgroup_2 time_3 0.505
+#> 13 less            0.1 group_3 subgroup_1 time_2 0.205
+#> 14 less            0.1 group_3 subgroup_1 time_3 0.504
+#> 15 less            0.1 group_3 subgroup_2 time_2 0.205
+#> 16 less            0.1 group_3 subgroup_2 time_3 0.504
 ```
 
 `brm_marignal_data()` can produce either subgroup-specific or non-subgroup-specific summary statistics.
@@ -393,9 +394,9 @@ brms::waic(model_subgroup)
 #> Computed from 4000 by 900 log-likelihood matrix
 #> 
 #>           Estimate   SE
-#> elpd_waic  -1276.3 20.0
-#> p_waic        20.6  1.0
-#> waic        2552.6 40.0
+#> elpd_waic  -1275.6 20.0
+#> p_waic        19.9  1.0
+#> waic        2551.2 39.9
 ```
 
 
@@ -405,9 +406,9 @@ brms::waic(model_reduced)
 #> Computed from 4000 by 900 log-likelihood matrix
 #> 
 #>           Estimate   SE
-#> elpd_waic  -1273.9 20.0
-#> p_waic        17.1  0.9
-#> waic        2547.7 40.0
+#> elpd_waic  -1274.1 20.0
+#> p_waic        17.3  0.9
+#> waic        2548.2 40.1
 ```
 
 Likewise, we can compare the models in terms of the expected log predictive density (ELPD) based on approximate Pareto-smoothed leave-one-out cross-validation.
@@ -425,9 +426,9 @@ loo_subgroup
 #> Computed from 4000 by 900 log-likelihood matrix
 #> 
 #>          Estimate   SE
-#> elpd_loo  -1276.4 20.0
-#> p_loo        20.6  1.0
-#> looic      2552.7 40.0
+#> elpd_loo  -1275.7 20.0
+#> p_loo        19.9  1.0
+#> looic      2551.3 39.9
 #> ------
 #> Monte Carlo SE of elpd_loo is 0.1.
 #> 
@@ -442,9 +443,9 @@ loo_reduced
 #> Computed from 4000 by 900 log-likelihood matrix
 #> 
 #>          Estimate   SE
-#> elpd_loo  -1273.9 20.0
-#> p_loo        17.1  0.9
-#> looic      2547.8 40.0
+#> elpd_loo  -1274.1 20.0
+#> p_loo        17.3  0.9
+#> looic      2548.3 40.1
 #> ------
 #> Monte Carlo SE of elpd_loo is 0.1.
 #> 
@@ -457,7 +458,7 @@ loo_reduced
 loo::loo_compare(loo_subgroup, loo_reduced)
 #>                elpd_diff se_diff
 #> model_reduced   0.0       0.0   
-#> model_subgroup -2.4       1.6
+#> model_subgroup -1.5       1.6
 ```
 
 # Visualization
@@ -527,3 +528,4 @@ brm_plot_compare(
 ![](subgroup/reduced-model-comparison-1.png)
 
 # References
+
