@@ -1,5 +1,7 @@
 ---
 title: "Subgroup analysis"
+bibliography: '`r system.file("bibliography.bib", package = "brms.mmrm")`'
+csl: '`r system.file("asa.csl", package = "brms.mmrm")`'
 output:
   rmarkdown::html_vignette:
     toc: true
@@ -10,14 +12,11 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-
-
-This vignette explains how to incorporate a subgroup variable into an MMRM using the `brms.mmrm` package. Here, we assume the subgroup variable has already been selected in advance. Subgroup variable selection is a thorough process that requires deep domain knowledge and careful adjustments for multiplicity, all of which belong outside the scope of this vignette. The subgroup MMRM analysis described below should not take place until there is sufficient prior justification for the choice of the subgroup variable.
+This vignette explains how to incorporate a subgroup variable into an MMRM using the `brms.mmrm` package. Here, we assume the subgroup variable has already been selected in advance (perhaps pre-specified in a trial protocol) because interactions are anticipated or of particular interest. Especially if heterogeneous patient populations are studied, it is important to check that the estimated overall effect is broadly applicable to relevant subgroups (@ICH1998, @EMA2019). It is worth noting, however, that subgroup variable selection is a thorough process that requires deep domain knowledge, careful adjustments for multiplicity, and potentially different modeling approaches, all of which belongs outside the scope of this vignette. Limitations of one-variable-at-a-time subgroup analyses to detect treatment effect heterogeneity have been described in the literature [@Kent2023]. For literature on data-driven subgroup identification methods in clinical trials, we refer to @Lipkovich2017 and @Lipkovich2023.
 
 # Data
 
 The subgroup variable must be categorical.
-
 
 ```r
 library(brms.mmrm)
@@ -526,3 +525,5 @@ brm_plot_compare(
 ```
 
 ![](subgroup/reduced-model-comparison-1.png)
+
+# References
