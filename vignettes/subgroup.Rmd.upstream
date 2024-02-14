@@ -44,7 +44,7 @@ raw_data <- brm_simulate_outline(
   n_time = 3,
   rate_dropout = 0,
   rate_lapse = 0
-) %>%
+) |>
   mutate(response = rnorm(n = n()))
   
 raw_data

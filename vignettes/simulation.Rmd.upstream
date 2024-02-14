@@ -95,8 +95,8 @@ data
 Optionally add random continuous covariates `brm_simulate_continuous()` and random categorical covariates using `brm_simulate_categorical()`. In each case, the covariates are non-time-varying, which means each patient gets only one unique value.
 
 ```{r}
-data <- data %>%
-  brm_simulate_continuous(names = c("biomarker1", "biomarker2")) %>%
+data <- data |>
+  brm_simulate_continuous(names = c("biomarker1", "biomarker2")) |>
   brm_simulate_categorical(
     names = c("status1", "status2"),
     levels = c("present", "absent")

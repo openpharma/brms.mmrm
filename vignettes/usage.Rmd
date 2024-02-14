@@ -28,8 +28,8 @@ raw_data <- brm_simulate_simple(
   n_group = 3,
   n_patient = 100,
   n_time = 4
-) %>%
-  extract2("data") %>%
+) |>
+  extract2("data") |>
   brm_simulate_continuous(c("biomarker1", "biomarker2", "biomarker3"))
 
 raw_data
