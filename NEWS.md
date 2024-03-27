@@ -6,6 +6,8 @@
 * Create a special `"brms_mmrm_formula"` class to wrap around the model formula. The class ensures that formulas passed to the model were created by `brms_formula()`, and the attributes store the user's choice of fixed effects.
 * Create a special `"brms_mmrm_model"` class for fitted model objects. The class ensures that fitted models were created by `brms_model()`, and the attributes store the `"brms_mmrm_formula"` object in a way that `brms` itself cannot modify.
 * Deprecate `use_subgroup` in `brm_marginal_draws()`. The subgroup is now always part of the reference grid when declared in `brm_data()`. To marginalize over subgroup, declare it in `covariates` instead.
+* Prevent overplotting multiple subgroups in `brm_plot_compare()`.
+* Update the subgroup vignette to reflect all the changes above.
 
 # brms.mmrm 0.1.0
 

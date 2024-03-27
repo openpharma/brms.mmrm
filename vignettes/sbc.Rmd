@@ -50,10 +50,16 @@ brms.mmrm::brm_formula(
   data = outline,
   intercept = FALSE,
   baseline = FALSE,
-  group = TRUE,
-  time = TRUE,
+  baseline_subgroup = FALSE,
+  baseline_subgroup_time = FALSE,
   baseline_time = FALSE,
-  group_time = FALSE,
+  group = TRUE,
+  group_subgroup = FALSE,
+  group_subgroup_time = FALSE,
+  group_time = TRUE,
+  subgroup = FALSE,
+  subgroup_time = FALSE,
+  time = TRUE,
   correlation = "unstructured"
 )
 ```
