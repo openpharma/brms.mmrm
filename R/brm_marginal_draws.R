@@ -26,7 +26,7 @@
 #'   * `difference_subgroup`: subgroup differences: the `difference_group`
 #'     at each subgroup level minus the `difference_group` at the subgroup
 #'     reference level (`reference_subgroup`).
-#' @param model Fitted `brms` model object from [brm_model()].
+#' @param model A fitted model object from [brm_model()].
 #' @param data Classed tibble with preprocessed data from [brm_data()].
 #' @param use_subgroup Logical of length 1, whether to summarize the draws by
 #'   each subgroup level. If `TRUE`, subgroup-specific marginals are given.
@@ -85,6 +85,7 @@ brm_marginal_draws <- function(
       "Set the reference_time argument of brm_data() instead."
     )
   }
+  brm_model_validate(model)
   brm_data_validate(data)
   role <- attr(data, "brm_role")
   base <- attr(data, "brm_base")

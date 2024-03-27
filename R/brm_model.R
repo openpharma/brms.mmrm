@@ -75,10 +75,31 @@ brm_model <- function(
     inherits(prior %|||% brms::prior("normal(0, 1)"), "brmsprior"),
     message = "prior arg must be a \"brmsprior\" object or NULL."
   )
-  brms::brm(
+  model <- brms::brm(
     data = data[!is.na(data[[attr(data, "brm_outcome")]]), ],
     formula = formula,
     prior = prior,
     ...
   )
+  model <- brm_model_new(model, formula)
+  brm_model_validate(model)
+  model
+}
+
+brm_model_new <- function(model, formula) {
+  structure(
+    model,
+    class = unique(c("brms_mmrm_model", class(model))),
+    brm_formula = formula
+  )
+}
+
+brm_model_validate <- function(model) {
+  assert(
+    model,
+    inherits(., "brms_mmrm_model"),
+    inherits(., "brmsfit"),
+    message = "please use brm_model() to fit the model"
+  )
+  brm_formula_validate(attr(model, "brm_formula"))
 }

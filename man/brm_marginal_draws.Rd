@@ -13,7 +13,7 @@ brm_marginal_draws(
 )
 }
 \arguments{
-\item{model}{Fitted \code{brms} model object from \code{\link[=brm_model]{brm_model()}}.}
+\item{model}{A fitted model object from \code{\link[=brm_model]{brm_model()}}.}
 
 \item{data}{Classed tibble with preprocessed data from \code{\link[=brm_data]{brm_data()}}.}
 
