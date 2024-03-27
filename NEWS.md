@@ -2,6 +2,8 @@
 
 ## Guardrails to ensure the appropriateness of marginal mean estimation
 
+* Change class name `"brm_data"` to `"brms_mmrm_data"` to align with other class names.
+
 # brms.mmrm 0.1.0
 
 * Deprecate `brm_simulate()` in favor of `brm_simulate_simple()` (#3). The latter has a more specific name to disambiguate it from other simulation functions, and its parameterization conforms to the one in the methods vignette.
