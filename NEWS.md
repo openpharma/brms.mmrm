@@ -3,6 +3,7 @@
 ## Guardrails to ensure the appropriateness of marginal mean estimation
 
 * Change class name `"brm_data"` to `"brms_mmrm_data"` to align with other class names.
+* Create a special `"brms_mmrm_formula"` class to wrap around the model formula. The class ensures that formulas passed to the model were created by `brms_formula()`, and the attributes store the user's choice of fixed effects.
 
 # brms.mmrm 0.1.0
 

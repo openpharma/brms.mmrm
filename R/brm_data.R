@@ -214,7 +214,7 @@ brm_data_validate <- function(data) {
   assert(is.data.frame(data), message = "data must be a data frame")
   assert(
     inherits(data, "brms_mmrm_data"),
-    message = "data not from brm_data()"
+    message = "please use brm_data() to preprocess your data"
   )
   assert_chr(outcome, "outcome of data must be a nonempty character string")
   assert_chr(role, "role of data must be a nonempty character string")

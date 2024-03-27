@@ -70,10 +70,7 @@ brm_model <- function(
   ...
 ) {
   brm_data_validate(data = data)
-  assert(
-    inherits(formula, "brmsformula"),
-    message = "formula arg must be a \"brmsformula\" object."
-  )
+  brm_formula_validate(formula)
   assert(
     inherits(prior %|||% brms::prior("normal(0, 1)"), "brmsprior"),
     message = "prior arg must be a \"brmsprior\" object or NULL."
