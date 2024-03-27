@@ -25,7 +25,7 @@ test_that("brm_data() response", {
     reference_time = "time 1",
     missing = "col_missing"
   )
-  expect_s3_class(out, "brm_data")
+  expect_s3_class(out, "brms_mmrm_data")
   expect_true(tibble::is_tibble(out))
   expect_silent(brm_data_validate(out))
   expect_true(all(is.na(out$col_response[c(2L, 3L)])))
@@ -133,7 +133,7 @@ test_that("brm_data() response with subgroup", {
     reference_time = "time 1",
     missing = "col_missing"
   )
-  expect_s3_class(out, "brm_data")
+  expect_s3_class(out, "brms_mmrm_data")
   expect_true(tibble::is_tibble(out))
   expect_silent(brm_data_validate(out))
   slice_filled <- dplyr::arrange(out[is.na(out$col_response), ], col_time)
@@ -249,7 +249,7 @@ test_that("brm_data() change", {
     covariates = character(0L),
     reference_group = "group 1"
   )
-  expect_s3_class(out, "brm_data")
+  expect_s3_class(out, "brms_mmrm_data")
   expect_true(tibble::is_tibble(out))
   expect_silent(brm_data_validate(out))
   expect_true(all(is.na(out$col_response[c(2L, 3L)])))

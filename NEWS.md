@@ -1,6 +1,6 @@
 # brms.mmrm 0.1.0.9000 (development)
 
-
+## Guardrails to ensure the appropriateness of marginal mean estimation
 
 # brms.mmrm 0.1.0
 
