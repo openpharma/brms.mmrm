@@ -7,7 +7,7 @@
 brm_marginal_draws(
   model,
   data,
-  use_subgroup = !is.null(attr(data, "brm_subgroup")),
+  use_subgroup = NULL,
   control = NULL,
   baseline = NULL
 )
@@ -17,9 +17,10 @@ brm_marginal_draws(
 
 \item{data}{Classed tibble with preprocessed data from \code{\link[=brm_data]{brm_data()}}.}
 
-\item{use_subgroup}{Logical of length 1, whether to summarize the draws by
-each subgroup level. If \code{TRUE}, subgroup-specific marginals are given.
-Otherwise, the subgroup is marginalized out.}
+\item{use_subgroup}{Deprecated. No longer used. \code{\link[=brm_marginal_draws]{brm_marginal_draws()}}
+no longer marginalizes over the subgroup declared
+in \code{\link[=brm_data]{brm_data()}}. To marginalize over the subgroup, declare
+that variable in \code{covariates} instead.}
 
 \item{control}{Deprecated. Set the control group level in \code{\link[=brm_data]{brm_data()}}.}
 

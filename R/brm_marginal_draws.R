@@ -28,9 +28,10 @@
 #'     reference level (`reference_subgroup`).
 #' @param model A fitted model object from [brm_model()].
 #' @param data Classed tibble with preprocessed data from [brm_data()].
-#' @param use_subgroup Logical of length 1, whether to summarize the draws by
-#'   each subgroup level. If `TRUE`, subgroup-specific marginals are given.
-#'   Otherwise, the subgroup is marginalized out.
+#' @param use_subgroup Deprecated. No longer used. [brm_marginal_draws()]
+#'   no longer marginalizes over the subgroup declared
+#'   in [brm_data()]. To marginalize over the subgroup, declare
+#'   that variable in `covariates` instead.
 #' @param control Deprecated. Set the control group level in [brm_data()].
 #' @param baseline Deprecated. Set the control group level in [brm_data()].
 #' @examples
@@ -69,10 +70,18 @@
 brm_marginal_draws <- function(
   model,
   data,
-  use_subgroup = !is.null(attr(data, "brm_subgroup")),
+  use_subgroup = NULL,
   control = NULL,
   baseline = NULL
 ) {
+  if (!is.null(use_subgroup)) {
+    brm_deprecate(
+      "The use_subgroup argument is deprectaed. brm_marginal_draws()",
+      "no longer marginalizes over the subgroup declared in brm_data().",
+      "To marginalize over the subgroup, declare that variable",
+      "in 'covariates' instead."
+    )
+  }
   if (!is.null(control)) {
     brm_deprecate(
       "The control argument was deprecated on 2023-09-07. ",
@@ -100,25 +109,15 @@ brm_marginal_draws <- function(
   reference_group <- attr(data, "brm_reference_group")
   reference_subgroup <- attr(data, "brm_reference_subgroup")
   reference_time <- attr(data, "brm_reference_time")
-  assert_lgl(use_subgroup, message = "use_subgroup must be TRUE or FALSE.")
-  if (use_subgroup) {
-    assert_chr(
-      subgroup,
-      message = "use_subgroup is TRUE but subgroup not found"
-    )
-    assert_chr_vec(
-      levels_subgroup,
-      message = "use_subgroup is TRUE but levels_subgroup not found"
-    )
-  }
+  has_subgroup <- !is.null(subgroup)
   nuisance <- c(
     base,
     patient,
     covariates,
-    if_any(use_subgroup, NULL, subgroup)
+    if_any(has_subgroup, NULL, subgroup)
   )
   specs <- if_any(
-    use_subgroup,
+    has_subgroup,
     as.formula(sprintf("~%s:%s:%s", group, subgroup, time)),
     as.formula(sprintf("~%s:%s", group, time))
   )
@@ -142,7 +141,7 @@ brm_marginal_draws <- function(
     )
   )
   if (identical(role, "response")) {
-    if (use_subgroup) {
+    if (has_subgroup) {
       draws_difference_time <- subtract_reference_time_subroup(
         draws = draws_response,
         levels_group = levels_group,
@@ -179,7 +178,7 @@ brm_marginal_draws <- function(
       )
     }
   } else { # role is "change"
-    if (use_subgroup) {
+    if (has_subgroup) {
       draws_difference_group <- subtract_reference_group_subgroup(
         draws = draws_response,
         levels_group = levels_group,
@@ -205,7 +204,7 @@ brm_marginal_draws <- function(
   }
   draws_sigma <- get_draws_sigma(model = model, time = time)
   draws_effect <- if_any(
-    use_subgroup,
+    has_subgroup,
     get_draws_effect_subgroup(
       draws_difference_group = draws_difference_group,
       draws_sigma = draws_sigma,
@@ -226,7 +225,7 @@ brm_marginal_draws <- function(
     out$difference_time <- draws_difference_time
   }
   out$difference_group <- draws_difference_group
-  if (use_subgroup) {
+  if (has_subgroup) {
     out$difference_subgroup <- draws_difference_subgroup
   }
   out$effect <- draws_effect
