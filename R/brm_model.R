@@ -99,7 +99,11 @@ brm_model_validate <- function(model) {
     model,
     inherits(., "brms_mmrm_model"),
     inherits(., "brmsfit"),
-    message = "please use brm_model() to fit the model"
+    message = paste(
+      "Please use brms.mmrm::brm_model() to fit the model.",
+      "Otherwise, functions like brm_marginal_draws()",
+      "in brms.mmrm may not be statistically valid."
+    )
   )
   brm_formula_validate(attr(model, "brm_formula"))
 }
