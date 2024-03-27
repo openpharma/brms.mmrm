@@ -1,7 +1,7 @@
 ---
 title: "Subgroup analysis"
-bibliography: '/Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/library/brms.mmrm/bibliography.bib'
-csl: '/Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/library/brms.mmrm/asa.csl'
+bibliography: '`r system.file("bibliography.bib", package = "brms.mmrm")`'
+csl: '`r system.file("asa.csl", package = "brms.mmrm")`'
 output:
   rmarkdown::html_vignette:
     toc: true
