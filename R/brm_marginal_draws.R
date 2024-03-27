@@ -4,8 +4,9 @@
 #' @description Get marginal posterior draws from a fitted MMRM.
 #' @inheritSection brm_data Separation string
 #' @return A named list of tibbles of MCMC draws of the marginal posterior
-#'   distribution of each treatment group and time point
-#'   (or group-by-subgroup-by-time, if applicable).
+#'   distribution of each treatment group and time point. These marginals
+#'   are also subgroup-specific if [brm_formula()] included fixed effects
+#'   that use the `subgroup` variable originally declared in [brm_data()].
 #'   In each tibble, there is 1 row per posterior sample and one column for
 #'   each type of marginal distribution (i.e. each combination of treatment
 #'   group and discrete time point. The specific `tibble`s in the returned
@@ -109,7 +110,8 @@ brm_marginal_draws <- function(
   reference_group <- attr(data, "brm_reference_group")
   reference_subgroup <- attr(data, "brm_reference_subgroup")
   reference_time <- attr(data, "brm_reference_time")
-  has_subgroup <- !is.null(subgroup)
+  formula <- attr(model, "brm_formula")
+  has_subgroup <- brm_formula_has_subgroup(formula)
   nuisance <- c(
     base,
     patient,

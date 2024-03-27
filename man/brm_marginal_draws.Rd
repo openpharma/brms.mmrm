@@ -28,8 +28,9 @@ that variable in \code{covariates} instead.}
 }
 \value{
 A named list of tibbles of MCMC draws of the marginal posterior
-distribution of each treatment group and time point
-(or group-by-subgroup-by-time, if applicable).
+distribution of each treatment group and time point. These marginals
+are also subgroup-specific if \code{\link[=brm_formula]{brm_formula()}} included fixed effects
+that use the \code{subgroup} variable originally declared in \code{\link[=brm_data]{brm_data()}}.
 In each tibble, there is 1 row per posterior sample and one column for
 each type of marginal distribution (i.e. each combination of treatment
 group and discrete time point. The specific \code{tibble}s in the returned

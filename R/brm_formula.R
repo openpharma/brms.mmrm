@@ -329,6 +329,18 @@ brm_formula_validate <- function(formula) {
   )
 }
 
+brm_formula_has_subgroup <- function(formula) {
+  attributes <- c(
+    "brm_baseline_subgroup",
+    "brm_baseline_subgroup_time",
+    "brm_group_subgroup",
+    "brm_group_subgroup_time",
+    "brm_subgroup",
+    "brm_subgroup_time"
+  )
+  any(as.logical(lapply(attributes, attr, x = formula)))
+}
+
 term <- function(labels, condition) {
   if_any(condition, paste0(labels, collapse = ":"), character(0L))
 }
