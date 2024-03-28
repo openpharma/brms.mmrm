@@ -139,7 +139,7 @@ brm_data <- function(
     brm_reference_subgroup = reference_subgroup,
     brm_reference_time = reference_time
   )
-  brm_data_validate_lite(data = out)
+  brm_data_validate(data = out)
   out <- brm_data_preprocess(out)
   brm_data_assert_filled(data = out)
   out
