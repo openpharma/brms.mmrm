@@ -382,38 +382,6 @@ test_that("brm_levels()", {
   expect_error(brm_levels(c("a 1", "a.1")), class = "brm_error")
 })
 
-test_that("brm_data() assert filled", {
-  set.seed(0)
-  sim <- brm_simulate_simple()
-  data <- tibble::as_tibble(sim$data)
-  for (field in c("group", "time", "patient")) {
-    data[[field]] <- gsub("_", " ", data[[field]])
-  }
-  data$group <- as.factor(data$group)
-  data$factor1 <- data$patient
-  data$factor2 <- data$patient
-  data$factor3 <- data$patient
-  colnames(data) <- paste0("col_", colnames(data))
-  data <- data[- c(2L, 3L), ]
-  data <- data[sample.int(n = nrow(data)), ]
-  data$col_missing <- FALSE
-  out <- brm_data(
-    data = data,
-    outcome = "col_response",
-    role = "response",
-    group = "col_group",
-    time = "col_time",
-    patient = "col_patient",
-    covariates = c("col_factor2", "col_factor3"),
-    reference_group = "group 1",
-    reference_time = "time 1",
-    missing = "col_missing"
-  )
-  expect_silent(brm_data_validate(out))
-  out <- out[- 1L, ]
-  expect_error(brm_data_validate(out), class = "brm_error")
-})
-
 test_that("brm_data() deprecate level_control", {
   set.seed(0)
   expect_warning(

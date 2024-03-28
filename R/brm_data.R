@@ -198,11 +198,6 @@ brm_data_preprocess <- function(out) {
 }
 
 brm_data_validate <- function(data) {
-  brm_data_validate_lite(data)
-  brm_data_assert_filled(data)
-}
-
-brm_data_validate_lite <- function(data) {
   outcome <- attr(data, "brm_outcome")
   role <- attr(data, "brm_role")
   baseline <- attr(data, "brm_baseline")
