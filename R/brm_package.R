@@ -32,7 +32,7 @@
 #' @importFrom posterior as_draws_df mcse_mean mcse_median mcse_quantile
 #'   mcse_sd
 #' @importFrom purrr map_dbl map_df map2_df
-#' @importFrom rlang warn
+#' @importFrom rlang is_formula warn
 #' @importFrom stats as.formula median model.matrix rbinom rnorm runif sd
 #' @importFrom tibble tibble
 #' @importFrom tidyr expand_grid pivot_longer pivot_wider

@@ -164,7 +164,7 @@ brm_data_new <- function(
   brm_labels_subgroup = NULL,
   brm_labels_time = NULL
 ) {
-  out <- tibble::new_tibble(x = data, class = "brm_data")
+  out <- tibble::new_tibble(x = data, class = "brms_mmrm_data")
   structure(
     out,
     brm_outcome = brm_outcome,
@@ -212,7 +212,10 @@ brm_data_validate <- function(data) {
   reference_subgroup <- attr(data, "brm_reference_subgroup")
   reference_time <- attr(data, "brm_reference_time")
   assert(is.data.frame(data), message = "data must be a data frame")
-  assert(inherits(data, "brm_data"), message = "data not from brm_data()")
+  assert(
+    inherits(data, "brms_mmrm_data"),
+    message = "please use brm_data() to preprocess your data"
+  )
   assert_chr(outcome, "outcome of data must be a nonempty character string")
   assert_chr(role, "role of data must be a nonempty character string")
   assert_chr(
@@ -360,8 +363,7 @@ brm_data_select <- function(data) {
     attr(data, "brm_patient"),
     attr(data, "brm_covariates")
   )
-  columns <- as.character(columns)
-  data[, columns, drop = FALSE]
+  data[, as.character(unique(columns)), drop = FALSE]
 }
 
 brm_data_level <- function(data) {

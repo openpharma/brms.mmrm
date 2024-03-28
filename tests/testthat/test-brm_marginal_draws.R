@@ -142,11 +142,15 @@ test_that("brm_marginal_draws() on response, with subgroup", {
     )
   )
   old_sep <- emmeans::get_emm_option("sep")
-  out <- brm_marginal_draws(
-    model = model,
-    data = data,
-    use_subgroup = TRUE
+  expect_warning(
+    brm_marginal_draws(
+      model = model,
+      data = data,
+      use_subgroup = TRUE
+    ),
+    class = "brm_deprecate"
   )
+  out <- brm_marginal_draws(model = model, data = data)
   expect_equal(emmeans::get_emm_option("sep"), old_sep)
   fields <- c(
     "response",

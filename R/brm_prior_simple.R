@@ -48,10 +48,7 @@ brm_prior_simple <- function(
   correlation = "lkj(1)"
 ) {
   brm_data_validate(data = data)
-  assert(
-    inherits(formula, "brmsformula"),
-    message = "formula arg must be a \"brmsformula\" object."
-  )
+  brm_formula_validate(formula)
   assert_chr(
     intercept,
     message = "'intercept' must be a valid character string"

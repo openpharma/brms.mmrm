@@ -7,6 +7,8 @@
 #'   and/or datasets side-by-side. The `compare` argument selects the primary
 #'   comparison of interest, and arguments `axis` and `facet` control
 #'   the arrangement of various other components of the plot.
+#'   The subgroup variable is automatically included if and only if
+#'   all the supplied marginal summaries have a subgroup column.
 #' @return A `ggplot` object.
 #' @param ... Named `tibble`s of marginals posterior summaries
 #'   from [brm_marginal_summaries()] and/or [brm_marginal_data()].
@@ -21,7 +23,7 @@
 #'   `"source"` (the source of the marginal summaries,
 #'   e.g. a model or dataset), `"time"` or `"group"`
 #'   (in the non-subgroup case). Can also be `"subgroup"`
-#'   if the marginal summaries are subgroup-specific.
+#'   if all the marginal summaries are subgroup-specific.
 #'   The value must not be in `axis` or `facet`.
 #' @param axis Character of length 1 identifying the quantity to put
 #'   on the horizontal axis. Must be be one of `"source"`
@@ -35,8 +37,8 @@
 #'   (the source of the marginal summaries,
 #'   e.g. a model or dataset), `"time"`, `"group"`,
 #'   or `"subgroup"`, and `c(axis, facet)` must all have unique elements.
-#'   `"subgroup"` is automatically removed if the marginals have no
-#'   subgroup. If `facet` has length 1, then faceting is wrapped.
+#'   `"subgroup"` is automatically removed if not all the marginal summaries
+#'   have a subgroup column. If `facet` has length 1, then faceting is wrapped.
 #'   If `facet` has length 2, then faceting is in a grid,
 #'   and the first element is horizontal facet.
 #' @examples
@@ -91,8 +93,8 @@ brm_plot_compare <- function(
   axis = "time",
   facet = c("group", "subgroup")
 ) {
-  data <- list(...)
-  assert_chr_vec(names(data), message = "arguments must be named.")
+  data_list <- list(...)
+  assert_chr_vec(names(data_list), message = "arguments must be named.")
   assert_chr(compare, "'compare' must be a single nonempty character string")
   assert_chr(axis, "'axis' must be a single nonempty character string")
   assert_chr_vec(
@@ -117,17 +119,36 @@ brm_plot_compare <- function(
   assert_chr(marginal, "marginal arg must be a nonempty character string.")
   marginal <- if_any(marginal == "change", "difference_time", marginal)
   marginal <- if_any(marginal == "difference", "difference_group", marginal)
-  for (name in names(data)) {
+  for (name in names(data_list)) {
     assert(
-      tibble::is_tibble(data[[name]]),
+      tibble::is_tibble(data_list[[name]]),
       message = sprintf("'%s' is not a tibble", name)
     )
-    data[[name]] <- data_compare_clean(data[[name]], marginal = marginal)
+    data_list[[name]] <- data_compare_clean(
+      data_list[[name]],
+      marginal = marginal
+    )
   }
-  data <- dplyr::bind_rows(data, .id = "source")
-  use_subgroup <- "subgroup" %in% colnames(data)
+  data <- dplyr::bind_rows(data_list, .id = "source")
+  use_subgroup <- "subgroup" %in% colnames(data) &&
+    !anyNA(data$subgroup)
   if (!use_subgroup) {
     facet <- setdiff(facet, "subgroup")
+    for (name in names(data_list)) {
+      assert(
+        !("subgroup" %in% colnames(data_list[[name]])) ||
+          length(unique(data_list[[name]]$subgroup)) == 1L,
+        message = paste(
+          "brm_plot_compare() is omitting the subgroup variable because",
+          "not all marginal summaries have it,",
+          "but marginal summaries",
+          shQuote(name),
+          "have more than one subgroup level. Please either filter",
+          "on a single subgroup level or make sure all supplied marginal",
+          "summaries are subgroup-specific."
+        )
+      )
+    }
   }
   assert(
     length(facet) %in% 1L + use_subgroup,

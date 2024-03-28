@@ -238,9 +238,107 @@ brm_formula <- function(
     term_correlation(correlation, name_time, name_patient)
   )
   right <- paste(terms, collapse = " + ")
-  formula <- stats::as.formula(paste(name_outcome, "~", right))
+  formula_fixed <- stats::as.formula(paste(name_outcome, "~", right))
   formula_sigma <- stats::as.formula(paste("sigma ~ 0 +", name_time))
-  brms::brmsformula(formula = formula, formula_sigma)
+  brms_formula <- brms::brmsformula(formula = formula_fixed, formula_sigma)
+  formula <- brm_formula_new(
+    formula = brms_formula,
+    brm_intercept = intercept,
+    brm_baseline = baseline,
+    brm_baseline_subgroup = baseline_subgroup,
+    brm_baseline_subgroup_time = baseline_subgroup_time,
+    brm_baseline_time = baseline_time,
+    brm_group = group,
+    brm_group_subgroup = group_subgroup,
+    brm_group_subgroup_time = group_subgroup_time,
+    brm_group_time = group_time,
+    brm_subgroup = subgroup,
+    brm_subgroup_time = subgroup_time,
+    brm_time = time,
+    brm_correlation = correlation
+  )
+  brm_formula_validate(formula)
+  formula
+}
+
+brm_formula_new <- function(
+  formula,
+  brm_intercept,
+  brm_baseline,
+  brm_baseline_subgroup,
+  brm_baseline_subgroup_time,
+  brm_baseline_time,
+  brm_group,
+  brm_group_subgroup,
+  brm_group_subgroup_time,
+  brm_group_time,
+  brm_subgroup,
+  brm_subgroup_time,
+  brm_time,
+  brm_correlation
+) {
+  structure(
+    formula,
+    class = unique(c("brms_mmrm_formula", class(formula))),
+    brm_intercept = brm_intercept,
+    brm_baseline = brm_baseline,
+    brm_baseline_subgroup = brm_baseline_subgroup,
+    brm_baseline_subgroup_time = brm_baseline_subgroup_time,
+    brm_baseline_time = brm_baseline_time,
+    brm_group = brm_group,
+    brm_group_subgroup = brm_group_subgroup,
+    brm_group_subgroup_time = brm_group_subgroup_time,
+    brm_group_time = brm_group_time,
+    brm_subgroup = brm_subgroup,
+    brm_subgroup_time = brm_subgroup_time,
+    brm_time = brm_time,
+    brm_correlation = brm_correlation
+  )
+}
+
+brm_formula_validate <- function(formula) {
+  assert(
+    formula,
+    inherits(., "brms_mmrm_formula"),
+    inherits(., "brmsformula"),
+    message = "please use brm_formula() to create the model formula"
+  )
+  attributes <- c(
+    "brm_intercept",
+    "brm_baseline",
+    "brm_baseline_subgroup",
+    "brm_baseline_subgroup_time",
+    "brm_baseline_time",
+    "brm_group",
+    "brm_group_subgroup",
+    "brm_group_subgroup_time",
+    "brm_group_time",
+    "brm_subgroup",
+    "brm_subgroup_time",
+    "brm_time"
+  )
+  for (attribute in attributes) {
+    assert_lgl(
+      attr(formula, attribute),
+      message = paste(attribute, "attribute must be TRUE or FALSE in formula")
+    )
+  }
+  assert(
+    identical(as.character(attr(formula, "brm_correlation")), "unstructured"),
+    message = "brm_correlation attribute must be \"unstructured\""
+  )
+}
+
+brm_formula_has_subgroup <- function(formula) {
+  attributes <- c(
+    "brm_baseline_subgroup",
+    "brm_baseline_subgroup_time",
+    "brm_group_subgroup",
+    "brm_group_subgroup_time",
+    "brm_subgroup",
+    "brm_subgroup_time"
+  )
+  any(as.logical(lapply(attributes, attr, x = formula)))
 }
 
 term <- function(labels, condition) {
