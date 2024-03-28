@@ -139,8 +139,10 @@ brm_data <- function(
     brm_reference_subgroup = reference_subgroup,
     brm_reference_time = reference_time
   )
-  brm_data_validate(data = out)
-  brm_data_preprocess(out)
+  brm_data_validate_lite(data = out)
+  out <- brm_data_preprocess(out)
+  brm_data_assert_filled(data = out)
+  out
 }
 
 brm_data_new <- function(
@@ -196,6 +198,11 @@ brm_data_preprocess <- function(out) {
 }
 
 brm_data_validate <- function(data) {
+  brm_data_validate_lite(data)
+  brm_data_assert_filled(data)
+}
+
+brm_data_validate_lite <- function(data) {
   outcome <- attr(data, "brm_outcome")
   role <- attr(data, "brm_role")
   baseline <- attr(data, "brm_baseline")
@@ -352,6 +359,31 @@ brm_data_validate <- function(data) {
   }
 }
 
+brm_data_assert_filled <- function(data) {
+  patient <- attr(data, "brm_patient")
+  time <- attr(data, "brm_time")
+  args <- list(.data = data, as.symbol(patient), as.symbol(time))
+  arranged <- do.call(what = dplyr::arrange, args = args)
+  args$.data <- do.call(
+    tidyr::expand_grid,
+    args = lapply(data[, c(patient, time)], unique)
+  )
+  expanded <- do.call(what = dplyr::arrange, args = args)
+  is_filled <- nrow(arranged) == nrow(expanded) &&
+    all(arranged[[patient]] == expanded[[patient]]) &&
+    all(arranged[[time]] == expanded[[time]])
+  assert(
+    is_filled,
+    message = paste(
+      "The dataset is not fully expanded. Your data should have one and only",
+      "one unique row for each combination of patient ID and discrete time",
+      "point, even if this creates rows with missing response values.",
+      "Please use brm_data() to expand the dataset, and do not add or",
+      "remove rows when supplying it to other functions in {brms.mmrm}."
+    )
+  )
+}
+
 brm_data_select <- function(data) {
   columns <- c(
     attr(data, "brm_outcome"),
@@ -363,8 +395,7 @@ brm_data_select <- function(data) {
     attr(data, "brm_patient"),
     attr(data, "brm_covariates")
   )
-  columns <- as.character(columns)
-  data[, columns, drop = FALSE]
+  data[, as.character(unique(columns)), drop = FALSE]
 }
 
 brm_data_level <- function(data) {
