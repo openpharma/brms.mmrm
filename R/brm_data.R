@@ -140,9 +140,7 @@ brm_data <- function(
     brm_reference_time = reference_time
   )
   brm_data_validate(data = out)
-  out <- brm_data_preprocess(out)
-  brm_data_assert_filled(data = out)
-  out
+  brm_data_preprocess(out)
 }
 
 brm_data_new <- function(
@@ -352,31 +350,6 @@ brm_data_validate <- function(data) {
       message = "reference_time should be NULL if role is \"change\"."
     )
   }
-}
-
-brm_data_assert_filled <- function(data) {
-  patient <- attr(data, "brm_patient")
-  time <- attr(data, "brm_time")
-  args <- list(.data = data, as.symbol(patient), as.symbol(time))
-  arranged <- do.call(what = dplyr::arrange, args = args)
-  args$.data <- do.call(
-    tidyr::expand_grid,
-    args = lapply(data[, c(patient, time)], unique)
-  )
-  expanded <- do.call(what = dplyr::arrange, args = args)
-  is_filled <- nrow(arranged) == nrow(expanded) &&
-    all(arranged[[patient]] == expanded[[patient]]) &&
-    all(arranged[[time]] == expanded[[time]])
-  assert(
-    is_filled,
-    message = paste(
-      "The dataset is not fully expanded. Your data should have one and only",
-      "one unique row for each combination of patient ID and discrete time",
-      "point, even if this creates rows with missing response values.",
-      "Please use brm_data() to expand the dataset, and do not add or",
-      "remove rows when supplying it to other functions in {brms.mmrm}."
-    )
-  )
 }
 
 brm_data_select <- function(data) {
