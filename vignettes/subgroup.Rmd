@@ -1,7 +1,7 @@
 ---
 title: "Subgroup analysis"
-bibliography: '/Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/library/brms.mmrm/bibliography.bib'
-csl: '/Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/library/brms.mmrm/asa.csl'
+bibliography: '`r system.file("bibliography.bib", package = "brms.mmrm")`'
+csl: '`r system.file("asa.csl", package = "brms.mmrm")`'
 output:
   rmarkdown::html_vignette:
     toc: true
@@ -456,7 +456,7 @@ loo::loo_compare(loo_subgroup, loo_reduced)
 brm_plot_draws(draws_subgroup$difference_group)
 ```
 
-![plot of chunk draws](subgroup/draws-1.png)
+![](subgroup/draws-1.png)
 
 You can adjust visual aesthetics to compare subgroup levels side by side if subgroup level is the primary comparison of interest.
 
@@ -469,7 +469,7 @@ brm_plot_draws(
 )
 ```
 
-![plot of chunk drawscustom](subgroup/drawscustom-1.png)
+![](subgroup/drawscustom-1.png)
 
 The following function call compares the subgroup model results against the subgroup data.
 
@@ -482,7 +482,7 @@ brm_plot_compare(
 )
 ```
 
-![plot of chunk subgroup-vs-data](subgroup/subgroup-vs-data-1.png)
+![](subgroup/subgroup-vs-data-1.png)
 
 You can adjust plot aesthetics to view subgroup levels side by side as the primary comparison of interest.
 
@@ -498,7 +498,7 @@ brm_plot_compare(
 )
 ```
 
-![plot of chunk subgroup-vs-data-levels](subgroup/subgroup-vs-data-levels-1.png)
+![](subgroup/subgroup-vs-data-levels-1.png)
 
 We can also visually compare the treatment effects of a subgroup level against the marginal treatment effects of the reduced model.
 
@@ -511,7 +511,7 @@ brm_plot_compare(
 )
 ```
 
-![plot of chunk reduced-model-comparison](subgroup/reduced-model-comparison-1.png)
+![](subgroup/reduced-model-comparison-1.png)
 
 Please remember to filter on a single subgroup level. Otherwise, `brm_plot_compare()` throws an informative error to prevent overplotting.
 
