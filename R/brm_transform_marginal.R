@@ -72,7 +72,9 @@ transform_marginal_grid <- function(data) {
   args <- lapply(c("brm_group", "brm_subgroup", "brm_time"), attr, x = data)
   args <- lapply(unlist(args), as.symbol)
   args$.data <- data
-  do.call(what = dplyr::distinct, args = args)
+  grid <- do.call(what = dplyr::distinct, args = args)
+  args$.data <- grid
+  do.call(what = dplyr::arrange, args = args)
 }
 
 transform_marginal_continuous <- function(data) {
