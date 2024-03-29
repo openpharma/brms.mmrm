@@ -113,7 +113,6 @@ brm_marginal_draws <- function(
   reference_group <- attr(data, "brm_reference_group")
   reference_subgroup <- attr(data, "brm_reference_subgroup")
   reference_time <- attr(data, "brm_reference_time")
-  formula <- attr(model, "brm_formula")
   has_subgroup <- brm_formula_has_subgroup(formula)
   nuisance <- c(
     base,
