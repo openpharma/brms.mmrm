@@ -69,8 +69,8 @@
 #' brm_marginal_draws(model = model, data = data)
 #' }
 brm_marginal_draws <- function(
-  model,
   data,
+  model,
   use_subgroup = NULL,
   control = NULL,
   baseline = NULL
@@ -96,6 +96,7 @@ brm_marginal_draws <- function(
     )
   }
   brm_model_validate(model)
+  brm_formula_validate(formula)
   brm_data_validate(data)
   role <- attr(data, "brm_role")
   base <- attr(data, "brm_base")

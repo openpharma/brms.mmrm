@@ -5,17 +5,17 @@
 \title{MCMC draws from the marginal posterior of an MMRM}
 \usage{
 brm_marginal_draws(
-  model,
   data,
+  model,
   use_subgroup = NULL,
   control = NULL,
   baseline = NULL
 )
 }
 \arguments{
-\item{model}{A fitted model object from \code{\link[=brm_model]{brm_model()}}.}
-
 \item{data}{Classed tibble with preprocessed data from \code{\link[=brm_data]{brm_data()}}.}
+
+\item{model}{A fitted model object from \code{\link[=brm_model]{brm_model()}}.}
 
 \item{use_subgroup}{Deprecated. No longer used. \code{\link[=brm_marginal_draws]{brm_marginal_draws()}}
 no longer marginalizes over the subgroup declared

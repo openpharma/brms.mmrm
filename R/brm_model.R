@@ -90,7 +90,6 @@ brm_model_new <- function(model, formula) {
   structure(
     model,
     class = unique(c("brms_mmrm_model", class(model))),
-    brm_formula = formula
   )
 }
 
@@ -105,5 +104,4 @@ brm_model_validate <- function(model) {
       "in brms.mmrm may not be statistically valid."
     )
   )
-  brm_formula_validate(attr(model, "brm_formula"))
 }
