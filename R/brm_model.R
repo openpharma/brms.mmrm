@@ -89,7 +89,7 @@ brm_model <- function(
 brm_model_new <- function(model, formula) {
   structure(
     model,
-    class = unique(c("brms_mmrm_model", class(model))),
+    class = unique(c("brms_mmrm_model", class(model)))
   )
 }
 
