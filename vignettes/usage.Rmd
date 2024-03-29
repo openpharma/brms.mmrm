@@ -313,59 +313,59 @@ model
 #> 
 #> Correlation Structures:
 #>                        Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS
-#> cortime(time_1,time_2)     0.42      0.05     0.33     0.51 1.00     3516
-#> cortime(time_1,time_3)    -0.80      0.02    -0.84    -0.76 1.00     2361
-#> cortime(time_2,time_3)    -0.54      0.04    -0.62    -0.46 1.00     3653
-#> cortime(time_1,time_4)    -0.29      0.05    -0.39    -0.18 1.00     3964
-#> cortime(time_2,time_4)     0.03      0.06    -0.09     0.14 1.00     3444
-#> cortime(time_3,time_4)    -0.10      0.06    -0.21     0.01 1.00     3847
+#> cortime(time_1,time_2)     0.42      0.05     0.33     0.51 1.00     3325
+#> cortime(time_1,time_3)    -0.80      0.02    -0.84    -0.76 1.00     2161
+#> cortime(time_2,time_3)    -0.54      0.04    -0.62    -0.46 1.00     3218
+#> cortime(time_1,time_4)    -0.29      0.05    -0.39    -0.18 1.00     4082
+#> cortime(time_2,time_4)     0.03      0.06    -0.09     0.14 1.00     3227
+#> cortime(time_3,time_4)    -0.10      0.06    -0.21     0.01 1.00     3697
 #>                        Tail_ESS
-#> cortime(time_1,time_2)     3008
-#> cortime(time_1,time_3)     2594
-#> cortime(time_2,time_3)     3411
-#> cortime(time_1,time_4)     3061
-#> cortime(time_2,time_4)     3347
-#> cortime(time_3,time_4)     3221
+#> cortime(time_1,time_2)     2911
+#> cortime(time_1,time_3)     2816
+#> cortime(time_2,time_3)     3092
+#> cortime(time_1,time_4)     2939
+#> cortime(time_2,time_4)     2861
+#> cortime(time_3,time_4)     2853
 #> 
 #> Population-Level Effects: 
 #>                         Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS
-#> Intercept                   1.22      0.09     1.05     1.39 1.01     1290
-#> groupgroup_2               -1.54      0.12    -1.77    -1.30 1.01     1524
-#> groupgroup_3                0.18      0.13    -0.07     0.43 1.01     1248
-#> timetime_2                  1.31      0.10     1.12     1.51 1.00     1897
-#> timetime_3                  0.51      0.17     0.17     0.85 1.01     1597
-#> timetime_4                 -1.45      0.17    -1.78    -1.11 1.01     1393
-#> biomarker1                 -0.01      0.01    -0.03     0.01 1.00     7162
-#> biomarker2                  0.02      0.01     0.00     0.04 1.00     6102
-#> groupgroup_2:timetime_2     0.04      0.15    -0.25     0.33 1.00     2286
-#> groupgroup_3:timetime_2     0.02      0.15    -0.27     0.32 1.00     2347
-#> groupgroup_2:timetime_3    -0.16      0.24    -0.63     0.31 1.01     1733
-#> groupgroup_3:timetime_3    -0.19      0.25    -0.68     0.29 1.01     1541
-#> groupgroup_2:timetime_4    -0.06      0.25    -0.55     0.42 1.01     1623
-#> groupgroup_3:timetime_4    -0.26      0.24    -0.75     0.21 1.00     1517
-#> sigma_timetime_1           -0.12      0.04    -0.20    -0.04 1.00     2559
-#> sigma_timetime_2            0.00      0.04    -0.07     0.09 1.00     3796
-#> sigma_timetime_3           -0.05      0.04    -0.13     0.03 1.00     2346
-#> sigma_timetime_4            0.21      0.04     0.13     0.29 1.00     3982
+#> Intercept                   1.21      0.09     1.04     1.39 1.00     1319
+#> groupgroup_2               -1.53      0.12    -1.77    -1.29 1.00     1394
+#> groupgroup_3                0.19      0.13    -0.06     0.44 1.00     1386
+#> timetime_2                  1.32      0.10     1.11     1.51 1.00     1994
+#> timetime_3                  0.52      0.17     0.17     0.87 1.00     1479
+#> timetime_4                 -1.44      0.17    -1.79    -1.11 1.00     1484
+#> biomarker1                 -0.01      0.01    -0.03     0.01 1.00     6061
+#> biomarker2                  0.02      0.01     0.00     0.04 1.00     4965
+#> groupgroup_2:timetime_2     0.04      0.14    -0.24     0.32 1.00     2310
+#> groupgroup_3:timetime_2     0.02      0.14    -0.26     0.31 1.00     2186
+#> groupgroup_2:timetime_3    -0.17      0.25    -0.65     0.31 1.00     1589
+#> groupgroup_3:timetime_3    -0.21      0.25    -0.69     0.28 1.00     1596
+#> groupgroup_2:timetime_4    -0.08      0.25    -0.55     0.42 1.00     1544
+#> groupgroup_3:timetime_4    -0.27      0.25    -0.75     0.21 1.00     1609
+#> sigma_timetime_1           -0.12      0.04    -0.20    -0.04 1.00     2469
+#> sigma_timetime_2            0.01      0.04    -0.08     0.09 1.00     3347
+#> sigma_timetime_3           -0.05      0.04    -0.13     0.03 1.00     2168
+#> sigma_timetime_4            0.21      0.04     0.13     0.29 1.00     3483
 #>                         Tail_ESS
-#> Intercept                   2297
-#> groupgroup_2                2563
-#> groupgroup_3                2097
-#> timetime_2                  2360
-#> timetime_3                  2455
-#> timetime_4                  2103
-#> biomarker1                  3250
-#> biomarker2                  3060
-#> groupgroup_2:timetime_2     2991
-#> groupgroup_3:timetime_2     2986
-#> groupgroup_2:timetime_3     2596
-#> groupgroup_3:timetime_3     2367
-#> groupgroup_2:timetime_4     2689
-#> groupgroup_3:timetime_4     2562
-#> sigma_timetime_1            2658
-#> sigma_timetime_2            3159
-#> sigma_timetime_3            2891
-#> sigma_timetime_4            3364
+#> Intercept                   2071
+#> groupgroup_2                1918
+#> groupgroup_3                2158
+#> timetime_2                  2641
+#> timetime_3                  2113
+#> timetime_4                  1840
+#> biomarker1                  2949
+#> biomarker2                  2885
+#> groupgroup_2:timetime_2     2727
+#> groupgroup_3:timetime_2     2725
+#> groupgroup_2:timetime_3     2149
+#> groupgroup_3:timetime_3     2363
+#> groupgroup_2:timetime_4     2053
+#> groupgroup_3:timetime_4     2129
+#> sigma_timetime_1            2791
+#> sigma_timetime_2            3135
+#> sigma_timetime_3            2622
+#> sigma_timetime_4            2850
 #> 
 #> Draws were sampled using sampling(NUTS). For each parameter, Bulk_ESS
 #> and Tail_ESS are effective sample size measures, and Rhat is the potential
@@ -386,10 +386,115 @@ To derive posterior draws of these marginals, use the `brm_marginal_draws()` fun
 
 ```r
 draws <- brm_marginal_draws(data = data, formula = formula, model = model)
-#> Error in brm_formula_has_subgroup(formula): 'list' object cannot be coerced to type 'logical'
 
 draws
-#> Error in eval(expr, envir, enclos): object 'draws' not found
+#> $response
+#> # A draws_df: 1000 iterations, 4 chains, and 12 variables
+#>    group_1|time_1 group_2|time_1 group_3|time_1 group_1|time_2 group_2|time_2
+#> 1             1.2          -0.25            1.5            2.5           1.05
+#> 2             1.2          -0.23            1.4            2.6           1.16
+#> 3             1.2          -0.31            1.4            2.6           0.99
+#> 4             1.2          -0.32            1.4            2.6           1.12
+#> 5             1.2          -0.26            1.3            2.5           1.02
+#> 6             1.1          -0.19            1.4            2.5           1.00
+#> 7             1.1          -0.30            1.4            2.4           1.08
+#> 8             1.2          -0.33            1.5            2.6           1.01
+#> 9             1.1          -0.35            1.3            2.5           1.16
+#> 10            1.2          -0.44            1.4            2.6           0.91
+#>    group_3|time_2 group_1|time_3 group_2|time_3
+#> 1             2.7            1.8        -0.0050
+#> 2             2.8            1.7         0.0115
+#> 3             2.7            1.8         0.0939
+#> 4             2.8            1.7        -0.0090
+#> 5             2.6            1.8        -0.0371
+#> 6             2.7            1.8        -0.0146
+#> 7             2.8            1.9        -0.1218
+#> 8             2.8            1.8         0.0043
+#> 9             2.8            1.7        -0.0098
+#> 10            2.8            1.6         0.1413
+#> # ... with 3990 more draws, and 4 more variables
+#> # ... hidden reserved variables {'.chain', '.iteration', '.draw'}
+#> 
+#> $difference_time
+#> # A draws_df: 1000 iterations, 4 chains, and 9 variables
+#>    group_1|time_2 group_1|time_3 group_1|time_4 group_2|time_2 group_2|time_3
+#> 1             1.3           0.55           -1.6            1.3           0.25
+#> 2             1.3           0.47           -1.3            1.4           0.24
+#> 3             1.4           0.59           -1.5            1.3           0.41
+#> 4             1.4           0.52           -1.3            1.4           0.31
+#> 5             1.4           0.60           -1.3            1.3           0.23
+#> 6             1.4           0.68           -1.4            1.2           0.17
+#> 7             1.3           0.77           -1.3            1.4           0.18
+#> 8             1.4           0.57           -1.4            1.3           0.33
+#> 9             1.3           0.61           -1.2            1.5           0.34
+#> 10            1.4           0.44           -1.2            1.4           0.58
+#>    group_2|time_4 group_3|time_2 group_3|time_3
+#> 1            -1.7            1.2          0.107
+#> 2            -1.8            1.3          0.227
+#> 3            -1.7            1.3          0.244
+#> 4            -1.5            1.4          0.410
+#> 5            -1.5            1.3          0.574
+#> 6            -1.9            1.3          0.350
+#> 7            -1.4            1.4          0.391
+#> 8            -1.6            1.2          0.043
+#> 9            -1.4            1.5          0.377
+#> 10           -1.4            1.5          0.297
+#> # ... with 3990 more draws, and 1 more variables
+#> # ... hidden reserved variables {'.chain', '.iteration', '.draw'}
+#> 
+#> $difference_group
+#> # A draws_df: 1000 iterations, 4 chains, and 6 variables
+#>    group_2|time_2 group_2|time_3 group_2|time_4 group_3|time_2 group_3|time_3
+#> 1          0.0069          -0.30         -0.028         -0.089         -0.447
+#> 2          0.0631          -0.23         -0.498          0.016         -0.244
+#> 3         -0.1212          -0.19         -0.173         -0.123         -0.347
+#> 4          0.0026          -0.21         -0.211         -0.081         -0.115
+#> 5         -0.1005          -0.37         -0.212         -0.037         -0.027
+#> 6         -0.2115          -0.51         -0.460         -0.044         -0.329
+#> 7          0.0383          -0.59         -0.153          0.064         -0.377
+#> 8         -0.1074          -0.24         -0.215         -0.229         -0.529
+#> 9          0.1657          -0.27         -0.214          0.148         -0.238
+#> 10        -0.0431           0.14         -0.233          0.060         -0.147
+#>    group_3|time_4
+#> 1           -0.19
+#> 2           -0.40
+#> 3           -0.27
+#> 4           -0.53
+#> 5           -0.37
+#> 6           -0.19
+#> 7           -0.42
+#> 8           -0.47
+#> 9           -0.38
+#> 10          -0.40
+#> # ... with 3990 more draws
+#> # ... hidden reserved variables {'.chain', '.iteration', '.draw'}
+#> 
+#> $effect
+#> # A draws_df: 1000 iterations, 4 chains, and 6 variables
+#>    group_2|time_2 group_2|time_3 group_2|time_4 group_3|time_2 group_3|time_3
+#> 1          0.0070          -0.32         -0.022         -0.090         -0.465
+#> 2          0.0624          -0.25         -0.426          0.016         -0.258
+#> 3         -0.1264          -0.20         -0.138         -0.128         -0.373
+#> 4          0.0026          -0.22         -0.178         -0.082         -0.118
+#> 5         -0.0994          -0.39         -0.183         -0.036         -0.028
+#> 6         -0.2190          -0.58         -0.370         -0.046         -0.375
+#> 7          0.0403          -0.59         -0.128          0.067         -0.379
+#> 8         -0.1078          -0.25         -0.164         -0.230         -0.544
+#> 9          0.1702          -0.26         -0.192          0.152         -0.226
+#> 10        -0.0462           0.15         -0.195          0.064         -0.158
+#>    group_3|time_4
+#> 1           -0.15
+#> 2           -0.34
+#> 3           -0.22
+#> 4           -0.45
+#> 5           -0.32
+#> 6           -0.15
+#> 7           -0.35
+#> 8           -0.36
+#> 9           -0.34
+#> 10          -0.33
+#> # ... with 3990 more draws
+#> # ... hidden reserved variables {'.chain', '.iteration', '.draw'}
 ```
 
 If you need samples from these marginals averaged across time points, e.g. an "overall effect size", `brm_marginal_draws_average()` can average the draws above across discrete time points (either all or a user-defined subset).
@@ -397,7 +502,69 @@ If you need samples from these marginals averaged across time points, e.g. an "o
 
 ```r
 brm_marginal_draws_average(draws = draws, data = data)
-#> Error in eval(expr, envir, enclos): object 'draws' not found
+#> $response
+#> # A draws_df: 1000 iterations, 4 chains, and 3 variables
+#>    group_1|average group_2|average group_3|average
+#> 1              1.3           -0.28             1.4
+#> 2              1.4           -0.27             1.4
+#> 3              1.3           -0.30             1.4
+#> 4              1.3           -0.27             1.4
+#> 5              1.3           -0.27             1.3
+#> 6              1.3           -0.31             1.4
+#> 7              1.3           -0.27             1.4
+#> 8              1.3           -0.31             1.4
+#> 9              1.3           -0.24             1.4
+#> 10             1.3           -0.32             1.4
+#> # ... with 3990 more draws
+#> # ... hidden reserved variables {'.chain', '.iteration', '.draw'}
+#> 
+#> $difference_time
+#> # A draws_df: 1000 iterations, 4 chains, and 3 variables
+#>    group_1|average group_2|average group_3|average
+#> 1            0.076          -0.033          -0.165
+#> 2            0.158          -0.065          -0.052
+#> 3            0.175           0.015          -0.072
+#> 4            0.213           0.073          -0.030
+#> 5            0.216          -0.013           0.073
+#> 6            0.225          -0.167           0.039
+#> 7            0.279           0.044           0.033
+#> 8            0.211           0.024          -0.199
+#> 9            0.258           0.152           0.103
+#> 10           0.210           0.163           0.048
+#> # ... with 3990 more draws
+#> # ... hidden reserved variables {'.chain', '.iteration', '.draw'}
+#> 
+#> $difference_group
+#> # A draws_df: 1000 iterations, 4 chains, and 2 variables
+#>    group_2|average group_3|average
+#> 1           -0.109           -0.24
+#> 2           -0.223           -0.21
+#> 3           -0.160           -0.25
+#> 4           -0.139           -0.24
+#> 5           -0.229           -0.14
+#> 6           -0.393           -0.19
+#> 7           -0.235           -0.25
+#> 8           -0.187           -0.41
+#> 9           -0.106           -0.16
+#> 10          -0.047           -0.16
+#> # ... with 3990 more draws
+#> # ... hidden reserved variables {'.chain', '.iteration', '.draw'}
+#> 
+#> $effect
+#> # A draws_df: 1000 iterations, 4 chains, and 2 variables
+#>    group_2|average group_3|average
+#> 1           -0.110           -0.23
+#> 2           -0.203           -0.20
+#> 3           -0.154           -0.24
+#> 4           -0.130           -0.22
+#> 5           -0.223           -0.13
+#> 6           -0.389           -0.19
+#> 7           -0.227           -0.22
+#> 8           -0.173           -0.38
+#> 9           -0.093           -0.14
+#> 10          -0.032           -0.14
+#> # ... with 3990 more draws
+#> # ... hidden reserved variables {'.chain', '.iteration', '.draw'}
 ```
 
 The `brm_marginal_summaries()` function produces posterior summaries of these marginals, and it includes the Monte Carlo standard error (MCSE) of each estimate.
@@ -405,10 +572,22 @@ The `brm_marginal_summaries()` function produces posterior summaries of these ma
 
 ```r
 summaries <- brm_marginal_summaries(draws, level = 0.95)
-#> Error in eval(expr, envir, enclos): object 'draws' not found
 
 summaries
-#> Error in eval(expr, envir, enclos): object 'summaries' not found
+#> # A tibble: 165 × 6
+#>    marginal         statistic group   time     value    mcse
+#>    <chr>            <chr>     <chr>   <chr>    <dbl>   <dbl>
+#>  1 difference_group lower     group_2 time_2 -0.240  0.00686
+#>  2 difference_group lower     group_2 time_3 -0.651  0.0115 
+#>  3 difference_group lower     group_2 time_4 -0.550  0.00994
+#>  4 difference_group lower     group_3 time_2 -0.261  0.00608
+#>  5 difference_group lower     group_3 time_3 -0.691  0.0166 
+#>  6 difference_group lower     group_3 time_4 -0.751  0.0114 
+#>  7 difference_group mean      group_2 time_2  0.0372 0.00303
+#>  8 difference_group mean      group_2 time_3 -0.174  0.00625
+#>  9 difference_group mean      group_2 time_4 -0.0783 0.00634
+#> 10 difference_group mean      group_3 time_2  0.0213 0.00307
+#> # ℹ 155 more rows
 ```
 
 The `brm_marginal_probabilities()` function shows posterior probabilities of the form, 
@@ -434,7 +613,21 @@ brm_marginal_probabilities(
   threshold = c(-0.1, 0.1),
   direction = c("greater", "less")
 )
-#> Error in eval(expr, envir, enclos): object 'draws' not found
+#> # A tibble: 12 × 5
+#>    direction threshold group   time   value
+#>    <chr>         <dbl> <chr>   <chr>  <dbl>
+#>  1 greater        -0.1 group_2 time_2 0.828
+#>  2 greater        -0.1 group_2 time_3 0.375
+#>  3 greater        -0.1 group_2 time_4 0.532
+#>  4 greater        -0.1 group_3 time_2 0.814
+#>  5 greater        -0.1 group_3 time_3 0.324
+#>  6 greater        -0.1 group_3 time_4 0.242
+#>  7 less            0.1 group_2 time_2 0.670
+#>  8 less            0.1 group_2 time_3 0.866
+#>  9 less            0.1 group_2 time_4 0.761
+#> 10 less            0.1 group_3 time_2 0.712
+#> 11 less            0.1 group_3 time_3 0.890
+#> 12 less            0.1 group_3 time_4 0.936
 ```
 
 Finally, `brm_marignal_data()` computes marginal means and confidence intervals on the response variable in the data, along with other summary statistics.
@@ -471,8 +664,9 @@ brm_plot_compare(
   model1 = summaries,
   model2 = summaries
 )
-#> Error in eval(expr, envir, enclos): object 'summaries' not found
 ```
+
+![plot of chunk response](usage/response-1.png)
 
 If you omit the marginals of the data, you can show inference on change from baseline or the treatment effect.
 
@@ -483,8 +677,9 @@ brm_plot_compare(
   model2 = summaries,
   marginal = "difference_group" # treatment effect
 )
-#> Error in eval(expr, envir, enclos): object 'summaries' not found
 ```
+
+![plot of chunk difference](usage/difference-1.png)
 
 Additional arguments let you control the primary comparison of interest (the color aesthetic), the horizontal axis, and the faceting variable.
 
@@ -498,16 +693,18 @@ brm_plot_compare(
   axis = "time",
   facet = "source" # model1 vs model2
 )
-#> Error in eval(expr, envir, enclos): object 'summaries' not found
 ```
+
+![plot of chunk differencecustom](usage/differencecustom-1.png)
 
 Finally, `brm_plot_draws()` can plot the posterior draws of the response, change from baseline, or treatment difference.
 
 
 ```r
 brm_plot_draws(draws = draws$difference_group)
-#> Error in eval(expr, envir, enclos): object 'draws' not found
 ```
+
+![plot of chunk draws](usage/draws-1.png)
 
 The `axis` and `facet` arguments customize the horizontal axis and faceting variable, respectively.
 
@@ -518,5 +715,6 @@ brm_plot_draws(
   axis = "group",
   facet = "time"
 )
-#> Error in eval(expr, envir, enclos): object 'draws' not found
 ```
+
+![plot of chunk drawscustom](usage/drawscustom-1.png)
