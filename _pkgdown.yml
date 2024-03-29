@@ -46,6 +46,9 @@ reference:
   - 'brm_marginal_draws_average'
   - 'brm_marginal_summaries'
   - 'brm_marginal_probabilities'
+- title: Transformations
+  contents:
+  - 'brm_transform_marginal'
 - title: Visualization
   contents:
   - 'brm_plot_compare'

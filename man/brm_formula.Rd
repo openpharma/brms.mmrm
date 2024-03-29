@@ -89,7 +89,8 @@ variable in the dataset.}
 \code{FALSE} to omit.}
 
 \item{correlation}{Character of length 1, name of the correlation
-structure. Only \code{"unstructured"} is currently supported.}
+structure. Choose \code{"unstructured"} for unstructured covariance
+or \code{"diagonal"} for independent time points within patients.}
 
 \item{effect_baseline}{Deprecated on 2024-01-16 (version 0.0.2.9002).
 Use \code{baseline} instead.}

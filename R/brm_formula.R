@@ -30,7 +30,8 @@
 #'   correlation structure, and residual variance structure.
 #' @param data A classed data frame from [brm_data()].
 #' @param correlation Character of length 1, name of the correlation
-#'   structure. Only `"unstructured"` is currently supported.
+#'   structure. Choose `"unstructured"` for unstructured covariance
+#'   or `"diagonal"` for independent time points within patients.
 #' @param intercept Logical of length 1.
 #'   `TRUE` (default) to include an intercept, `FALSE` to omit.
 #' @param baseline Logical of length 1.
@@ -205,14 +206,7 @@ brm_formula <- function(
     correlation,
     "correlation arg must be a nonempty character string"
   )
-  correlations <- "unstructured"
-  assert(
-    correlation %in% correlations,
-    message = paste(
-      "correlation arg must be one of:",
-      paste(correlations, collapse = ", ")
-    )
-  )
+  brm_formula_validate_correlation(correlation)
   name_outcome <- attr(data, "brm_outcome")
   name_role <- attr(data, "brm_role")
   name_baseline <- attr(data, "brm_baseline")
@@ -323,9 +317,17 @@ brm_formula_validate <- function(formula) {
       message = paste(attribute, "attribute must be TRUE or FALSE in formula")
     )
   }
+  brm_formula_validate_correlation(attr(formula, "brm_correlation"))
+}
+
+brm_formula_validate_correlation <- function(correlation) {
+  choices <- c("unstructured", "diagonal")
   assert(
-    identical(as.character(attr(formula, "brm_correlation")), "unstructured"),
-    message = "brm_correlation attribute must be \"unstructured\""
+    correlation %in% choices,
+    message = paste(
+      "correlation arg must be one of:",
+      paste(correlations, collapse = ", ")
+    )
   )
 }
 
