@@ -20,6 +20,7 @@ brm_formula(
   subgroup = !is.null(attr(data, "brm_subgroup")),
   subgroup_time = !is.null(attr(data, "brm_subgroup")),
   time = TRUE,
+  covariates = TRUE,
   correlation = "unstructured",
   effect_baseline = NULL,
   effect_group = NULL,
@@ -86,6 +87,11 @@ variable in the dataset.}
 
 \item{time}{Logical of length 1.
 \code{TRUE} (default) to include a additive effect for discrete time,
+\code{FALSE} to omit.}
+
+\item{covariates}{Logical of length 1.
+\code{TRUE} (default) to include any additive covariates declared with
+the \code{covariates} argument of \code{\link[=brm_data]{brm_data()}},
 \code{FALSE} to omit.}
 
 \item{correlation}{Character of length 1, name of the correlation

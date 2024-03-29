@@ -77,6 +77,10 @@
 #' @param time Logical of length 1.
 #'   `TRUE` (default) to include a additive effect for discrete time,
 #'   `FALSE` to omit.
+#' @param covariates Logical of length 1.
+#'   `TRUE` (default) to include any additive covariates declared with
+#'   the `covariates` argument of [brm_data()],
+#'   `FALSE` to omit.
 #' @param effect_baseline Deprecated on 2024-01-16 (version 0.0.2.9002).
 #'   Use `baseline` instead.
 #' @param effect_group Deprecated on 2024-01-16 (version 0.0.2.9002).
@@ -135,6 +139,7 @@ brm_formula <- function(
   subgroup = !is.null(attr(data, "brm_subgroup")),
   subgroup_time = !is.null(attr(data, "brm_subgroup")),
   time = TRUE,
+  covariates = TRUE,
   correlation = "unstructured",
   effect_baseline = NULL,
   effect_group = NULL,
@@ -156,6 +161,7 @@ brm_formula <- function(
   assert_lgl(subgroup, sprintf(text, "subgroup"))
   assert_lgl(subgroup_time, sprintf(text, "subgroup_time"))
   assert_lgl(time, sprintf(text, "time"))
+  assert_lgl(covariates, sprintf(text, "covariates"))
   expect_baseline <- baseline ||
     baseline_subgroup ||
     baseline_subgroup_time ||
@@ -228,9 +234,10 @@ brm_formula <- function(
     term(name_subgroup, subgroup),
     term(c(name_subgroup, name_time), subgroup_time),
     term(name_time, time),
-    name_covariates,
+    unlist(lapply(name_covariates, term, condition = covariates)),
     term_correlation(correlation, name_time, name_patient)
   )
+  terms <- terms[nzchar(terms)]
   right <- paste(terms, collapse = " + ")
   formula_fixed <- stats::as.formula(paste(name_outcome, "~", right))
   formula_sigma <- stats::as.formula(paste("sigma ~ 0 +", name_time))
@@ -249,6 +256,7 @@ brm_formula <- function(
     brm_subgroup = subgroup,
     brm_subgroup_time = subgroup_time,
     brm_time = time,
+    brm_covariates = covariates,
     brm_correlation = correlation
   )
   brm_formula_validate(formula)
@@ -269,6 +277,7 @@ brm_formula_new <- function(
   brm_subgroup,
   brm_subgroup_time,
   brm_time,
+  brm_covariates,
   brm_correlation
 ) {
   structure(
@@ -286,6 +295,7 @@ brm_formula_new <- function(
     brm_subgroup = brm_subgroup,
     brm_subgroup_time = brm_subgroup_time,
     brm_time = brm_time,
+    brm_covariates = brm_covariates,
     brm_correlation = brm_correlation
   )
 }
@@ -309,7 +319,8 @@ brm_formula_validate <- function(formula) {
     "brm_group_time",
     "brm_subgroup",
     "brm_subgroup_time",
-    "brm_time"
+    "brm_time",
+    "brm_covariates"
   )
   for (attribute in attributes) {
     assert_lgl(
