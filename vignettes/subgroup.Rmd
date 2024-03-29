@@ -1,7 +1,7 @@
 ---
 title: "Subgroup analysis"
-bibliography: '`r system.file("bibliography.bib", package = "brms.mmrm")`'
-csl: '`r system.file("asa.csl", package = "brms.mmrm")`'
+bibliography: '/Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/library/brms.mmrm/bibliography.bib'
+csl: '/Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/library/brms.mmrm/asa.csl'
 output:
   rmarkdown::html_vignette:
     toc: true
@@ -190,12 +190,22 @@ model_reduced <- brm_model(
 
 
 ```r
-draws_subgroup <- brm_marginal_draws(model = model_subgroup, data = data)
+draws_subgroup <- brm_marginal_draws(
+  data = data,
+  formula = formula_subgroup,
+  model = model_subgroup
+)
+#> Error in brm_formula_has_subgroup(formula): 'list' object cannot be coerced to type 'logical'
 ```
 
 
 ```r
-draws_reduced <- brm_marginal_draws(model = model_reduced, data = data)
+draws_reduced <- brm_marginal_draws(
+  data = data,
+  formula = formula_reduced,
+  model = model_reduced
+)
+#> Error in brm_formula_has_subgroup(formula): 'list' object cannot be coerced to type 'logical'
 ```
 
 For `draws_subgroup`, the marginals of the time difference (change from baseline) and treatment difference are now subgroup-specific.
@@ -203,24 +213,7 @@ For `draws_subgroup`, the marginals of the time difference (change from baseline
 
 ```r
 tibble::as_tibble(draws_subgroup$difference_group)
-#> # A tibble: 4,000 × 11
-#>    .chain .draw .iteration `group_2|subgroup_1|time_2` `group_2|subgroup_1|time_3`
-#>     <int> <int>      <int>                       <dbl>                       <dbl>
-#>  1      1     1          1                     -0.472                      -0.534 
-#>  2      1     2          2                     -0.0221                     -0.335 
-#>  3      1     3          3                     -0.222                      -0.217 
-#>  4      1     4          4                      0.199                      -0.111 
-#>  5      1     5          5                      0.0411                     -0.165 
-#>  6      1     6          6                     -0.215                      -0.571 
-#>  7      1     7          7                      0.0821                     -0.163 
-#>  8      1     8          8                     -0.167                      -0.0113
-#>  9      1     9          9                      0.282                       0.0544
-#> 10      1    10         10                      0.321                      -0.322 
-#> # ℹ 3,990 more rows
-#> # ℹ 6 more variables: `group_2|subgroup_2|time_2` <dbl>,
-#> #   `group_2|subgroup_2|time_3` <dbl>, `group_3|subgroup_1|time_2` <dbl>,
-#> #   `group_3|subgroup_1|time_3` <dbl>, `group_3|subgroup_2|time_2` <dbl>,
-#> #   `group_3|subgroup_2|time_3` <dbl>
+#> Error in eval(expr, envir, enclos): object 'draws_subgroup' not found
 ```
 
 In addition, there is a new `difference_subgroup` table. The posterior samples in `difference_subgroup` measure the differences between each subgroup level and the reference subgroup level with respect to the treatment effects in `difference_group`.
@@ -228,22 +221,7 @@ In addition, there is a new `difference_subgroup` table. The posterior samples i
 
 ```r
 tibble::as_tibble(draws_subgroup$difference_subgroup)
-#> # A tibble: 4,000 × 7
-#>    .chain .draw .iteration `group_2|subgroup_2|time_2` `group_2|subgroup_2|time_3`
-#>     <int> <int>      <int>                       <dbl>                       <dbl>
-#>  1      1     1          1                    5.55e-17                           0
-#>  2      1     2          2                    4.16e-17                           0
-#>  3      1     3          3                    0                                  0
-#>  4      1     4          4                   -2.78e-17                           0
-#>  5      1     5          5                    2.78e-17                           0
-#>  6      1     6          6                    0                                  0
-#>  7      1     7          7                    5.55e-17                           0
-#>  8      1     8          8                    2.78e-17                           0
-#>  9      1     9          9                    0                                  0
-#> 10      1    10         10                    0                                  0
-#> # ℹ 3,990 more rows
-#> # ℹ 2 more variables: `group_3|subgroup_2|time_2` <dbl>,
-#> #   `group_3|subgroup_2|time_3` <dbl>
+#> Error in eval(expr, envir, enclos): object 'draws_subgroup' not found
 ```
 
 The `brm_marginal_summaries()` and `brm_marginal_probabilities()` are automatically aware of any subgroup-specific marginals from `brm_marginal_draws()`. Notably, `brm_marginal_summaries()` summarizes the subgroup differences in the `difference_subgroup` table from `brm_marginal_draws()`.
@@ -254,27 +232,16 @@ summaries_subgroup <- brm_marginal_summaries(
   draws_subgroup,
   level = 0.95
 )
+#> Error in eval(expr, envir, enclos): object 'draws_subgroup' not found
 
 summaries_reduced <- brm_marginal_summaries(
   draws_reduced,
   level = 0.95
 )
+#> Error in eval(expr, envir, enclos): object 'draws_reduced' not found
 
 summaries_subgroup
-#> # A tibble: 250 × 7
-#>    marginal         statistic group   subgroup   time     value    mcse
-#>    <chr>            <chr>     <chr>   <chr>      <chr>    <dbl>   <dbl>
-#>  1 difference_group lower     group_2 subgroup_1 time_2 -0.300  0.00952
-#>  2 difference_group lower     group_2 subgroup_1 time_3 -0.540  0.0137 
-#>  3 difference_group lower     group_2 subgroup_2 time_2 -0.300  0.00952
-#>  4 difference_group lower     group_2 subgroup_2 time_3 -0.540  0.0137 
-#>  5 difference_group lower     group_3 subgroup_1 time_2 -0.130  0.00873
-#>  6 difference_group lower     group_3 subgroup_1 time_3 -0.286  0.00976
-#>  7 difference_group lower     group_3 subgroup_2 time_2 -0.130  0.00873
-#>  8 difference_group lower     group_3 subgroup_2 time_3 -0.286  0.00976
-#>  9 difference_group mean      group_2 subgroup_1 time_2  0.0913 0.00439
-#> 10 difference_group mean      group_2 subgroup_1 time_3 -0.167  0.00403
-#> # ℹ 240 more rows
+#> Error in eval(expr, envir, enclos): object 'summaries_subgroup' not found
 ```
 
 `brm_marginal_probabilities()` still focuses on treatment effects, not on differences between pairs of subgroup levels.
@@ -286,25 +253,7 @@ brm_marginal_probabilities(
   threshold = c(-0.1, 0.1),
   direction = c("greater", "less")
 )
-#> # A tibble: 16 × 6
-#>    direction threshold group   subgroup   time   value
-#>    <chr>         <dbl> <chr>   <chr>      <chr>  <dbl>
-#>  1 greater        -0.1 group_2 subgroup_1 time_2 0.826
-#>  2 greater        -0.1 group_2 subgroup_1 time_3 0.362
-#>  3 greater        -0.1 group_2 subgroup_2 time_2 0.826
-#>  4 greater        -0.1 group_2 subgroup_2 time_3 0.362
-#>  5 greater        -0.1 group_3 subgroup_1 time_2 0.966
-#>  6 greater        -0.1 group_3 subgroup_1 time_3 0.846
-#>  7 greater        -0.1 group_3 subgroup_2 time_2 0.966
-#>  8 greater        -0.1 group_3 subgroup_2 time_3 0.846
-#>  9 less            0.1 group_2 subgroup_1 time_2 0.515
-#> 10 less            0.1 group_2 subgroup_1 time_3 0.915
-#> 11 less            0.1 group_2 subgroup_2 time_2 0.515
-#> 12 less            0.1 group_2 subgroup_2 time_3 0.915
-#> 13 less            0.1 group_3 subgroup_1 time_2 0.204
-#> 14 less            0.1 group_3 subgroup_1 time_3 0.498
-#> 15 less            0.1 group_3 subgroup_2 time_2 0.204
-#> 16 less            0.1 group_3 subgroup_2 time_3 0.498
+#> Error in eval(expr, envir, enclos): object 'draws_subgroup' not found
 ```
 
 `brm_marignal_data()` can produce either subgroup-specific or non-subgroup-specific summary statistics.
@@ -444,9 +393,8 @@ loo::loo_compare(loo_subgroup, loo_reduced)
 
 ```r
 brm_plot_draws(draws_subgroup$difference_group)
+#> Error in eval(expr, envir, enclos): object 'draws_subgroup' not found
 ```
-
-![](subgroup/draws-1.png)
 
 You can adjust visual aesthetics to compare subgroup levels side by side if subgroup level is the primary comparison of interest.
 
@@ -457,9 +405,8 @@ brm_plot_draws(
   axis = "subgroup",
   facet = c("time", "group")
 )
+#> Error in eval(expr, envir, enclos): object 'draws_subgroup' not found
 ```
-
-![](subgroup/drawscustom-1.png)
 
 The following function call compares the subgroup model results against the subgroup data.
 
@@ -470,9 +417,8 @@ brm_plot_compare(
   model = summaries_subgroup,
   marginal = "response"
 )
+#> Error in eval(expr, envir, enclos): object 'summaries_subgroup' not found
 ```
-
-![](subgroup/subgroup-vs-data-1.png)
 
 You can adjust plot aesthetics to view subgroup levels side by side as the primary comparison of interest.
 
@@ -486,9 +432,8 @@ brm_plot_compare(
   axis = "time",
   facet = c("group", "source")
 )
+#> Error in eval(expr, envir, enclos): object 'summaries_subgroup' not found
 ```
-
-![](subgroup/subgroup-vs-data-levels-1.png)
 
 We can also visually compare the treatment effects of a subgroup level against the marginal treatment effects of the reduced model.
 
@@ -499,9 +444,8 @@ brm_plot_compare(
   reduced = summaries_reduced,
   marginal = "difference_group"
 )
+#> Error in eval(expr, envir, enclos): object 'summaries_subgroup' not found
 ```
-
-![](subgroup/reduced-model-comparison-1.png)
 
 Please remember to filter on a single subgroup level. Otherwise, `brm_plot_compare()` throws an informative error to prevent overplotting.
 
@@ -512,8 +456,7 @@ brm_plot_compare(
   reduced = summaries_reduced,
   marginal = "difference_group"
 )
-#> Error:
-#> ! brm_plot_compare() is omitting the subgroup variable because not all marginal summaries have it, but marginal summaries 'subgroup' have more than one subgroup level. Please either filter on a single subgroup level or make sure all supplied marginal summaries are subgroup-specific.
+#> Error in eval(expr, envir, enclos): object 'summaries_subgroup' not found
 ```
 
 # References

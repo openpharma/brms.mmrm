@@ -129,11 +129,19 @@ model_reduced <- brm_model(
 `brm_marginal_draws()` automatically produces subgroup-specific marginal means if `brm_formula()` declared subgroup-specific fixed effects.
 
 ```{r}
-draws_subgroup <- brm_marginal_draws(model = model_subgroup, data = data)
+draws_subgroup <- brm_marginal_draws(
+  data = data,
+  formula = formula_subgroup,
+  model = model_subgroup
+)
 ```
 
 ```{r}
-draws_reduced <- brm_marginal_draws(model = model_reduced, data = data)
+draws_reduced <- brm_marginal_draws(
+  data = data,
+  formula = formula_reduced,
+  model = model_reduced
+)
 ```
 
 For `draws_subgroup`, the marginals of the time difference (change from baseline) and treatment difference are now subgroup-specific.

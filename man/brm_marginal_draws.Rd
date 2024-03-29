@@ -6,6 +6,7 @@
 \usage{
 brm_marginal_draws(
   data,
+  formula,
   model,
   use_subgroup = NULL,
   control = NULL,
@@ -15,7 +16,9 @@ brm_marginal_draws(
 \arguments{
 \item{data}{Classed tibble with preprocessed data from \code{\link[=brm_data]{brm_data()}}.}
 
-\item{model}{A fitted model object from \code{\link[=brm_model]{brm_model()}}.}
+\item{formula}{Model formula from \code{\link[=brm_formula]{brm_formula()}}.}
+
+\item{model}{A fitted model object from \code{\link[=brm_model]{brm_model()}}}
 
 \item{use_subgroup}{Deprecated. No longer used. \code{\link[=brm_marginal_draws]{brm_marginal_draws()}}
 no longer marginalizes over the subgroup declared

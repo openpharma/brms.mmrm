@@ -27,8 +27,9 @@
 #'   * `difference_subgroup`: subgroup differences: the `difference_group`
 #'     at each subgroup level minus the `difference_group` at the subgroup
 #'     reference level (`reference_subgroup`).
-#' @param model A fitted model object from [brm_model()].
 #' @param data Classed tibble with preprocessed data from [brm_data()].
+#' @param formula Model formula from [brm_formula()].
+#' @param model A fitted model object from [brm_model()]
 #' @param use_subgroup Deprecated. No longer used. [brm_marginal_draws()]
 #'   no longer marginalizes over the subgroup declared
 #'   in [brm_data()]. To marginalize over the subgroup, declare
@@ -70,6 +71,7 @@
 #' }
 brm_marginal_draws <- function(
   data,
+  formula,
   model,
   use_subgroup = NULL,
   control = NULL,
@@ -96,6 +98,7 @@ brm_marginal_draws <- function(
     )
   }
   brm_model_validate(model)
+  brm_formula_validate(formula)
   brm_data_validate(data)
   role <- attr(data, "brm_role")
   base <- attr(data, "brm_base")
