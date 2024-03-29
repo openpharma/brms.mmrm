@@ -46,6 +46,7 @@ globalVariables(
   c(
     ".",
     "b",
+    "correlations",
     "Intercept",
     "normal",
     "sigma",
