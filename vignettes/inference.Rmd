@@ -56,7 +56,7 @@ formula
 colnames(model.matrix(object = formula, data = data))
 ```
 
-But for inference, we want to estimate the mean `FEV1_CHG` and its standard error for each combination of treatment and time point (and subgroup level, if applicable), as well as differences between pairs of means (covered later in this vignette). In other words, we want the mean `FEV1_CHG` for group `"TRT"` time `"VIS1"`, the mean `FEV1_CHG` for group `"TRT"` time `"VIS2"`, and so on. We can represent our goals in a reference grid, where each row represents a mean `FEV1_CHG` we want to estimate. 
+But for inference, we want to estimate the mean `FEV1_CHG` and its standard error for each combination of treatment and time point (and subgroup level, if applicable). In other words, we want the mean `FEV1_CHG` for group `"TRT"` time `"VIS1"`, the mean `FEV1_CHG` for group `"TRT"` time `"VIS2"`, and so on. We can represent our goals in a reference grid, where each row represents a mean `FEV1_CHG` we want to estimate. 
 
 ```{r}
 distinct(data, ARMCD, AVISIT)
