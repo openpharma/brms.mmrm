@@ -69,7 +69,7 @@
 #'     )
 #'   )
 #' )
-#' draws <- brm_marginal_draws(model = model, data = data)
+#' draws <- brm_marginal_draws(data = data, formula = formula, model = model)
 #' brm_marginal_draws_average(draws = draws, data = data)
 #' brm_marginal_draws_average(
 #'   draws = draws,
@@ -79,8 +79,8 @@
 #' )
 #' }
 brm_marginal_draws_average <- function(
-  draws,
   data,
+  draws,
   times = NULL,
   label = "average"
 ) {

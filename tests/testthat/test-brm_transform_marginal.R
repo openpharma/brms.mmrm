@@ -6,7 +6,7 @@ test_that("brm_transform_marginal(), response, non-subgroup", {
   raw_data$FEV1[is.na(raw_data$FEV1)] <- rnorm(n = sum(is.na(raw_data$FEV1)))
   grid <- dplyr::distinct(raw_data, ARMCD, AVISIT)
   grid <- dplyr::arrange(grid, ARMCD, AVISIT)
-  row_names <- paste(grid$ARMCD, grid$AVISIT, sep = "|")
+  row_names <- paste(grid$ARMCD, grid$AVISIT, sep = brm_sep())
   data <- brm_data(
     data = raw_data,
     outcome = "FEV1",
@@ -37,13 +37,16 @@ test_that("brm_transform_marginal(), response, non-subgroup", {
     formula = formula,
     prefix = ""
   )
-  model_matrix <- brms::make_standata(formula = formula, data = data)$X
+  model_matrix <- brms::make_standata(
+    formula = formula,
+    data = dplyr::mutate(data, FEV1 = 0)
+  )$X
   expect_equal(colnames(transform), colnames(model_matrix))
   expect_equal(rownames(transform), row_names)
   skip_if_not_installed("emmeans")
   old_sep <- emmeans::get_emm_option("sep")
   on.exit(emmeans::emm_options(sep = old_sep))
-  emmeans::emm_options(sep = "|")
+  emmeans::emm_options(sep = brm_sep())
   model <- lm(formula = formula_lm, data = data)
   mle <- coef(model)
   names(mle) <- gsub("\\(|\\)| ", "", names(mle))
@@ -51,14 +54,14 @@ test_that("brm_transform_marginal(), response, non-subgroup", {
   out <- t(transform %*% mle)
   names <- colnames(out)
   out <- setNames(as.numeric(out), names)
-  exp <- emmeans(
+  exp <- emmeans::emmeans(
     object = model,
     specs = ~ARMCD:AVISIT,
     weights = "proportional",
     nuisance = c("RACE", "SEX", "WEIGHT")
   )
   exp <- as.data.frame(exp)
-  exp <- setNames(exp$emmean, paste0(exp$ARMCD, "|", exp$AVISIT))
+  exp <- setNames(exp$emmean, paste0(exp$ARMCD, brm_sep(), exp$AVISIT))
   exp <- exp[names(out)]
   expect_equal(out, exp)
 })
@@ -72,7 +75,7 @@ test_that("brm_transform_marginal(), change, non-subgroup", {
   raw_data$FEV1_CHG <- raw_data$FEV1 - raw_data$FEV1_BL
   grid <- dplyr::distinct(raw_data, ARMCD, AVISIT)
   grid <- dplyr::arrange(grid, ARMCD, AVISIT)
-  row_names <- paste(grid$ARMCD, grid$AVISIT, sep = "|")
+  row_names <- paste(grid$ARMCD, grid$AVISIT, sep = brm_sep())
   data <- brm_data(
     data = raw_data,
     outcome = "FEV1_CHG",
@@ -110,13 +113,16 @@ test_that("brm_transform_marginal(), change, non-subgroup", {
     formula = formula,
     prefix = ""
   )
-  model_matrix <- brms::make_standata(formula = formula, data = data)$X
+  model_matrix <- brms::make_standata(
+    formula = formula,
+    data = dplyr::mutate(data, FEV1_CHG = 0)
+  )$X
   expect_equal(colnames(transform), colnames(model_matrix))
   expect_equal(rownames(transform), row_names)
   skip_if_not_installed("emmeans")
   old_sep <- emmeans::get_emm_option("sep")
   on.exit(emmeans::emm_options(sep = old_sep))
-  emmeans::emm_options(sep = "|")
+  emmeans::emm_options(sep = brm_sep())
   model <- lm(formula = formula_lm, data = data)
   mle <- coef(model)
   names(mle) <- gsub("\\(|\\)| ", "", names(mle))
@@ -127,14 +133,14 @@ test_that("brm_transform_marginal(), change, non-subgroup", {
   out <- t(transform %*% mle)
   names <- colnames(out)
   out <- setNames(as.numeric(out), names)
-  exp <- emmeans(
+  exp <- emmeans::emmeans(
     object = model,
     specs = ~ARMCD:AVISIT,
     weights = "proportional",
     nuisance = c("RACE", "SEX", "WEIGHT")
   )
   exp <- as.data.frame(exp)
-  exp <- setNames(exp$emmean, paste0(exp$ARMCD, "|", exp$AVISIT))
+  exp <- setNames(exp$emmean, paste0(exp$ARMCD, brm_sep(), exp$AVISIT))
   exp <- exp[names(out)]
   expect_equal(out, exp)
 })
@@ -151,7 +157,7 @@ test_that("brm_transform_marginal(), change, subgroup", {
   raw_data$AVISIT <- as.character(raw_data$AVISIT)
   grid <- dplyr::distinct(raw_data, ARMCD, SEX, AVISIT)
   grid <- dplyr::arrange(grid, ARMCD, SEX, AVISIT)
-  row_names <- paste(grid$ARMCD, grid$SEX, grid$AVISIT, sep = "|")
+  row_names <- paste(grid$ARMCD, grid$SEX, grid$AVISIT, sep = brm_sep())
   data <- brm_data(
     data = raw_data,
     outcome = "FEV1_CHG",
@@ -209,7 +215,7 @@ test_that("brm_transform_marginal(), change, subgroup", {
   skip_if_not_installed("emmeans")
   old_sep <- emmeans::get_emm_option("sep")
   on.exit(emmeans::emm_options(sep = old_sep))
-  emmeans::emm_options(sep = "|")
+  emmeans::emm_options(sep = brm_sep())
   model <- lm(formula = formula_lm, data = data)
   mle <- coef(model)
   names(mle) <- gsub("\\(|\\)| ", "", names(mle))
@@ -227,7 +233,7 @@ test_that("brm_transform_marginal(), change, subgroup", {
   out <- t(transform %*% mle)
   names <- colnames(out)
   out <- setNames(as.numeric(out), names)
-  exp <- emmeans(
+  exp <- emmeans::emmeans(
     object = model,
     specs = ~ARMCD:SEX:AVISIT,
     weights = "proportional",
@@ -236,7 +242,7 @@ test_that("brm_transform_marginal(), change, subgroup", {
   exp <- as.data.frame(exp)
   exp <- setNames(
     exp$emmean,
-    paste(exp$ARMCD, exp$SEX, exp$AVISIT, sep = "|")
+    paste(exp$ARMCD, exp$SEX, exp$AVISIT, sep = brm_sep())
   )
   exp <- exp[names(out)]
   expect_equal(out, exp)

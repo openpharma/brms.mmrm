@@ -666,7 +666,7 @@ brm_plot_compare(
 )
 ```
 
-![plot of chunk response](usage/response-1.png)
+![](usage/response-1.png)
 
 If you omit the marginals of the data, you can show inference on change from baseline or the treatment effect.
 
@@ -679,7 +679,7 @@ brm_plot_compare(
 )
 ```
 
-![plot of chunk difference](usage/difference-1.png)
+![](usage/difference-1.png)
 
 Additional arguments let you control the primary comparison of interest (the color aesthetic), the horizontal axis, and the faceting variable.
 
@@ -695,7 +695,7 @@ brm_plot_compare(
 )
 ```
 
-![plot of chunk differencecustom](usage/differencecustom-1.png)
+![](usage/differencecustom-1.png)
 
 Finally, `brm_plot_draws()` can plot the posterior draws of the response, change from baseline, or treatment difference.
 
@@ -704,7 +704,7 @@ Finally, `brm_plot_draws()` can plot the posterior draws of the response, change
 brm_plot_draws(draws = draws$difference_group)
 ```
 
-![plot of chunk draws](usage/draws-1.png)
+![](usage/draws-1.png)
 
 The `axis` and `facet` arguments customize the horizontal axis and faceting variable, respectively.
 
@@ -717,4 +717,4 @@ brm_plot_draws(
 )
 ```
 
-![plot of chunk drawscustom](usage/drawscustom-1.png)
+![](usage/drawscustom-1.png)

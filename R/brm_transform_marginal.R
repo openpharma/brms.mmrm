@@ -4,7 +4,7 @@
 #' @description Transformation from model parameters to marginal means.
 #' @details The matrix from [brm_transform_marginal()] is passed to
 #'   the `transform_marginal` argument of [brm_marginal_draws()],
-#'   and it transforms posterior draws of model paramters to
+#'   and it transforms posterior draws of model parameters to
 #'   posterior draws of marginal means. You may customize the output of
 #'   [brm_transform_marginal()] before passing it to [brm_marginal_draws()].
 #'   However, please do not modify the dimensions, row names, or column
@@ -14,7 +14,7 @@
 #' @inheritParams brm_marginal_draws
 #' @param prefix Character of length 1, prefix to add to
 #'   the model matrix (`"X"`) from [brms::make_standata()] in order to
-#'   reconstruct the `brms` model paramter names. This argument should
+#'   reconstruct the `brms` model parameter names. This argument should
 #'   only be modified for testing purposes.
 #' @examples
 #' if (identical(Sys.getenv("BRM_EXAMPLES", unset = ""), "true")) {
@@ -39,6 +39,7 @@
 brm_transform_marginal <- function(data, formula, prefix = "b_") {
   brm_data_validate(data)
   brm_formula_validate(formula)
+  data <- brm_data_fill(data)
   data[[attr(data, "brm_outcome")]] <- 0
   grid <- transform_marginal_grid(data = data)
   grid <- dplyr::bind_cols(grid, transform_marginal_continuous(data))

@@ -12,8 +12,8 @@ brm_transform_marginal(data, formula, prefix = "b_")
 \item{formula}{Model formula from \code{\link[=brm_formula]{brm_formula()}}.}
 
 \item{prefix}{Character of length 1, prefix to add to
-the model matrix (\code{"X"}) from \code{\link[brms:make_standata]{brms::make_standata()}} in order to
-reconstruct the \code{brms} model paramter names. This argument should
+the model matrix (\code{"X"}) from \code{\link[brms:standata]{brms::make_standata()}} in order to
+reconstruct the \code{brms} model parameter names. This argument should
 only be modified for testing purposes.}
 }
 \value{
@@ -26,7 +26,7 @@ Transformation from model parameters to marginal means.
 \details{
 The matrix from \code{\link[=brm_transform_marginal]{brm_transform_marginal()}} is passed to
 the \code{transform_marginal} argument of \code{\link[=brm_marginal_draws]{brm_marginal_draws()}},
-and it transforms posterior draws of model paramters to
+and it transforms posterior draws of model parameters to
 posterior draws of marginal means. You may customize the output of
 \code{\link[=brm_transform_marginal]{brm_transform_marginal()}} before passing it to \code{\link[=brm_marginal_draws]{brm_marginal_draws()}}.
 However, please do not modify the dimensions, row names, or column
