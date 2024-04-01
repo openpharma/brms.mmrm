@@ -1,5 +1,5 @@
 ---
-title: "Methods"
+title: "Model"
 bibliography: '`r system.file("bibliography.bib", package = "brms.mmrm")`'
 csl: '`r system.file("asa.csl", package = "brms.mmrm")`'
 output:
@@ -7,7 +7,7 @@ output:
     toc: true
     number_sections: true
 vignette: >
-  %\VignetteIndexEntry{Methods}
+  %\VignetteIndexEntry{Model}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -40,11 +40,11 @@ $$
 # Data
 
 * $y_i$: numeric vector of outcome observations for subject $i$. The number of elements in the vector equals the number of discrete time points in the study, and for the purposes of this model specification, they are sorted chronologically with the first element of $y_i$ observed first in the study. One or more elements of each $y_i$ may be missing due to dropout, discontinuation, etc. The likelihood of the model assumes $y_i$ is independent of $y_j$ for $i \ne j$.
-* $X_i$: a matrix containing the rows of the model matrix that correspond to subject $i$. The rows of $X_i$ correspond to the elements of the vector $y_i$ (equivalently, the discrete time points of the study), and the columns of $X_i$ correspond to the model coefficient parameters $\beta_p$. The composition of $X_i$ is determined by the covariates in the input dataset and the choice of model formula supplied by the user (via `brm_formula()`).
+* $X_i$: a matrix containing the rows of the model matrix that correspond to subject $i$. The rows of $X_i$ correspond to the elements of the vector $y_i$ (equivalently, the discrete time points of the study), and the columns of $X_i$ correspond to the model coefficient parameters $\beta_p$. The composition of $X_i$ is determined by the covariates in the input dataset and the choice of model formula supplied by the user (via `brm_formula()`). In subgroup analysis, $X_i$ contains columns denoting different subgroup levels, as well as any interaction terms declared through the formula.
 
 # Parameters
 
-* $\beta$: vector of model coefficients. $\beta_p$ is scalar element $p$ of $\beta$.
+* $\beta$: vector of model coefficients. $\beta_p$ is scalar element $p$ of $\beta$. In subgroup analysis, $\beta$ contains model coefficients for different subgroup levels, as well as any interaction terms declared through the model formula.
 * $\Lambda$: matrix of pairwise correlations among each pair of time points within subjects. Outcomes measured from different subjects are assumed to be independent, and outcomes observed at different time points for the same subject are assumed to be correlated according to this matrix. $\Lambda$ is positive-definite and symmetric, and the number of rows and columns is equal to the number of discrete time points of the study. 
 * $\sigma$: vector of time-point-specific standard deviations of the residuals on the linear scale. $\sigma_t$ is scalar element $t$ of $\sigma$.
 * $\tau$: same as $\sigma$, but on the natural logarithmic scale. Each scalar element $\tau_t$ of $\tau$ is defined as the natural logarithm of $\sigma_t$.
@@ -60,15 +60,5 @@ The priors on the parameters depend on the `prior` argument of `brm_model()` and
 # Sampling
 
 `brms.mmrm`, through [`brms`](https://paul-buerkner.github.io/brms/), fits the model to the data using the Markov chain Monte Carlo (MCMC) capabilities of [Stan](https://mc-stan.org/) [@stan2023]. Please read <https://mc-stan.org/users/documentation/> for more details on the methodology of [Stan](https://mc-stan.org/). The result of MCMC is a collection of draws from the full joint posterior distribution of the parameters given the data. Individual draws of scalar parameters such as $\beta_3$ are considered draws from the marginal posterior distribution of e.g. $\beta_3$ given the data.
-
-# Inference
-
-Inference in `brms.mmrm`, uses the estimated marginal posterior distribution of the mean response at each combination of study arm and time point. The [`emmeans`](https://github.com/rvlenth/emmeans) package [@lenth2016] derives these marginal posteriors while averaging over other covariates as nuisance parameters. During this averaging process, the levels of categorical nuisance parameters are weighted proportionally to their frequencies in the dataset (with `wt.nuis = "proportional"` in `emmeans::ref_grid()`).
-
-The `brm_marginal_draws()` function, described in the usage vignette, derives posterior draws of the marginals using posterior draws of the model coefficients $\beta_p$. Then, downstream functions like `brm_marginal_probabilities()` compute numerical summaries of these marginal draws.
-
-# Subgroup analysis
-
-The model above supports subgroup analysis through the addition of a categorical variable in the data to denote subgroup levels. To analyze the subgroup, new fixed effects parameters $\beta_p$ and columns of the model matrices $X_i$ are added to the model to describe the additive effect of the subgroup and plausible two-way and three-way interactions with treatment group, discrete time, and baseline (if applicable). Marginal means are subgroup-specific, and model comparison via the widely applicable information criterion (WAIC) and expected log predictive density (ELPD) is implemented via R packages `loo` and `brms` (@GabryVisualization2019, @GelmanData2007, @VehtariPractical2017, @VehtariPareto2019).
 
 # References

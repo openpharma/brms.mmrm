@@ -1,0 +1,69 @@
+---
+title: "Inference"
+bibliography: '`r system.file("bibliography.bib", package = "brms.mmrm")`'
+csl: '`r system.file("asa.csl", package = "brms.mmrm")`'
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    number_sections: true
+vignette: >
+  %\VignetteIndexEntry{Inference}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+options(tidyverse.quiet = TRUE)
+```
+
+This vignette explains how `brms.mmrm` conducts posterior inference on a fitted [MMRM model](https://openpharma.github.io/brms.mmrm/articles/model.html), with a particular focus on marginal means.
+
+# Existing capabilities
+
+`brms.mmrm::brm_model()` returns a fitted [`brms`](https://paul-buerkner.github.io/brms/) model, and [`brms`](https://paul-buerkner.github.io/brms/) already has tools for posterior inference. Through a combination of native functions and S3 methods, [`brms`](https://paul-buerkner.github.io/brms/) integrates with [`posterior`](https://mc-stan.org/posterior/), [`emmeans`](https://cran.r-project.org/package=emmeans), and [`loo`](https://mc-stan.org/loo/). For more information, please visit <https://paul-buerkner.github.io/brms/>. 
+
+# Custom implementation
+
+Despite these existing features, `brms.mmrm` implements extra functions for posterior inference on marginal means. These functions tailor the methodology to clinical trials, making it easy and convenient to estimate the specific marginals of interest for this specific scenario while avoiding common statistical pitfalls. Rather than use [`emmeans`](https://cran.r-project.org/package=emmeans) directly, `brms.mmrm` independently replicates the relevant parts of the underlying methodology documented in the package vignettes, not only for extra transparency in clinical trials, but also to allow marginal mean computations without a fitted model object in order to create opportunities for flexible informative conditional means priors (@bedrick1996, @bedrick1997, @christensen2010, @rosner2021). The remainder of this vignette introduces marginal means and explains the custom code that `brms.mmrm` uses to estimate them.
+
+# Marginal means
+
+According to @lenth2016, marginal means (formerly "least-squares means") are predictions (usually averaged predictions) at each point in a reference grid. The reference grid declares combinations of levels of factors of interest.
+
+As an example, consider the `mmrm` package's `fev_data` dataset, a simulation of a clinical trial in which chronic obstructive pulmonary disease (COPD) patients (variable `USUBJID`) were randomized to different treatment groups (variable `ARMCD`) and measured across four discrete time points (variable `AVISIT`). The given response variable is forced expired volume in one second (`FEV1`), and we are interested in the `FEV1` change from baseline to each time point (derived variable `FEV_CHG`).
+
+```{r}
+library(tidyverse)
+data(fev_data, package = "mmrm")
+data <- fev_data %>%
+  mutate(FEV1_CHG = FEV1 - FEV1_BL) %>%
+  as_tibble()
+data
+```
+
+We may wish to fit a model with a typical "effects" parameterization (as opposed to cell means). The model tries to capture all meaningful sources of variability, so it includes an intercept term, additive terms for each level of each factor, interactions to capture non-additive relationships among factors, continuous covariates, and different `FEV1_BL` slopes for different time points.
+
+```{r}
+formula <- FEV1_CHG ~ FEV1_BL*AVISIT + ARMCD*AVISIT + RACE + SEX + WEIGHT
+formula
+```
+
+```{r}
+colnames(model.matrix(object = formula, data = data))
+```
+
+But for inference, we want to estimate the mean `FEV1_CHG` and its standard error for each combination of treatment and time point (and subgroup level, if applicable). In other words, we want the mean `FEV1_CHG` for group `"TRT"` time `"VIS1"`, the mean `FEV1_CHG` for group `"TRT"` time `"VIS2"`, and so on. We can represent our goals in a reference grid, where each row represents a mean `FEV1_CHG` we want to estimate. 
+
+```{r}
+distinct(data, ARMCD, AVISIT)
+```
+
+However, our desired model does not have dedicated model parameters for these margins, and even if it did, these parameters would be implicitly conditional on the levels of other factors.
+
+The marginal means framework is a principled and rigorous approach to estimate these margins anyway. It works by conditioning on the factor levels of interest and carefully averaging over the other variables. The [`emmeans`](https://CRAN.R-project.org/package=emmeans) package has excellent vignettes explaining the general methodology. 
+
+# References

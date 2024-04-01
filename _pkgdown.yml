@@ -4,7 +4,8 @@ template:
 articles:
 - title: Methods
   contents:
-  - methods
+  - model
+  - inference
 - title: Usage
   navbar: Usage
   contents:
