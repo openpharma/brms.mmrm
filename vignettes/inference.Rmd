@@ -28,7 +28,7 @@ This vignette explains how `brms.mmrm` conducts posterior inference on a fitted 
 
 # Custom implementation
 
-Despite these existing features, `brms.mmrm` implements extra functions for posterior inference on marginal means. These functions tailor the methodology to clinical trials, making it easy and convenient to estimate the specific marginals of interest for this specific scenario while avoiding common statistical pitfalls. Rather than use [`emmeans`](https://cran.r-project.org/package=emmeans) directly, `brms.mmrm` independently replicates the relevant parts of the underlying methodology documented in the package vignettes, not only for extra transparency in clinical trials, but also to allow marginal mean computations without a fitted model object in order to create opportunities for flexible informative conditional means priors (@bedrick1996, @bedrick1997, @christensen2010, @rosner2021). The remainder of this vignette introduces marginal means and explains the custom code that `brms.mmrm` uses to estimate them.
+Despite these existing features, `brms.mmrm` implements extra functions for posterior inference on marginal means. These functions tailor the methodology to clinical trials, making it easy and convenient to estimate the specific marginals of interest for this specific scenario while avoiding common statistical pitfalls. Rather than use [`emmeans`](https://cran.r-project.org/package=emmeans) directly, `brms.mmrm` independently replicates the relevant parts of the underlying methodology documented in the package vignettes, not only for extra transparency in clinical trials, but also to allow marginal mean computations without a fitted model object in order to create opportunities for flexible informative conditional means priors (@bedrick1996, @bedrick1997, @christensen2010, @rosner2021). The remainder of this vignette introduces marginal means for clinical trials and explains the custom code that `brms.mmrm` uses to estimate them.
 
 # Marginal means
 
@@ -56,7 +56,7 @@ formula
 colnames(model.matrix(object = formula, data = data))
 ```
 
-But for inference, we want to estimate the mean `FEV1_CHG` and its standard error for each combination of treatment and time point (and subgroup level, if applicable). In other words, we want the mean `FEV1_CHG` for group `"TRT"` time `"VIS1"`, the mean `FEV1_CHG` for group `"TRT"` time `"VIS2"`, and so on. We can represent our goals in a reference grid, where each row represents a mean `FEV1_CHG` we want to estimate. 
+But for inference, we want to estimate the mean `FEV1_CHG` and its standard error for each combination of treatment and time point (and subgroup level, if applicable), as well as differences between pairs of means (covered later in this vignette). In other words, we want the mean `FEV1_CHG` for group `"TRT"` time `"VIS1"`, the mean `FEV1_CHG` for group `"TRT"` time `"VIS2"`, and so on. We can represent our goals in a reference grid, where each row represents a mean `FEV1_CHG` we want to estimate. 
 
 ```{r}
 distinct(data, ARMCD, AVISIT)
