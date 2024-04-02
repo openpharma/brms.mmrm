@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-options(tidyverse.quiet = TRUE)
+library(dplyr)
 library(zoo)
 ```
 
@@ -30,8 +30,9 @@ Throughout this vignette, we use the `mmrm` package's `fev_data` dataset, a simu
 ```{r}
 library(tidyverse)
 data(fev_data, package = "mmrm")
-data <- fev_data %>%
-  mutate(FEV1_CHG = FEV1 - FEV1_BL) %>%
+data <- fev_data |>
+  mutate(FEV1_CHG = FEV1 - FEV1_BL, USUBJID = as.character(USUBJID)) |>
+  select(-FEV1) |>
   as_tibble()
 data
 ```
@@ -70,21 +71,19 @@ To transform model coefficients into marginal means, `brms.mmrm` replicates the 
 
 ```{r}
 library(zoo)
-data <- fev_data %>%
-  mutate(FEV1_CHG = FEV1 - FEV1_BL, USUBJID = as.character(USUBJID)) %>%
-  select(-FEV1) %>%
-  group_by(USUBJID) %>%
-  complete(
-    AVISIT,
-    fill = as.list(.[1L, c("ARMCD", "FEV1_BL", "RACE", "SEX", "WEIGHT")])
-  ) %>%
-  ungroup() %>%
-  arrange(USUBJID, AVISIT) %>%
-  group_by(USUBJID) %>%
-  mutate(FEV1_CHG = na.locf(FEV1_CHG, na.rm = FALSE)) %>%
-  mutate(FEV1_CHG = na.locf(FEV1_CHG, na.rm = FALSE, fromLast = TRUE)) %>%
-  ungroup() %>%
-  filter(!is.na(FEV1_CHG))
+data <- data |>
+  group_by(USUBJID) |>
+  complete(AVISIT) |>
+  arrange(AVISIT) |>
+  fill(
+    any_of(c("ARMCD", "FEV1_BL", "RACE", "SEX", "WEIGHT")),
+    .direction = "downup"
+  ) |>
+  mutate(FEV1_CHG = na.locf(FEV1_CHG, na.rm = FALSE)) |>
+  mutate(FEV1_CHG = na.locf(FEV1_CHG, na.rm = FALSE, fromLast = TRUE)) |>
+  ungroup() |>
+  filter(!is.na(FEV1_CHG)) |>
+  arrange(USUBJID, AVISIT)
 ```
 
 To begin, let us fit a simple regression model using the complex formula from before.
@@ -106,10 +105,10 @@ marginals_emmeans <- emmeans(
   specs = ~ARMCD:AVISIT,
   wt.nuis = "proportional",
   nuisance = c("USUBJID", "RACE", "SEX")
-) %>%
-  as.data.frame() %>%
-  as_tibble() %>%
-  select(ARMCD, AVISIT, emmean) %>%
+) |>
+  as.data.frame() |>
+  as_tibble() |>
+  select(ARMCD, AVISIT, emmean) |>
   arrange(ARMCD, AVISIT)
 marginals_emmeans
 ```
@@ -117,9 +116,9 @@ marginals_emmeans
 To replicate this same technique manually for `lm()` fitted models, we first create a reference grid to define the factor levels of interest and the means of continuous variables to condition on.
 
 ```{r}
-grid <- data %>%
-  mutate(FEV1_BL = mean(FEV1_BL), WEIGHT = mean(WEIGHT)) %>%
-  distinct(ARMCD, AVISIT, FEV1_BL, WEIGHT) %>%
+grid <- data |>
+  mutate(FEV1_BL = mean(FEV1_BL), WEIGHT = mean(WEIGHT)) |>
+  distinct(ARMCD, AVISIT, FEV1_BL, WEIGHT) |>
   arrange(ARMCD, AVISIT)
 grid
 ```
@@ -138,16 +137,16 @@ transform
 We want to predict at the "average" of `SEX` and `RACE` across all the data. Since `SEX` and `RACE` are factors, we cannot simply take the means of the variables themselves. Rather, we construct a model matrix to turn each factor *level* into a dummy variable, and then average those dummy variables across the entire dataset. This process accounts for the observed frequencies of these levels in the data (ideal for passive variables that the experiment does not directly control), while guarding against hidden confounding with the factors of interest (which can lead to Simpson's paradox).^[For more context, please refer to the [`emmeans` basics vignette](https://cran.r-project.org/web/packages/emmeans/vignettes/basics.html), as well as discussion forums [here](https://stats.stackexchange.com/questions/332167/what-are-ls-means-useful-for) and [here](https://stats.stackexchange.com/questions/510862/is-least-squares-means-lsmeans-statistical-nonsense/510923#510923).]
 
 ```{r}
-proportional_factors <- data %>%
-  model.matrix(object = ~ 0 + SEX + RACE) %>%
-  colMeans() %>%
+proportional_factors <- data |>
+  model.matrix(object = ~ 0 + SEX + RACE) |>
+  colMeans() |>
   t()
 proportional_factors
 ```
 
 ```{r}
-transform <- transform %>%
-  bind_cols(proportional_factors) %>%
+transform <- transform |>
+  bind_cols(proportional_factors) |>
   as.matrix()
 transform <- transform[, names(coef(model))]
 rownames(transform) <- paste(grid$ARMCD, grid$AVISIT)
@@ -164,8 +163,8 @@ marginals_custom
 These results agree with the marginal mean estimates from `emmeans` (within rounding error).
 
 ```{r}
-marginals_emmeans %>%
-  bind_cols(custom = as.numeric(marginals_custom)) %>%
+marginals_emmeans |>
+  bind_cols(custom = as.numeric(marginals_custom)) |>
   mutate(difference = custom - emmean)
 ```
 
