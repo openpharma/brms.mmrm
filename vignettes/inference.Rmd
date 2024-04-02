@@ -18,23 +18,14 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 options(tidyverse.quiet = TRUE)
+library(zoo)
 ```
 
-This vignette explains how `brms.mmrm` conducts posterior inference on a fitted [MMRM model](https://openpharma.github.io/brms.mmrm/articles/model.html), with a particular focus on marginal means.
+This vignette explains how `brms.mmrm` conducts posterior inference on a fitted [MMRM model](https://openpharma.github.io/brms.mmrm/articles/model.html) using estimated marginal means.
 
-# Existing capabilities
+# Example data
 
-`brms.mmrm::brm_model()` returns a fitted [`brms`](https://paul-buerkner.github.io/brms/) model, and [`brms`](https://paul-buerkner.github.io/brms/) already has tools for posterior inference. Through a combination of native functions and S3 methods, [`brms`](https://paul-buerkner.github.io/brms/) integrates with [`posterior`](https://mc-stan.org/posterior/), [`emmeans`](https://cran.r-project.org/package=emmeans), and [`loo`](https://mc-stan.org/loo/). For more information, please visit <https://paul-buerkner.github.io/brms/>. 
-
-# Custom implementation
-
-Despite these existing features, `brms.mmrm` implements extra functions for posterior inference on marginal means. These functions tailor the methodology to clinical trials, making it easy and convenient to estimate the specific marginals of interest for this specific scenario while avoiding common statistical pitfalls. Rather than use [`emmeans`](https://cran.r-project.org/package=emmeans) directly, `brms.mmrm` independently replicates the relevant parts of the underlying methodology documented in the package vignettes, not only for extra transparency in clinical trials, but also to allow marginal mean computations without a fitted model object in order to create opportunities for flexible informative conditional means priors (@bedrick1996, @bedrick1997, @christensen2010, @rosner2021). The remainder of this vignette introduces marginal means for clinical trials and explains the custom code that `brms.mmrm` uses to estimate them.
-
-# Marginal means
-
-According to @lenth2016, marginal means (formerly "least-squares means") are predictions (usually averaged predictions) at each point in a reference grid. The reference grid declares combinations of levels of factors of interest.
-
-As an example, consider the `mmrm` package's `fev_data` dataset, a simulation of a clinical trial in which chronic obstructive pulmonary disease (COPD) patients (variable `USUBJID`) were randomized to different treatment groups (variable `ARMCD`) and measured across four discrete time points (variable `AVISIT`). The given response variable is forced expired volume in one second (`FEV1`), and we are interested in the `FEV1` change from baseline to each time point (derived variable `FEV_CHG`).
+Throughout this vignette, we use the `mmrm` package's `fev_data` dataset, a simulation of a clinical trial in which chronic obstructive pulmonary disease (COPD) patients (variable `USUBJID`) were randomized to different treatment groups (variable `ARMCD`) and measured across four discrete time points (variable `AVISIT`). The given response variable is forced expired volume in one second (`FEV1`), and we are interested in the `FEV1` change from baseline to each time point (derived variable `FEV_CHG`).
 
 ```{r}
 library(tidyverse)
@@ -45,7 +36,16 @@ data <- fev_data %>%
 data
 ```
 
-We may wish to fit a model with a typical "effects" parameterization (as opposed to cell means). The model tries to capture all meaningful sources of variability, so it includes an intercept term, additive terms for each level of each factor, interactions to capture non-additive relationships among factors, continuous covariates, and different `FEV1_BL` slopes for different time points.
+# Marginal means for clinical trials
+
+According to @lenth2016, marginal means (formerly "least-squares means") are predictions (usually averaged predictions) at each point in a reference grid. The reference grid declares combinations of levels of factors of interest. In a clinical trial with repeated measures, we are often interested in the mean response at each combination of treatment group and discrete time point. For our FEV1 dataset, we are interested in the mean of `FEV1_CHG` and its standard error for each combination of treatment group and time point.^[For a subgroup analysis where the subgroup factor is identified in advance, we would be interested in each combination of treatment group, subgroup level, and time point.] In other words, we want to estimate the mean `FEV1_CHG` for group `"TRT"` time `"VIS1"`, the mean `FEV1_CHG` for group `"TRT"` time `"VIS2"`, and so on.^[Other quantities of interest are downstream of these marginal means. For example, the difference between `TRT` and `PBO` at time point `VIS4`, and the difference between `VIS4` and `VIS4` for the `TRT` group, are simple contrasts of the upstream marginal means.] We represent our goals in a reference with one row per marginal mean of interest and columns with the levels of the factors of interest.
+
+```{r}
+reference_grid <- distinct(data, ARMCD, AVISIT)
+reference_grid
+```
+
+It is seldom trivial to estimate marginal means. For example, the following parameterization includes an intercept term, additive terms for each level of each factor, interactions to capture non-additive relationships among factors, continuous covariates, and different `FEV1_BL` slopes for different time points. Here, there is no model coefficient that directly corresponds to a marginal mean of interest. Even terms like `AVISITVIS2:ARMCDTRT` implicitly condition on a subset of the data because of the other variables involved.
 
 ```{r}
 formula <- FEV1_CHG ~ FEV1_BL*AVISIT + ARMCD*AVISIT + RACE + SEX + WEIGHT
@@ -56,14 +56,119 @@ formula
 colnames(model.matrix(object = formula, data = data))
 ```
 
-But for inference, we want to estimate the mean `FEV1_CHG` and its standard error for each combination of treatment and time point (and subgroup level, if applicable). In other words, we want the mean `FEV1_CHG` for group `"TRT"` time `"VIS1"`, the mean `FEV1_CHG` for group `"TRT"` time `"VIS2"`, and so on. We can represent our goals in a reference grid, where each row represents a mean `FEV1_CHG` we want to estimate. 
+To accomplish our goals, we need to carefully construct a linear transformation that maps these model coefficients to the marginal means of interest. The transformation should evaluate contrasts on the interesting parameters and average out the uninteresting parameters.
+
+# Existing capabilities
+
+`brms.mmrm::brm_model()` returns a fitted [`brms`](https://paul-buerkner.github.io/brms/) model, and [`brms`](https://paul-buerkner.github.io/brms/) already has tools for posterior inference. Through a combination of native functions and S3 methods, [`brms`](https://paul-buerkner.github.io/brms/) integrates not only with [`posterior`](https://mc-stan.org/posterior/) and [`loo`](https://mc-stan.org/loo/), but also [`emmeans`](https://cran.r-project.org/package=emmeans) for the estimation of marginal means and downstream contrasts. 
+
+Despite the existing features in `brms`, `brms.mmrm` implements custom code to transform model coefficients into marginal means. This is because the reference grids in `emmeans` can only condition on factors explicitly declared in the model formula supplied to `brms`, whereas `brms.mmrm` needs more flexibility in order to support conditional means priors (@bedrick1996, @bedrick1997, @christensen2010, @rosner2021).
+
+# How `brms.mmrm` estimates marginal means
+
+To transform model coefficients into marginal means, `brms.mmrm` replicates the behavior of `emmeans` described in its [package vignettes](https://cran.r-project.org/package=emmeans/vignettes/). The only difference is that `brms.mmrm` completes the grid of patient visits to add rows for implicitly missing responses.^[Completing the grid of patient visits ensures all patients are represented equally when averaging over baseline covariates, regardless of patients who drop out early.] To simplify this vignette, let us complete the patient-visit grid and impute missing `FEV1_CHG` values so that none are missing.
 
 ```{r}
-distinct(data, ARMCD, AVISIT)
+library(zoo)
+data <- fev_data %>%
+  mutate(FEV1_CHG = FEV1 - FEV1_BL, USUBJID = as.character(USUBJID)) %>%
+  select(-FEV1) %>%
+  group_by(USUBJID) %>%
+  complete(
+    AVISIT,
+    fill = as.list(.[1L, c("ARMCD", "FEV1_BL", "RACE", "SEX", "WEIGHT")])
+  ) %>%
+  ungroup() %>%
+  arrange(USUBJID, AVISIT) %>%
+  group_by(USUBJID) %>%
+  mutate(FEV1_CHG = na.locf(FEV1_CHG, na.rm = FALSE)) %>%
+  mutate(FEV1_CHG = na.locf(FEV1_CHG, na.rm = FALSE, fromLast = TRUE)) %>%
+  ungroup() %>%
+  filter(!is.na(FEV1_CHG))
 ```
 
-However, our desired model does not have dedicated model parameters for these margins, and even if it did, these parameters would be implicitly conditional on the levels of other factors.
+To begin, let us fit a simple regression model using the complex formula from before.
 
-The marginal means framework is a principled and rigorous approach to estimate these margins anyway. It works by conditioning on the factor levels of interest and carefully averaging over the other variables. The [`emmeans`](https://CRAN.R-project.org/package=emmeans) package has excellent vignettes explaining the general methodology. 
+```{r}
+formula
+```
+
+```{r}
+model <- lm(formula = formula, data = data)
+```
+
+For the predictions that support marginal mean estimation, we condition on the means of continuous covariates such as `FEV1_BL` and `WEIGHT`, and we condition on proportional averages of levels of concomitant factors `RACE` and `SEX`. The following settings in `emmeans` accomplish this. Behind the scenes, `emmeans` creates the transformation from model coefficients to marginal means, and then returns estimates of those marginal means. For more information, please consult @lenth2016, @searle1979, and the [`emmeans` package vignettes](https://cran.r-project.org/package=emmeans/vignettes/).
+
+```{r}
+library(emmeans)
+marginals_emmeans <- emmeans(
+  object = model,
+  specs = ~ARMCD:AVISIT,
+  wt.nuis = "proportional",
+  nuisance = c("USUBJID", "RACE", "SEX")
+) %>%
+  as.data.frame() %>%
+  as_tibble() %>%
+  select(ARMCD, AVISIT, emmean) %>%
+  arrange(ARMCD, AVISIT)
+marginals_emmeans
+```
+
+To replicate this same technique manually for `lm()` fitted models, we first create a reference grid to define the factor levels of interest and the means of continuous variables to condition on.
+
+```{r}
+grid <- data %>%
+  mutate(FEV1_BL = mean(FEV1_BL), WEIGHT = mean(WEIGHT)) %>%
+  distinct(ARMCD, AVISIT, FEV1_BL, WEIGHT) %>%
+  arrange(ARMCD, AVISIT)
+grid
+```
+
+We use the grid to construct a model matrix with the desired interactions between continuous variables and factors of interest. Each column represents a model coefficient, and each row represents a marginal mean of interest.
+
+```{r}
+transform <- model.matrix(
+  object = ~ FEV1_BL * AVISIT + ARMCD * AVISIT + WEIGHT,
+  data = grid
+)
+rownames(transform) <- paste(grid$ARMCD, grid$AVISIT)
+transform
+```
+
+We want to predict at the "average" of `SEX` and `RACE` across all the data. Since `SEX` and `RACE` are factors, we cannot simply take the means of the variables themselves. Rather, we construct a model matrix to turn each factor *level* into a dummy variable, and then average those dummy variables across the entire dataset. This process accounts for the observed frequencies of these levels in the data (ideal for passive variables that the experiment does not directly control), while guarding against hidden confounding with the factors of interest (which can lead to Simpson's paradox).^[For more context, please refer to the [`emmeans` basics vignette](https://cran.r-project.org/web/packages/emmeans/vignettes/basics.html), as well as discussion forums [here](https://stats.stackexchange.com/questions/332167/what-are-ls-means-useful-for) and [here](https://stats.stackexchange.com/questions/510862/is-least-squares-means-lsmeans-statistical-nonsense/510923#510923).]
+
+```{r}
+proportional_factors <- data %>%
+  model.matrix(object = ~ 0 + SEX + RACE) %>%
+  colMeans() %>%
+  t()
+proportional_factors
+```
+
+```{r}
+transform <- transform %>%
+  bind_cols(proportional_factors) %>%
+  as.matrix()
+transform <- transform[, names(coef(model))]
+rownames(transform) <- paste(grid$ARMCD, grid$AVISIT)
+transform
+```
+
+Finally, we use this transformation matrix to map estimated model coefficients to estimated marginal means.
+
+```{r}
+marginals_custom <- transform %*% coef(model)
+marginals_custom
+```
+
+These results agree with the marginal mean estimates from `emmeans` (within rounding error).
+
+```{r}
+marginals_emmeans %>%
+  bind_cols(custom = as.numeric(marginals_custom)) %>%
+  mutate(difference = custom - emmean)
+```
+
+`brms.mmrm` follows the procedure above, but in a Bayesian context. The `brm_transform_marginal()` creates the matrix above, and `brm_marginal_draws()` uses it to transform posterior draws of `brms` model coefficients into posterior draws of marginal means. These posterior draws of marginal means then support estimation of treatment effects (via `brm_marginal_draws()` and `brm_marginal_summaries()`) and posterior probabilities on those treatment effects (via `brm_marginal_probabilities()`).
 
 # References
