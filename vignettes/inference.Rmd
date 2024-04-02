@@ -19,6 +19,7 @@ knitr::opts_chunk$set(
   eval = rlang::is_installed("emmeans")
 )
 library(dplyr)
+library(tidyr)
 library(zoo)
 ```
 
@@ -29,7 +30,7 @@ This vignette explains how `brms.mmrm` conducts posterior inference on a fitted 
 Throughout this vignette, we use the `mmrm` package's `fev_data` dataset, a simulation of a clinical trial in which chronic obstructive pulmonary disease (COPD) patients (variable `USUBJID`) were randomized to different treatment groups (variable `ARMCD`) and measured across four discrete time points (variable `AVISIT`). The given response variable is forced expired volume in one second (`FEV1`), and we are interested in the `FEV1` change from baseline to each time point (derived variable `FEV_CHG`).
 
 ```{r}
-library(tidyverse)
+library(dplyr)
 data(fev_data, package = "mmrm")
 data <- fev_data |>
   mutate(FEV1_CHG = FEV1 - FEV1_BL, USUBJID = as.character(USUBJID)) |>
@@ -71,6 +72,7 @@ Despite the existing features in `brms`, `brms.mmrm` implements custom code to t
 To transform model coefficients into marginal means, `brms.mmrm` replicates the behavior of `emmeans` described in its [package vignettes](https://cran.r-project.org/package=emmeans/vignettes/). The only difference is that `brms.mmrm` completes the grid of patient visits to add rows for implicitly missing responses.^[Completing the grid of patient visits ensures all patients are represented equally when averaging over baseline covariates, regardless of patients who drop out early.] To simplify this vignette, let us complete the patient-visit grid and impute missing `FEV1_CHG` values so that none are missing.
 
 ```{r}
+library(tidyr)
 library(zoo)
 data <- data |>
   group_by(USUBJID) |>
