@@ -49,7 +49,7 @@ reference_grid
 It is seldom trivial to estimate marginal means. For example, the following parameterization includes an intercept term, additive terms for each level of each factor, interactions to capture non-additive relationships among factors, continuous covariates, and different `FEV1_BL` slopes for different time points. Here, there is no model coefficient that directly corresponds to a marginal mean of interest. Even terms like `AVISITVIS2:ARMCDTRT` implicitly condition on a subset of the data because of the other variables involved.
 
 ```{r}
-formula <- FEV1_CHG ~ FEV1_BL*AVISIT + ARMCD*AVISIT + RACE + SEX + WEIGHT
+formula <- FEV1_CHG ~ FEV1_BL * AVISIT + ARMCD * AVISIT + RACE + SEX + WEIGHT
 formula
 ```
 
