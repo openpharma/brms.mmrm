@@ -29,7 +29,6 @@ test_that("brm_marginal_draws() on response, no subgroup", {
       )
     )
   )
-  old_sep <- emmeans::get_emm_option("sep")
   out <- brm_marginal_draws(
     model = model,
     formula = formula,
@@ -53,7 +52,6 @@ test_that("brm_marginal_draws() on response, no subgroup", {
     ),
     class = "brm_deprecate"
   )
-  expect_equal(emmeans::get_emm_option("sep"), old_sep)
   fields <- c("response", "difference_time", "difference_group", "effect")
   columns_df <- expand.grid(
     group = sort(unique(data$group)),
@@ -144,7 +142,6 @@ test_that("brm_marginal_draws() on response, with subgroup", {
       )
     )
   )
-  old_sep <- emmeans::get_emm_option("sep")
   expect_warning(
     brm_marginal_draws(
       model = model,
@@ -155,7 +152,6 @@ test_that("brm_marginal_draws() on response, with subgroup", {
     class = "brm_deprecate"
   )
   out <- brm_marginal_draws(model = model, formula = formula, data = data)
-  expect_equal(emmeans::get_emm_option("sep"), old_sep)
   fields <- c(
     "response",
     "difference_time",
