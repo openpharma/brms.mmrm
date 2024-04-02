@@ -169,6 +169,6 @@ marginals_emmeans %>%
   mutate(difference = custom - emmean)
 ```
 
-`brms.mmrm` follows the procedure above, but in a Bayesian context. The `brm_transform_marginal()` creates the matrix above, and `brm_marginal_draws()` uses it to transform posterior draws of `brms` model coefficients into posterior draws of marginal means. These posterior draws of marginal means then support estimation of treatment effects (via `brm_marginal_draws()` and `brm_marginal_summaries()`) and posterior probabilities on those treatment effects (via `brm_marginal_probabilities()`).
+`brms.mmrm` follows the procedure above, but in a Bayesian context. The `brm_transform_marginal()` creates the matrix above, and `brm_marginal_draws()` uses it to transform posterior draws of `brms` model coefficients into posterior draws of marginal means. These posterior draws of marginal means then support estimation of treatment effects (via `brm_marginal_draws()` and `brm_marginal_summaries()`) and posterior probabilities on those treatment effects (via `brm_marginal_probabilities()`). To fine-tune the marginal mean estimation procedure for niche use cases, you can modify the transformation returned from `brm_transform_marginal()` and then supply it to the `transform` argument of `brm_marginal_draws()`.
 
 # References
