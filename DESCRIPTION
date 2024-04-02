@@ -83,8 +83,7 @@ Suggests:
   rmarkdown (>= 2.4),
   rstan,
   StanHeaders,
-  testthat (>= 3.0.0),
-  zoo
+  testthat (>= 3.0.0)
 VignetteBuilder: 
   knitr
 Config/testthat/edition: 3
