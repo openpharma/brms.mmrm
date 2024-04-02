@@ -1,4 +1,4 @@
-# brms.mmrm 0.1.0.9000 (development)
+# brms.mmrm 0.1.0.9001 (development)
 
 ## Guardrails to ensure the appropriateness of marginal mean estimation
 
@@ -9,6 +9,13 @@
 * Deprecate `use_subgroup` in `brm_marginal_draws()`. The subgroup is now always part of the reference grid when declared in `brm_data()`. To marginalize over subgroup, declare it in `covariates` instead.
 * Prevent overplotting multiple subgroups in `brm_plot_compare()`.
 * Update the subgroup vignette to reflect all the changes above.
+
+## Custom estimation of marginal means
+
+* Implement a new `brm_transform_marginal()` to transform model parameters to marginal means (#53).
+* Use `brm_transform_marginal()` instead of `emmeans` in `brm_marginal_draws()` to derive posterior draws of marginal means based on posterior draws of model parameters (#53).
+* Explain the custom marginal mean calculation in a new `inference.Rmd` vignette.
+* Rename `methods.Rmd` to `model.Rmd` since `inference.Rmd` also discusses methods.
 
 # brms.mmrm 0.1.0
 
