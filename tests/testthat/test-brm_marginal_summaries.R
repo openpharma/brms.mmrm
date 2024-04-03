@@ -31,6 +31,7 @@ test_that("brm_marginal_summaries() on response", {
   )
   draws <- brm_marginal_draws(
     model = model,
+    formula = formula,
     data = data
   )
   suppressWarnings(
@@ -149,6 +150,7 @@ test_that("brm_marginal_summaries() on response with subgroup", {
   )
   draws <- brm_marginal_draws(
     model = model,
+    formula = formula,
     data = data
   )
   suppressWarnings(
@@ -286,6 +288,7 @@ test_that("brm_marginal_summaries() on change", {
   )
   draws <- brm_marginal_draws(
     model = model,
+    formula = formula,
     data = data
   )
   suppressWarnings(

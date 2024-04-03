@@ -257,3 +257,57 @@ test_that("brm_formula() with individual terms", {
     }
   }
 })
+
+test_that("brm_formula_has_subgroup()", {
+  data <- brm_data(
+    data = tibble::tibble(
+      CHG = 1,
+      TIME = "x",
+      BASELINE = 2,
+      GROUP = "x",
+      USUBJID = "x",
+      SUBGROUP = "x"
+    ),
+    outcome = "CHG",
+    role = "change",
+    group = "GROUP",
+    subgroup = "SUBGROUP",
+    time = "TIME",
+    baseline = "BASELINE",
+    patient = "USUBJID",
+    reference_group = "x",
+    reference_subgroup = "x"
+  )
+  template <- list(
+    data = data,
+    intercept = FALSE,
+    baseline = FALSE,
+    baseline_subgroup = FALSE,
+    baseline_subgroup_time = FALSE,
+    baseline_time = FALSE,
+    group = FALSE,
+    group_subgroup = FALSE,
+    group_subgroup_time = FALSE,
+    group_time = FALSE,
+    subgroup = FALSE,
+    subgroup_time = FALSE,
+    time = FALSE
+  )
+  with_subgroup <- c(
+    "baseline_subgroup",
+    "baseline_subgroup_time",
+    "group_subgroup",
+    "group_subgroup_time",
+    "subgroup",
+    "subgroup_time"
+  )
+  for (term in setdiff(names(template), "data")) {
+    args <- template
+    args[[term]] <- TRUE
+    formula <- do.call(what = brm_formula, args = args)
+    expect_equal(
+      brm_formula_has_subgroup(formula),
+      term %in% with_subgroup
+    )
+  }
+})

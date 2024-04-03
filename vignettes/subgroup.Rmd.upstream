@@ -46,7 +46,7 @@ raw_data <- brm_simulate_outline(
   rate_lapse = 0
 ) |>
   mutate(response = rnorm(n = n()))
-  
+
 raw_data
 ```
 
@@ -126,54 +126,41 @@ model_reduced <- brm_model(
 
 # Marginals
 
-For the subgroup model, `brm_marginal_draws()` can summarize subgroup-specific and non-subgroup-specific marginal means. The latter is useful for direct comparison with the non-subgroup reduced model.
+`brm_marginal_draws()` automatically produces subgroup-specific marginal means if `brm_formula()` declared subgroup-specific fixed effects.
 
 ```{r}
-draws_subgroup_specific <- brm_marginal_draws(
-  model = model_subgroup,
+draws_subgroup <- brm_marginal_draws(
   data = data,
-  use_subgroup = TRUE
-)
-```
-
-```{r}
-draws_subgroup_comparison <- brm_marginal_draws(
-  model = model_subgroup,
-  data = data,
-  use_subgroup = FALSE
+  formula = formula_subgroup,
+  model = model_subgroup
 )
 ```
 
 ```{r}
 draws_reduced <- brm_marginal_draws(
-  model = model_reduced,
   data = data,
-  use_subgroup = FALSE
+  formula = formula_reduced,
+  model = model_reduced
 )
 ```
 
-For `draws_subgroup_specific`, the marginals of the time difference (change from baseline) and treatment difference are the same as before, except now they are subgroup-specific.
+For `draws_subgroup`, the marginals of the time difference (change from baseline) and treatment difference are now subgroup-specific.
 
 ```{r, paged.print = FALSE}
-tibble::as_tibble(draws_subgroup_specific$difference_group)
+tibble::as_tibble(draws_subgroup$difference_group)
 ```
 
 In addition, there is a new `difference_subgroup` table. The posterior samples in `difference_subgroup` measure the differences between each subgroup level and the reference subgroup level with respect to the treatment effects in `difference_group`.
 
 ```{r, paged.print = FALSE}
-tibble::as_tibble(draws_subgroup_specific$difference_subgroup)
+tibble::as_tibble(draws_subgroup$difference_subgroup)
 ```
 
 The `brm_marginal_summaries()` and `brm_marginal_probabilities()` are automatically aware of any subgroup-specific marginals from `brm_marginal_draws()`. Notably, `brm_marginal_summaries()` summarizes the subgroup differences in the `difference_subgroup` table from `brm_marginal_draws()`.
 
 ```{r, paged.print = FALSE}
-summaries_subgroup_specific <- brm_marginal_summaries(
-  draws_subgroup_specific,
-  level = 0.95
-)
-
-summaries_subgroup_comparison <- brm_marginal_summaries(
-  draws_subgroup_comparison,
+summaries_subgroup <- brm_marginal_summaries(
+  draws_subgroup,
   level = 0.95
 )
 
@@ -182,14 +169,14 @@ summaries_reduced <- brm_marginal_summaries(
   level = 0.95
 )
 
-summaries_subgroup_specific
+summaries_subgroup
 ```
 
 `brm_marginal_probabilities()` still focuses on treatment effects, not on differences between pairs of subgroup levels.
 
 ```{r, paged.print = FALSE}
 brm_marginal_probabilities(
-  draws = draws_subgroup_specific,
+  draws = draws_subgroup,
   threshold = c(-0.1, 0.1),
   direction = c("greater", "less")
 )
@@ -253,14 +240,14 @@ loo::loo_compare(loo_subgroup, loo_reduced)
 `brm_plot_draws()` is aware of any subgroup-specific marginal means.
 
 ```{r draws}
-brm_plot_draws(draws_subgroup_specific$difference_group)
+brm_plot_draws(draws_subgroup$difference_group)
 ```
 
 You can adjust visual aesthetics to compare subgroup levels side by side if subgroup level is the primary comparison of interest.
 
 ```{r drawscustom}
 brm_plot_draws(
-  draws_subgroup_specific$difference_group,
+  draws_subgroup$difference_group,
   axis = "subgroup",
   facet = c("time", "group")
 )
@@ -271,7 +258,7 @@ The following function call compares the subgroup model results against the subg
 ```{r subgroup-vs-data}
 brm_plot_compare(
   data = summaries_data_subgroup,
-  model = summaries_subgroup_specific,
+  model = summaries_subgroup,
   marginal = "response"
 )
 ```
@@ -281,7 +268,7 @@ You can adjust plot aesthetics to view subgroup levels side by side as the prima
 ```{r subgroup-vs-data-levels}
 brm_plot_compare(
   data = summaries_data_subgroup,
-  model = summaries_subgroup_specific,
+  model = summaries_subgroup,
   marginal = "response",
   compare = "subgroup",
   axis = "time",
@@ -289,15 +276,24 @@ brm_plot_compare(
 )
 ```
 
-We can also visually compare the treatment effects of the full subgroup and reduced non-subgroup models, marginalizing over subgroup levels in both cases.
+We can also visually compare the treatment effects of a subgroup level against the marginal treatment effects of the reduced model.
 
 ```{r reduced-model-comparison}
 brm_plot_compare(
-  subgroup = summaries_subgroup_comparison,
+  subgroup = filter(summaries_subgroup, subgroup == "subgroup_2"),
+  reduced = summaries_reduced,
+  marginal = "difference_group"
+)
+```
+
+Please remember to filter on a single subgroup level. Otherwise, `brm_plot_compare()` throws an informative error to prevent overplotting.
+
+```{r reduced-model-comparison-overplot, error = TRUE}
+brm_plot_compare(
+  subgroup = summaries_subgroup,
   reduced = summaries_reduced,
   marginal = "difference_group"
 )
 ```
 
 # References
-

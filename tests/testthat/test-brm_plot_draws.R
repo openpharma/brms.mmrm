@@ -31,6 +31,7 @@ test_that("brm_plot_draws() without subgroup", {
   )
   draws <- brm_marginal_draws(
     model = model,
+    formula = formula,
     data = data
   )
   expect_s3_class(
@@ -85,6 +86,7 @@ test_that("brm_plot_draws() with subgroup", {
   )
   draws <- brm_marginal_draws(
     model = model,
+    formula = formula,
     data = data
   )
   expect_s3_class(

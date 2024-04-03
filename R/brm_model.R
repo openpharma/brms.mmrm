@@ -70,18 +70,38 @@ brm_model <- function(
   ...
 ) {
   brm_data_validate(data = data)
-  assert(
-    inherits(formula, "brmsformula"),
-    message = "formula arg must be a \"brmsformula\" object."
-  )
+  brm_formula_validate(formula)
   assert(
     inherits(prior %|||% brms::prior("normal(0, 1)"), "brmsprior"),
     message = "prior arg must be a \"brmsprior\" object or NULL."
   )
-  brms::brm(
+  model <- brms::brm(
     data = data[!is.na(data[[attr(data, "brm_outcome")]]), ],
     formula = formula,
     prior = prior,
     ...
+  )
+  model <- brm_model_new(model, formula)
+  brm_model_validate(model)
+  model
+}
+
+brm_model_new <- function(model, formula) {
+  structure(
+    model,
+    class = unique(c("brms_mmrm_model", class(model)))
+  )
+}
+
+brm_model_validate <- function(model) {
+  assert(
+    model,
+    inherits(., "brms_mmrm_model"),
+    inherits(., "brmsfit"),
+    message = paste(
+      "Please use brms.mmrm::brm_model() to fit the model.",
+      "Otherwise, functions like brm_marginal_draws()",
+      "in brms.mmrm may not be statistically valid."
+    )
   )
 }

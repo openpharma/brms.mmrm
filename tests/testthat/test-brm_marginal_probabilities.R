@@ -31,6 +31,7 @@ test_that("brm_marginal_probabilities() on response", {
   )
   draws <- brm_marginal_draws(
     model = model,
+    formula = formula,
     data = data
   )
   x <- brm_marginal_probabilities(
@@ -95,6 +96,7 @@ test_that("brm_marginal_probabilities() on change and multiple probs", {
   )
   draws <- brm_marginal_draws(
     model = model,
+    formula = formula,
     data = data
   )
   for (index in seq_along(draws$difference_group)) {
@@ -146,6 +148,7 @@ test_that("brm_marginal_probabilities() with subgroup", {
   )
   draws <- brm_marginal_draws(
     model = model,
+    formula = formula,
     data = data
   )
   for (index in seq_along(draws$difference_group)) {

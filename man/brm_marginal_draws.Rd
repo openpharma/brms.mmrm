@@ -5,21 +5,25 @@
 \title{MCMC draws from the marginal posterior of an MMRM}
 \usage{
 brm_marginal_draws(
-  model,
   data,
-  use_subgroup = !is.null(attr(data, "brm_subgroup")),
+  formula,
+  model,
+  use_subgroup = NULL,
   control = NULL,
   baseline = NULL
 )
 }
 \arguments{
-\item{model}{Fitted \code{brms} model object from \code{\link[=brm_model]{brm_model()}}.}
-
 \item{data}{Classed tibble with preprocessed data from \code{\link[=brm_data]{brm_data()}}.}
 
-\item{use_subgroup}{Logical of length 1, whether to summarize the draws by
-each subgroup level. If \code{TRUE}, subgroup-specific marginals are given.
-Otherwise, the subgroup is marginalized out.}
+\item{formula}{Model formula from \code{\link[=brm_formula]{brm_formula()}}.}
+
+\item{model}{A fitted model object from \code{\link[=brm_model]{brm_model()}}}
+
+\item{use_subgroup}{Deprecated. No longer used. \code{\link[=brm_marginal_draws]{brm_marginal_draws()}}
+no longer marginalizes over the subgroup declared
+in \code{\link[=brm_data]{brm_data()}}. To marginalize over the subgroup, declare
+that variable in \code{covariates} instead.}
 
 \item{control}{Deprecated. Set the control group level in \code{\link[=brm_data]{brm_data()}}.}
 
@@ -27,8 +31,9 @@ Otherwise, the subgroup is marginalized out.}
 }
 \value{
 A named list of tibbles of MCMC draws of the marginal posterior
-distribution of each treatment group and time point
-(or group-by-subgroup-by-time, if applicable).
+distribution of each treatment group and time point. These marginals
+are also subgroup-specific if \code{\link[=brm_formula]{brm_formula()}} included fixed effects
+that use the \code{subgroup} variable originally declared in \code{\link[=brm_data]{brm_data()}}.
 In each tibble, there is 1 row per posterior sample and one column for
 each type of marginal distribution (i.e. each combination of treatment
 group and discrete time point. The specific \code{tibble}s in the returned

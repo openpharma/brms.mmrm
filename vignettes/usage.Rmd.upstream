@@ -173,7 +173,7 @@ Regardless of the choice of fixed effects formula, `brms.mmrm` performs inferenc
 To derive posterior draws of these marginals, use the `brm_marginal_draws()` function.
 
 ```{r, paged.print = FALSE}
-draws <- brm_marginal_draws(model = model, data = data)
+draws <- brm_marginal_draws(data = data, formula = formula, model = model)
 
 draws
 ```

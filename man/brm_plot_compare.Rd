@@ -28,7 +28,7 @@ the primary comparison of interest. Must be one of
 \code{"source"} (the source of the marginal summaries,
 e.g. a model or dataset), \code{"time"} or \code{"group"}
 (in the non-subgroup case). Can also be \code{"subgroup"}
-if the marginal summaries are subgroup-specific.
+if all the marginal summaries are subgroup-specific.
 The value must not be in \code{axis} or \code{facet}.}
 
 \item{axis}{Character of length 1 identifying the quantity to put
@@ -44,8 +44,8 @@ generate facets. Each element must be \code{"source"}
 (the source of the marginal summaries,
 e.g. a model or dataset), \code{"time"}, \code{"group"},
 or \code{"subgroup"}, and \code{c(axis, facet)} must all have unique elements.
-\code{"subgroup"} is automatically removed if the marginals have no
-subgroup. If \code{facet} has length 1, then faceting is wrapped.
+\code{"subgroup"} is automatically removed if not all the marginal summaries
+have a subgroup column. If \code{facet} has length 1, then faceting is wrapped.
 If \code{facet} has length 2, then faceting is in a grid,
 and the first element is horizontal facet.}
 }
@@ -61,6 +61,8 @@ By default, \code{\link[=brm_plot_compare]{brm_plot_compare()}} compares multipl
 and/or datasets side-by-side. The \code{compare} argument selects the primary
 comparison of interest, and arguments \code{axis} and \code{facet} control
 the arrangement of various other components of the plot.
+The subgroup variable is automatically included if and only if
+all the supplied marginal summaries have a subgroup column.
 }
 \examples{
 if (identical(Sys.getenv("BRM_EXAMPLES", unset = ""), "true")) {

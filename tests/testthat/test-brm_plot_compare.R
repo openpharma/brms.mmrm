@@ -31,6 +31,7 @@ test_that("brm_plot_compare() without subgroup", {
   )
   draws <- brm_marginal_draws(
     model = model,
+    formula = formula,
     data = data
   )
   suppressWarnings(summaries_draws <- brm_marginal_summaries(draws))
@@ -124,6 +125,7 @@ test_that("brm_plot_compare() with subgroups", {
   )
   draws <- brm_marginal_draws(
     model = model,
+    formula = formula,
     data = data
   )
   suppressWarnings(summaries_draws <- brm_marginal_summaries(draws))
