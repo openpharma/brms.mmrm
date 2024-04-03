@@ -112,7 +112,7 @@ package source code.</p>
 predictive distribution assuming 3 treatment groups, 4 time points, 100
 patients per treatment group, no adjustment for covariates, and no
 missing responses. The model formula is:</p>
-<pre><code><span><span class="co">#&gt; response ~ 0 + group + time + unstr(time = time, gr = patient) </span></span>
+<pre><code><span><span class="co">#&gt; response ~ 0 + group + group:time + time + unstr(time = time, gr = patient) </span></span>
 <span><span class="co">#&gt; sigma ~ 0 + time</span></span></code></pre>
 <p>The prior was randomly generated and used for both simulation and
 analysis:</p>
@@ -279,7 +279,7 @@ evidence that both the subgroup and non-subgroup models in
 <div class="section level2">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
 <div id="ref-sbc" class="csl-entry">
 Kim, S., Moon, H., Modrák, M., and Säilynoja, T. (2022), <em>SBC:
 Simulation based calibration for rstan/cmdstanr models</em>.

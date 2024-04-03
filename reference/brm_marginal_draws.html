@@ -68,9 +68,10 @@
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">brm_marginal_draws</span><span class="op">(</span></span>
-<span>  <span class="va">model</span>,</span>
 <span>  <span class="va">data</span>,</span>
-<span>  use_subgroup <span class="op">=</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">data</span>, <span class="st">"brm_subgroup"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  <span class="va">formula</span>,</span>
+<span>  <span class="va">model</span>,</span>
+<span>  use_subgroup <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  control <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  baseline <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -78,18 +79,23 @@
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
-    <dl><dt>model</dt>
-<dd><p>Fitted <code>brms</code> model object from <code><a href="brm_model.html">brm_model()</a></code>.</p></dd>
-
-
-<dt>data</dt>
+    <dl><dt>data</dt>
 <dd><p>Classed tibble with preprocessed data from <code><a href="brm_data.html">brm_data()</a></code>.</p></dd>
 
 
+<dt>formula</dt>
+<dd><p>Model formula from <code><a href="brm_formula.html">brm_formula()</a></code>.</p></dd>
+
+
+<dt>model</dt>
+<dd><p>A fitted model object from <code><a href="brm_model.html">brm_model()</a></code></p></dd>
+
+
 <dt>use_subgroup</dt>
-<dd><p>Logical of length 1, whether to summarize the draws by
-each subgroup level. If <code>TRUE</code>, subgroup-specific marginals are given.
-Otherwise, the subgroup is marginalized out.</p></dd>
+<dd><p>Deprecated. No longer used. <code>brm_marginal_draws()</code>
+no longer marginalizes over the subgroup declared
+in <code><a href="brm_data.html">brm_data()</a></code>. To marginalize over the subgroup, declare
+that variable in <code>covariates</code> instead.</p></dd>
 
 
 <dt>control</dt>
@@ -105,8 +111,9 @@ Otherwise, the subgroup is marginalized out.</p></dd>
     
 
 <p>A named list of tibbles of MCMC draws of the marginal posterior
-distribution of each treatment group and time point
-(or group-by-subgroup-by-time, if applicable).
+distribution of each treatment group and time point. These marginals
+are also subgroup-specific if <code><a href="brm_formula.html">brm_formula()</a></code> included fixed effects
+that use the <code>subgroup</code> variable originally declared in <code><a href="brm_data.html">brm_data()</a></code>.
 In each tibble, there is 1 row per posterior sample and one column for
 each type of marginal distribution (i.e. each combination of treatment
 group and discrete time point. The specific <code>tibble</code>s in the returned

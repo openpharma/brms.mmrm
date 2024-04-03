@@ -266,7 +266,7 @@ outcome variable <code>response</code> using the data skeleton above and
 the prior predictive distribution. However, if you prefer a full custom
 approach, you may need granular details about the parameterization,
 which requires the model matrix. Fortunately, <code>brms</code> supports
-a <code><a href="https://paul-buerkner.github.io/brms/reference/make_standata.html" class="external-link">make_standata()</a></code> function to provide this, given a dataset
+a <code><a href="https://paul-buerkner.github.io/brms/reference/standata.html" class="external-link">make_standata()</a></code> function to provide this, given a dataset
 and a formula. You may need to temporarily set the response variable to
 something non-missing, and you may wish to specify a custom prior.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
@@ -276,7 +276,7 @@ something non-missing, and you may wish to specify a custom prior.</p>
 <span><span class="co">#&gt; response ~ group + group:time + time + biomarker1 + biomarker2 + status1 + status2 + unstr(time = time, gr = patient) </span></span>
 <span><span class="co">#&gt; sigma ~ 0 + time</span></span>
 <span></span>
-<span><span class="va">stan_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://paul-buerkner.github.io/brms/reference/make_standata.html" class="external-link">make_standata</a></span><span class="op">(</span></span>
+<span><span class="va">stan_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://paul-buerkner.github.io/brms/reference/standata.html" class="external-link">make_standata</a></span><span class="op">(</span></span>
 <span>  formula <span class="op">=</span> <span class="va">formula</span>,</span>
 <span>  data <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span><span class="va">data</span>, response <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>

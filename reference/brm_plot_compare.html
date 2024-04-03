@@ -101,7 +101,7 @@ the primary comparison of interest. Must be one of
 <code>"source"</code> (the source of the marginal summaries,
 e.g. a model or dataset), <code>"time"</code> or <code>"group"</code>
 (in the non-subgroup case). Can also be <code>"subgroup"</code>
-if the marginal summaries are subgroup-specific.
+if all the marginal summaries are subgroup-specific.
 The value must not be in <code>axis</code> or <code>facet</code>.</p></dd>
 
 
@@ -121,8 +121,8 @@ generate facets. Each element must be <code>"source"</code>
 (the source of the marginal summaries,
 e.g. a model or dataset), <code>"time"</code>, <code>"group"</code>,
 or <code>"subgroup"</code>, and <code>c(axis, facet)</code> must all have unique elements.
-<code>"subgroup"</code> is automatically removed if the marginals have no
-subgroup. If <code>facet</code> has length 1, then faceting is wrapped.
+<code>"subgroup"</code> is automatically removed if not all the marginal summaries
+have a subgroup column. If <code>facet</code> has length 1, then faceting is wrapped.
 If <code>facet</code> has length 2, then faceting is in a grid,
 and the first element is horizontal facet.</p></dd>
 
@@ -138,7 +138,9 @@ and the first element is horizontal facet.</p></dd>
     <p>By default, <code>brm_plot_compare()</code> compares multiple models
 and/or datasets side-by-side. The <code>compare</code> argument selects the primary
 comparison of interest, and arguments <code>axis</code> and <code>facet</code> control
-the arrangement of various other components of the plot.</p>
+the arrangement of various other components of the plot.
+The subgroup variable is automatically included if and only if
+all the supplied marginal summaries have a subgroup column.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
