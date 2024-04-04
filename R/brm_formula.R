@@ -30,7 +30,8 @@
 #'   correlation structure, and residual variance structure.
 #' @param data A classed data frame from [brm_data()].
 #' @param correlation Character of length 1, name of the correlation
-#'   structure. Only `"unstructured"` is currently supported.
+#'   structure. Choose `"unstructured"` for unstructured covariance
+#'   or `"diagonal"` for independent time points within patients.
 #' @param intercept Logical of length 1.
 #'   `TRUE` (default) to include an intercept, `FALSE` to omit.
 #' @param baseline Logical of length 1.
@@ -75,6 +76,10 @@
 #'   variable in the dataset.
 #' @param time Logical of length 1.
 #'   `TRUE` (default) to include a additive effect for discrete time,
+#'   `FALSE` to omit.
+#' @param covariates Logical of length 1.
+#'   `TRUE` (default) to include any additive covariates declared with
+#'   the `covariates` argument of [brm_data()],
 #'   `FALSE` to omit.
 #' @param effect_baseline Deprecated on 2024-01-16 (version 0.0.2.9002).
 #'   Use `baseline` instead.
@@ -134,6 +139,7 @@ brm_formula <- function(
   subgroup = !is.null(attr(data, "brm_subgroup")),
   subgroup_time = !is.null(attr(data, "brm_subgroup")),
   time = TRUE,
+  covariates = TRUE,
   correlation = "unstructured",
   effect_baseline = NULL,
   effect_group = NULL,
@@ -155,6 +161,7 @@ brm_formula <- function(
   assert_lgl(subgroup, sprintf(text, "subgroup"))
   assert_lgl(subgroup_time, sprintf(text, "subgroup_time"))
   assert_lgl(time, sprintf(text, "time"))
+  assert_lgl(covariates, sprintf(text, "covariates"))
   expect_baseline <- baseline ||
     baseline_subgroup ||
     baseline_subgroup_time ||
@@ -205,14 +212,7 @@ brm_formula <- function(
     correlation,
     "correlation arg must be a nonempty character string"
   )
-  correlations <- "unstructured"
-  assert(
-    correlation %in% correlations,
-    message = paste(
-      "correlation arg must be one of:",
-      paste(correlations, collapse = ", ")
-    )
-  )
+  brm_formula_validate_correlation(correlation)
   name_outcome <- attr(data, "brm_outcome")
   name_role <- attr(data, "brm_role")
   name_baseline <- attr(data, "brm_baseline")
@@ -234,9 +234,10 @@ brm_formula <- function(
     term(name_subgroup, subgroup),
     term(c(name_subgroup, name_time), subgroup_time),
     term(name_time, time),
-    name_covariates,
+    unlist(lapply(name_covariates, term, condition = covariates)),
     term_correlation(correlation, name_time, name_patient)
   )
+  terms <- terms[nzchar(terms)]
   right <- paste(terms, collapse = " + ")
   formula_fixed <- stats::as.formula(paste(name_outcome, "~", right))
   formula_sigma <- stats::as.formula(paste("sigma ~ 0 +", name_time))
@@ -255,6 +256,7 @@ brm_formula <- function(
     brm_subgroup = subgroup,
     brm_subgroup_time = subgroup_time,
     brm_time = time,
+    brm_covariates = covariates,
     brm_correlation = correlation
   )
   brm_formula_validate(formula)
@@ -275,6 +277,7 @@ brm_formula_new <- function(
   brm_subgroup,
   brm_subgroup_time,
   brm_time,
+  brm_covariates,
   brm_correlation
 ) {
   structure(
@@ -292,6 +295,7 @@ brm_formula_new <- function(
     brm_subgroup = brm_subgroup,
     brm_subgroup_time = brm_subgroup_time,
     brm_time = brm_time,
+    brm_covariates = brm_covariates,
     brm_correlation = brm_correlation
   )
 }
@@ -315,7 +319,8 @@ brm_formula_validate <- function(formula) {
     "brm_group_time",
     "brm_subgroup",
     "brm_subgroup_time",
-    "brm_time"
+    "brm_time",
+    "brm_covariates"
   )
   for (attribute in attributes) {
     assert_lgl(
@@ -323,9 +328,17 @@ brm_formula_validate <- function(formula) {
       message = paste(attribute, "attribute must be TRUE or FALSE in formula")
     )
   }
+  brm_formula_validate_correlation(attr(formula, "brm_correlation"))
+}
+
+brm_formula_validate_correlation <- function(correlation) {
+  choices <- c("unstructured", "diagonal")
   assert(
-    identical(as.character(attr(formula, "brm_correlation")), "unstructured"),
-    message = "brm_correlation attribute must be \"unstructured\""
+    correlation %in% choices,
+    message = paste(
+      "correlation arg must be one of:",
+      paste(correlations, collapse = ", ")
+    )
   )
 }
 
@@ -338,7 +351,18 @@ brm_formula_has_subgroup <- function(formula) {
     "brm_subgroup",
     "brm_subgroup_time"
   )
-  any(as.logical(lapply(attributes, attr, x = formula)))
+  any(unlist(lapply(attributes, attr, x = formula)))
+}
+
+brm_formula_has_nuisance <- function(formula) {
+  attributes <- c(
+    "brm_baseline",
+    "brm_baseline_subgroup",
+    "brm_baseline_subgroup_time",
+    "brm_baseline_time",
+    "brm_covariates"
+  )
+  any(unlist(lapply(attributes, attr, x = formula)))
 }
 
 term <- function(labels, condition) {

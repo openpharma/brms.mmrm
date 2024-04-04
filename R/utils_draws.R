@@ -1,5 +1,7 @@
 brm_sep <- function() {
-  Sys.getenv("BRM_SEP", unset = "|")
+  out <- Sys.getenv("BRM_SEP", unset = "|")
+  assert(nzchar(out), message = "BRM_SEP must be nonempty")
+  out
 }
 
 names_component <- function(names, component) {

@@ -29,7 +29,15 @@
 #'     reference level (`reference_subgroup`).
 #' @param data Classed tibble with preprocessed data from [brm_data()].
 #' @param formula Model formula from [brm_formula()].
-#' @param model A fitted model object from [brm_model()]
+#' @param model A fitted model object from [brm_model()].
+#' @param transform Matrix with one row per marginal mean and one column
+#'   per model parameter. [brm_marginal_draws()] uses this matrix
+#'   to map posterior draws of model parameters to posterior draws of
+#'   marginal means using matrix multiplication. Please use
+#'   [brm_transform_marginal()] to compute this matrix and then modify
+#'   only if necessary. See the methods vignettes for details on this
+#'   matrix, as well as how `brms.mmrm` computes marginal means more
+#'   generally.
 #' @param use_subgroup Deprecated. No longer used. [brm_marginal_draws()]
 #'   no longer marginalizes over the subgroup declared
 #'   in [brm_data()]. To marginalize over the subgroup, declare
@@ -67,12 +75,13 @@
 #'     )
 #'   )
 #' )
-#' brm_marginal_draws(model = model, data = data)
+#' brm_marginal_draws(data = data, formula = formula, model = model)
 #' }
 brm_marginal_draws <- function(
   data,
   formula,
   model,
+  transform = brms.mmrm::brm_transform_marginal(data, formula),
   use_subgroup = NULL,
   control = NULL,
   baseline = NULL
@@ -97,9 +106,9 @@ brm_marginal_draws <- function(
       "Set the reference_time argument of brm_data() instead."
     )
   }
-  brm_model_validate(model)
-  brm_formula_validate(formula)
   brm_data_validate(data)
+  brm_formula_validate(formula)
+  brm_model_validate(model)
   role <- attr(data, "brm_role")
   base <- attr(data, "brm_base")
   group <- attr(data, "brm_group")
@@ -114,28 +123,31 @@ brm_marginal_draws <- function(
   reference_subgroup <- attr(data, "brm_reference_subgroup")
   reference_time <- attr(data, "brm_reference_time")
   has_subgroup <- brm_formula_has_subgroup(formula)
-  nuisance <- c(
-    base,
-    patient,
-    covariates,
-    if_any(has_subgroup, NULL, subgroup)
+  draws_model <- posterior::as_draws_df(model)
+  index_mcmc <- tibble::as_tibble(draws_model)[, names_mcmc]
+  draws_beta <- dplyr::select(
+    .data = tibble::as_tibble(draws_model),
+    tidyselect::starts_with("b_"),
+    -tidyselect::starts_with("b_sigma")
   )
-  specs <- if_any(
-    has_subgroup,
-    as.formula(sprintf("~%s:%s:%s", group, subgroup, time)),
-    as.formula(sprintf("~%s:%s", group, time))
+  assert(
+    sort(colnames(transform)) == sort(colnames(draws_beta)),
+    message = paste(
+      "In brm_marginal_draws(), the column names of the 'transform'",
+      "argument disagree with the names of the brms model parameters.",
+      "Please use brm_transform_marginal() to compute the transform",
+      "and do not modify it except for specialized circumstances.",
+      "If you did use brm_transform_marginal() and supply it directly",
+      "to brms_marginal_draws(), please submit a bug report",
+      "at https://github.com/openpharma/brms.mmrm along with a",
+      "small runnable example that reproduces the issue."
+    )
   )
-  emmeans <- emmeans::emmeans(
-    object = model,
-    specs = specs,
-    wt.nuis = "proportional",
-    nuisance = nuisance
-  )
-  old_sep <- emmeans::get_emm_option("sep")
-  on.exit(emmeans::emm_options(sep = old_sep))
-  emmeans::emm_options(sep = brm_sep())
-  mcmc <- coda::as.mcmc(emmeans, fixed = TRUE, names = FALSE)
-  draws_response <- posterior::as_draws_df(mcmc)
+  draws_beta <- as.matrix(draws_beta[, colnames(transform)])
+  assert(colnames(transform) == colnames(draws_beta))
+  draws_response <- tibble::as_tibble(as.matrix(draws_beta) %*% t(transform))
+  draws_response <- dplyr::bind_cols(draws_response, index_mcmc)
+  draws_response <- posterior::as_draws_df(draws_response)
   assert(
     control %in% levels_group,
     message = sprintf(

@@ -61,7 +61,7 @@
 #'     )
 #'   )
 #' )
-#' draws <- brm_marginal_draws(model = model, data = data)
+#' draws <- brm_marginal_draws(data = data, formula = formula, model = model)
 #' suppressWarnings(brm_marginal_summaries(draws))
 #' }
 brm_marginal_summaries <- function(

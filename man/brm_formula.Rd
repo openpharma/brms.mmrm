@@ -20,6 +20,7 @@ brm_formula(
   subgroup = !is.null(attr(data, "brm_subgroup")),
   subgroup_time = !is.null(attr(data, "brm_subgroup")),
   time = TRUE,
+  covariates = TRUE,
   correlation = "unstructured",
   effect_baseline = NULL,
   effect_group = NULL,
@@ -88,8 +89,14 @@ variable in the dataset.}
 \code{TRUE} (default) to include a additive effect for discrete time,
 \code{FALSE} to omit.}
 
+\item{covariates}{Logical of length 1.
+\code{TRUE} (default) to include any additive covariates declared with
+the \code{covariates} argument of \code{\link[=brm_data]{brm_data()}},
+\code{FALSE} to omit.}
+
 \item{correlation}{Character of length 1, name of the correlation
-structure. Only \code{"unstructured"} is currently supported.}
+structure. Choose \code{"unstructured"} for unstructured covariance
+or \code{"diagonal"} for independent time points within patients.}
 
 \item{effect_baseline}{Deprecated on 2024-01-16 (version 0.0.2.9002).
 Use \code{baseline} instead.}
@@ -139,7 +146,7 @@ The ordering of the categorical variables in the data,
 as well as the \code{contrast} option in R, affect the
 construction of the model matrix. To see the model
 matrix that will ultimately be used in \code{\link[=brm_model]{brm_model()}},
-run \code{\link[brms:make_standata]{brms::make_standata()}} and examine the \code{X} element
+run \code{\link[brms:standata]{brms::make_standata()}} and examine the \code{X} element
 of the returned list. See the examples below for a
 demonstration.
 }

@@ -70,7 +70,7 @@ tmp <- utils::capture.output(
     )
   )
 )
-draws <- brm_marginal_draws(model = model, data = data)
+draws <- brm_marginal_draws(data = data, formula = formula, model = model)
 brm_marginal_probabilities(draws, direction = "greater", threshold = 0)
 }
 }

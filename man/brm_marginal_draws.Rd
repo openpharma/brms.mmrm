@@ -8,6 +8,7 @@ brm_marginal_draws(
   data,
   formula,
   model,
+  transform = brms.mmrm::brm_transform_marginal(data, formula),
   use_subgroup = NULL,
   control = NULL,
   baseline = NULL
@@ -18,7 +19,16 @@ brm_marginal_draws(
 
 \item{formula}{Model formula from \code{\link[=brm_formula]{brm_formula()}}.}
 
-\item{model}{A fitted model object from \code{\link[=brm_model]{brm_model()}}}
+\item{model}{A fitted model object from \code{\link[=brm_model]{brm_model()}}.}
+
+\item{transform}{Matrix with one row per marginal mean and one column
+per model parameter. \code{\link[=brm_marginal_draws]{brm_marginal_draws()}} uses this matrix
+to map posterior draws of model parameters to posterior draws of
+marginal means using matrix multiplication. Please use
+\code{\link[=brm_transform_marginal]{brm_transform_marginal()}} to compute this matrix and then modify
+only if necessary. See the methods vignettes for details on this
+matrix, as well as how \code{brms.mmrm} computes marginal means more
+generally.}
 
 \item{use_subgroup}{Deprecated. No longer used. \code{\link[=brm_marginal_draws]{brm_marginal_draws()}}
 no longer marginalizes over the subgroup declared
@@ -101,7 +111,7 @@ tmp <- utils::capture.output(
     )
   )
 )
-brm_marginal_draws(model = model, data = data)
+brm_marginal_draws(data = data, formula = formula, model = model)
 }
 }
 \seealso{
