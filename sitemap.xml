@@ -25,7 +25,10 @@
     <loc>/articles/index.html</loc>
   </url>
   <url>
-    <loc>/articles/methods.html</loc>
+    <loc>/articles/inference.html</loc>
+  </url>
+  <url>
+    <loc>/articles/model.html</loc>
   </url>
   <url>
     <loc>/articles/sbc.html</loc>
@@ -101,6 +104,9 @@
   </url>
   <url>
     <loc>/reference/brm_simulate_simple.html</loc>
+  </url>
+  <url>
+    <loc>/reference/brm_transform_marginal.html</loc>
   </url>
   <url>
     <loc>/reference/brms.mmrm-package.html</loc>

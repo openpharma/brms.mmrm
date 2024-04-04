@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">brms.mmrm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9001</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,6 +71,7 @@
 <span>  <span class="va">data</span>,</span>
 <span>  <span class="va">formula</span>,</span>
 <span>  <span class="va">model</span>,</span>
+<span>  transform <span class="op">=</span> <span class="fu">brms.mmrm</span><span class="fu">::</span><span class="fu"><a href="brm_transform_marginal.html">brm_transform_marginal</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">formula</span><span class="op">)</span>,</span>
 <span>  use_subgroup <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  control <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  baseline <span class="op">=</span> <span class="cn">NULL</span></span>
@@ -88,7 +89,18 @@
 
 
 <dt>model</dt>
-<dd><p>A fitted model object from <code><a href="brm_model.html">brm_model()</a></code></p></dd>
+<dd><p>A fitted model object from <code><a href="brm_model.html">brm_model()</a></code>.</p></dd>
+
+
+<dt>transform</dt>
+<dd><p>Matrix with one row per marginal mean and one column
+per model parameter. <code>brm_marginal_draws()</code> uses this matrix
+to map posterior draws of model parameters to posterior draws of
+marginal means using matrix multiplication. Please use
+<code><a href="brm_transform_marginal.html">brm_transform_marginal()</a></code> to compute this matrix and then modify
+only if necessary. See the methods vignettes for details on this
+matrix, as well as how <code>brms.mmrm</code> computes marginal means more
+generally.</p></dd>
 
 
 <dt>use_subgroup</dt>
@@ -186,7 +198,7 @@ this string. To set a custom string yourself, use
 <span class="r-in"><span>    <span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">brm_marginal_draws</span><span class="op">(</span>model <span class="op">=</span> <span class="va">model</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">brm_marginal_draws</span><span class="op">(</span>data <span class="op">=</span> <span class="va">data</span>, formula <span class="op">=</span> <span class="va">formula</span>, model <span class="op">=</span> <span class="va">model</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
