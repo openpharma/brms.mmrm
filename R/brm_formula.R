@@ -351,7 +351,18 @@ brm_formula_has_subgroup <- function(formula) {
     "brm_subgroup",
     "brm_subgroup_time"
   )
-  any(as.logical(lapply(attributes, attr, x = formula)))
+  any(unlist(lapply(attributes, attr, x = formula)))
+}
+
+brm_formula_has_nuisance <- function(formula) {
+  attributes <- c(
+    "brm_baseline",
+    "brm_baseline_subgroup",
+    "brm_baseline_subgroup_time",
+    "brm_baseline_time",
+    "brm_covariates"
+  )
+  any(unlist(lapply(attributes, attr, x = formula)))
 }
 
 term <- function(labels, condition) {

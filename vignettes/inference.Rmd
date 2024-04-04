@@ -173,4 +173,80 @@ marginals_emmeans |>
 
 `brms.mmrm` follows the procedure above, but in a Bayesian context. The `brm_transform_marginal()` creates the matrix above, and `brm_marginal_draws()` uses it to transform posterior draws of `brms` model coefficients into posterior draws of marginal means. These posterior draws of marginal means then support estimation of treatment effects (via `brm_marginal_draws()` and `brm_marginal_summaries()`) and posterior probabilities on those treatment effects (via `brm_marginal_probabilities()`). To fine-tune the marginal mean estimation procedure for niche use cases, you can modify the transformation returned from `brm_transform_marginal()` and then supply it to the `transform` argument of `brm_marginal_draws()`.
 
+# Subgroup analysis
+
+Subgroup analysis raises important questions about how nuisance variables are averaged, and you as the user are responsible for choosing the approach that best suits the situation. To illustrate, suppose `SEX` is a pre-specified subgroup. When estimating marginal means, we now wish to condition on `"Female"` vs `"Male"` while averaging over `RACE` across the whole dataset. In `emmeans`, this is similar to how we calculated `marginals_emmeans` above, but we now move `SEX` from `nuisance` to `specs`:
+
+```{r}
+emmeans(
+  object = model,
+  specs = ~SEX:ARMCD:AVISIT,
+  wt.nuis = "proportional",
+  nuisance = c("USUBJID", "RACE")
+)
+```
+
+This may be reasonable in some cases, and it mitigates the kind of hidden confounding between the subgroup and other variables which may otherwise cause Simpson's paradox. However, for subgroup-specific marginal means, it may not be realistic to condition on a single point estimate for all levels of the reference grid. For example, if the model were to regress on a `pregnancy` variable, then the marginal means for `SEX = "Male"` should always condition on `pregnancy = 0` instead of `mean(data$pregnancy)`. And in general, it may be more reasonable to condition on subgroup-specific averages of nuisance variables. However, if you do this, it is your responsibility to investigate and understand the hidden interactions and confounding in your dataset. <https://cran.r-project.org/package=emmeans/vignettes/interactions.html> is an edifying vignette on this topic.
+
+To opt into subgroup-specific averages of nuisance variables in `brms.mmrm`, set `average_within_subgroup = TRUE` in `brm_transform_marginal()`, then supply the output to the `transform` argument of `brm_marginal_draws()`.
+
+To replicate `brm_transform_marginal(average_within_subgroup = TRUE)` from scratch, first create a reference grid which includes subgroup levels.
+
+```{r}
+grid <- data |>
+  distinct(ARMCD, SEX, AVISIT) |>
+  arrange(ARMCD, SEX, AVISIT)
+grid
+```
+
+For each continuous variable, append the corresponding subgroup-specific averages to the grid.
+
+```{r}
+means <- data |>
+  group_by(SEX) |>
+  summarize(FEV1_BL = mean(FEV1_BL), WEIGHT = mean(WEIGHT), .groups = "drop")
+grid <- left_join(x = grid, y = means, by = "SEX")
+grid
+```
+
+Begin creating the variable transformation matrix using this new grid. Be sure to include the subgroup in the formula below exactly as it appears in the formula used to fit the model.
+
+```{r}
+transform <- model.matrix(
+  object = ~ FEV1_BL * AVISIT + ARMCD * AVISIT + SEX + WEIGHT,
+  data = grid
+)
+```
+
+Append subgroup-specific averages of the levels of nuisance factors (in this case, just `RACE`).
+
+```{r}
+proportions <- data |>
+  model.matrix(object = ~ 0 + RACE) |>
+  as.data.frame() |>
+  mutate(SEX = data$SEX) |>
+  group_by(SEX) |>
+  summarize(across(everything(), mean), .groups = "drop")
+transform <- transform |>
+  as.data.frame() |>
+  mutate(SEX = grid$SEX) |>
+  left_join(y = proportions, by = "SEX") |>
+  select(-SEX) |>
+  as.matrix()
+```
+
+Complete the transformation matrix by assigning the correct row names and aligning the column order with that of the model coefficients.
+
+```{r}
+rownames(transform) <- paste(grid$ARMCD, grid$SEX, grid$AVISIT)
+transform <- transform[, names(coef(model))]
+transform
+```
+
+Finally, use the custom `transform` matrix to estimate subgroup-specific marginal means. Because we averaged `FEV1_BL`, `WEIGHT`, and `RACE` within subgroup levels, the results will differ from those of `emmeans`.
+
+```{r}
+transform %*% coef(model)
+```
+
 # References

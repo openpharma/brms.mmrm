@@ -12,7 +12,41 @@
 #' @return A matrix to transform model parameters (columns) into
 #'   marginal means (rows).
 #' @inheritParams brm_marginal_draws
-
+#' @param average_within_subgroup `TRUE` to average concomitant covariates
+#'   proportionally within subgroup levels, `FALSE` to average these
+#'   covariates across the whole dataset. If `average_within_subgroup` is
+#'   `NULL` (default), and if the model has a subgroup and nuisance variables,
+#'   then [brm_transform_marginal()] prints and informative message
+#'   (once per session) and sets `average_within_subgroup` to `FALSE`.
+#'   If you see this message, please read
+#'   <https://openpharma.github.io/brms.mmrm/articles/inference.html>,
+#'   decide whether to set `average_within_subgroup` to `TRUE` or `FALSE`
+#'   in [brm_transform_marginal()], and then manually supply the output of
+#'   [brm_transform_marginal()] to the `transform` argument of
+#'   [brm_marginal_draws()].
+#'
+#'   To create marginal means, `brms.mmrm` conditions the nuisance covariates
+#'   on their averages across the whole dataset
+#'   (`average_within_subgroup = FALSE` or `NULL`
+#'   in [brm_transform_marginal()]).
+#'   This may be reasonable in some cases,
+#'   and it mitigates the kind of hidden confounding between the subgroup
+#'   and other variables which may otherwise cause Simpson's paradox.
+#'   However, for subgroup-specific marginal means, it may not be realistic
+#'   to condition on a single point estimate for all levels of the reference
+#'   grid
+#'   (for example, if the subgroup is female vs male, but all marginal
+#'   means condition on a single overall observed pregnancy rate of 5%).
+#'   In these situations, it may be appropriate to instead condition on
+#'   subgroup-specific averages of nuisance variables
+#'   (`average_within_subgroup = TRUE` in [brm_transform_marginal()]).
+#'   But if you do this,
+#'   it is your responsibility to investigate and understand the
+#'   hidden interactions and confounding in your dataset.
+#'   For more information, please visit
+#'   <https://openpharma.github.io/brms.mmrm/articles/inference.html>
+#'   and
+#'   <https://cran.r-project.org/package=emmeans/vignettes/interactions.html>.
 #' @param prefix Character of length 1, prefix to add to
 #'   the model matrix (`"X"`) from [brms::make_standata()] in order to
 #'   reconstruct the `brms` model parameter names. This argument should
@@ -40,8 +74,8 @@
 brm_transform_marginal <- function(
   data,
   formula,
-  prefix = "b_",
-  average_within_subgroup = NULL
+  average_within_subgroup = NULL,
+  prefix = "b_"
 ) {
   brm_data_validate(data)
   brm_formula_validate(formula)
@@ -59,13 +93,19 @@ brm_transform_marginal <- function(
   )
   if (is.null(average_within_subgroup)) {
     average_within_subgroup <- FALSE
-    if (brm_formula_has_subgroup(formula)) {
+    subgroup_and_nuisance <- brm_formula_has_subgroup(formula) &&
+      brm_formula_has_nuisance(formula)
+    if (subgroup_and_nuisance) {
       brm_message_session(
         "In brm_transform_marginal(), the formula specifies a subgroup and ",
-        "average_within_subgroup is NULL. Please read the subgroup section ",
+        "nuisance variables, but average_within_subgroup is NULL. ",
+        "Please read the subgroup section ",
         "of https://openpharma.github.io/brms.mmrm/articles/inference.html ",
         "and choose a logical (TRUE or FALSE) value of ",
-        "average_within_subgroup appropriate to your situation.",
+        "average_within_subgroup appropriate to your situation. ",
+        "Supply your choice of average_within_subgroup to the ",
+        "brm_transform_marginal() function, and then supply the output of ",
+        "brm_transform_marginal() to brm_marginal_draws().",
         id = "average_within_subgroup"
       )
     }
@@ -110,9 +150,9 @@ transform_marginal_grid <- function(data) {
 }
 
 transform_marginal_continuous <- function(
-    data,
-    grid,
-    average_within_subgroup
+  data,
+  grid,
+  average_within_subgroup
 ) {
   subgroup <- attr(data, "brm_subgroup")
   names <- transform_marginal_names_continuous(data)
@@ -128,10 +168,10 @@ transform_marginal_continuous <- function(
 }
 
 transform_marginal_discrete <- function(
-    data,
-    grid,
-    transform,
-    average_within_subgroup
+  data,
+  grid,
+  transform,
+  average_within_subgroup
 ) {
   subgroup <- attr(data, "brm_subgroup")
   discrete <- transform_marginal_names_discrete(data)

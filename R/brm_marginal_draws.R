@@ -81,7 +81,7 @@ brm_marginal_draws <- function(
   data,
   formula,
   model,
-  transform = brms.mmrm::brm_transform_marginal(data, formula, prefix = "b_"),
+  transform = brms.mmrm::brm_transform_marginal(data, formula),
   use_subgroup = NULL,
   control = NULL,
   baseline = NULL

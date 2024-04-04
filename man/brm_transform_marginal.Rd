@@ -7,14 +7,50 @@
 brm_transform_marginal(
   data,
   formula,
-  prefix = "b_",
-  average_within_subgroup = NULL
+  average_within_subgroup = NULL,
+  prefix = "b_"
 )
 }
 \arguments{
 \item{data}{Classed tibble with preprocessed data from \code{\link[=brm_data]{brm_data()}}.}
 
 \item{formula}{Model formula from \code{\link[=brm_formula]{brm_formula()}}.}
+
+\item{average_within_subgroup}{\code{TRUE} to average concomitant covariates
+proportionally within subgroup levels, \code{FALSE} to average these
+covariates across the whole dataset. If \code{average_within_subgroup} is
+\code{NULL} (default), and if the model has a subgroup and nuisance variables,
+then \code{\link[=brm_transform_marginal]{brm_transform_marginal()}} prints and informative message
+(once per session) and sets \code{average_within_subgroup} to \code{FALSE}.
+If you see this message, please read
+\url{https://openpharma.github.io/brms.mmrm/articles/inference.html},
+decide whether to set \code{average_within_subgroup} to \code{TRUE} or \code{FALSE}
+in \code{\link[=brm_transform_marginal]{brm_transform_marginal()}}, and then manually supply the output of
+\code{\link[=brm_transform_marginal]{brm_transform_marginal()}} to the \code{transform} argument of
+\code{\link[=brm_marginal_draws]{brm_marginal_draws()}}.
+
+To create marginal means, \code{brms.mmrm} conditions the nuisance covariates
+on their averages across the whole dataset
+(\code{average_within_subgroup = FALSE} or \code{NULL}
+in \code{\link[=brm_transform_marginal]{brm_transform_marginal()}}).
+This may be reasonable in some cases,
+and it mitigates the kind of hidden confounding between the subgroup
+and other variables which may otherwise cause Simpson's paradox.
+However, for subgroup-specific marginal means, it may not be realistic
+to condition on a single point estimate for all levels of the reference
+grid
+(for example, if the subgroup is female vs male, but all marginal
+means condition on a single overall observed pregnancy rate of 5\%).
+In these situations, it may be appropriate to instead condition on
+subgroup-specific averages of nuisance variables
+(\code{average_within_subgroup = TRUE} in \code{\link[=brm_transform_marginal]{brm_transform_marginal()}}).
+But if you do this,
+it is your responsibility to investigate and understand the
+hidden interactions and confounding in your dataset.
+For more information, please visit
+\url{https://openpharma.github.io/brms.mmrm/articles/inference.html}
+and
+\url{https://cran.r-project.org/package=emmeans/vignettes/interactions.html}.}
 
 \item{prefix}{Character of length 1, prefix to add to
 the model matrix (\code{"X"}) from \code{\link[brms:standata]{brms::make_standata()}} in order to
