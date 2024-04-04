@@ -86,3 +86,13 @@ brm_warn <- function(...) {
 brm_deprecate <- function(...) {
   rlang::warn(message = paste0(...), class = c("brm_deprecate", "brm_warn"))
 }
+
+brm_message_session <- function(..., id) {
+  rlang::inform(
+    message = paste0(...),
+    class = "brm_message",
+    .frame = emptyenv(),
+    .frequency = "once",
+    .frequency_id = id
+  )
+}

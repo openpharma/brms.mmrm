@@ -4,7 +4,12 @@
 \alias{brm_transform_marginal}
 \title{Marginal mean transformation}
 \usage{
-brm_transform_marginal(data, formula, prefix = "b_")
+brm_transform_marginal(
+  data,
+  formula,
+  prefix = "b_",
+  average_within_subgroup = NULL
+)
 }
 \arguments{
 \item{data}{Classed tibble with preprocessed data from \code{\link[=brm_data]{brm_data()}}.}
