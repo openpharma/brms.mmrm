@@ -11,7 +11,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# brms.mmrm
+# brms.mmrm <img src="man/figures/logo.svg" align="right" height="139" alt="https://openpharma.github.io/brms.mmrm/" />
 
 [![CRAN](https://www.r-pkg.org/badges/version/brms.mmrm)](https://CRAN.R-project.org/package=brms.mmrm)
 [![status](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
