@@ -34,7 +34,12 @@ suppressPackageStartupMessages({
 
 Define colors:
 ```{r colors, eval=TRUE, echo=TRUE}
-hex_cols <- c("#2b2f44", "#edf7f8", "#1d6fa7", "#f3594d", "#632f56", "#b44b33")
+hex_cols <- c("#2b2f44",
+              "#edf7f8",
+              "#1d6fa7",
+              "#f3594d",
+              "#632f56",
+              "#b44b33")
 ```
 
 (See: https://huemint.com/illustration-1/#palette=2b2f44-edf7f8-1d6fa7-f3594d-632f56-b44b33)
@@ -43,18 +48,18 @@ hex_cols <- c("#2b2f44", "#edf7f8", "#1d6fa7", "#f3594d", "#632f56", "#b44b33")
 
 ```{r data1, eval=TRUE, echo=TRUE}
 set.seed(42)
-n <- 10^4
+n <- 10 ^ 4
 dat <- expand.grid(
   subject = paste0("pat_", sprintf("%04d", 1:n)) |> factor(),
   visit = c(1, 2, 3, 4) |> factor()
-  ) |>
+) |>
   mutate(baseline = rnorm(n = n(), mean = 90, sd = 20)) |>
   group_by(subject) |>
   mutate(trt = sample(x = c(0, 1), size = 1)) |>
   ungroup() |>
-  mutate(trt =factor(trt)) |>
+  mutate(trt = factor(trt)) |>
   arrange(subject, visit)
-f <- as.formula( ~ -1 + trt : visit)
+f <- as.formula(~ -1 + trt:visit)
 X <-  model.matrix(object = f, data = data.frame(dat))
 betas <- numeric(length = dim(X)[2])
 names(betas) <- colnames(X)
@@ -66,7 +71,7 @@ betas[5] <- -5
 betas[6] <- -5 + 32
 betas[7] <- -30
 betas[8] <- -30 + 35
-err <- rnorm(n = n*4, mean = 0, sd = 5)
+err <- rnorm(n = n * 4, mean = 0, sd = 5)
 y <-  c(X %*% betas + err)
 dat <- bind_cols(dat, "y" = y) |>
   mutate(visit_num = as.numeric(visit),
@@ -79,24 +84,28 @@ dat
 ### Plot 1
 
 ```{r plot1, eval=TRUE, echo=TRUE, fig.width=8, fig.height=6, dev=c('png', 'pdf'), out.width="100%", fig.cap='MMRM plot 1.'}
-p1 <- ggplot(
-  data = dat,
-  mapping = aes(
-    x = visit,
-    y = chg,
-    fill = trt)
-  ) +
-  scale_fill_manual(values = alpha(c("0" = hex_cols[3], "1" = hex_cols[4]), 0.45)) +
-  scale_color_manual(values = c("0" = hex_cols[3], "1" = hex_cols[4])) +  
+p1 <- ggplot(data = dat,
+             mapping = aes(x = visit,
+                           y = chg,
+                           fill = trt)) +
+  scale_fill_manual(values = alpha(c("0" = hex_cols[3],
+                                     "1" = hex_cols[4]), 0.45)) +
+  scale_color_manual(values = c("0" = hex_cols[3],
+                                "1" = hex_cols[4])) +
   stat_halfeye(mapping = aes(color = trt),
-    position = position_dodgejust(width = 0.95)
-    ) +
- theme_void() +
+               position = position_dodgejust(width = 0.95)) +
+  theme_void() +
   theme(
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
     legend.position = "none",
-    plot.margin = margin(t = 5, r = 5, b = 5, l = 5, unit = "mm"),
+    plot.margin = margin(
+      t = 5,
+      r = 5,
+      b = 5,
+      l = 5,
+      unit = "mm"
+    ),
     plot.background = element_rect(fill = hex_cols[1], color = NA)
   )
 p1
@@ -118,32 +127,36 @@ scaled_diffs <- diffs * scaling_factor
 transformed_vec <- c(vec[1], vec[1] + cumsum(scaled_diffs))
 unique_visit_num <- sort(unique(dat$visit_num))
 replacement <- setNames(object = transformed_vec, nm = unique_visit_num)
-replacement 
+replacement
 ```
 
 ```{r plot2, eval=TRUE, echo=TRUE, fig.width=8, fig.height=6, dev=c('png', 'pdf'), out.width="100%", fig.cap='MMRM plot 2.'}
 p2 <- dat |>
-  mutate(
-    visit_num = replacement[as.character(visit_num)]
-  ) |>
-ggplot(
-  mapping = aes(
-    x = visit_num,
-    y = chg,
-    fill = trt)
-  ) +
-  scale_fill_manual(values = alpha(c("0" = hex_cols[3], "1" = hex_cols[4]), 0.6)) +
-  scale_color_manual(values = c("0" = hex_cols[3], "1" = hex_cols[4])) +  
-  stat_halfeye(mapping = aes(color = trt),
-               width = 0.95,
+  mutate(visit_num = replacement[as.character(visit_num)]) |>
+  ggplot(mapping = aes(x = visit_num,
+                       y = chg,
+                       fill = trt)) +
+  scale_fill_manual(values = alpha(c("0" = hex_cols[3],
+                                     "1" = hex_cols[4]), 0.6)) +
+  scale_color_manual(values = c("0" = hex_cols[3],
+                                "1" = hex_cols[4])) +
+  stat_halfeye(
+    mapping = aes(color = trt),
+    width = 0.95,
     position = position_dodgejust(width = 1)
-    ) +
- theme_void() +
- theme(
+  ) +
+  theme_void() +
+  theme(
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
     legend.position = "none",
-    plot.margin = margin(t = 3, r = 3, b = 3, l = 3, unit = "mm"),
+    plot.margin = margin(
+      t = 3,
+      r = 3,
+      b = 3,
+      l = 3,
+      unit = "mm"
+    ),
     plot.background = element_rect(fill = hex_cols[1], color = NA)
   ) +
   scale_x_continuous(breaks = unique(dat$visit_num),
@@ -160,27 +173,37 @@ scaled_diffs <- diffs * scaling_factor
 transformed_vec <- c(vec[1], vec[1] + cumsum(scaled_diffs))
 unique_visit_num <- sort(unique(dat$visit_num))
 replacement <- setNames(object = transformed_vec, nm = unique_visit_num)
-replacement 
+replacement
 ```
 
 ```{r plot3, eval=TRUE, echo=TRUE, fig.width=9, fig.height=6, dev=c('png', 'pdf'), out.width="100%", fig.cap='MMRM plot 3.'}
-p3 <- dat |> 
-  ggplot(
-    mapping = aes(
-      x = visit,
-      y = chg,
-      fill = trt)
-    ) +
-  scale_fill_manual(values = alpha(c("0" = hex_cols[4], "1" = hex_cols[3]), 0.6)) +
-  scale_color_manual(values = c("0" = hex_cols[4], "1" = hex_cols[3])) +    
-  geom_violin(mapping = aes(color = trt), position = position_dodge(width = 0.4)) +
-  geom_boxplot(mapping = aes(color = trt), width = 0.3, position = position_dodge(width = 0.4)) +
- theme_void() +
- theme(
+p3 <- dat |>
+  ggplot(mapping = aes(x = visit,
+                       y = chg,
+                       fill = trt)) +
+  scale_fill_manual(values = alpha(c("0" = hex_cols[4],
+                                     "1" = hex_cols[3]), 0.6)) +
+  scale_color_manual(values = c("0" = hex_cols[4],
+                                "1" = hex_cols[3])) +
+  geom_violin(mapping = aes(color = trt),
+              position = position_dodge(width = 0.4)) +
+  geom_boxplot(
+    mapping = aes(color = trt),
+    width = 0.3,
+    position = position_dodge(width = 0.4)
+  ) +
+  theme_void() +
+  theme(
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
     legend.position = "none",
-    plot.margin = margin(t = 3, r = 3, b = 10, l = 3, unit = "mm")
+    plot.margin = margin(
+      t = 3,
+      r = 3,
+      b = 10,
+      l = 3,
+      unit = "mm"
+    )
   )
 p3
 ```
@@ -195,8 +218,8 @@ s <- sticker(
   p_size = 8,
   s_x = 1,
   s_y = 0.8,
-  s_width = 8/4.5,
-  s_height = 6/4.5,
+  s_width = 8 / 4.5,
+  s_height = 6 / 4.5,
   filename = "hex_sticker.svg",
   p_fontface = "bold",
   p_fontfamily = "Economica",
