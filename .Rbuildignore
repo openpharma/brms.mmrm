@@ -9,3 +9,4 @@
 ^docs$
 ^sbc$
 ^data-raw$
+^inst/hex_sticker$
