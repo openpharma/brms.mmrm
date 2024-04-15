@@ -218,7 +218,7 @@ brm_marginal_draws <- function(
       )
     }
   }
-  draws_sigma <- get_draws_sigma_heterogeneous(model = model, time = time)
+  draws_sigma <- get_draws_sigma(model = model, time = time)
   draws_effect <- if_any(
     has_subgroup,
     get_draws_effect_subgroup(
@@ -250,7 +250,7 @@ brm_marginal_draws <- function(
   out
 }
 
-get_draws_sigma_heterogeneous <- function(model, time) {
+get_draws_sigma <- function(model, time) {
   draws <- tibble::as_tibble(posterior::as_draws_df(model))
   draws <- draws[, grep("^b_sigma_", colnames(draws), value = TRUE)]
   colnames(draws) <- gsub("^b_sigma_", "", colnames(draws))
