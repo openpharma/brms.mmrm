@@ -32,6 +32,16 @@
 #' @param correlation Character of length 1, name of the correlation
 #'   structure. Choose `"unstructured"` for unstructured covariance
 #'   or `"diagonal"` for independent time points within patients.
+#' @param variance Character of length 1, variance structure for the
+#'   residuals. `"heterogeneous"` declares a different variance component
+#'   for each discrete time point, `"homogeneous"` declares a single
+#'   scalar variance shared by all time points. In either case, the variance
+#'   components are shared by all patients, and different patients are
+#'   modeled as independent.
+#'
+#'   The variance components are encoded as parameters `b_sigma` in the model.
+#'   Each `b_sigma` is a standard deviation of residuals on the natural
+#'   log scale.
 #' @param intercept Logical of length 1.
 #'   `TRUE` (default) to include an intercept, `FALSE` to omit.
 #' @param baseline Logical of length 1.
@@ -141,6 +151,7 @@ brm_formula <- function(
   time = TRUE,
   covariates = TRUE,
   correlation = "unstructured",
+  variance = "heterogeneous",
   effect_baseline = NULL,
   effect_group = NULL,
   effect_time = NULL,
@@ -208,11 +219,8 @@ brm_formula <- function(
     brm_deprecate(sprintf(text, "interaction_group", "group_time"))
     group_time <- interaction_group
   }
-  assert_chr(
-    correlation,
-    "correlation arg must be a nonempty character string"
-  )
   brm_formula_validate_correlation(correlation)
+  brm_formula_validate_variance(variance)
   name_outcome <- attr(data, "brm_outcome")
   name_role <- attr(data, "brm_role")
   name_baseline <- attr(data, "brm_baseline")
@@ -240,7 +248,11 @@ brm_formula <- function(
   terms <- terms[nzchar(terms)]
   right <- paste(terms, collapse = " + ")
   formula_fixed <- stats::as.formula(paste(name_outcome, "~", right))
-  formula_sigma <- stats::as.formula(paste("sigma ~ 0 +", name_time))
+  formula_sigma <- if_any(
+    variance == "heterogeneous",
+    stats::as.formula(paste("sigma ~ 0 +", name_time)),
+    sigma ~ 1
+  )
   brms_formula <- brms::brmsformula(formula = formula_fixed, formula_sigma)
   formula <- brm_formula_new(
     formula = brms_formula,
@@ -257,7 +269,8 @@ brm_formula <- function(
     brm_subgroup_time = subgroup_time,
     brm_time = time,
     brm_covariates = covariates,
-    brm_correlation = correlation
+    brm_correlation = correlation,
+    brm_variance = variance
   )
   brm_formula_validate(formula)
   formula
@@ -278,7 +291,8 @@ brm_formula_new <- function(
   brm_subgroup_time,
   brm_time,
   brm_covariates,
-  brm_correlation
+  brm_correlation,
+  brm_variance
 ) {
   structure(
     formula,
@@ -296,7 +310,8 @@ brm_formula_new <- function(
     brm_subgroup_time = brm_subgroup_time,
     brm_time = brm_time,
     brm_covariates = brm_covariates,
-    brm_correlation = brm_correlation
+    brm_correlation = brm_correlation,
+    brm_variance = brm_variance
   )
 }
 
@@ -329,15 +344,35 @@ brm_formula_validate <- function(formula) {
     )
   }
   brm_formula_validate_correlation(attr(formula, "brm_correlation"))
+  brm_formula_validate_variance(attr(formula, "brm_variance"))
 }
 
 brm_formula_validate_correlation <- function(correlation) {
+  assert_chr(
+    correlation,
+    "correlation arg must be a nonempty character string"
+  )
   choices <- c("unstructured", "diagonal")
   assert(
     correlation %in% choices,
     message = paste(
       "correlation arg must be one of:",
-      paste(correlations, collapse = ", ")
+      paste(choices, collapse = ", ")
+    )
+  )
+}
+
+brm_formula_validate_variance <- function(variance) {
+  assert_chr(
+    variance,
+    "variance arg must be a nonempty character string"
+  )
+  choices <- c("heterogeneous", "homogeneous")
+  assert(
+    variance %in% choices,
+    message = paste(
+      "variance arg must be one of:",
+      paste(choices, collapse = ", ")
     )
   )
 }

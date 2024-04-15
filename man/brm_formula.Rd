@@ -22,6 +22,7 @@ brm_formula(
   time = TRUE,
   covariates = TRUE,
   correlation = "unstructured",
+  variance = "heterogeneous",
   effect_baseline = NULL,
   effect_group = NULL,
   effect_time = NULL,
@@ -97,6 +98,17 @@ the \code{covariates} argument of \code{\link[=brm_data]{brm_data()}},
 \item{correlation}{Character of length 1, name of the correlation
 structure. Choose \code{"unstructured"} for unstructured covariance
 or \code{"diagonal"} for independent time points within patients.}
+
+\item{variance}{Character of length 1, variance structure for the
+residuals. \code{"heterogeneous"} declares a different variance component
+for each discrete time point, \code{"homogeneous"} declares a single
+scalar variance shared by all time points. In either case, the variance
+components are shared by all patients, and different patients are
+modeled as independent.
+
+The variance components are encoded as parameters \code{b_sigma} in the model.
+Each \code{b_sigma} is a standard deviation of residuals on the natural
+log scale.}
 
 \item{effect_baseline}{Deprecated on 2024-01-16 (version 0.0.2.9002).
 Use \code{baseline} instead.}
