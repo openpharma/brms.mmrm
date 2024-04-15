@@ -1,4 +1,4 @@
-# brms.mmrm 0.1.0.9001 (development)
+# brms.mmrm 0.1.0.9002 (development)
 
 ## Guardrails to ensure the appropriateness of marginal mean estimation
 
@@ -16,6 +16,10 @@
 * Use `brm_transform_marginal()` instead of `emmeans` in `brm_marginal_draws()` to derive posterior draws of marginal means based on posterior draws of model parameters (#53).
 * Explain the custom marginal mean calculation in a new `inference.Rmd` vignette.
 * Rename `methods.Rmd` to `model.Rmd` since `inference.Rmd` also discusses methods.
+
+## Covariances
+
+* Extend `brm_formula()` and `brm_marginal_draws()` to optionally model homogeneous variances, as well as ARMA, AR, MA, and compound symmetry correlation structures.
 
 # brms.mmrm 0.1.0
 
