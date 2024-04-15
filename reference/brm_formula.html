@@ -6,11 +6,11 @@
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
     
 
-    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
+    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light" data-bs-theme="light"><div class="container">
     
     <a class="navbar-brand me-2" href="../index.html">brms.mmrm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9002</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -85,6 +85,10 @@
 <span>  time <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  covariates <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  correlation <span class="op">=</span> <span class="st">"unstructured"</span>,</span>
+<span>  autoregressive_order <span class="op">=</span> <span class="fl">1L</span>,</span>
+<span>  moving_average_order <span class="op">=</span> <span class="fl">1L</span>,</span>
+<span>  residual_covariance_arma_estimation <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  variance <span class="op">=</span> <span class="st">"heterogeneous"</span>,</span>
 <span>  effect_baseline <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  effect_group <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  effect_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -189,8 +193,71 @@ the <code>covariates</code> argument of <code><a href="brm_data.html">brm_data()
 
 <dt>correlation</dt>
 <dd><p>Character of length 1, name of the correlation
-structure. Choose <code>"unstructured"</code> for unstructured covariance
-or <code>"diagonal"</code> for independent time points within patients.</p></dd>
+structure. The correlation matrix is a square <code>T x T</code> matrix, where
+<code>T</code> is the number of discrete time points in the data.
+This matrix describes the correlations between time points in the same
+patient, as modeled in the residuals. Different patients are modeled
+as independent. The <code>correlation</code> argument controls how this matrix
+is parameterized, and the choices given by <code>brms</code> are listed at
+<a href="https://paul-buerkner.github.io/brms/reference/autocor-terms.html" class="external-link">https://paul-buerkner.github.io/brms/reference/autocor-terms.html</a>,
+and the choice is ultimately encoded in the main body of the
+output formula through terms like <code>unstru()</code> and <code>arma()</code>, some
+of which are configurable through arguments
+<code>autoregressive_order</code>, <code>moving_average_order</code>, and
+<code>residual_covariance_arma_estimation</code> of <code>brm_formula()</code>.
+Choices in <code>brms.mmrm</code>:</p><ul><li><p><code>"unstructured"</code>: the default/recommended option, a fully parameterized
+covariance matrix with a unique scalar parameter for each unique pair
+of discrete time points. C.f.
+<a href="https://paul-buerkner.github.io/brms/reference/unstr.html" class="external-link">https://paul-buerkner.github.io/brms/reference/unstr.html</a>.</p></li>
+<li><p><code>"autoregressive_moving_average"</code>: autoregressive moving
+average (ARMA), c.f.
+<a href="https://paul-buerkner.github.io/brms/reference/arma.html" class="external-link">https://paul-buerkner.github.io/brms/reference/arma.html</a>.</p></li>
+<li><p><code>"autoregressive"</code>: autoregressive (AR), c.f.
+<a href="https://paul-buerkner.github.io/brms/reference/ar.html" class="external-link">https://paul-buerkner.github.io/brms/reference/ar.html</a>.</p></li>
+<li><p><code>"moving_average"</code>: moving average (MA), c.f.
+<a href="https://paul-buerkner.github.io/brms/reference/ma.html" class="external-link">https://paul-buerkner.github.io/brms/reference/ma.html</a>.</p></li>
+<li><p><code>"compound_symmetry</code>: compound symmetry, c.f.
+<a href="https://paul-buerkner.github.io/brms/reference/cosy.html" class="external-link">https://paul-buerkner.github.io/brms/reference/cosy.html</a>.</p></li>
+<li><p><code>"diagonal"</code>: declare independent time points within patients.</p></li>
+</ul></dd>
+
+
+<dt>autoregressive_order</dt>
+<dd><p>Nonnegative integer,
+autoregressive order for the <code>"autoregressive_moving_average"</code>
+and <code>"autoregressive"</code> correlation structures.</p></dd>
+
+
+<dt>moving_average_order</dt>
+<dd><p>Nonnegative integer,
+moving average order for the <code>"autoregressive_moving_average"</code>
+and <code>"moving_average"</code> correlation structures.</p></dd>
+
+
+<dt>residual_covariance_arma_estimation</dt>
+<dd><p><code>TRUE</code> or <code>FALSE</code>,
+whether to estimate ARMA effects using residual covariance matrices.
+Directly supplied to the <code>cov</code> argument in <code>brms</code> for
+<code>"autoregressive_moving_average"</code>, <code>"autoregressive"</code>, and
+<code>"moving_average"</code> correlation structures. C.f.
+<a href="https://paul-buerkner.github.io/brms/reference/arma.html" class="external-link">https://paul-buerkner.github.io/brms/reference/arma.html</a>.</p></dd>
+
+
+<dt>variance</dt>
+<dd><p>Character of length 1, variance structure for the
+residuals. <code>"heterogeneous"</code> declares a different variance component
+for each discrete time point, <code>"homogeneous"</code> declares a single
+scalar variance shared by all time points. In either case, the variance
+components are shared by all patients, and different patients are
+modeled as independent.</p>
+<p>The variance components are encoded as parameters <code>b_sigma</code> in the model.
+Each <code>b_sigma</code> is a standard deviation of residuals on the natural
+log scale.</p>
+<p>The variance structure is encoded in the
+<code>sigma ~ ...</code> part of the output formula. To see the variance
+parameterization for yourself, use <code><a href="https://paul-buerkner.github.io/brms/reference/standata.html" class="external-link">brms::make_standata()</a></code>
+on the formula and data, or <code><a href="https://mc-stan.org/rstantools/reference/prior_summary.html" class="external-link">brms::prior_summary()</a></code> or
+<code><a href="https://mc-stan.org/posterior/reference/draws_df.html" class="external-link">posterior::as_draws_df()</a></code> on the model.</p></dd>
 
 
 <dt>effect_baseline</dt>
@@ -339,7 +406,7 @@ demonstration.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.8.</p>
 </div>
 
     </footer></div>

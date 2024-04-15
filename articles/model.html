@@ -22,11 +22,11 @@
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
     
 
-    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
+    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light" data-bs-theme="light"><div class="container">
     
     <a class="navbar-brand me-2" href="../index.html">brms.mmrm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9002</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -105,6 +105,11 @@ using <a href="https://paul-buerkner.github.io/brms/" class="external-link"><cod
 <p>The MMRM in <code>brms.mmrm</code> is mathematically expressed as
 follows. Subsequent sections define notation, data, parameters, and
 priors.</p>
+<div class="section level3">
+<h3 id="heterogeneous-variance-model">Heterogeneous variance model<a class="anchor" aria-label="anchor" href="#heterogeneous-variance-model"></a>
+</h3>
+<p>If the user selects heterogeneous variance in
+<code><a href="../reference/brm_formula.html">brm_formula()</a></code>, then the model is expressed as follows.</p>
 <p><span class="math display">\[
 \begin{aligned}
 &amp;y_i \stackrel{\text{ind}}{\sim} \text{Multivariate-Normal} \left
@@ -112,10 +117,29 @@ priors.</p>
 \cdot \Lambda \cdot \text{diag}(\sigma) \right ) \\
 &amp;\qquad \beta_p \stackrel{\text{ind}}{\sim} q_p() \\
 &amp;\qquad \Lambda \sim r() \\
-&amp;\qquad \tau = \log(\sigma) \\
-&amp;\qquad \qquad \tau_t \stackrel{\text{ind}}{\sim} s_t()
+&amp;\qquad \tau_t = \log(\sigma_t) \\
+&amp;\qquad \qquad \tau_t \stackrel{\text{ind}}{\sim} s()
 \end{aligned}
 \]</span></p>
+</div>
+<div class="section level3">
+<h3 id="homogeneous-variance-model">Homogeneous variance model<a class="anchor" aria-label="anchor" href="#homogeneous-variance-model"></a>
+</h3>
+<p>If the user select homogeneous variance in
+<code><a href="../reference/brm_formula.html">brm_formula()</a></code>, then all discrete time points share the same
+standard deviation parameter, and <span class="math inline">\(\sigma\)</span> and <span class="math inline">\(\tau\)</span> are scalars instead of vectors.</p>
+<p><span class="math display">\[
+\begin{aligned}
+&amp;y_i \stackrel{\text{ind}}{\sim} \text{Multivariate-Normal} \left
+(\text{mean} = X_{i} \beta, \ \text{covariance} =  \sigma^2
+\Lambda  \right ) \\
+&amp;\qquad \beta_p \stackrel{\text{ind}}{\sim} q_p() \\
+&amp;\qquad \Lambda \sim r() \\
+&amp;\qquad \tau = \log(\sigma) \\
+&amp;\qquad \qquad \tau \sim s()
+\end{aligned}
+\]</span></p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a>
@@ -195,15 +219,21 @@ assumed to be correlated according to this matrix. <span class="math inline">\(\
 symmetric, and the number of rows and columns is equal to the number of
 discrete time points of the study.</li>
 <li>
-<span class="math inline">\(\sigma\)</span>: vector of
-time-point-specific standard deviations of the residuals on the linear
-scale. <span class="math inline">\(\sigma_t\)</span> is scalar element
-<span class="math inline">\(t\)</span> of <span class="math inline">\(\sigma\)</span>.</li>
+<span class="math inline">\(\sigma\)</span>: in the heterogeneous
+variance model, <span class="math inline">\(\sigma\)</span> is a vector
+of time-point-specific standard deviations of the residuals on the
+linear scale. <span class="math inline">\(\sigma_t\)</span> is scalar
+element <span class="math inline">\(t\)</span> of <span class="math inline">\(\sigma\)</span>. In the homogeneous variance
+model, <span class="math inline">\(\sigma\)</span> is a scalar shared by
+all time points.</li>
 <li>
 <span class="math inline">\(\tau\)</span>: same as <span class="math inline">\(\sigma\)</span>, but on the natural logarithmic
-scale. Each scalar element <span class="math inline">\(\tau_t\)</span>
-of <span class="math inline">\(\tau\)</span> is defined as the natural
-logarithm of <span class="math inline">\(\sigma_t\)</span>.</li>
+scale. In the heterogeneous variance case, <span class="math inline">\(\tau\)</span> is a vector of time-specific
+elements <span class="math inline">\(\tau_t\)</span>, and each scalar
+element <span class="math inline">\(\tau_t\)</span> of <span class="math inline">\(\tau\)</span> is defined as the natural logarithm
+of <span class="math inline">\(\sigma_t\)</span>. In the homogeneous
+variance case, <span class="math inline">\(\tau\)</span> is a scalar,
+still on the natural log scale (log of <span class="math inline">\(\sigma\)</span>).</li>
 </ul>
 </div>
 <div class="section level2">
@@ -223,10 +253,13 @@ default priors.</p>
 model coefficient <span class="math inline">\(\beta_p\)</span>.</li>
 <li>
 <span class="math inline">\(r()\)</span>: matrix prior on the
-within-subject residual correlation matrix parameter <span class="math inline">\(\Lambda\)</span>.</li>
+within-subject residual correlation matrix parameter <span class="math inline">\(\Lambda\)</span>. Can be unstructured,
+autoregressive moving average, autoregressive, moving average, or
+compound symmetry, c.f. <a href="https://paul-buerkner.github.io/brms/reference/autocor-terms.html" class="external-link uri">https://paul-buerkner.github.io/brms/reference/autocor-terms.html</a>.</li>
 <li>
-<span class="math inline">\(s_t()\)</span>: univariate prior on the
-natural-log-standard-deviation parameter <span class="math inline">\(\tau_t\)</span> of discrete time point <span class="math inline">\(t\)</span>.</li>
+<span class="math inline">\(s()\)</span>: univariate prior on the
+scalar components of the natural-log-standard-deviation parameter <span class="math inline">\(\tau\)</span>. The components of <span class="math inline">\(\tau\)</span> are assumed independent and
+identically distributed with this univariate prior.</li>
 </ul>
 </div>
 <div class="section level2">
@@ -281,7 +314,7 @@ modeling language users guide and reference manual</a></em>.
 
 <div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.8.</p>
 </div>
 
     </footer>
