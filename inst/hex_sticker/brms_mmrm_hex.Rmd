@@ -182,7 +182,7 @@ s <- sticker(
   p_fontface = "bold",
   p_family = "custom_font",
   h_fill = hex_cols[1],
-  h_color = hex_cols[5],
+  h_color = hex_cols[6],
   p_color = hex_cols[2],
   dpi = 600
 )
