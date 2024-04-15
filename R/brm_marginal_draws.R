@@ -148,14 +148,6 @@ brm_marginal_draws <- function(
   draws_response <- tibble::as_tibble(as.matrix(draws_beta) %*% t(transform))
   draws_response <- dplyr::bind_cols(draws_response, index_mcmc)
   draws_response <- posterior::as_draws_df(draws_response)
-  assert(
-    control %in% levels_group,
-    message = sprintf(
-      "control argument \"%s\" is not in one of the treatment groups: %s",
-      control,
-      paste(levels_group, collapse = ", ")
-    )
-  )
   if (identical(role, "response")) {
     if (has_subgroup) {
       draws_difference_time <- subtract_reference_time_subroup(
