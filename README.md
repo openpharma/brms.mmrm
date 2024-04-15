@@ -1,5 +1,5 @@
 
-# brms.mmrm
+# brms.mmrm <img src="man/figures/logo.svg" align="right" height="139" alt="https://openpharma.github.io/brms.mmrm/" />
 
 [![CRAN](https://www.r-pkg.org/badges/version/brms.mmrm)](https://CRAN.R-project.org/package=brms.mmrm)
 [![status](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
@@ -84,18 +84,16 @@ By contributing to this project, you agree to abide by its terms.
     To cite package 'brms.mmrm' in publications use:
 
       Landau WM, Kunzmann K, Sidi Y, Stock C (????). _brms.mmrm: Bayesian
-      MMRMs using 'brms'_. R package version 0.0.2.9003,
-      https://github.com/openpharma/brms.mmrm,
-      <https://openpharma.github.io/brms.mmrm/>.
+      MMRMs using 'brms'_. R package version 0.1.0.9001,
+      <https://github.com/openpharma/brms.mmrm>.
 
     A BibTeX entry for LaTeX users is
 
       @Manual{,
         title = {brms.mmrm: Bayesian MMRMs using 'brms'},
         author = {William Michael Landau and Kevin Kunzmann and Yoni Sidi and Christian Stock},
-        note = {R package version 0.0.2.9003, 
-    https://github.com/openpharma/brms.mmrm},
-        url = {https://openpharma.github.io/brms.mmrm/},
+        note = {R package version 0.1.0.9001},
+        url = {https://github.com/openpharma/brms.mmrm},
       }
 
 ## References
