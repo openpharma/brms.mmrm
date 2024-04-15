@@ -30,8 +30,61 @@
 #'   correlation structure, and residual variance structure.
 #' @param data A classed data frame from [brm_data()].
 #' @param correlation Character of length 1, name of the correlation
-#'   structure. Choose `"unstructured"` for unstructured covariance
-#'   or `"diagonal"` for independent time points within patients.
+#'   structure. The correlation matrix is a square `T x T` matrix, where
+#'   `T` is the number of discrete time points in the data.
+#'   This matrix describes the correlations between time points in the same
+#'   patient, as modeled in the residuals. Different patients are modeled
+#'   as independent. The `correlation` argument controls how this matrix
+#'   is parameterized, and the choices given by `brms` are listed at
+#'   <https://paul-buerkner.github.io/brms/reference/autocor-terms.html>,
+#'   and the choice is ultimately encoded in the main body of the
+#'   output formula through terms like `unstru()` and `arma()`, some
+#'   of which are configurable through arguments
+#'   `autoregressive_order`, `moving_average_order`, and
+#'   `residual_covariance_arma_estimation` of [brm_formula()].
+#'   Choices in `brms.mmrm`:
+#'   * `"unstructured"`: the default/recommended option, a fully parameterized
+#'     covariance matrix with a unique scalar parameter for each unique pair
+#'     of discrete time points. C.f.
+#'     <https://paul-buerkner.github.io/brms/reference/unstr.html>.
+#'   * `"autoregressive_moving_average"`: autoregressive moving
+#'     average (ARMA), c.f.
+#'     <https://paul-buerkner.github.io/brms/reference/arma.html>.
+#'   * `"autoregressive"`: autoregressive (AR), c.f.
+#'     <https://paul-buerkner.github.io/brms/reference/ar.html>.
+#'   * `"moving_average"`: moving average (MA), c.f.
+#'     <https://paul-buerkner.github.io/brms/reference/ma.html>.
+#'   * `"compound_symmetry`: compound symmetry, c.f.
+#'     <https://paul-buerkner.github.io/brms/reference/cosy.html>.
+#'   * `"diagonal"`: declare independent time points within patients.
+#' @param autoregressive_order Nonnegative integer,
+#'   autoregressive order for the `"autoregressive_moving_average"`
+#'   and `"autoregressive"` correlation structures.
+#' @param moving_average_order Nonnegative integer,
+#'   moving average order for the `"autoregressive_moving_average"`
+#'   and `"moving_average"` correlation structures.
+#' @param residual_covariance_arma_estimation `TRUE` or `FALSE`,
+#'   whether to estimate ARMA effects using residual covariance matrices.
+#'   Directly supplied to the `cov` argument in `brms` for
+#'   `"autoregressive_moving_average"`, `"autoregressive"`, and
+#'   `"moving_average"` correlation structures. C.f.
+#'   <https://paul-buerkner.github.io/brms/reference/arma.html>.
+#' @param variance Character of length 1, variance structure for the
+#'   residuals. `"heterogeneous"` declares a different variance component
+#'   for each discrete time point, `"homogeneous"` declares a single
+#'   scalar variance shared by all time points. In either case, the variance
+#'   components are shared by all patients, and different patients are
+#'   modeled as independent.
+#'
+#'   The variance components are encoded as parameters `b_sigma` in the model.
+#'   Each `b_sigma` is a standard deviation of residuals on the natural
+#'   log scale.
+#'
+#'   The variance structure is encoded in the
+#'   `sigma ~ ...` part of the output formula. To see the variance
+#'   parameterization for yourself, use `brms::make_standata()`
+#'   on the formula and data, or `brms::prior_summary()` or
+#'   `posterior::as_draws_df()` on the model.
 #' @param intercept Logical of length 1.
 #'   `TRUE` (default) to include an intercept, `FALSE` to omit.
 #' @param baseline Logical of length 1.
@@ -141,6 +194,10 @@ brm_formula <- function(
   time = TRUE,
   covariates = TRUE,
   correlation = "unstructured",
+  autoregressive_order = 1L,
+  moving_average_order = 1L,
+  residual_covariance_arma_estimation = FALSE,
+  variance = "heterogeneous",
   effect_baseline = NULL,
   effect_group = NULL,
   effect_time = NULL,
@@ -162,6 +219,26 @@ brm_formula <- function(
   assert_lgl(subgroup_time, sprintf(text, "subgroup_time"))
   assert_lgl(time, sprintf(text, "time"))
   assert_lgl(covariates, sprintf(text, "covariates"))
+  assert_lgl(
+    residual_covariance_arma_estimation,
+    sprintf(text, "residual_covariance_arma_estimation")
+  )
+  assert(
+    autoregressive_order,
+    is.numeric(.),
+    !anyNA(.),
+    length(.) == 1L,
+    . >= 0,
+    message = "autoregressive_order must be a nonnegative integer of length 1"
+  )
+  assert(
+    moving_average_order,
+    is.numeric(.),
+    !anyNA(.),
+    length(.) == 1L,
+    . >= 0,
+    message = "moving_average_order must be a nonnegative integer of length 1"
+  )
   expect_baseline <- baseline ||
     baseline_subgroup ||
     baseline_subgroup_time ||
@@ -208,11 +285,8 @@ brm_formula <- function(
     brm_deprecate(sprintf(text, "interaction_group", "group_time"))
     group_time <- interaction_group
   }
-  assert_chr(
-    correlation,
-    "correlation arg must be a nonempty character string"
-  )
   brm_formula_validate_correlation(correlation)
+  brm_formula_validate_variance(variance)
   name_outcome <- attr(data, "brm_outcome")
   name_role <- attr(data, "brm_role")
   name_baseline <- attr(data, "brm_baseline")
@@ -235,12 +309,23 @@ brm_formula <- function(
     term(c(name_subgroup, name_time), subgroup_time),
     term(name_time, time),
     unlist(lapply(name_covariates, term, condition = covariates)),
-    term_correlation(correlation, name_time, name_patient)
+    term_correlation(
+      correlation = correlation,
+      name_time = name_time,
+      name_patient = name_patient,
+      autoregressive_order = autoregressive_order,
+      moving_average_order = moving_average_order,
+      residual_covariance_arma_estimation
+    )
   )
   terms <- terms[nzchar(terms)]
   right <- paste(terms, collapse = " + ")
   formula_fixed <- stats::as.formula(paste(name_outcome, "~", right))
-  formula_sigma <- stats::as.formula(paste("sigma ~ 0 +", name_time))
+  formula_sigma <- if_any(
+    variance == "heterogeneous",
+    stats::as.formula(paste("sigma ~ 0 +", name_time)),
+    sigma ~ 1
+  )
   brms_formula <- brms::brmsformula(formula = formula_fixed, formula_sigma)
   formula <- brm_formula_new(
     formula = brms_formula,
@@ -257,7 +342,12 @@ brm_formula <- function(
     brm_subgroup_time = subgroup_time,
     brm_time = time,
     brm_covariates = covariates,
-    brm_correlation = correlation
+    brm_correlation = correlation,
+    brm_autoregressive_order = autoregressive_order,
+    brm_moving_average_order = moving_average_order,
+    brm_residual_covariance_arma_estimation =
+      residual_covariance_arma_estimation,
+    brm_variance = variance
   )
   brm_formula_validate(formula)
   formula
@@ -278,7 +368,11 @@ brm_formula_new <- function(
   brm_subgroup_time,
   brm_time,
   brm_covariates,
-  brm_correlation
+  brm_correlation,
+  brm_autoregressive_order,
+  brm_moving_average_order,
+  brm_residual_covariance_arma_estimation,
+  brm_variance
 ) {
   structure(
     formula,
@@ -296,7 +390,12 @@ brm_formula_new <- function(
     brm_subgroup_time = brm_subgroup_time,
     brm_time = brm_time,
     brm_covariates = brm_covariates,
-    brm_correlation = brm_correlation
+    brm_correlation = brm_correlation,
+    brm_autoregressive_order = brm_autoregressive_order,
+    brm_moving_average_order = brm_moving_average_order,
+    brm_residual_covariance_arma_estimation =
+      brm_residual_covariance_arma_estimation,
+    brm_variance = brm_variance
   )
 }
 
@@ -328,16 +427,63 @@ brm_formula_validate <- function(formula) {
       message = paste(attribute, "attribute must be TRUE or FALSE in formula")
     )
   }
+  assert_lgl(
+    attr(formula, "brm_residual_covariance_arma_estimation"),
+    message = "residual_covariance_arma_estimation must be TRUE or FALSE"
+  )
+  assert(
+    attr(formula, "brm_autoregressive_order"),
+    is.numeric(.),
+    !anyNA(.),
+    length(.) == 1L,
+    . >= 0,
+    message = "autoregressive_order must be a nonnegative integer of length 1"
+  )
+  assert(
+    attr(formula, "brm_moving_average_order"),
+    is.numeric(.),
+    !anyNA(.),
+    length(.) == 1L,
+    . >= 0,
+    message = "moving_average_order must be a nonnegative integer of length 1"
+  )
   brm_formula_validate_correlation(attr(formula, "brm_correlation"))
+  brm_formula_validate_variance(attr(formula, "brm_variance"))
 }
 
 brm_formula_validate_correlation <- function(correlation) {
-  choices <- c("unstructured", "diagonal")
+  assert_chr(
+    correlation,
+    "correlation arg must be a nonempty character string"
+  )
+  choices <- c(
+    "unstructured",
+    "autoregressive_moving_average",
+    "autoregressive",
+    "moving_average",
+    "compound_symmetry",
+    "diagonal"
+  )
   assert(
     correlation %in% choices,
     message = paste(
       "correlation arg must be one of:",
-      paste(correlations, collapse = ", ")
+      paste(choices, collapse = ", ")
+    )
+  )
+}
+
+brm_formula_validate_variance <- function(variance) {
+  assert_chr(
+    variance,
+    "variance arg must be a nonempty character string"
+  )
+  choices <- c("heterogeneous", "homogeneous")
+  assert(
+    variance %in% choices,
+    message = paste(
+      "variance arg must be one of:",
+      paste(choices, collapse = ", ")
     )
   )
 }
@@ -369,13 +515,32 @@ term <- function(labels, condition) {
   if_any(condition, paste0(labels, collapse = ":"), character(0L))
 }
 
-term_correlation <- function(correlation, name_time, name_patient) {
-  switch(
+term_correlation <- function(
+  correlation,
+  name_time,
+  name_patient,
+  autoregressive_order,
+  moving_average_order,
+  residual_covariance_arma_estimation
+) {
+  if (identical(as.character(correlation), "diagonal")) {
+    return(NULL)
+  }
+  fun <- switch(
     correlation,
-    unstructured = sprintf(
-      "unstr(time = %s, gr = %s)",
-      name_time,
-      name_patient
-    )
+    unstructured = "unstr",
+    autoregressive_moving_average = "arma",
+    autoregressive = "ar",
+    moving_average = "ma",
+    compound_symmetry = "cosy"
   )
+  args <- list(
+    time = as.symbol(name_time),
+    gr = as.symbol(name_patient),
+    p = autoregressive_order,
+    q = moving_average_order,
+    cov = residual_covariance_arma_estimation
+  )[names(formals(getNamespace("brms")[[fun]]))]
+  call <- as.call(c(as.symbol(fun), args))
+  paste(deparse(call), collapse = " ")
 }

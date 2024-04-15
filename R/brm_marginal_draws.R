@@ -226,13 +226,15 @@ brm_marginal_draws <- function(
       draws_sigma = draws_sigma,
       levels_group = levels_group,
       levels_subgroup = levels_subgroup,
-      levels_time = levels_time
+      levels_time = levels_time,
+      variance = attr(formula, "brm_variance")
     ),
     get_draws_effect(
       draws_difference_group = draws_difference_group,
       draws_sigma = draws_sigma,
       levels_group = levels_group,
-      levels_time = levels_time
+      levels_time = levels_time,
+      variance = attr(formula, "brm_variance")
     )
   )
   out <- list()
@@ -260,14 +262,20 @@ get_draws_effect <- function(
   draws_difference_group,
   draws_sigma,
   levels_group,
-  levels_time
+  levels_time,
+  variance
 ) {
   out <- draws_difference_group
   for (group in levels_group) {
     for (time in levels_time) {
       name <- name_marginal(group = group, time = time)
+      sigma <- if_any(
+        variance == "heterogeneous",
+        draws_sigma[[time]],
+        draws_sigma[[1L]]
+      )
       if (name %in% colnames(draws_difference_group)) {
-        out[[name]] <- draws_difference_group[[name]] / draws_sigma[[time]]
+        out[[name]] <- draws_difference_group[[name]] / sigma
       }
     }
   }
@@ -279,7 +287,8 @@ get_draws_effect_subgroup <- function(
   draws_sigma,
   levels_group,
   levels_subgroup,
-  levels_time
+  levels_time,
+  variance
 ) {
   out <- draws_difference_group
   for (group in levels_group) {
@@ -290,8 +299,13 @@ get_draws_effect_subgroup <- function(
           subgroup = subgroup,
           time = time
         )
+        sigma <- if_any(
+          variance == "heterogeneous",
+          draws_sigma[[time]],
+          draws_sigma[[1L]]
+        )
         if (name %in% colnames(draws_difference_group)) {
-          out[[name]] <- draws_difference_group[[name]] / draws_sigma[[time]]
+          out[[name]] <- draws_difference_group[[name]] / sigma
         }
       }
     }

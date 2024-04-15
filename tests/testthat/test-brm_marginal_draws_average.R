@@ -30,7 +30,12 @@ test_that("brm_marginal_draws_average() non-subgroup", {
     )
   )
   suppressMessages(
-    out <- brm_marginal_draws(model = model, formula = formula, data = data)
+    out <- brm_marginal_draws(
+      model = model,
+      formula = formula,
+      data = data,
+      transform = brm_transform_marginal(data = data, formula = formula)
+    )
   )
   averages_all <- brm_marginal_draws_average(
     draws = out,
@@ -123,7 +128,12 @@ test_that("brm_marginal_draws_average() subgroup", {
       )
     )
   )
-  out <- brm_marginal_draws(model = model, formula = formula, data = data)
+  out <- brm_marginal_draws(
+    model = model,
+    formula = formula,
+    data = data,
+    transform = brm_transform_marginal(data = data, formula = formula)
+  )
   averages_all <- brm_marginal_draws_average(
     draws = out,
     data = data,

@@ -18,13 +18,31 @@ The `brms.mmrm` R package implements a mixed model of repeated measures (MMRM), 
 
 The MMRM in `brms.mmrm` is mathematically expressed as follows. Subsequent sections define notation, data, parameters, and priors.
 
+## Heterogeneous variance model
+
+If the user selects heterogeneous variance in `brm_formula()`, then the model is expressed as follows.
+
 $$
 \begin{aligned}
 &y_i \stackrel{\text{ind}}{\sim} \text{Multivariate-Normal} \left (\text{mean} = X_{i} \beta, \ \text{covariance} = \text{diag}(\sigma) \cdot \Lambda \cdot \text{diag}(\sigma) \right ) \\
 &\qquad \beta_p \stackrel{\text{ind}}{\sim} q_p() \\
 &\qquad \Lambda \sim r() \\
+&\qquad \tau_t = \log(\sigma_t) \\
+&\qquad \qquad \tau_t \stackrel{\text{ind}}{\sim} s()
+\end{aligned}
+$$
+
+## Homogeneous variance model
+
+If the user select homogeneous variance in `brm_formula()`, then all discrete time points share the same standard deviation parameter, and $\sigma$ and $\tau$ are scalars instead of vectors.
+
+$$
+\begin{aligned}
+&y_i \stackrel{\text{ind}}{\sim} \text{Multivariate-Normal} \left (\text{mean} = X_{i} \beta, \ \text{covariance} =  \sigma^2 \Lambda  \right ) \\
+&\qquad \beta_p \stackrel{\text{ind}}{\sim} q_p() \\
+&\qquad \Lambda \sim r() \\
 &\qquad \tau = \log(\sigma) \\
-&\qquad \qquad \tau_t \stackrel{\text{ind}}{\sim} s_t()
+&\qquad \qquad \tau \sim s()
 \end{aligned}
 $$
 
@@ -46,16 +64,16 @@ $$
 
 * $\beta$: vector of model coefficients. $\beta_p$ is scalar element $p$ of $\beta$. In subgroup analysis, $\beta$ contains model coefficients for different subgroup levels, as well as any interaction terms declared through the model formula.
 * $\Lambda$: matrix of pairwise correlations among each pair of time points within subjects. Outcomes measured from different subjects are assumed to be independent, and outcomes observed at different time points for the same subject are assumed to be correlated according to this matrix. $\Lambda$ is positive-definite and symmetric, and the number of rows and columns is equal to the number of discrete time points of the study. 
-* $\sigma$: vector of time-point-specific standard deviations of the residuals on the linear scale. $\sigma_t$ is scalar element $t$ of $\sigma$.
-* $\tau$: same as $\sigma$, but on the natural logarithmic scale. Each scalar element $\tau_t$ of $\tau$ is defined as the natural logarithm of $\sigma_t$.
+* $\sigma$: in the heterogeneous variance model, $\sigma$ is a vector of time-point-specific standard deviations of the residuals on the linear scale. $\sigma_t$ is scalar element $t$ of $\sigma$. In the homogeneous variance model, $\sigma$ is a scalar shared by all time points.
+* $\tau$: same as $\sigma$, but on the natural logarithmic scale. In the heterogeneous variance case, $\tau$ is a vector of time-specific elements $\tau_t$, and each scalar element $\tau_t$ of $\tau$ is defined as the natural logarithm of $\sigma_t$. In the homogeneous variance case, $\tau$ is a scalar, still on the natural log scale (log of $\sigma$).
 
 # Priors
 
 The priors on the parameters depend on the `prior` argument of `brm_model()` and related functions. If priors are not specified by the user, then the [`brms`](https://paul-buerkner.github.io/brms/) package sets defaults. You can view the default priors using the [`get_prior()`](http://paul-buerkner.github.io/brms/reference/get_prior.html) function in [`brms`](https://paul-buerkner.github.io/brms/). See the [`brms`](https://paul-buerkner.github.io/brms/) for information on how [`brms`](https://paul-buerkner.github.io/brms/) sets default priors.
 
 * $q_p()$: univariate prior on the model coefficient $\beta_p$.
-* $r()$: matrix prior on the within-subject residual correlation matrix parameter $\Lambda$.
-* $s_t()$: univariate prior on the natural-log-standard-deviation parameter $\tau_t$ of discrete time point $t$.
+* $r()$: matrix prior on the within-subject residual correlation matrix parameter $\Lambda$. Can be unstructured, autoregressive moving average, autoregressive, moving average, or compound symmetry, c.f. <https://paul-buerkner.github.io/brms/reference/autocor-terms.html>.
+* $s()$: univariate prior on the scalar components of the natural-log-standard-deviation parameter $\tau$. The components of $\tau$ are assumed independent and identically distributed with this univariate prior.
 
 # Sampling
 
