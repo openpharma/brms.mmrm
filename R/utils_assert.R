@@ -88,6 +88,11 @@ brm_deprecate <- function(...) {
 }
 
 brm_message_session <- function(..., id) {
+  if (identical(Sys.getenv("TESTTHAT"), "true")) {
+    suppressMessages(
+      rlang::inform(message = "", .frequency = "once", .frequency_id = id)
+    )
+  }
   rlang::inform(
     message = paste0(...),
     class = "brm_message",

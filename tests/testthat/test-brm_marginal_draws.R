@@ -32,8 +32,7 @@ test_that("brm_marginal_draws() on response, no subgroup", {
   out <- brm_marginal_draws(
     model = model,
     formula = formula,
-    data = data,
-    transform = brm_transform_marginal(data = data, formula = formula)
+    data = data
   )
   expect_warning(
     brm_marginal_draws(
@@ -155,8 +154,7 @@ test_that("brm_marginal_draws() on response, with subgroup", {
   out <- brm_marginal_draws(
     model = model,
     formula = formula,
-    data = data,
-    transform = brm_transform_marginal(data = data, formula = formula)
+    data = data
   )
   fields <- c(
     "response",
@@ -304,7 +302,11 @@ test_that("brm_marginal_draws() on change, homogeneous var, no subgroup", {
     model = model,
     formula = formula,
     data = data,
-    transform = brm_transform_marginal(data = data, formula = formula)
+    transform = brm_transform_marginal(
+      data = data,
+      formula = formula,
+      average_within_subgroup = FALSE
+    )
   )
   fields <- c("response", "difference_group", "effect")
   columns_df <- expand.grid(
@@ -385,7 +387,11 @@ test_that("brm_marginal_draws() on change, homogeneous var, with subgroup", {
     model = model,
     formula = formula,
     data = data,
-    transform = brm_transform_marginal(data = data, formula = formula)
+    transform = brm_transform_marginal(
+      data = data,
+      formula = formula,
+      average_within_subgroup = FALSE
+    )
   )
   fields <- c("response", "difference_group", "difference_subgroup", "effect")
   expect_equal(sort(names(out)), sort(fields))

@@ -1,4 +1,4 @@
-# brms.mmrm 0.1.0.9002 (development)
+# brms.mmrm 0.1.0.9003 (development)
 
 ## Guardrails to ensure the appropriateness of marginal mean estimation
 
@@ -17,9 +17,10 @@
 * Explain the custom marginal mean calculation in a new `inference.Rmd` vignette.
 * Rename `methods.Rmd` to `model.Rmd` since `inference.Rmd` also discusses methods.
 
-## Covariances
+## Other improvements
 
 * Extend `brm_formula()` and `brm_marginal_draws()` to optionally model homogeneous variances, as well as ARMA, AR, MA, and compound symmetry correlation structures.
+* Restrict `brm_model()` to continuous families with identity links.
 
 # brms.mmrm 0.1.0
 
