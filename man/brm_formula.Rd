@@ -22,6 +22,9 @@ brm_formula(
   time = TRUE,
   covariates = TRUE,
   correlation = "unstructured",
+  autoregressive_order = 1L,
+  moving_average_order = 1L,
+  residual_covariance_arma_estimation = FALSE,
   variance = "heterogeneous",
   effect_baseline = NULL,
   effect_group = NULL,
@@ -96,8 +99,50 @@ the \code{covariates} argument of \code{\link[=brm_data]{brm_data()}},
 \code{FALSE} to omit.}
 
 \item{correlation}{Character of length 1, name of the correlation
-structure. Choose \code{"unstructured"} for unstructured covariance
-or \code{"diagonal"} for independent time points within patients.}
+structure. The correlation matrix is a square \verb{T x T} matrix, where
+\code{T} is the number of discrete time points in the data.
+This matrix describes the correlations between time points in the same
+patient, as modeled in the residuals. Different patients are modeled
+as independent. The \code{correlation} argument controls how this matrix
+is parameterized, and the choices given by \code{brms} are listed at
+\url{https://paul-buerkner.github.io/brms/reference/autocor-terms.html},
+and the choice is ultimately encoded in the main body of the
+output formula through terms like \code{unstru()} and \code{arma()}, some
+of which are configurable through arguments
+\code{autoregressive_order}, \code{moving_average_order}, and
+\code{residual_covariance_arma_estimation} of \code{\link[=brm_formula]{brm_formula()}}.
+Choices in \code{brms.mmrm}:
+\itemize{
+\item \code{"unstructured"}: the default/recommended option, a fully parameterized
+covariance matrix with a unique scalar parameter for each unique pair
+of discrete time points. C.f.
+\url{https://paul-buerkner.github.io/brms/reference/unstr.html}.
+\item \code{"autoregressive_moving_average"}: autoregressive moving
+average (ARMA), c.f.
+\url{https://paul-buerkner.github.io/brms/reference/arma.html}.
+\item \code{"autoregressive"}: autoregressive (AR), c.f.
+\url{https://paul-buerkner.github.io/brms/reference/ar.html}.
+\item \code{"moving_average"}: moving average (MA), c.f.
+\url{https://paul-buerkner.github.io/brms/reference/ma.html}.
+\item \verb{"compound_symmetry}: compound symmetry, c.f.
+\url{https://paul-buerkner.github.io/brms/reference/cosy.html}.
+\item \code{"diagonal"}: declare independent time points within patients.
+}}
+
+\item{autoregressive_order}{Nonnegative integer,
+autoregressive order for the \code{"autoregressive_moving_average"}
+and \code{"autoregressive"} correlation structures.}
+
+\item{moving_average_order}{Nonnegative integer,
+moving average order for the \code{"autoregressive_moving_average"}
+and \code{"moving_average"} correlation structures.}
+
+\item{residual_covariance_arma_estimation}{\code{TRUE} or \code{FALSE},
+whether to estimate ARMA effects using residual covariance matrices.
+Directly supplied to the \code{cov} argument in \code{brms} for
+\code{"autoregressive_moving_average"}, \code{"autoregressive"}, and
+\code{"moving_average"} correlation structures. C.f.
+\url{https://paul-buerkner.github.io/brms/reference/arma.html}.}
 
 \item{variance}{Character of length 1, variance structure for the
 residuals. \code{"heterogeneous"} declares a different variance component
@@ -108,7 +153,13 @@ modeled as independent.
 
 The variance components are encoded as parameters \code{b_sigma} in the model.
 Each \code{b_sigma} is a standard deviation of residuals on the natural
-log scale.}
+log scale.
+
+The variance structure is encoded in the
+\code{sigma ~ ...} part of the output formula. To see the variance
+parameterization for yourself, use \code{brms::make_standata()}
+on the formula and data, or \code{brms::prior_summary()} or
+\code{posterior::as_draws_df()} on the model.}
 
 \item{effect_baseline}{Deprecated on 2024-01-16 (version 0.0.2.9002).
 Use \code{baseline} instead.}
