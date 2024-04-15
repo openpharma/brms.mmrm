@@ -87,6 +87,151 @@ test_that("brm_formula() same with homogeneous variance", {
   )
 })
 
+test_that("brm_formula() different correlation structures", {
+  data <- brm_data(
+    data = tibble::tibble(
+      CHG = 1,
+      AVISIT = "x",
+      baseline = 2,
+      TRT01P = "x",
+      USUBJID = "x"
+    ),
+    outcome = "CHG",
+    role = "change",
+    group = "TRT01P",
+    time = "AVISIT",
+    baseline = "baseline",
+    patient = "USUBJID",
+    reference_group = "x"
+  )
+  out <- brm_formula(
+    data = data,
+    intercept = TRUE,
+    baseline = TRUE,
+    baseline_time = TRUE,
+    group = TRUE,
+    group_time = TRUE,
+    time = TRUE,
+    correlation = "autoregressive_moving_average"
+  )
+  expect_equal(
+    deparse(out[[1L]], width.cutoff = 500L),
+    paste(
+      "CHG ~ baseline + baseline:AVISIT + TRT01P + TRT01P:AVISIT + AVISIT",
+      "+ arma(time = AVISIT, gr = USUBJID, p = 1L, q = 1L, cov = FALSE)"
+    )
+  )
+  out <- brm_formula(
+    data = data,
+    intercept = TRUE,
+    baseline = TRUE,
+    baseline_time = TRUE,
+    group = TRUE,
+    group_time = TRUE,
+    time = TRUE,
+    correlation = "autoregressive_moving_average",
+    autoregressive_order = 2L,
+    moving_average_order = 3L,
+    residual_covariance_arma_estimation = TRUE
+  )
+  expect_equal(
+    deparse(out[[1L]], width.cutoff = 500L),
+    paste(
+      "CHG ~ baseline + baseline:AVISIT + TRT01P + TRT01P:AVISIT + AVISIT",
+      "+ arma(time = AVISIT, gr = USUBJID, p = 2L, q = 3L, cov = TRUE)"
+    )
+  )
+  out <- brm_formula(
+    data = data,
+    intercept = TRUE,
+    baseline = TRUE,
+    baseline_time = TRUE,
+    group = TRUE,
+    group_time = TRUE,
+    time = TRUE,
+    correlation = "autoregressive"
+  )
+  expect_equal(
+    deparse(out[[1L]], width.cutoff = 500L),
+    paste(
+      "CHG ~ baseline + baseline:AVISIT + TRT01P + TRT01P:AVISIT + AVISIT",
+      "+ ar(time = AVISIT, gr = USUBJID, p = 1L, cov = FALSE)"
+    )
+  )
+  out <- brm_formula(
+    data = data,
+    intercept = TRUE,
+    baseline = TRUE,
+    baseline_time = TRUE,
+    group = TRUE,
+    group_time = TRUE,
+    time = TRUE,
+    correlation = "autoregressive",
+    autoregressive_order = 3L,
+    residual_covariance_arma_estimation = TRUE
+  )
+  expect_equal(
+    deparse(out[[1L]], width.cutoff = 500L),
+    paste(
+      "CHG ~ baseline + baseline:AVISIT + TRT01P + TRT01P:AVISIT + AVISIT",
+      "+ ar(time = AVISIT, gr = USUBJID, p = 3L, cov = TRUE)"
+    )
+  )
+  out <- brm_formula(
+    data = data,
+    intercept = TRUE,
+    baseline = TRUE,
+    baseline_time = TRUE,
+    group = TRUE,
+    group_time = TRUE,
+    time = TRUE,
+    correlation = "moving_average"
+  )
+  expect_equal(
+    deparse(out[[1L]], width.cutoff = 500L),
+    paste(
+      "CHG ~ baseline + baseline:AVISIT + TRT01P + TRT01P:AVISIT + AVISIT",
+      "+ ma(time = AVISIT, gr = USUBJID, q = 1L, cov = FALSE)"
+    )
+  )
+  out <- brm_formula(
+    data = data,
+    intercept = TRUE,
+    baseline = TRUE,
+    baseline_time = TRUE,
+    group = TRUE,
+    group_time = TRUE,
+    time = TRUE,
+    correlation = "moving_average",
+    moving_average_order = 5L,
+    residual_covariance_arma_estimation = TRUE
+  )
+  expect_equal(
+    deparse(out[[1L]], width.cutoff = 500L),
+    paste(
+      "CHG ~ baseline + baseline:AVISIT + TRT01P + TRT01P:AVISIT + AVISIT",
+      "+ ma(time = AVISIT, gr = USUBJID, q = 5L, cov = TRUE)"
+    )
+  )
+  out <- brm_formula(
+    data = data,
+    intercept = TRUE,
+    baseline = TRUE,
+    baseline_time = TRUE,
+    group = TRUE,
+    group_time = TRUE,
+    time = TRUE,
+    correlation = "compound_symmetry"
+  )
+  expect_equal(
+    deparse(out[[1L]], width.cutoff = 500L),
+    paste(
+      "CHG ~ baseline + baseline:AVISIT + TRT01P + TRT01P:AVISIT + AVISIT",
+      "+ cosy(time = AVISIT, gr = USUBJID)"
+    )
+  )
+})
+
 test_that("brm_formula() with default names and all terms", {
   data <- brm_data(
     data = tibble::tibble(
