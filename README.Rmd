@@ -58,7 +58,9 @@ Please note that the brms.mmrm project is released with a [Contributor Code of C
 ## Citation
 
 ```{r, warning = FALSE, comment = NA_character_, echo = FALSE}
-citation("brms.mmrm")
+x <- packageDescription("brms.mmrm")
+x$URL <- "https://github.com/openpharma/brms.mmrm"
+citation(package = "brms.mmrm", auto = x)
 ```
 
 ## References
