@@ -25,6 +25,8 @@ test_that("brm_formula() with default names and all non-subgroup terms", {
     time = TRUE
   )
   expect_s3_class(out, "brmsformula")
+  expect_equal(attr(out, "brm_correlation"), "unstructured")
+  expect_equal(attr(out, "brm_variance"), "heterogeneous")
   expect_equal(
     deparse(out[[1L]], width.cutoff = 500L),
     paste(
@@ -36,6 +38,51 @@ test_that("brm_formula() with default names and all non-subgroup terms", {
     deparse(out[[2L]][[1L]], width.cutoff = 500L),
     paste(
       "sigma ~ 0 + AVISIT"
+    )
+  )
+})
+
+test_that("brm_formula() same with homogeneous variance", {
+  data <- brm_data(
+    data = tibble::tibble(
+      CHG = 1,
+      AVISIT = "x",
+      baseline = 2,
+      TRT01P = "x",
+      USUBJID = "x"
+    ),
+    outcome = "CHG",
+    role = "change",
+    group = "TRT01P",
+    time = "AVISIT",
+    baseline = "baseline",
+    patient = "USUBJID",
+    reference_group = "x"
+  )
+  out <- brm_formula(
+    data = data,
+    intercept = TRUE,
+    baseline = TRUE,
+    baseline_time = TRUE,
+    group = TRUE,
+    group_time = TRUE,
+    time = TRUE,
+    variance = "homogeneous"
+  )
+  expect_s3_class(out, "brmsformula")
+  expect_equal(attr(out, "brm_correlation"), "unstructured")
+  expect_equal(attr(out, "brm_variance"), "homogeneous")
+  expect_equal(
+    deparse(out[[1L]], width.cutoff = 500L),
+    paste(
+      "CHG ~ baseline + baseline:AVISIT + TRT01P + TRT01P:AVISIT + AVISIT",
+      "+ unstr(time = AVISIT, gr = USUBJID)"
+    )
+  )
+  expect_equal(
+    deparse(out[[2L]][[1L]], width.cutoff = 500L),
+    paste(
+      "sigma ~ 1"
     )
   )
 })

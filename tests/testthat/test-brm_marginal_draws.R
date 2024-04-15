@@ -263,7 +263,7 @@ test_that("brm_marginal_draws() on response, with subgroup", {
   }
 })
 
-test_that("brm_marginal_draws() on change, no subgroup", {
+test_that("brm_marginal_draws() on change, homogeneous var, no subgroup", {
   skip_on_cran()
   set.seed(0L)
   data <- brm_data(
@@ -278,7 +278,8 @@ test_that("brm_marginal_draws() on change, no subgroup", {
   formula <- brm_formula(
     data = data,
     baseline = FALSE,
-    baseline_time = FALSE
+    baseline_time = FALSE,
+    variance = "homogeneous"
   )
   tmp <- utils::capture.output(
     suppressMessages(
@@ -335,7 +336,7 @@ test_that("brm_marginal_draws() on change, no subgroup", {
   }
 })
 
-test_that("brm_marginal_draws() on change, with subgroup", {
+test_that("brm_marginal_draws() on change, homogeneous var, with subgroup", {
   skip_on_cran()
   set.seed(0L)
   data <- brm_simulate_outline(
@@ -367,7 +368,8 @@ test_that("brm_marginal_draws() on change, with subgroup", {
   out <- brm_marginal_draws(
     model = model,
     formula = formula,
-    data = data
+    data = data,
+    variance = "homogeneous"
   )
   fields <- c("response", "difference_group", "difference_subgroup", "effect")
   expect_equal(sort(names(out)), sort(fields))
