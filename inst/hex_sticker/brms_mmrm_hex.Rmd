@@ -1,0 +1,224 @@
+---
+title: "Hex sticker for {brms.mmrm}"
+rmarkdown::html_document:
+  theme: "default"
+  highlight: "default"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  prompt = FALSE,
+  comment = "#"
+)
+```
+
+## Prerequisites
+
+Load packages:
+```{r packages, eval=TRUE, echo=TRUE}
+suppressPackageStartupMessages({
+  library(dplyr)
+  library(ggplot2)
+  library(ggdist)
+  library(hexSticker)
+  library(sysfonts)
+  library(showtext)
+})
+```
+
+Define colors:
+```{r colors, eval=TRUE, echo=TRUE}
+hex_cols <- c("#2b2f44",
+              "#edf7f8",
+              "#1d6fa7",
+              "#f3594d",
+              "#204948",
+              "#b44b33")
+```
+
+Source of color scheme: [Huemint](https://huemint.com/illustration-1/#palette=2b2f44-edf7f8-1d6fa7-f3594d-204948-b44b33)
+
+## Data
+
+Create data for subplot in hex sticker:
+```{r data1, eval=TRUE, echo=TRUE}
+set.seed(42)
+n <- 10 ^ 4
+dat <- expand.grid(
+  subject = paste0("pat_", sprintf("%04d", 1:n)) |> factor(),
+  visit = c(1, 2, 3, 4) |> factor()
+) |>
+  mutate(baseline = rnorm(n = n(), mean = 90, sd = 20)) |>
+  group_by(subject) |>
+  mutate(trt = sample(x = c(0, 1), size = 1)) |>
+  ungroup() |>
+  mutate(trt = factor(trt)) |>
+  arrange(subject, visit)
+f <- as.formula(~ -1 + trt:visit)
+X <-  model.matrix(object = f, data = data.frame(dat))
+betas <- numeric(length = dim(X)[2])
+names(betas) <- colnames(X)
+betas[1] <- 50
+betas[2] <- 50 + 12
+betas[3] <- 20
+betas[4] <- 20 + 18
+betas[5] <- -5
+betas[6] <- -5 + 32
+betas[7] <- -30
+betas[8] <- -30 + 35
+err <- rnorm(n = n * 4, mean = 0, sd = 5)
+y <-  c(X %*% betas + err)
+dat <- bind_cols(dat, "y" = y) |>
+  mutate(visit_num = as.numeric(visit),
+         chg = y - baseline)
+```
+
+## Plot
+
+Create subplot using `{ggplot2}` and `{ggdist}:
+
+### Plot 1
+
+```{r plot1, eval=TRUE, echo=TRUE, fig.width=8, fig.height=6, out.width="70%", fig.cap='MMRM plot 1.'}
+p1 <- ggplot(data = dat,
+             mapping = aes(x = visit,
+                           y = chg,
+                           fill = trt)) +
+  scale_fill_manual(values = alpha(c("0" = hex_cols[3],
+                                     "1" = hex_cols[6]), 0.6)) +
+  scale_color_manual(values = c("0" = hex_cols[3],
+                                "1" = hex_cols[6])) +
+  stat_halfeye(mapping = aes(color = trt),
+               position = position_dodgejust(width = 0.95)) +
+  theme_void() +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    legend.position = "none",
+    plot.margin = margin(
+      t = 5,
+      r = 5,
+      b = 5,
+      l = 5,
+      unit = "mm"
+    ),
+    plot.background = element_rect(fill = hex_cols[1], color = NA)
+  )
+p1
+```
+
+
+### Plot 2
+
+The distance between the visits (on the x-axis) is now determined by the 
+numeric values of the `visit_num` variable, and can be adjusted using this 
+variable to increase or decrease the distance as per your preference.
+
+
+```{r data_plot2, eval=TRUE, echo=TRUE}
+vec <- unique(dat$visit_num)
+scaling_factor <- 1.35
+diffs <- diff(vec)
+scaled_diffs <- diffs * scaling_factor
+transformed_vec <- c(vec[1], vec[1] + cumsum(scaled_diffs))
+unique_visit_num <- sort(unique(dat$visit_num))
+replacement <- setNames(object = transformed_vec, nm = unique_visit_num)
+replacement
+```
+
+```{r plot2, eval=TRUE, echo=TRUE, fig.width=8, fig.height=6, out.width="70%", fig.cap='MMRM plot 2.'}
+p2 <- dat |>
+  mutate(visit_num = replacement[as.character(visit_num)]) |>
+  ggplot(mapping = aes(x = visit_num,
+                       y = chg,
+                       fill = trt)) +
+  scale_fill_manual(values = alpha(c("0" = hex_cols[3],
+                                     "1" = hex_cols[6]), 0.6)) +
+  scale_color_manual(values = c("0" = hex_cols[3],
+                                "1" = hex_cols[6])) +
+  stat_halfeye(
+    mapping = aes(color = trt),
+    width = 0.95,
+    position = position_dodgejust(width = 1)
+  ) +
+  theme_void() +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    legend.position = "none",
+    plot.margin = margin(
+      t = 3,
+      r = 3,
+      b = 3,
+      l = 3,
+      unit = "mm"
+    ),
+    plot.background = element_rect(fill = hex_cols[1], color = NA)
+  ) +
+  scale_x_continuous(breaks = unique(dat$visit_num),
+                     labels = unique(dat$visit))
+p2
+```
+
+## Hex sticker
+
+Create hex sticker using `{hexSticker}` with a custom 
+[Google font](https://fonts.google.com/):
+
+```{r hex_sticker, eval=TRUE, echo=TRUE, out.width="70%", fig.cap='Hex sticker.'}
+font_add_google(name = "Urbanist", family = "custom_font")
+showtext_auto()
+s <- sticker(
+  p2,
+  package = "brms.mmrm",
+  p_size = 8,
+  s_x = 1,
+  s_y = 0.8,
+  s_width = 8 / 4.5,
+  s_height = 6 / 4.5,
+  filename = "hex_sticker.svg",
+  p_fontface = "bold",
+  p_family = "custom_font",
+  h_fill = hex_cols[1],
+  h_color = hex_cols[5],
+  p_color = hex_cols[2],
+  dpi = 600
+)
+s
+```
+
+Remove image file automatically generated by `sticker()`:
+```{r remove_svg, eval=TRUE, echo=TRUE}
+file.remove("hex_sticker.svg")
+```
+
+Save hex sticker as pdf:
+```{r hex_sticker_save, eval=TRUE, echo=TRUE}
+ggsave(
+  filename = "brms_mmrm_hex1.pdf",
+  plot = s,
+  width = 3,
+  height = 3.47155255544841,
+  device = "pdf",
+  dpi = 600
+)
+```
+
+Note that the font size in the svg and the pdf (not shown in rendered output) 
+is slightly different.
+
+The file `brms_mmrm_hex1.pdf` will be further processed using graphics software 
+and exported as an svg file. This is mainly done to clip the subplot using the
+hexagon shape as clipping mask.
+
+The resulting file (`brms_mmrm_hex2.svg`) can then 
+be added to the package, e.g. using `usethis::use_logo()` which will store (a 
+smaller version of) it in the folder `man/figures`.
+Image files with different sizes and formats can be generated using 
+`pkgdown::build_favicons()`.
+
+
+
+
