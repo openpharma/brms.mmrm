@@ -1,5 +1,5 @@
 ---
-title: "Simulation-based calibration"
+title: "Simulation-based calibration checking"
 bibliography: '`r system.file("bibliography.bib", package = "brms.mmrm")`'
 csl: '`r system.file("asa.csl", package = "brms.mmrm")`'
 output:
@@ -7,7 +7,7 @@ output:
     toc: true
     number_sections: true
 vignette: >
-  %\VignetteIndexEntry{Simulation-based calibration}
+  %\VignetteIndexEntry{Simulation-based calibration checking}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -29,7 +29,7 @@ library(tidyr)
 
 # About
 
-This vignette shows the results of a simulation-based calibration (SBC) study to validate the implementation of the models in `brms.mmrm`. SBC tests the ability of a Bayesian model to recapture the parameters used to simulate prior predictive data. For details on SBC, please read @talts2020 and the [`SBC`](https://hyunjimoon.github.io/SBC/) R package [@sbc]. This particular SBC study uses the [`targets`](https://docs.ropensci.org/targets/) pipeline in the [`sbc`](https://github.com/openpharma/brms.mmrm/tree/main/sbc) subdirectory of the [`brms.mmrm`](https://github.com/openpharma/brms.mmrm) package source code.
+This vignette shows the results of a simulation-based calibration (SBC) checking study to validate the implementation of the models in `brms.mmrm`. SBC checking tests the ability of a Bayesian model to recapture the parameters used to simulate prior predictive data. For details on SBC checking, please read @Modrak2024 and the [`SBC`](https://hyunjimoon.github.io/SBC/) R package [@sbc]. This particular SBC checking study uses the [`targets`](https://docs.ropensci.org/targets/) pipeline in the [`sbc`](https://github.com/openpharma/brms.mmrm/tree/main/sbc) subdirectory of the [`brms.mmrm`](https://github.com/openpharma/brms.mmrm) package source code.
 
 # Simple scenario
 
