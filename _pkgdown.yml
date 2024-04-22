@@ -36,6 +36,9 @@ reference:
 - title: Priors
   contents:
   - 'brm_prior_simple'
+- title: Parameterizations
+  contents:
+  - 'brm_parameterize_successive_cells'
 - title: Models
   contents:
   - 'brm_formula'
