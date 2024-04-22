@@ -35,9 +35,29 @@
 #'   of interest are not implicitly conditional on a subset of the data.
 #'   This is important for effectively utilizing informative priors
 #'   on those coefficients of interest.
-brm_prameterize_successive_cells <- function(
+#' @inheritParams brm_model
+#' @examples
+#' if (identical(Sys.getenv("BRM_EXAMPLES", unset = ""), "true")) {
+#' set.seed(0L)
+#' data <- brm_data(
+#'   data = brm_simulate_simple()$data,
+#'   outcome = "response",
+#'   role = "response",
+#'   group = "group",
+#'   time = "time",
+#'   patient = "patient",
+#'   reference_group = "group_1",
+#'   reference_time = "time_1"
+#' )
+#' formula <- brm_formula(data = data)
+#' }
+brm_parameterize_successive_cells <- function(
   data,
   formula
 ) {
-  
+  brm_data_validate(data)
+  brm_formula_validate(formula)
+  out_data <- successive_cells_data(data)
+  out_formula <- successive_cells_formula(formula)
+  out_transform <- successive_cells_transform(???)
 }

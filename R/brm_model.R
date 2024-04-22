@@ -1,11 +1,11 @@
-#' @title Basic MMRM
+#' @title Fit an MMRM.
 #' @export
 #' @family models
-#' @description Fit a basic MMRM model using `brms`.
+#' @description Fit an MMRM model using `brms`.
 #' @inheritSection brm_formula Parameterization
 #' @return A fitted model object from `brms`.
-#' @param data A tidy data frame with one row per patient per discrete
-#'   time point.
+#' @param data A special classed `tibble` returned from [brm_data()].
+#'   It should have one row per patient per discrete time point.
 #' @param formula An object of class `"brmsformula"` from [brm_formula()]
 #'   or `brms::brmsformula()`. Should include the full parameterization
 #'   of the model, including fixed effects, residual correlation,
@@ -72,7 +72,7 @@ brm_model <- function(
   prior = NULL,
   family = brms::brmsfamily(family = "gaussian", link = "identity")
 ) {
-  brm_data_validate(data = data)
+  brm_data_validate(data)
   brm_formula_validate(formula)
   brms_model_validate_family(family)
   assert(
