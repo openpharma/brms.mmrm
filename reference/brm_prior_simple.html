@@ -73,7 +73,11 @@
 <span>  intercept <span class="op">=</span> <span class="st">"student_t(3, 0, 2.5)"</span>,</span>
 <span>  coefficients <span class="op">=</span> <span class="st">"student_t(3, 0, 2.5)"</span>,</span>
 <span>  sigma <span class="op">=</span> <span class="st">"student_t(3, 0, 2.5)"</span>,</span>
-<span>  correlation <span class="op">=</span> <span class="st">"lkj(1)"</span></span>
+<span>  unstructured <span class="op">=</span> <span class="st">"lkj(1)"</span>,</span>
+<span>  autoregressive <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  moving_average <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  compound_symmetry <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  correlation <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -108,12 +112,52 @@ to set independently on each of the log-scale standard deviation
 parameters. Should be a symmetric prior in most situations.</p></dd>
 
 
+<dt>unstructured</dt>
+<dd><p>Character of length 1,
+Stan code for an unstructured correlation prior.
+Supply the empty string <code>""</code> to set a flat prior (default).
+Applies to the <code>"cortime</code> parameter class in <code>brms</code> priors.
+Used for formulas created with
+<code>brm_formula(correlation = "unstructured")</code>. LKJ is recommended.
+See also <code><a href="https://paul-buerkner.github.io/brms/reference/unstr.html" class="external-link">brms::unstr()</a></code>.</p></dd>
+
+
+<dt>autoregressive</dt>
+<dd><p>Character of length 1,
+Stan code for a prior on autoregressive correlation parameters.
+Supply the empty string <code>""</code> to set a flat prior (default).
+Applies to the <code>"ar</code> parameter class in <code>brms</code> priors.
+Used for formulas created with
+<code>brm_formula(correlation = "autoregressive")</code> and
+<code>brm_formula(correlation = "autoregressive_moving_average")</code>.
+See also <code>brms::ar()</code> and <code><a href="https://paul-buerkner.github.io/brms/reference/arma.html" class="external-link">brms::arma()</a></code>.</p></dd>
+
+
+<dt>moving_average</dt>
+<dd><p>Character of length 1,
+Stan code for a prior on moving average correlation parameters.
+Supply the empty string <code>""</code> to set a flat prior (default).
+Applies to the <code>"ma</code> parameter class in <code>brms</code> priors.
+Used for formulas created with
+<code>brm_formula(correlation = "moving_average")</code> and
+<code>brm_formula(correlation = "autoregressive_moving_average")</code>.
+See also <code><a href="https://paul-buerkner.github.io/brms/reference/ma.html" class="external-link">brms::ma()</a></code> and <code><a href="https://paul-buerkner.github.io/brms/reference/arma.html" class="external-link">brms::arma()</a></code>.</p></dd>
+
+
+<dt>compound_symmetry</dt>
+<dd><p>Character of length 1,
+Stan code for a prior on compound symmetry correlation parameters.
+Supply the empty string <code>""</code> to set a flat prior (default).
+Applies to the <code>"cosy</code> parameter class in <code>brms</code> priors.
+Used for formulas created with
+<code>brm_formula(correlation = "compound_symmetry")</code>.
+See also <code><a href="https://paul-buerkner.github.io/brms/reference/cosy.html" class="external-link">brms::cosy()</a></code>.</p></dd>
+
+
 <dt>correlation</dt>
-<dd><p>Character of length 1, Stan code for the prior
-on the correlation matrix for the residuals of a given patient.
-(Different patients are modeled as independent, and each
-patient has the same correlation structure as each other patient.)
-Should be an LKJ prior in most situations.</p></dd>
+<dd><p>Deprecated on 2024-04-22
+(version 0.1.0.9004). Please use arguments like <code>"unstructured"</code>,
+and/or <code>"autoregressive"</code> to supply correlation-specific priors.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -148,13 +192,12 @@ to different fixed effect parameters.</p>
 <span class="r-in"><span>  intercept <span class="op">=</span> <span class="st">"student_t(3, 0, 2.5)"</span>,</span></span>
 <span class="r-in"><span>  coefficients <span class="op">=</span> <span class="st">"normal(0, 10)"</span>,</span></span>
 <span class="r-in"><span>  sigma <span class="op">=</span> <span class="st">"student_t(2, 0, 4)"</span>,</span></span>
-<span class="r-in"><span>  correlation <span class="op">=</span> <span class="st">"lkj(2.5)"</span></span></span>
+<span class="r-in"><span>  unstructured <span class="op">=</span> <span class="st">"lkj(2.5)"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The correlation argumument of brm_prior_simple() was deprecated on 2024-04-22 (version 0.1.0.9004). Please use arguments like "unstructured", and "autoregressive" to supply correlation-specific priors.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                 prior     class coef group resp  dpar nlpar lb ub  source</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  student_t(3, 0, 2.5) Intercept                                   default</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         normal(0, 10)         b                                   default</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                lkj(1)   cortime                                   default</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              lkj(2.5)   cortime                                   default</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    student_t(2, 0, 4)         b                 sigma             default</span>
 </code></pre></div>
     </div>
