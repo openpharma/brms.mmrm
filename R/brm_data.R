@@ -198,7 +198,7 @@ brm_data_preprocess <- function(out) {
 brm_data_validate <- function(data) {
   UseMethod("brm_data_validate")
 }
- 
+
 #' @export
 brm_data_validate.default <- function(data) {
   outcome <- attr(data, "brm_outcome")
