@@ -10,7 +10,11 @@ brm_prior_simple(
   intercept = "student_t(3, 0, 2.5)",
   coefficients = "student_t(3, 0, 2.5)",
   sigma = "student_t(3, 0, 2.5)",
-  correlation = "lkj(1)"
+  unstructured = "lkj(1)",
+  autoregressive = "",
+  moving_average = "",
+  compound_symmetry = "",
+  correlation = NULL
 )
 }
 \arguments{
@@ -33,11 +37,43 @@ to set independently on each of the non-intercept model coefficients.}
 to set independently on each of the log-scale standard deviation
 parameters. Should be a symmetric prior in most situations.}
 
-\item{correlation}{Character of length 1, Stan code for the prior
-on the correlation matrix for the residuals of a given patient.
-(Different patients are modeled as independent, and each
-patient has the same correlation structure as each other patient.)
-Should be an LKJ prior in most situations.}
+\item{unstructured}{Character of length 1,
+Stan code for an unstructured correlation prior.
+Supply the empty string \code{""} to set a flat prior (default).
+Applies to the \verb{"cortime} parameter class in \code{brms} priors.
+Used for formulas created with
+\code{brm_formula(correlation = "unstructured")}. LKJ is recommended.
+See also \code{\link[brms:unstr]{brms::unstr()}}.}
+
+\item{autoregressive}{Character of length 1,
+Stan code for a prior on autoregressive correlation parameters.
+Supply the empty string \code{""} to set a flat prior (default).
+Applies to the \verb{"ar} parameter class in \code{brms} priors.
+Used for formulas created with
+\code{brm_formula(correlation = "autoregressive")} and
+\code{brm_formula(correlation = "autoregressive_moving_average")}.
+See also \code{\link[brms:ar]{brms::ar()}} and \code{\link[brms:arma]{brms::arma()}}.}
+
+\item{moving_average}{Character of length 1,
+Stan code for a prior on moving average correlation parameters.
+Supply the empty string \code{""} to set a flat prior (default).
+Applies to the \verb{"ma} parameter class in \code{brms} priors.
+Used for formulas created with
+\code{brm_formula(correlation = "moving_average")} and
+\code{brm_formula(correlation = "autoregressive_moving_average")}.
+See also \code{\link[brms:ma]{brms::ma()}} and \code{\link[brms:arma]{brms::arma()}}.}
+
+\item{compound_symmetry}{Character of length 1,
+Stan code for a prior on compound symmetry correlation parameters.
+Supply the empty string \code{""} to set a flat prior (default).
+Applies to the \verb{"cosy} parameter class in \code{brms} priors.
+Used for formulas created with
+\code{brm_formula(correlation = "compound_symmetry")}.
+See also \code{\link[brms:cosy]{brms::cosy()}}.}
+
+\item{correlation}{Deprecated on 2024-04-22
+(version 0.1.0.9004). Please use arguments like \code{"unstructured"},
+and/or \code{"autoregressive"} to supply correlation-specific priors.}
 }
 \value{
 A classed data frame with the \code{brms} prior.
@@ -68,7 +104,7 @@ brm_prior_simple(
   intercept = "student_t(3, 0, 2.5)",
   coefficients = "normal(0, 10)",
   sigma = "student_t(2, 0, 4)",
-  correlation = "lkj(2.5)"
+  unstructured = "lkj(2.5)"
 )
 }
 \concept{priors}
