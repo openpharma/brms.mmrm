@@ -382,8 +382,8 @@ brm_data_level_group <- function(data) {
   data[[group]] <- as.character(names_group)
   meta_group <- dplyr::arrange(dplyr::distinct(all_group), level)
   attr(data, "brm_reference_group") <- brm_levels(reference_group)
-  attr(data, "brm_levels_group") <- as.character(meta_group$level)
-  attr(data, "brm_labels_group") <- as.character(meta_group$label)
+  attr(data, "brm_levels_group") <- sort(as.character(meta_group$level))
+  attr(data, "brm_labels_group") <- sort(as.character(meta_group$label))
   data
 }
 
@@ -398,8 +398,8 @@ brm_data_level_subgroup <- function(data) {
   data[[subgroup]] <- as.character(names_subgroup)
   meta_subgroup <- dplyr::arrange(dplyr::distinct(all_subgroup), level)
   attr(data, "brm_reference_subgroup") <- brm_levels(reference_subgroup)
-  attr(data, "brm_levels_subgroup") <- as.character(meta_subgroup$level)
-  attr(data, "brm_labels_subgroup") <- as.character(meta_subgroup$label)
+  attr(data, "brm_levels_subgroup") <- sort(as.character(meta_subgroup$level))
+  attr(data, "brm_labels_subgroup") <- sort(as.character(meta_subgroup$label))
   data
 }
 
@@ -413,8 +413,8 @@ brm_data_level_time <- function(data) {
   if (!is.null(reference_time)) {
     attr(data, "brm_reference_time") <- brm_levels(reference_time)
   }
-  attr(data, "brm_levels_time") <- as.character(meta_time$level)
-  attr(data, "brm_labels_time") <- as.character(meta_time$label)
+  attr(data, "brm_levels_time") <- sort(as.character(meta_time$level))
+  attr(data, "brm_labels_time") <- sort(as.character(meta_time$label))
   data
 }
 
@@ -446,6 +446,7 @@ brm_data_fill <- function(data) {
   group <- attr(data, "brm_group")
   subgroup <- attr(data, "brm_subgroup")
   time <- attr(data, "brm_time")
+  levels_time <- attr(data, "brm_levels_time")
   patient <- attr(data, "brm_patient")
   covariates <- attr(data, "brm_covariates")
   missing <- attr(data, "brm_missing")
@@ -473,7 +474,16 @@ brm_data_fill <- function(data) {
     )
   )
   attributes$data <- do.call(what = dplyr::arrange, args = args)
-  do.call(what = brm_data_new, args = attributes)
+  out <- do.call(what = brm_data_new, args = attributes)
+  assert(
+    out[[time]] == rep(levels_time, times = nrow(data) / length(levels_time)),
+    message = paste(
+      "data could not be filled. Please submit a bug report to",
+      "https://github.com/openpharma/brms.mmrm/issues",
+      "and include a reproducible example."
+    )
+  )
+  out
 }
 
 brm_data_fill_column <- function(x, index) {
