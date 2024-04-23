@@ -1,4 +1,4 @@
-# brms.mmrm 0.1.0.9003 (development)
+# brms.mmrm 0.1.0.9004 (development)
 
 ## Guardrails to ensure the appropriateness of marginal mean estimation
 
@@ -21,6 +21,7 @@
 
 * Extend `brm_formula()` and `brm_marginal_draws()` to optionally model homogeneous variances, as well as ARMA, AR, MA, and compound symmetry correlation structures.
 * Restrict `brm_model()` to continuous families with identity links.
+* In `brm_prior_simple()`, deprecate the `correlation` argument in favor of individual correlation-specific arguments such as `unstructured` and `compound_symmetry`.
 
 # brms.mmrm 0.1.0
 

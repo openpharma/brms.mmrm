@@ -17,11 +17,39 @@
 #' @param sigma Character of length 1, Stan code for the prior
 #'   to set independently on each of the log-scale standard deviation
 #'   parameters. Should be a symmetric prior in most situations.
-#' @param correlation Character of length 1, Stan code for the prior
-#'   on the correlation matrix for the residuals of a given patient.
-#'   (Different patients are modeled as independent, and each
-#'   patient has the same correlation structure as each other patient.)
-#'   Should be an LKJ prior in most situations.
+#' @param correlation Deprecated on 2024-04-22
+#'   (version 0.1.0.9004). Please use arguments like `"unstructured"`,
+#'   and/or `"autoregressive"` to supply correlation-specific priors.
+#' @param unstructured Character of length 1,
+#'   Stan code for an unstructured correlation prior.
+#'   Supply the empty string `""` to set a flat prior (default).
+#'   Applies to the `"cortime` parameter class in `brms` priors.
+#'   Used for formulas created with
+#'   `brm_formula(correlation = "unstructured")`. LKJ is recommended.
+#'   See also [brms::unstr()].
+#' @param autoregressive Character of length 1,
+#'   Stan code for a prior on autoregressive correlation parameters.
+#'   Supply the empty string `""` to set a flat prior (default).
+#'   Applies to the `"ar` parameter class in `brms` priors.
+#'   Used for formulas created with
+#'   `brm_formula(correlation = "autoregressive")` and
+#'   `brm_formula(correlation = "autoregressive_moving_average")`.
+#'   See also [brms::ar()] and [brms::arma()].
+#' @param moving_average Character of length 1,
+#'   Stan code for a prior on moving average correlation parameters.
+#'   Supply the empty string `""` to set a flat prior (default).
+#'   Applies to the `"ma` parameter class in `brms` priors.
+#'   Used for formulas created with
+#'   `brm_formula(correlation = "moving_average")` and
+#'   `brm_formula(correlation = "autoregressive_moving_average")`.
+#'   See also [brms::ma()] and [brms::arma()].
+#' @param compound_symmetry Character of length 1,
+#'   Stan code for a prior on compound symmetry correlation parameters.
+#'   Supply the empty string `""` to set a flat prior (default).
+#'   Applies to the `"cosy` parameter class in `brms` priors.
+#'   Used for formulas created with
+#'   `brm_formula(correlation = "compound_symmetry")`.
+#'   See also [brms::cosy()].
 #' @examples
 #' set.seed(0L)
 #' data <- brm_simulate_outline()
@@ -37,7 +65,7 @@
 #'   intercept = "student_t(3, 0, 2.5)",
 #'   coefficients = "normal(0, 10)",
 #'   sigma = "student_t(2, 0, 4)",
-#'   correlation = "lkj(2.5)"
+#'   unstructured = "lkj(2.5)"
 #' )
 brm_prior_simple <- function(
   data,
@@ -45,7 +73,11 @@ brm_prior_simple <- function(
   intercept = "student_t(3, 0, 2.5)",
   coefficients = "student_t(3, 0, 2.5)",
   sigma = "student_t(3, 0, 2.5)",
-  correlation = "lkj(1)"
+  unstructured = "lkj(1)",
+  autoregressive = "",
+  moving_average = "",
+  compound_symmetry = "",
+  correlation = NULL
 ) {
   brm_data_validate(data = data)
   brm_formula_validate(formula)
@@ -62,14 +94,42 @@ brm_prior_simple <- function(
     message = "'sigma' must be a valid character string"
   )
   assert_chr(
-    correlation,
-    message = "'correlation' must be a valid character string"
+    sigma,
+    message = "'sigma' must be a valid character string"
   )
+  assert_chr(
+    paste(unstructured, "x"),
+    message = "'unstructured' must be a valid character string"
+  )
+  assert_chr(
+    paste(autoregressive, "x"),
+    message = "'autoregressive' must be a valid character string"
+  )
+  assert_chr(
+    paste(moving_average, "x"),
+    message = "'moving_average' must be a valid character string"
+  )
+  assert_chr(
+    paste(compound_symmetry, "x"),
+    message = "'compound_symmetry' must be a valid character string"
+  )
+  if (!is.null(correlation)) {
+    brm_deprecate(
+      "The correlation argumument of brm_prior_simple() ",
+      "was deprecated on 2024-04-22 (version 0.1.0.9004). ",
+      "Please use arguments like \"unstructured\", ",
+      "and \"autoregressive\" to supply correlation-specific priors."
+    )
+  }
   data[[attr(data, "brm_outcome")]] <- 0
   prior <- brms::get_prior(formula = formula, data = data)
   prior$prior[prior$class == "Intercept"] <- intercept
   prior$prior[prior$class == "b" & prior$dpar == ""] <- coefficients
   prior$prior[prior$dpar == "sigma"] <- sigma
-  prior$prior[prior$class == "cortime"] <- correlation
+  correlation_classes <- c("cortime", "ar", "ma")
+  prior$prior[prior$class == "cortime"] <- unstructured
+  prior$prior[prior$class == "ar"] <- autoregressive
+  prior$prior[prior$class == "ma"] <- moving_average
+  prior$prior[prior$class == "cosy"] <- compound_symmetry
   prior[prior$coef == "", ]
 }
