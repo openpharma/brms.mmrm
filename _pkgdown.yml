@@ -33,12 +33,12 @@ reference:
   - 'brm_simulate_outline'
   - 'brm_simulate_prior'
   - 'brm_simulate_simple'
+- title: Informative prior scenarios
+  contents:
+  - 'brm_scenario_successive'
 - title: Priors
   contents:
   - 'brm_prior_simple'
-- title: Parameterizations
-  contents:
-  - 'brm_parameterize_successive_cells'
 - title: Models
   contents:
   - 'brm_formula'

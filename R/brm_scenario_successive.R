@@ -1,9 +1,8 @@
-#' @title Cell-means-like successive differences parameterization
+#' @title Successive differences scenario
 #' @export
-#' @family parameterizations
-#' @description Create a parameterization on successive differences
-#'   between adjacent time points, with an independent set of fixed effects
-#'   for each treatment group.
+#' @family informative prior scenarios
+#' @description Create an informative prior scenario where the fixed effects
+#'   are successive differences between adjacent time points.
 #' @details In this parameterization, each fixed effect is either an intercept
 #'   on the first time point or the difference between two adjacent time
 #'   points, and each treatment group has its own set of fixed effects
@@ -27,14 +26,18 @@
 #'   For group A, `beta_1` is the time 1 intercept, `beta_2` represents
 #'   time 2 minus time 1, and `beta_3` represents time 3 minus time 2.
 #'   `beta_4`, `beta_5`, and `beta_6` represent the analogous roles.
-#' @section Nuisance variables in parameterizations:
+#' @section Nuisance variables in informative prior scenarios:
 #'   In the presence of other covariates, functions like
-#'   [brm_parameterize_successive_cells()] center continuous variables at
-#'   their means and center nuisance factors at their proportional
-#'   averages in the data. This ensures that the main model coefficients
+#'   [brm_scenario_successive()] convert nuisance factors into binary
+#'   dummy variables, then center all those dummy variables and any
+#'   continuous nuisance variables at their means in the data.
+#'   This ensures that the main model coefficients
 #'   of interest are not implicitly conditional on a subset of the data.
-#'   This is important for effectively utilizing informative priors
-#'   on those coefficients of interest.
+#'   In other words, preprocessing nuisance variables this way preserves
+#'   the interpretations of the fixed effects of interest, and it ensures
+#'   informative priors can be specified correctly.
+#' @return A special classed `tibble` with pre-processed data tailored to
+#'   the successive differences scenario.
 #' @inheritParams brm_model
 #' @examples
 #' if (identical(Sys.getenv("BRM_EXAMPLES", unset = ""), "true")) {
@@ -49,15 +52,10 @@
 #'   reference_group = "group_1",
 #'   reference_time = "time_1"
 #' )
-#' formula <- brm_formula(data = data)
+#' data
+#' brm_scenario_successive(data)
 #' }
-brm_parameterize_successive_cells <- function(
-  data,
-  formula
-) {
+brm_scenario_successive <- function(data) {
   brm_data_validate(data)
-  brm_formula_validate(formula)
-  out_data <- successive_cells_data(data)
-  out_formula <- successive_cells_formula(formula)
-  out_transform <- successive_cells_transform(???)
+  
 }

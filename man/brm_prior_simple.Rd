@@ -14,8 +14,8 @@ brm_prior_simple(
 )
 }
 \arguments{
-\item{data}{A tidy data frame with one row per patient per discrete
-time point.}
+\item{data}{A special classed \code{tibble} returned from \code{\link[=brm_data]{brm_data()}}.
+It should have one row per patient per discrete time point.}
 
 \item{formula}{An object of class \code{"brmsformula"} from \code{\link[=brm_formula]{brm_formula()}}
 or \code{brms::brmsformula()}. Should include the full parameterization

@@ -2,7 +2,7 @@
 % Please edit documentation in R/brm_model.R
 \name{brm_model}
 \alias{brm_model}
-\title{Basic MMRM}
+\title{Fit an MMRM.}
 \usage{
 brm_model(
   data,
@@ -13,8 +13,8 @@ brm_model(
 )
 }
 \arguments{
-\item{data}{A tidy data frame with one row per patient per discrete
-time point.}
+\item{data}{A special classed \code{tibble} returned from \code{\link[=brm_data]{brm_data()}}.
+It should have one row per patient per discrete time point.}
 
 \item{formula}{An object of class \code{"brmsformula"} from \code{\link[=brm_formula]{brm_formula()}}
 or \code{brms::brmsformula()}. Should include the full parameterization
@@ -35,7 +35,7 @@ Must fit a continuous outcome variable and have the identity link.}
 A fitted model object from \code{brms}.
 }
 \description{
-Fit a basic MMRM model using \code{brms}.
+Fit an MMRM model using \code{brms}.
 }
 \section{Parameterization}{
 
