@@ -50,10 +50,10 @@ brm_scenario_new <- function(
 }
 
 #' @export
-brm_data_validate.brms_mmrm_scenario <- function(scenario) {
-  interest <- attr(scenario, "brm_scenario_interest")
-  nuisance <- attr(scenario, "brm_scenario_nuisance")
-  parameterization <- attr(scenario, "brm_scenario_parameterization")
+brm_data_validate.brms_mmrm_scenario <- function(data) {
+  interest <- attr(data, "brm_scenario_interest")
+  nuisance <- attr(data, "brm_scenario_nuisance")
+  parameterization <- attr(data, "brm_scenario_parameterization")
   assert_chr_vec(
     interest,
     "brm_scenario_interest attribute must be a character vector"
@@ -84,7 +84,7 @@ brm_data_validate.brms_mmrm_scenario <- function(scenario) {
   )
   assert(
     sort(parameterization$variable) ==
-      sort(attr(scenario, "brm_scenario_interest")),
+      sort(attr(data, "brm_scenario_interest")),
     message = paste(
       "the \"variable\" column of the brm_scenario_parameterization",
       "attribute must agree with the values in the",

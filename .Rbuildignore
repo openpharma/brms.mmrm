@@ -6,7 +6,8 @@
 ^README\.Rmd$
 ^\.lintr$
 ^_pkgdown\.yml$
-^docs$
-^sbc$
 ^data-raw$
+^docs$
+^pkgdown$
 ^inst/hex_sticker$
+^sbc$

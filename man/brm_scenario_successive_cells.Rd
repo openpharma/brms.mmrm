@@ -49,8 +49,8 @@ time 2 minus time 1, and \code{beta_3} represents time 3 minus time 2.
 }
 \section{Nuisance variables in informative prior scenarios}{
 
-In the presence of other covariates, functions like
-\code{\link[=brm_scenario_successive]{brm_scenario_successive()}} convert nuisance factors into binary
+In the presence of covariate adjustment, functions like
+\code{\link[=brm_scenario_successive_cells]{brm_scenario_successive_cells()}} convert nuisance factors into binary
 dummy variables, then center all those dummy variables and any
 continuous nuisance variables at their means in the data.
 This ensures that the main model coefficients

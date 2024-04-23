@@ -27,8 +27,8 @@
 #'   time 2 minus time 1, and `beta_3` represents time 3 minus time 2.
 #'   `beta_4`, `beta_5`, and `beta_6` represent the analogous roles.
 #' @section Nuisance variables in informative prior scenarios:
-#'   In the presence of other covariates, functions like
-#'   [brm_scenario_successive()] convert nuisance factors into binary
+#'   In the presence of covariate adjustment, functions like
+#'   [brm_scenario_successive_cells()] convert nuisance factors into binary
 #'   dummy variables, then center all those dummy variables and any
 #'   continuous nuisance variables at their means in the data.
 #'   This ensures that the main model coefficients
