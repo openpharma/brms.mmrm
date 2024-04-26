@@ -145,16 +145,16 @@ brm_data <- function(
 
 brm_data_new <- function(
   data,
-  brm_outcome,
-  brm_role,
+  brm_outcome = NULL,
+  brm_role = NULL,
   brm_baseline = NULL,
-  brm_group,
+  brm_group = NULL,
   brm_subgroup = NULL,
-  brm_time,
-  brm_patient,
-  brm_covariates,
+  brm_time = NULL,
+  brm_patient = NULL,
+  brm_covariates = NULL,
   brm_missing = NULL,
-  brm_reference_group,
+  brm_reference_group = NULL,
   brm_reference_subgroup = NULL,
   brm_reference_time = NULL,
   brm_levels_group = NULL,
@@ -510,4 +510,8 @@ brm_data_attributes <- function(data) {
   out <- attributes(data)
   out <- out[grep("^brm_", names(out), value = TRUE)]
   out
+}
+
+brm_data_has_subgroup <- function(data) {
+  !is.null(attr(data, "brm_subgroup"))
 }

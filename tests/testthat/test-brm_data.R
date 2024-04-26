@@ -83,6 +83,7 @@ test_that("brm_data() response", {
   expect_equal(attr(out, "brm_missing"), "col_missing")
   expect_equal(attr(out, "brm_reference_group"), "group.1")
   expect_equal(attr(out, "brm_reference_time"), "time.1")
+  expect_false(brm_data_has_subgroup(out))
 })
 
 test_that("brm_data() response with subgroup", {
@@ -223,6 +224,7 @@ test_that("brm_data() response with subgroup", {
   expect_equal(attr(out, "brm_reference_group"), "group.1")
   expect_equal(attr(out, "brm_reference_subgroup"), "subgroup.1")
   expect_equal(attr(out, "brm_reference_time"), "time.1")
+  expect_true(brm_data_has_subgroup(out))
 })
 
 test_that("brm_data() change", {

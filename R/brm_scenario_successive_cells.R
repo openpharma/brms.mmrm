@@ -42,11 +42,17 @@
 #'   attributes to tell downstream functions like [brm_formula()] what to
 #'   do with the object.
 #' @inheritParams brm_model
+#' @param prefix Character string to prepend to the new columns
+#'   of generated fixed effects.
+#'   In rare cases, you may need to set a non-default prefix to prevent
+#'   name conflicts with existing columns in the data, or rename
+#'   the columns in your data.
 #' @examples
 #' if (identical(Sys.getenv("BRM_EXAMPLES", unset = ""), "true")) {
 #' set.seed(0L)
 #' data <- brm_simulate_outline(
 #'   n_group = 2,
+#'   n_subgroup = 2,
 #'   n_patient = 100,
 #'   n_time = 4,
 #'   rate_dropout = 0,
@@ -70,12 +76,21 @@
 #' )
 #' brm_scenario_successive_cells(data)
 #' }
-brm_scenario_successive_cells <- function(data) {
-  brm_data_validate(data)
+brm_scenario_successive_cells <- function(
+  data,
+  prefix = "x_"
+) {
+  brm_data_validate.default(data)
+  data <- brm_data_remove_scenario(data)
   data <- brm_data_fill(data)
-  scenario <- scenario_successive_cells(data)
-  nuisance <- scenario_nuisance(data)
-  out <- brm_scenario_init(
+  assert_chr(prefix %||nzchar% "x", "prefix must be a single chr string")
+  scenario <- if_any(
+    brm_data_has_subgroup(data),
+    scenario_successive_cells_subgroup(data, prefix),
+    scenario_successive_cells(data, prefix)
+  )
+  nuisance <- scenario_nuisance(data, prefix = prefix)
+  brm_scenario_init(
     data = data,
     interest = scenario$interest,
     nuisance = nuisance,
@@ -84,7 +99,7 @@ brm_scenario_successive_cells <- function(data) {
   )
 }
 
-scenario_successive_cells <- function(data) {
+scenario_successive_cells <- function(data, prefix) {
   group <- attr(data, "brm_group")
   time <- attr(data, "brm_time")
   levels_group <- attr(data, "brm_levels_group")
@@ -102,12 +117,52 @@ scenario_successive_cells <- function(data) {
   matrix <- kronecker(X = matrix_group, Y = matrix_time)
   names_group <- rep(levels_group, each = n_time)
   names_time <- rep(levels_time, times = length(levels_group))
-  names <- paste("interest", group, names_group, time, names_time, sep = "_")
+  names <- paste0(prefix, paste(names_group, names_time, sep = "_"))
   names <- brm_levels(names)
   colnames(matrix) <- names
   interest <- tibble::as_tibble(as.data.frame(matrix))
   parameterization <- tibble::tibble(
     group = names_group,
+    time = names_time,
+    variable = names
+  )
+  list(interest = interest, parameterization = parameterization)
+}
+
+scenario_successive_cells_subgroup <- function(data, prefix) {
+  group <- attr(data, "brm_group")
+  subgroup <- attr(data, "brm_subgroup")
+  time <- attr(data, "brm_time")
+  levels_group <- attr(data, "brm_levels_group")
+  levels_subgroup <- attr(data, "brm_levels_subgroup")
+  levels_time <- attr(data, "brm_levels_time")
+  n_group <- length(levels_group)
+  n_subgroup <- length(levels_subgroup)
+  n_time <- length(levels_time)
+  data_first <- data[data[[time]] == data[[time]][1L], ]
+  matrix_group <- NULL
+  for (name_group in levels_group) {
+    for (name_subgroup in levels_subgroup) {
+      in_group_subgroup <- (data_first[[group]] == name_group) &
+        (data_first[[subgroup]] == name_subgroup)
+      matrix_group <- cbind(matrix_group, as.integer(in_group_subgroup))
+    }
+  }
+  matrix_time <- diag(n_time) + lower.tri(diag(n_time))
+  matrix <- kronecker(X = matrix_group, Y = matrix_time)
+  names_group <- rep(levels_group, each = n_time * n_subgroup)
+  names_subgroup <- rep(rep(levels_subgroup, times = n_group), each = n_time)
+  names_time <- rep(levels_time, times = n_group * n_subgroup)
+  names <- paste0(
+    prefix,
+    paste(names_group, names_subgroup, names_time, sep = "_")
+  )
+  names <- brm_levels(names)
+  colnames(matrix) <- names
+  interest <- tibble::as_tibble(as.data.frame(matrix))
+  parameterization <- tibble::tibble(
+    group = names_group,
+    subgroup = names_subgroup,
     time = names_time,
     variable = names
   )

@@ -14,6 +14,14 @@
   }
 }
 
+`%||nzchar%` <- function(x, y) {
+  if (nzchar(x)) {
+    x
+  } else {
+    y
+  }
+}
+
 if_any <- function(condition, x, y) {
   if (any(condition)) {
     x

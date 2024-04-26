@@ -5,17 +5,35 @@ brm_scenario_init <- function(
   parameterization,
   subclass
 ) {
-  interest_data <- intersect(colnames(interest), colnames(data))
-  nuisance_data <- intersect(colnames(nuisance), colnames(data))
-  scenario_data <- c(interest_data, nuisance_data)
+  data_interest <- intersect(colnames(data), colnames(interest))
+  data_nuisance <- intersect(colnames(data), colnames(nuisance))
+  interest_nuisance <- intersect(colnames(interest), colnames(nuisance))
   assert(
-    length(scenario_data) == 0L,
+    !length(data_interest),
     message = paste0(
-      "Existing columns in the data conflict with new columns ",
-      "for the scenario: ",
-      paste(scenario_data, collapse = ", "),
-      ". Please rename columns and/or levels in your data as appropriate ",
-      "to avoid these name conflicts."
+      "conflicting column names between the data and generated fixed ",
+      "effects of interest: ",
+      paste(data_interest, collapse = ", "),
+      ". Please choose a prefix_interest value to make column names unique."
+    )
+  )
+  assert(
+    !length(data_nuisance),
+    message = paste0(
+      "conflicting column names between the data and generated nuisance ",
+      "fixed effects of interest: ",
+      paste(data_nuisance, collapse = ", "),
+      ". Please choose a prefix_nuisance value to make column names unique."
+    )
+  )
+  assert(
+    !length(interest_nuisance),
+    message = paste0(
+      "conflicting column names between generated fixed effects",
+      "of interest and generated nuisance variables: ",
+      paste(interest_nuisance, collapse = ", "),
+      ". Please choose different values for prefix_interest and ",
+      "prefix_nuisance value to make column names unique."
     )
   )
   scenario <- brm_scenario_new(
@@ -92,36 +110,43 @@ brm_data_validate.brms_mmrm_scenario <- function(data) {
     )
   )
   assert(
-    sort(unique(parameterization$group)) ==
-      sort(unique(attr(data, "brm_levels_group"))),
-    message = paste(
-      "the \"group\" column of the brm_scenario_parameterization",
-      "attribute must agree with the group levels in the",
-      "brm_levels_group attribute."
-    )
+    !anyDuplicated(parameterization$variable),
+    message = "parameterization$variable must have all unique values"
   )
-  assert(
-    sort(unique(.subset2(parameterization, "subgroup"))) ==
-      sort(unique(attr(data, "brm_levels_subgroup"))),
-    message = paste(
-      "the \"subgroup\" column of the brm_scenario_parameterization",
-      "attribute must agree with the subgroup levels in the",
-      "brm_levels_subgroup attribute."
+  groups <- attr(data, "brm_levels_group")
+  subgroups <- attr(data, "brm_levels_subgroup")
+  times <- attr(data, "brm_levels_time")
+  n_group <- length(groups)
+  n_subgroup <- length(subgroups)
+  n_time <- length(times)
+  if (brm_data_has_subgroup(data)) {
+    assert(
+      parameterization$group == rep(groups, each = n_subgroup * n_time),
+      message = "malformed or misordered parameterization group levels"
     )
-  )
-  assert(
-    sort(unique(parameterization$time)) ==
-      sort(unique(attr(data, "brm_levels_time"))),
-    message = paste(
-      "the \"time\" column of the brm_scenario_parameterization",
-      "attribute must agree with the group levels in the",
-      "brm_levels_time attribute."
+    assert(
+      parameterization$subgroup ==
+        rep(rep(subgroups, times = n_group), each = n_time),
+      message = "malformed or misordered parameterization group levels"
     )
-  )
+    assert(
+      parameterization$time == rep(times, times = n_group * n_subgroup),
+      message = "malformed or misordered parameterization group levels"
+    )
+  } else {
+    assert(
+      parameterization$group == rep(groups, each = n_time),
+      message = "malformed or misordered parameterization group levels"
+    )
+    assert(
+      parameterization$time == rep(times, times = n_group),
+      message = "malformed or misordered parameterization group levels"
+    )
+  }
   NextMethod()
 }
 
-scenario_nuisance <- function(data) {
+scenario_nuisance <- function(data, prefix) {
   names <- c(attr(data, "brm_covariates"), attr(data, "brm_baseline"))
   names_continuous <- Filter(\(x) is.numeric(data[[x]]), names)
   names_categorical <- setdiff(names, names_continuous)
@@ -131,6 +156,23 @@ scenario_nuisance <- function(data) {
   for (name in colnames(out)) {
     out[[name]] <- out[[name]] - mean(out[[name]])
   }
-  colnames(out) <- brm_levels(paste0("nuisance_", colnames(out)))
+  colnames(out) <- brm_levels(paste0(prefix, colnames(out)))
+  out
+}
+
+brm_data_remove_scenario <- function(data) {
+  attributes <- brm_scenario_attributes(data)
+  data <- data[, setdiff(colnames(data), attr(data, "brm_scenario_interest"))]
+  data <- data[, setdiff(colnames(data), attr(data, "brm_scenario_nuisance"))]
+  for (name in names(attributes)) {
+    attr(data, name) <- NULL
+  }
+  class(data) <- class(brm_data_new(list(x = "x")))
+  data
+}
+
+brm_scenario_attributes <- function(data) {
+  out <- attributes(data)
+  out <- out[grep("^brm_scenario_", names(out), value = TRUE)]
   out
 }
