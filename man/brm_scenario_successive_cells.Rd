@@ -4,17 +4,26 @@
 \alias{brm_scenario_successive_cells}
 \title{Cell-means-like successive differences scenario}
 \usage{
-brm_scenario_successive_cells(data, prefix = "x_")
+brm_scenario_successive_cells(
+  data,
+  prefix_interest = "x_",
+  prefix_nuisance = "nuisance_"
+)
 }
 \arguments{
 \item{data}{A special classed \code{tibble} returned from \code{\link[=brm_data]{brm_data()}}.
 It should have one row per patient per discrete time point.}
 
-\item{prefix}{Character string to prepend to the new columns
-of generated fixed effects.
+\item{prefix_interest}{Character string to prepend to the new columns
+of generated fixed effects of interest (relating to group, subgroup,
+and/or time).
 In rare cases, you may need to set a non-default prefix to prevent
 name conflicts with existing columns in the data, or rename
 the columns in your data.}
+
+\item{prefix_nuisance}{Same as \code{prefix_interest}, but relating to
+generated fixed effects NOT of interest (not relating to group,
+subgroup, or time).}
 }
 \value{
 A special classed \code{tibble} with data tailored to
@@ -71,7 +80,6 @@ if (identical(Sys.getenv("BRM_EXAMPLES", unset = ""), "true")) {
 set.seed(0L)
 data <- brm_simulate_outline(
   n_group = 2,
-  n_subgroup = 2,
   n_patient = 100,
   n_time = 4,
   rate_dropout = 0,

@@ -42,17 +42,20 @@
 #'   attributes to tell downstream functions like [brm_formula()] what to
 #'   do with the object.
 #' @inheritParams brm_model
-#' @param prefix Character string to prepend to the new columns
-#'   of generated fixed effects.
+#' @param prefix_interest Character string to prepend to the new columns
+#'   of generated fixed effects of interest (relating to group, subgroup,
+#'   and/or time).
 #'   In rare cases, you may need to set a non-default prefix to prevent
 #'   name conflicts with existing columns in the data, or rename
 #'   the columns in your data.
+#' @param prefix_nuisance Same as `prefix_interest`, but relating to
+#'   generated fixed effects NOT of interest (not relating to group,
+#'   subgroup, or time).
 #' @examples
 #' if (identical(Sys.getenv("BRM_EXAMPLES", unset = ""), "true")) {
 #' set.seed(0L)
 #' data <- brm_simulate_outline(
 #'   n_group = 2,
-#'   n_subgroup = 2,
 #'   n_patient = 100,
 #'   n_time = 4,
 #'   rate_dropout = 0,
@@ -78,18 +81,26 @@
 #' }
 brm_scenario_successive_cells <- function(
   data,
-  prefix = "x_"
+  prefix_interest = "x_",
+  prefix_nuisance = "nuisance_"
 ) {
   brm_data_validate.default(data)
   data <- brm_data_remove_scenario(data)
   data <- brm_data_fill(data)
-  assert_chr(prefix %||nzchar% "x", "prefix must be a single chr string")
+  assert_chr(
+    prefix_interest %||nzchar% "x",
+    "prefix_interest must be a single character string"
+  )
+  assert_chr(
+    prefix_nuisance %||nzchar% "x",
+    "prefix_nuisance must be a single character string"
+  )
   scenario <- if_any(
     brm_data_has_subgroup(data),
-    scenario_successive_cells_subgroup(data, prefix),
-    scenario_successive_cells(data, prefix)
+    scenario_successive_cells_subgroup(data, prefix_interest),
+    scenario_successive_cells(data, prefix_interest)
   )
-  nuisance <- scenario_nuisance(data, prefix = prefix)
+  nuisance <- scenario_nuisance(data, prefix = prefix_nuisance)
   brm_scenario_init(
     data = data,
     interest = scenario$interest,
