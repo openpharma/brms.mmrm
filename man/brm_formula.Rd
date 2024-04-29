@@ -19,6 +19,12 @@ brm_formula(
 
 \method{brm_formula}{default}(
   data,
+  covariates = TRUE,
+  variance = "heterogeneous",
+  correlation = "unstructured",
+  autoregressive_order = 1L,
+  moving_average_order = 1L,
+  residual_covariance_arma_estimation = FALSE,
   intercept = TRUE,
   baseline = !is.null(attr(data, "brm_baseline")),
   baseline_subgroup = !is.null(attr(data, "brm_baseline")) && !is.null(attr(data,
@@ -33,12 +39,7 @@ brm_formula(
   subgroup = !is.null(attr(data, "brm_subgroup")),
   subgroup_time = !is.null(attr(data, "brm_subgroup")),
   time = TRUE,
-  covariates = TRUE,
-  variance = "heterogeneous",
-  correlation = "unstructured",
-  autoregressive_order = 1L,
-  moving_average_order = 1L,
-  residual_covariance_arma_estimation = FALSE,
+  ...,
   effect_baseline = NULL,
   effect_group = NULL,
   effect_time = NULL,
@@ -53,7 +54,8 @@ brm_formula(
   correlation = "unstructured",
   autoregressive_order = 1L,
   moving_average_order = 1L,
-  residual_covariance_arma_estimation = FALSE
+  residual_covariance_arma_estimation = FALSE,
+  ...
 )
 }
 \arguments{
@@ -126,6 +128,8 @@ Directly supplied to the \code{cov} argument in \code{brms} for
 \code{"autoregressive_moving_average"}, \code{"autoregressive"}, and
 \code{"moving_average"} correlation structures. C.f.
 \url{https://paul-buerkner.github.io/brms/reference/arma.html}.}
+
+\item{...}{Named arguments to specific \code{\link[=brm_formula]{brm_formula()}} methods.}
 
 \item{intercept}{Logical of length 1.
 \code{TRUE} (default) to include an intercept, \code{FALSE} to omit.}

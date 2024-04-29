@@ -150,6 +150,7 @@
 #'   `"autoregressive_moving_average"`, `"autoregressive"`, and
 #'   `"moving_average"` correlation structures. C.f.
 #'   <https://paul-buerkner.github.io/brms/reference/arma.html>.
+#' @param ... Named arguments to specific [brm_formula()] methods.
 #' @param effect_baseline Deprecated on 2024-01-16 (version 0.0.2.9002).
 #'   Use `baseline` instead.
 #' @param effect_group Deprecated on 2024-01-16 (version 0.0.2.9002).
@@ -229,6 +230,12 @@ brm_formula <- function(
 #' @method brm_formula default
 brm_formula.default <- function(
   data,
+  covariates = TRUE,
+  variance = "heterogeneous",
+  correlation = "unstructured",
+  autoregressive_order = 1L,
+  moving_average_order = 1L,
+  residual_covariance_arma_estimation = FALSE,
   intercept = TRUE,
   baseline = !is.null(attr(data, "brm_baseline")),
   baseline_subgroup = !is.null(attr(data, "brm_baseline")) &&
@@ -243,12 +250,7 @@ brm_formula.default <- function(
   subgroup = !is.null(attr(data, "brm_subgroup")),
   subgroup_time = !is.null(attr(data, "brm_subgroup")),
   time = TRUE,
-  covariates = TRUE,
-  variance = "heterogeneous",
-  correlation = "unstructured",
-  autoregressive_order = 1L,
-  moving_average_order = 1L,
-  residual_covariance_arma_estimation = FALSE,
+  ...,
   effect_baseline = NULL,
   effect_group = NULL,
   effect_time = NULL,
@@ -414,7 +416,8 @@ brm_formula.brms_mmrm_scenario <- function(
   correlation = "unstructured",
   autoregressive_order = 1L,
   moving_average_order = 1L,
-  residual_covariance_arma_estimation = FALSE
+  residual_covariance_arma_estimation = FALSE,
+  ...
 ) {
   brm_data_validate(data)
   assert_lgl(covariates, "'covariates' must be TRUE or FALSE")
@@ -422,7 +425,7 @@ brm_formula.brms_mmrm_scenario <- function(
   brm_formula_validate_variance(variance)
   assert_lgl(
     residual_covariance_arma_estimation,
-    sprintf(text, "residual_covariance_arma_estimation")
+    "residual_covariance_arma_estimation must be TRUE or FALSE"
   )
   assert(
     autoregressive_order,
