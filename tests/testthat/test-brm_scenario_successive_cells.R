@@ -50,9 +50,9 @@ test_that("brm_scenario_successive_cells() change and non-subgroup", {
         "nuisance_biomarker1",
         "nuisance_biomarker2",
         "nuisance_baseline",
-        "nuisance_status1absent",
-        "nuisance_status1present",
-        "nuisance_status2present"
+        "nuisance_status1_absent",
+        "nuisance_status1_present",
+        "nuisance_status2_present"
       )
     )
   )
@@ -125,9 +125,9 @@ test_that("brm_scenario_successive_cells() non-change subgroup", {
       c(
         "nuisance_biomarker1",
         "nuisance_biomarker2",
-        "nuisance_status1absent",
-        "nuisance_status1present",
-        "nuisance_status2present"
+        "nuisance_status1_absent",
+        "nuisance_status1_present",
+        "nuisance_status2_present"
       )
     )
   )

@@ -39,7 +39,8 @@ Fit an MMRM model using \code{brms}.
 }
 \section{Parameterization}{
 
-The formula is not the only factor
+For a formula on a \code{\link[=brm_data]{brm_data()}} dataset,
+the formula is not the only factor
 that determines the fixed effect parameterization.
 The ordering of the categorical variables in the data,
 as well as the \code{contrast} option in R, affect the
