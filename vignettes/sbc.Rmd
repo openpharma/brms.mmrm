@@ -60,7 +60,8 @@ brms.mmrm::brm_formula(
   subgroup = FALSE,
   subgroup_time = FALSE,
   time = TRUE,
-  correlation = "unstructured"
+  correlation = "unstructured",
+  check_rank = FALSE
 )
 ```
 
@@ -157,7 +158,8 @@ outline <- brms.mmrm::brm_simulate_outline(
   )
 brms.mmrm::brm_formula(
   data = outline,
-  correlation = "unstructured"
+  correlation = "unstructured",
+  check_rank = FALSE
 )
 ```
 
