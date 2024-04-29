@@ -472,7 +472,6 @@ brm_formula.brms_mmrm_scenario <- function(
   brms_formula <- brms::brmsformula(formula = formula_fixed, formula_sigma)
   formula <- brm_formula_scenario_new(
     formula = brms_formula,
-    brm_time = time,
     brm_covariates = covariates,
     brm_variance = variance,
     brm_correlation = correlation,
@@ -533,7 +532,6 @@ brm_formula_new <- function(
 
 brm_formula_scenario_new <- function(
   formula,
-  brm_time,
   brm_covariates,
   brm_variance,
   brm_correlation,
@@ -546,7 +544,6 @@ brm_formula_scenario_new <- function(
     class = unique(
       c("brms_mmrm_formula_scenario", "brms_mmrm_formula", class(formula))
     ),
-    brm_time = brm_time,
     brm_covariates = brm_covariates,
     brm_variance = brm_variance,
     brm_correlation = brm_correlation,
