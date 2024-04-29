@@ -14,6 +14,12 @@ brm_formula(
   autoregressive_order = 1L,
   moving_average_order = 1L,
   residual_covariance_arma_estimation = FALSE,
+  baseline = !is.null(attr(data, "brm_baseline")),
+  baseline_subgroup = !is.null(attr(data, "brm_baseline")) && !is.null(attr(data,
+    "brm_subgroup")),
+  baseline_subgroup_time = !is.null(attr(data, "brm_baseline")) && !is.null(attr(data,
+    "brm_subgroup")),
+  baseline_time = !is.null(attr(data, "brm_baseline")),
   check_rank = TRUE,
   ...
 )
@@ -57,6 +63,12 @@ brm_formula(
   autoregressive_order = 1L,
   moving_average_order = 1L,
   residual_covariance_arma_estimation = FALSE,
+  baseline = !is.null(attr(data, "brm_scenario_baseline")),
+  baseline_subgroup = !is.null(attr(data, "brm_scenario_baseline")) &&
+    !is.null(attr(data, "brm_subgroup")),
+  baseline_subgroup_time = !is.null(attr(data, "brm_scenario_baseline")) &&
+    !is.null(attr(data, "brm_subgroup")),
+  baseline_time = !is.null(attr(data, "brm_scenario_baseline")),
   check_rank = TRUE,
   ...
 )
@@ -132,16 +144,6 @@ Directly supplied to the \code{cov} argument in \code{brms} for
 \code{"moving_average"} correlation structures. C.f.
 \url{https://paul-buerkner.github.io/brms/reference/arma.html}.}
 
-\item{check_rank}{\code{TRUE} to check the rank of the model matrix and
-throw an error if rank deficiency is detected. \code{FALSE} to skip
-this check. Rank-deficient models may have non-identifiable
-parameters and it is recommended to choose a full-rank parameterization.}
-
-\item{...}{Named arguments to specific \code{\link[=brm_formula]{brm_formula()}} methods.}
-
-\item{intercept}{Logical of length 1.
-\code{TRUE} (default) to include an intercept, \code{FALSE} to omit.}
-
 \item{baseline}{Logical of length 1.
 \code{TRUE} to include an additive effect for baseline
 response, \code{FALSE} to omit.
@@ -163,6 +165,16 @@ and subgroup variables in the dataset.}
 \code{TRUE} to include baseline-by-time interaction, \code{FALSE} to omit.
 Default is \code{TRUE} if \code{\link[=brm_data]{brm_data()}} previously declared a baseline
 variable in the dataset.}
+
+\item{check_rank}{\code{TRUE} to check the rank of the model matrix and
+throw an error if rank deficiency is detected. \code{FALSE} to skip
+this check. Rank-deficient models may have non-identifiable
+parameters and it is recommended to choose a full-rank parameterization.}
+
+\item{...}{Named arguments to specific \code{\link[=brm_formula]{brm_formula()}} methods.}
+
+\item{intercept}{Logical of length 1.
+\code{TRUE} (default) to include an intercept, \code{FALSE} to omit.}
 
 \item{group}{Logical of length 1.
 \code{TRUE} (default) to include additive effects for
