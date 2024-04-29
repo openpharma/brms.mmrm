@@ -223,6 +223,12 @@ brm_formula <- function(
   autoregressive_order = 1L,
   moving_average_order = 1L,
   residual_covariance_arma_estimation = FALSE,
+  baseline = !is.null(attr(data, "brm_baseline")),
+  baseline_subgroup = !is.null(attr(data, "brm_baseline")) &&
+    !is.null(attr(data, "brm_subgroup")),
+  baseline_subgroup_time = !is.null(attr(data, "brm_baseline")) &&
+    !is.null(attr(data, "brm_subgroup")),
+  baseline_time = !is.null(attr(data, "brm_baseline")),
   check_rank = TRUE,
   ...
 ) {
@@ -426,11 +432,22 @@ brm_formula.brms_mmrm_scenario <- function(
   autoregressive_order = 1L,
   moving_average_order = 1L,
   residual_covariance_arma_estimation = FALSE,
+  baseline = !is.null(attr(data, "brm_scenario_baseline")),
+  baseline_subgroup = !is.null(attr(data, "brm_scenario_baseline")) &&
+    !is.null(attr(data, "brm_subgroup")),
+  baseline_subgroup_time = !is.null(attr(data, "brm_scenario_baseline")) &&
+    !is.null(attr(data, "brm_subgroup")),
+  baseline_time = !is.null(attr(data, "brm_scenario_baseline")),
   check_rank = TRUE,
   ...
 ) {
   brm_data_validate(data)
-  assert_lgl(covariates, "'covariates' must be TRUE or FALSE")
+  text <- "'%s' in brm_formula() must be TRUE or FALSE."
+  assert_lgl(baseline, sprintf(text, "baseline"))
+  assert_lgl(baseline_subgroup, sprintf(text, "baseline_subgroup"))
+  assert_lgl(baseline_subgroup_time, sprintf(text, "baseline_subgroup_time"))
+  assert_lgl(baseline_time, sprintf(text, "baseline_time"))
+  assert_lgl(covariates, sprintf(text, "covariates"))
   brm_formula_validate_correlation(correlation)
   brm_formula_validate_variance(variance)
   assert_lgl(
@@ -454,14 +471,20 @@ brm_formula.brms_mmrm_scenario <- function(
     message = "moving_average_order must be a nonnegative integer of length 1"
   )
   name_outcome <- attr(data, "brm_outcome")
+  name_subgroup <- attr(data, "brm_subgroup")
   name_time <- attr(data, "brm_time")
   name_patient <- attr(data, "brm_patient")
+  name_baseline <- attr(data, "brm_scenario_baseline")
   interest <- attr(data, "brm_scenario_interest")
-  nuisance <- attr(data, "brm_scenario_nuisance")
+  nuisance <- setdiff(attr(data, "brm_scenario_nuisance"), name_baseline)
   terms <- c(
     term("0", TRUE),
     unlist(lapply(interest, term, condition = TRUE)),
     unlist(lapply(nuisance, term, condition = covariates)),
+    term(name_baseline, baseline),
+    term(c(name_baseline, name_subgroup), baseline_subgroup),
+    term(c(name_baseline, name_subgroup, name_time), baseline_subgroup_time),
+    term(c(name_baseline, name_time), baseline_time),
     term_correlation(
       correlation = correlation,
       name_time = name_time,
@@ -482,6 +505,10 @@ brm_formula.brms_mmrm_scenario <- function(
   brms_formula <- brms::brmsformula(formula = formula_fixed, formula_sigma)
   formula <- brm_formula_scenario_new(
     formula = brms_formula,
+    brm_baseline = baseline,
+    brm_baseline_subgroup = baseline_subgroup,
+    brm_baseline_subgroup_time = baseline_subgroup_time,
+    brm_baseline_time = baseline_time,
     brm_covariates = covariates,
     brm_variance = variance,
     brm_correlation = correlation,
@@ -545,6 +572,10 @@ brm_formula_new <- function(
 
 brm_formula_scenario_new <- function(
   formula,
+  brm_baseline,
+  brm_baseline_subgroup,
+  brm_baseline_subgroup_time,
+  brm_baseline_time,
   brm_covariates,
   brm_variance,
   brm_correlation,
@@ -557,6 +588,10 @@ brm_formula_scenario_new <- function(
     class = unique(
       c("brms_mmrm_formula_scenario", "brms_mmrm_formula", class(formula))
     ),
+    brm_baseline = brm_baseline,
+    brm_baseline_subgroup = brm_baseline_subgroup,
+    brm_baseline_subgroup_time = brm_baseline_subgroup_time,
+    brm_baseline_time = brm_baseline_time,
     brm_covariates = brm_covariates,
     brm_variance = brm_variance,
     brm_correlation = brm_correlation,
@@ -611,6 +646,19 @@ brm_formula_validate.brms_mmrm_formula_scenario <- function(formula) {
     inherits(., "brmsformula"),
     message = "please use brm_formula() to create the model formula"
   )
+  attributes <- c(
+    "brm_baseline",
+    "brm_baseline_subgroup",
+    "brm_baseline_subgroup_time",
+    "brm_baseline_time",
+    "brm_covariates"
+  )
+  for (attribute in attributes) {
+    assert_lgl(
+      attr(formula, attribute),
+      message = paste(attribute, "attribute must be TRUE or FALSE in formula")
+    )
+  }
   assert_lgl(
     attr(formula, "brm_covariates"),
     message = "'brm_covariates' attribute must be TRUE or FALSE in formula"
