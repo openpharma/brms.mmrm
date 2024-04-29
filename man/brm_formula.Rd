@@ -306,8 +306,7 @@ data <- brm_simulate_outline(
   brm_simulate_categorical(
     names = "biomarker3",
     levels = c("present", "absent")
-  ) |>
-  dplyr::mutate(response = rnorm(n = dplyr::n()))
+  )
 scenario <- brm_scenario_successive_cells(data)
 formula <- brm_formula(data = scenario)
 formula

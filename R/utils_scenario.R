@@ -150,14 +150,18 @@ scenario_nuisance <- function(data, prefix) {
   names <- c(attr(data, "brm_covariates"), attr(data, "brm_baseline"))
   names_continuous <- Filter(\(x) is.numeric(data[[x]]), names)
   names_categorical <- setdiff(names, names_continuous)
-  continuous <- data[, names_continuous]
+  out <- data[, names_continuous]
   categorical <- data[, names_categorical]
-  colnames(categorical) <- paste0(colnames(categorical), "_")
-  out <- dplyr::bind_cols(continuous, model.matrix(~ 0 + ., categorical))
+  if (ncol(categorical)) {
+    colnames(categorical) <- paste0(colnames(categorical), "_")
+    out <- dplyr::bind_cols(continuous, model.matrix(~ 0 + ., categorical))
+  }
   for (name in colnames(out)) {
     out[[name]] <- out[[name]] - mean(out[[name]])
   }
-  colnames(out) <- brm_levels(paste0(prefix, colnames(out)))
+  if (ncol(out)) {
+    colnames(out) <- brm_levels(paste0(prefix, colnames(out)))
+  }
   out
 }
 

@@ -67,8 +67,7 @@
 #'   brm_simulate_categorical(
 #'     names = c("status1", "status2"),
 #'     levels = c("present", "absent")
-#'   ) |>
-#'   dplyr::mutate(response = rnorm(n = dplyr::n()))
+#'   )
 #' dplyr::select(
 #'   data,
 #'   group,
