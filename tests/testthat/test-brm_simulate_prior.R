@@ -6,7 +6,8 @@ test_that("brm_simulate_prior() runs", {
   formula <- brm_formula(
     data = data,
     baseline = FALSE,
-    baseline_time = FALSE
+    baseline_time = FALSE,
+    check_rank = FALSE
   )
   tmp <- utils::capture.output(
     suppressMessages(

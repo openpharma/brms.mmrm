@@ -1,11 +1,11 @@
 test_that("brm_formula() with default names and all non-subgroup terms", {
   data <- brm_data(
     data = tibble::tibble(
-      CHG = 1,
-      AVISIT = "x",
-      baseline = 2,
-      TRT01P = "x",
-      USUBJID = "x"
+      CHG = c(1, 2),
+      AVISIT = c("x", "y"),
+      baseline = c(2, 3),
+      TRT01P = c("x", "y"),
+      USUBJID = c("x", "y")
     ),
     outcome = "CHG",
     role = "change",
@@ -15,6 +15,19 @@ test_that("brm_formula() with default names and all non-subgroup terms", {
     patient = "USUBJID",
     reference_group = "x"
   )
+  expect_error(
+    brm_formula(
+      data = data,
+      intercept = TRUE,
+      baseline = TRUE,
+      baseline_time = TRUE,
+      group = TRUE,
+      group_time = TRUE,
+      time = TRUE,
+      check_rank = TRUE
+    ),
+    class = "brm_error"
+  )
   out <- brm_formula(
     data = data,
     intercept = TRUE,
@@ -22,7 +35,8 @@ test_that("brm_formula() with default names and all non-subgroup terms", {
     baseline_time = TRUE,
     group = TRUE,
     group_time = TRUE,
-    time = TRUE
+    time = TRUE,
+    check_rank = FALSE
   )
   expect_s3_class(out, "brms_mmrm_formula")
   expect_s3_class(out, "brmsformula")
@@ -46,11 +60,11 @@ test_that("brm_formula() with default names and all non-subgroup terms", {
 test_that("brm_formula() same with homogeneous variance", {
   data <- brm_data(
     data = tibble::tibble(
-      CHG = 1,
-      AVISIT = "x",
-      baseline = 2,
-      TRT01P = "x",
-      USUBJID = "x"
+      CHG = c(1, 2),
+      AVISIT = c("x", "y"),
+      baseline = c(2, 3),
+      TRT01P = c("x", "y"),
+      USUBJID = c("x", "y")
     ),
     outcome = "CHG",
     role = "change",
@@ -68,7 +82,8 @@ test_that("brm_formula() same with homogeneous variance", {
     group = TRUE,
     group_time = TRUE,
     time = TRUE,
-    variance = "homogeneous"
+    variance = "homogeneous",
+    check_rank = FALSE
   )
   expect_s3_class(out, "brmsformula")
   expect_equal(attr(out, "brm_correlation"), "unstructured")
@@ -91,11 +106,11 @@ test_that("brm_formula() same with homogeneous variance", {
 test_that("brm_formula() different correlation structures", {
   data <- brm_data(
     data = tibble::tibble(
-      CHG = 1,
-      AVISIT = "x",
-      baseline = 2,
-      TRT01P = "x",
-      USUBJID = "x"
+      CHG = c(1, 2),
+      AVISIT = c("x", "y"),
+      baseline = c(2, 3),
+      TRT01P = c("x", "y"),
+      USUBJID = c("x", "y")
     ),
     outcome = "CHG",
     role = "change",
@@ -113,7 +128,8 @@ test_that("brm_formula() different correlation structures", {
     group = TRUE,
     group_time = TRUE,
     time = TRUE,
-    correlation = "autoregressive_moving_average"
+    correlation = "autoregressive_moving_average",
+    check_rank = FALSE
   )
   expect_equal(
     deparse(out[[1L]], width.cutoff = 500L),
@@ -133,7 +149,8 @@ test_that("brm_formula() different correlation structures", {
     correlation = "autoregressive_moving_average",
     autoregressive_order = 2L,
     moving_average_order = 3L,
-    residual_covariance_arma_estimation = TRUE
+    residual_covariance_arma_estimation = TRUE,
+    check_rank = FALSE
   )
   expect_equal(
     deparse(out[[1L]], width.cutoff = 500L),
@@ -150,7 +167,8 @@ test_that("brm_formula() different correlation structures", {
     group = TRUE,
     group_time = TRUE,
     time = TRUE,
-    correlation = "autoregressive"
+    correlation = "autoregressive",
+    check_rank = FALSE
   )
   expect_equal(
     deparse(out[[1L]], width.cutoff = 500L),
@@ -169,7 +187,8 @@ test_that("brm_formula() different correlation structures", {
     time = TRUE,
     correlation = "autoregressive",
     autoregressive_order = 3L,
-    residual_covariance_arma_estimation = TRUE
+    residual_covariance_arma_estimation = TRUE,
+    check_rank = FALSE
   )
   expect_equal(
     deparse(out[[1L]], width.cutoff = 500L),
@@ -186,7 +205,8 @@ test_that("brm_formula() different correlation structures", {
     group = TRUE,
     group_time = TRUE,
     time = TRUE,
-    correlation = "moving_average"
+    correlation = "moving_average",
+    check_rank = FALSE
   )
   expect_equal(
     deparse(out[[1L]], width.cutoff = 500L),
@@ -205,7 +225,8 @@ test_that("brm_formula() different correlation structures", {
     time = TRUE,
     correlation = "moving_average",
     moving_average_order = 5L,
-    residual_covariance_arma_estimation = TRUE
+    residual_covariance_arma_estimation = TRUE,
+    check_rank = FALSE
   )
   expect_equal(
     deparse(out[[1L]], width.cutoff = 500L),
@@ -222,7 +243,8 @@ test_that("brm_formula() different correlation structures", {
     group = TRUE,
     group_time = TRUE,
     time = TRUE,
-    correlation = "compound_symmetry"
+    correlation = "compound_symmetry",
+    check_rank = FALSE
   )
   expect_equal(
     deparse(out[[1L]], width.cutoff = 500L),
@@ -236,12 +258,12 @@ test_that("brm_formula() different correlation structures", {
 test_that("brm_formula() with default names and all terms", {
   data <- brm_data(
     data = tibble::tibble(
-      CHG = 1,
-      AVISIT = "x",
-      baseline = 2,
-      TRT01P = "x",
-      subgroup = "x",
-      USUBJID = "x"
+      CHG = c(1, 2),
+      AVISIT = c("x", "y"),
+      baseline = c(2, 3),
+      TRT01P = c("x", "y"),
+      subgroup = c("x", "y"),
+      USUBJID = c("x", "y")
     ),
     outcome = "CHG",
     role = "change",
@@ -266,7 +288,8 @@ test_that("brm_formula() with default names and all terms", {
     group_time = TRUE,
     subgroup = TRUE,
     subgroup_time = TRUE,
-    time = TRUE
+    time = TRUE,
+    check_rank = FALSE
   )
   expect_s3_class(out, "brmsformula")
   expect_equal(
@@ -289,52 +312,12 @@ test_that("brm_formula() with default names and all terms", {
 test_that("brm_formula() with all user-supplied columns, all non-sub terms", {
   data <- brm_data(
     data = tibble::tibble(
-      y = 1,
-      t = "x",
-      b = 2,
-      g = "x",
-      p = "x",
-      a = 1
-    ),
-    outcome = "y",
-    role = "change",
-    group = "g",
-    time = "t",
-    baseline = "b",
-    patient = "p",
-    covariates = c("a", "b"),
-    reference_group = "x"
-  )
-  out <- brm_formula(
-    data = data,
-    intercept = TRUE,
-    baseline = TRUE,
-    baseline_time = TRUE,
-    group = TRUE,
-    group_time = TRUE,
-    time = TRUE
-  )
-  expect_equal(
-    deparse(out[[1L]], width.cutoff = 500L),
-    "y ~ b + b:t + g + g:t + t + a + b + unstr(time = t, gr = p)"
-  )
-  expect_equal(
-    deparse(out[[2L]][[1L]], width.cutoff = 500L),
-    paste(
-      "sigma ~ 0 + t"
-    )
-  )
-})
-
-test_that("brm_formula() omitting covariates", {
-  data <- brm_data(
-    data = tibble::tibble(
-      y = 1,
-      t = "x",
-      b = 2,
-      g = "x",
-      p = "x",
-      a = 1
+      y = c(1, 2),
+      t = c("x", "y"),
+      b = c(2, 3),
+      g = c("x", "y"),
+      p = c("x", "y"),
+      a = c(1, 2)
     ),
     outcome = "y",
     role = "change",
@@ -353,7 +336,49 @@ test_that("brm_formula() omitting covariates", {
     group = TRUE,
     group_time = TRUE,
     time = TRUE,
-    covariates = FALSE
+    check_rank = FALSE
+  )
+  expect_equal(
+    deparse(out[[1L]], width.cutoff = 500L),
+    "y ~ b + b:t + g + g:t + t + a + b + unstr(time = t, gr = p)"
+  )
+  expect_equal(
+    deparse(out[[2L]][[1L]], width.cutoff = 500L),
+    paste(
+      "sigma ~ 0 + t"
+    )
+  )
+})
+
+test_that("brm_formula() omitting covariates", {
+  data <- brm_data(
+    data = tibble::tibble(
+      y = c(1, 2),
+      t = c("x", "y"),
+      b = c(2, 3),
+      g = c("x", "y"),
+      p = c("x", "y"),
+      a = c(1, 2)
+    ),
+    outcome = "y",
+    role = "change",
+    group = "g",
+    time = "t",
+    baseline = "b",
+    patient = "p",
+    covariates = c("a", "b"),
+    reference_group = "x"
+  )
+  out <- brm_formula(
+    data = data,
+    intercept = TRUE,
+    baseline = TRUE,
+    baseline_time = TRUE,
+    group = TRUE,
+    group_time = TRUE,
+    time = TRUE,
+    covariates = FALSE,
+    check_rank = FALSE
   )
   expect_equal(
     deparse(out[[1L]], width.cutoff = 500L),
@@ -370,13 +395,13 @@ test_that("brm_formula() omitting covariates", {
 test_that("brm_formula() with all user-supplied columns, all terms", {
   data <- brm_data(
     data = tibble::tibble(
-      y = 1,
-      t = "x",
-      b = 2,
-      g = "x",
-      s = "x",
-      p = "x",
-      a = 1
+      y = c(1, 2),
+      t = c("x", "y"),
+      b = c(2, 3),
+      g = c("x", "y"),
+      s = c("x", "y"),
+      p = c("x", "y"),
+      a = c(1, 2)
     ),
     outcome = "y",
     role = "change",
@@ -402,7 +427,8 @@ test_that("brm_formula() with all user-supplied columns, all terms", {
     group_time = TRUE,
     subgroup = TRUE,
     subgroup_time = TRUE,
-    time = TRUE
+    time = TRUE,
+    check_rank = FALSE
   )
   expect_equal(
     deparse(out[[1L]], width.cutoff = 500L),
@@ -422,12 +448,12 @@ test_that("brm_formula() with all user-supplied columns, all terms", {
 test_that("brm_formula() with individual terms", {
   data <- brm_data(
     data = tibble::tibble(
-      CHG = 1,
-      TIME = "x",
-      BASELINE = 2,
-      GROUP = "x",
-      USUBJID = "x",
-      SUBGROUP = "x"
+      CHG = c(1, 2),
+      TIME = c("x", "y"),
+      BASELINE = c(2, 3),
+      GROUP = c("x", "y"),
+      USUBJID = c("x", "y"),
+      SUBGROUP = c("x", "y")
     ),
     outcome = "CHG",
     role = "change",
@@ -464,7 +490,8 @@ test_that("brm_formula() with individual terms", {
     group_time = FALSE,
     subgroup = FALSE,
     subgroup_time = FALSE,
-    time = FALSE
+    time = FALSE,
+    check_rank = FALSE
   )
   for (intercept in c(TRUE, FALSE)) {
     for (name in names(terms)) {
@@ -495,12 +522,12 @@ test_that("brm_formula() with individual terms", {
 test_that("brm_formula_has_subgroup()", {
   data <- brm_data(
     data = tibble::tibble(
-      CHG = 1,
-      TIME = "x",
-      BASELINE = 2,
-      GROUP = "x",
-      USUBJID = "x",
-      SUBGROUP = "x"
+      CHG = c(1, 2),
+      TIME = c("x", "y"),
+      BASELINE = c(2, 3),
+      GROUP = c("x", "y"),
+      USUBJID = c("x", "y"),
+      SUBGROUP = c("x", "y")
     ),
     outcome = "CHG",
     role = "change",
@@ -525,7 +552,8 @@ test_that("brm_formula_has_subgroup()", {
     group_time = FALSE,
     subgroup = FALSE,
     subgroup_time = FALSE,
-    time = FALSE
+    time = FALSE,
+    check_rank = FALSE
   )
   with_subgroup <- c(
     "baseline_subgroup",
@@ -535,7 +563,7 @@ test_that("brm_formula_has_subgroup()", {
     "subgroup",
     "subgroup_time"
   )
-  for (term in setdiff(names(template), "data")) {
+  for (term in setdiff(names(template), c("data", "check_rank"))) {
     args <- template
     args[[term]] <- TRUE
     formula <- do.call(what = brm_formula, args = args)
@@ -564,7 +592,7 @@ test_that("brm_formula() scenario non-subgroup", {
     ) |>
     dplyr::mutate(response = rnorm(n = dplyr::n()))
   scenario <- brm_scenario_successive_cells(data)
-  out <- brm_formula(scenario)
+  out <- brm_formula(scenario, check_rank = FALSE)
   expect_s3_class(out, "brms_mmrm_formula_scenario")
   expect_s3_class(out, "brms_mmrm_formula")
   expect_s3_class(out, "brmsformula")
@@ -619,7 +647,8 @@ test_that("brm_scenario_successive_cells() non-change subgroup w/o covs", {
     correlation = "autoregressive",
     autoregressive_order = 2L,
     brm_moving_average_order = 3L,
-    residual_covariance_arma_estimation = TRUE
+    residual_covariance_arma_estimation = TRUE,
+    check_rank = FALSE
   )
   expect_s3_class(out, "brms_mmrm_formula_scenario")
   expect_s3_class(out, "brms_mmrm_formula")

@@ -150,6 +150,10 @@
 #'   `"autoregressive_moving_average"`, `"autoregressive"`, and
 #'   `"moving_average"` correlation structures. C.f.
 #'   <https://paul-buerkner.github.io/brms/reference/arma.html>.
+#' @param check_rank `TRUE` to check the rank of the model matrix and
+#'   throw an error if rank deficiency is detected. `FALSE` to skip
+#'   this check. Rank-deficient models may have non-identifiable
+#'   parameters and it is recommended to choose a full-rank parameterization.
 #' @param ... Named arguments to specific [brm_formula()] methods.
 #' @param effect_baseline Deprecated on 2024-01-16 (version 0.0.2.9002).
 #'   Use `baseline` instead.
@@ -219,6 +223,7 @@ brm_formula <- function(
   autoregressive_order = 1L,
   moving_average_order = 1L,
   residual_covariance_arma_estimation = FALSE,
+  check_rank = TRUE,
   ...
 ) {
   UseMethod("brm_formula")
@@ -249,6 +254,7 @@ brm_formula.default <- function(
   subgroup = !is.null(attr(data, "brm_subgroup")),
   subgroup_time = !is.null(attr(data, "brm_subgroup")),
   time = TRUE,
+  check_rank = TRUE,
   ...,
   effect_baseline = NULL,
   effect_group = NULL,
@@ -275,6 +281,7 @@ brm_formula.default <- function(
     residual_covariance_arma_estimation,
     sprintf(text, "residual_covariance_arma_estimation")
   )
+  assert_lgl(check_rank, sprintf(text, "check_rank"))
   assert(
     autoregressive_order,
     is.numeric(.),
@@ -402,6 +409,9 @@ brm_formula.default <- function(
       residual_covariance_arma_estimation
   )
   brm_formula_validate(formula)
+  if (check_rank) {
+    formula_check_rank(data = data, formula = formula)
+  }
   formula
 }
 
@@ -416,6 +426,7 @@ brm_formula.brms_mmrm_scenario <- function(
   autoregressive_order = 1L,
   moving_average_order = 1L,
   residual_covariance_arma_estimation = FALSE,
+  check_rank = TRUE,
   ...
 ) {
   brm_data_validate(data)
@@ -480,6 +491,9 @@ brm_formula.brms_mmrm_scenario <- function(
       residual_covariance_arma_estimation
   )
   brm_formula_validate(formula)
+  if (check_rank) {
+    formula_check_rank(data = data, formula = formula)
+  }
   formula
 }
 
@@ -721,4 +735,24 @@ term_correlation <- function(
   )[names(formals(getNamespace("brms")[[fun]]))]
   call <- as.call(c(as.symbol(fun), args))
   paste(deparse(call), collapse = " ")
+}
+
+formula_check_rank <- function(data, formula) {
+  data <- data[!is.na(data[[attr(data, "brm_outcome")]]), ]
+  matrix <- brms::make_standata(data = data, formula = formula)$X
+  rank <- Matrix::rankMatrix(matrix)
+  assert(
+    ncol(matrix) == as.integer(rank),
+    message = paste0(
+      "model matrix has ",
+      ncol(matrix),
+      " columns but rank ",
+      rank,
+      " after removing rows with missing outcomes. ",
+      "Please consider a different parameterization to make the ",
+      "model matrix full-rank. Otherwise, fixed effects may not be ",
+      "identifiable and MCMC sampling may not converge. ",
+      "Set check_rank = FALSE in brm_formula() to suppress this error."
+    )
+  )
 }

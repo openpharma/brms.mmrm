@@ -154,7 +154,7 @@ scenario_nuisance <- function(data, prefix) {
   categorical <- data[, names_categorical]
   if (ncol(categorical)) {
     colnames(categorical) <- paste0(colnames(categorical), "_")
-    out <- dplyr::bind_cols(continuous, model.matrix(~ 0 + ., categorical))
+    out <- dplyr::bind_cols(out, model.matrix(~ 0 + ., categorical))
   }
   for (name in colnames(out)) {
     out[[name]] <- out[[name]] - mean(out[[name]])

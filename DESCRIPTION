@@ -57,6 +57,7 @@ Imports:
   ggplot2,
   ggridges,
   MASS,
+  Matrix,
   posterior,
   purrr,
   rlang,

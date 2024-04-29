@@ -14,6 +14,7 @@ brm_formula(
   autoregressive_order = 1L,
   moving_average_order = 1L,
   residual_covariance_arma_estimation = FALSE,
+  check_rank = TRUE,
   ...
 )
 
@@ -39,6 +40,7 @@ brm_formula(
   subgroup = !is.null(attr(data, "brm_subgroup")),
   subgroup_time = !is.null(attr(data, "brm_subgroup")),
   time = TRUE,
+  check_rank = TRUE,
   ...,
   effect_baseline = NULL,
   effect_group = NULL,
@@ -55,6 +57,7 @@ brm_formula(
   autoregressive_order = 1L,
   moving_average_order = 1L,
   residual_covariance_arma_estimation = FALSE,
+  check_rank = TRUE,
   ...
 )
 }
@@ -128,6 +131,11 @@ Directly supplied to the \code{cov} argument in \code{brms} for
 \code{"autoregressive_moving_average"}, \code{"autoregressive"}, and
 \code{"moving_average"} correlation structures. C.f.
 \url{https://paul-buerkner.github.io/brms/reference/arma.html}.}
+
+\item{check_rank}{\code{TRUE} to check the rank of the model matrix and
+throw an error if rank deficiency is detected. \code{FALSE} to skip
+this check. Rank-deficient models may have non-identifiable
+parameters and it is recommended to choose a full-rank parameterization.}
 
 \item{...}{Named arguments to specific \code{\link[=brm_formula]{brm_formula()}} methods.}
 
