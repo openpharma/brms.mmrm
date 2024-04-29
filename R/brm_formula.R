@@ -480,11 +480,11 @@ brm_formula.brms_mmrm_scenario <- function(
   terms <- c(
     term("0", TRUE),
     unlist(lapply(interest, term, condition = TRUE)),
-    unlist(lapply(nuisance, term, condition = covariates)),
     term(name_baseline, baseline),
     term(c(name_baseline, name_subgroup), baseline_subgroup),
     term(c(name_baseline, name_subgroup, name_time), baseline_subgroup_time),
     term(c(name_baseline, name_time), baseline_time),
+    unlist(lapply(nuisance, term, condition = covariates)),
     term_correlation(
       correlation = correlation,
       name_time = name_time,

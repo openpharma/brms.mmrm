@@ -589,10 +589,14 @@ test_that("brm_formula() scenario non-subgroup", {
     brm_simulate_categorical(
       names = c("status1", "status2"),
       levels = c("present", "absent")
-    ) |>
-    dplyr::mutate(response = rnorm(n = dplyr::n()))
+    )
   scenario <- brm_scenario_successive_cells(data)
-  out <- brm_formula(scenario, check_rank = FALSE)
+  out <- brm_formula(
+    scenario,
+    baseline = FALSE,
+    baseline_time = FALSE,
+    check_rank = FALSE
+  )
   expect_s3_class(out, "brms_mmrm_formula_scenario")
   expect_s3_class(out, "brms_mmrm_formula")
   expect_s3_class(out, "brmsformula")
@@ -607,7 +611,7 @@ test_that("brm_formula() scenario non-subgroup", {
     paste(
       "change ~ 0 + x_group_1_time_2 + x_group_1_time_3 + x_group_1_time_4",
       "+ x_group_2_time_2 + x_group_2_time_3 + x_group_2_time_4",
-      "+ nuisance_biomarker1 + nuisance_biomarker2 + nuisance_baseline",
+      "+ nuisance_biomarker1 + nuisance_biomarker2",
       "+ nuisance_status1_absent + nuisance_status1_present",
       "+ nuisance_status2_present",
       "+ unstr(time = time, gr = patient)"
@@ -617,6 +621,42 @@ test_that("brm_formula() scenario non-subgroup", {
     deparse(out[[2L]][[1L]], width.cutoff = 500L),
     paste(
       "sigma ~ 0 + time"
+    )
+  )
+  out <- brm_formula(
+    scenario,
+    baseline = TRUE,
+    baseline_time = FALSE,
+    check_rank = FALSE
+  )
+  expect_equal(
+    deparse(out[[1L]], width.cutoff = 500L),
+    paste(
+      "change ~ 0 + x_group_1_time_2 + x_group_1_time_3 + x_group_1_time_4",
+      "+ x_group_2_time_2 + x_group_2_time_3 + x_group_2_time_4",
+      "+ nuisance_baseline",
+      "+ nuisance_biomarker1 + nuisance_biomarker2",
+      "+ nuisance_status1_absent + nuisance_status1_present",
+      "+ nuisance_status2_present",
+      "+ unstr(time = time, gr = patient)"
+    )
+  )
+  out <- brm_formula(
+    scenario,
+    baseline = FALSE,
+    baseline_time = TRUE,
+    check_rank = FALSE
+  )
+  expect_equal(
+    deparse(out[[1L]], width.cutoff = 500L),
+    paste(
+      "change ~ 0 + x_group_1_time_2 + x_group_1_time_3 + x_group_1_time_4",
+      "+ x_group_2_time_2 + x_group_2_time_3 + x_group_2_time_4",
+      "+ nuisance_baseline:time",
+      "+ nuisance_biomarker1 + nuisance_biomarker2",
+      "+ nuisance_status1_absent + nuisance_status1_present",
+      "+ nuisance_status2_present",
+      "+ unstr(time = time, gr = patient)"
     )
   )
 })
@@ -632,7 +672,6 @@ test_that("brm_scenario_successive_cells() non-change subgroup w/o covs", {
     rate_dropout = 0,
     rate_lapse = 0
   ) |>
-    dplyr::mutate(response = rnorm(n = dplyr::n())) |>
     brm_simulate_continuous(names = c("biomarker1", "biomarker2")) |>
     brm_simulate_categorical(
       names = c("status1", "status2"),
@@ -685,6 +724,50 @@ test_that("brm_scenario_successive_cells() non-change subgroup w/o covs", {
     deparse(out[[2L]][[1L]], width.cutoff = 500L),
     paste(
       "sigma ~ 1"
+    )
+  )
+})
+
+test_that("brm_scenario_successive_cells() subgroup baseline interactions", {
+  skip_on_cran()
+  set.seed(0L)
+  data <- brm_simulate_outline(
+    n_group = 2,
+    n_subgroup = 2,
+    n_patient = 100,
+    n_time = 3,
+    rate_dropout = 0,
+    rate_lapse = 0
+  ) |>
+    dplyr::mutate(response = rnorm(n = dplyr::n())) |>
+    brm_simulate_continuous(names = c("biomarker1", "biomarker2")) |>
+    brm_simulate_categorical(
+      names = c("status1", "status2"),
+      levels = c("present", "absent")
+    ) |>
+    dplyr::mutate(response = rnorm(n = dplyr::n())) |>
+    brm_data_change()
+  scenario <- brm_scenario_successive_cells(data)
+  out <- brm_formula(
+    scenario,
+    baseline = TRUE,
+    baseline_subgroup = TRUE,
+    baseline_subgroup_time = TRUE,
+    baseline_time = TRUE,
+    covariates = FALSE,
+    check_rank = FALSE,
+    correlation = "diagonal"
+  )
+  expect_equal(
+    deparse(out[[1L]], width.cutoff = 500L),
+    paste(
+      "change ~ 0 + x_group_1_subgroup_1_time_2 +",
+      "x_group_1_subgroup_1_time_3 + x_group_1_subgroup_2_time_2 +",
+      "x_group_1_subgroup_2_time_3 + x_group_2_subgroup_1_time_2 +",
+      "x_group_2_subgroup_1_time_3 + x_group_2_subgroup_2_time_2 +",
+      "x_group_2_subgroup_2_time_3 + nuisance_baseline +",
+      "nuisance_baseline:subgroup + nuisance_baseline:subgroup:time +",
+      "nuisance_baseline:time"
     )
   )
 })
