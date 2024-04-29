@@ -3,6 +3,8 @@ brm_scenario_init <- function(
   interest,
   nuisance,
   parameterization,
+  prefix_interest,
+  prefix_nuisance,
   subclass
 ) {
   data_interest <- intersect(colnames(data), colnames(interest))
@@ -36,13 +38,21 @@ brm_scenario_init <- function(
       "prefix_nuisance value to make column names unique."
     )
   )
+  baseline <- if_any(
+    is.null(attr(data, "brm_baseline")),
+    NULL,
+    paste0(prefix_nuisance, attr(data, "brm_baseline"))
+  )
   scenario <- brm_scenario_new(
     scenario = dplyr::bind_cols(interest, nuisance, data),
     data = data,
     subclass = subclass,
     brm_scenario_interest = colnames(interest),
     brm_scenario_nuisance = colnames(nuisance),
-    brm_scenario_parameterization = parameterization
+    brm_scenario_parameterization = parameterization,
+    brm_scenario_baseline = baseline,
+    brm_scenario_prefix_interest = prefix_interest,
+    brm_scenario_prefix_nuisance = prefix_nuisance
   )
   brm_data_validate(scenario)
   scenario
@@ -54,7 +64,10 @@ brm_scenario_new <- function(
   subclass,
   brm_scenario_interest,
   brm_scenario_nuisance,
-  brm_scenario_parameterization
+  brm_scenario_parameterization,
+  brm_scenario_baseline,
+  brm_scenario_prefix_interest,
+  brm_scenario_prefix_nuisance
 ) {
   args <- brm_data_attributes(data)
   args$.Data <- tibble::new_tibble(
@@ -64,11 +77,37 @@ brm_scenario_new <- function(
   args$brm_scenario_interest <- brm_scenario_interest
   args$brm_scenario_nuisance <- brm_scenario_nuisance
   args$brm_scenario_parameterization <- brm_scenario_parameterization
+  args$brm_scenario_baseline <- brm_scenario_baseline
+  args$brm_scenario_prefix_interest <- brm_scenario_prefix_interest
+  args$brm_scenario_prefix_nuisance <- brm_scenario_prefix_nuisance
   do.call(what = structure, args = args)
 }
 
 #' @export
 brm_data_validate.brms_mmrm_scenario <- function(data) {
+  assert_chr(
+    attr(data, "brm_scenario_prefix_interest") %||nzchar% "x",
+    "brm_scenario_prefix_interest must be a single character string"
+  )
+  assert_chr(
+    attr(data, "brm_scenario_prefix_nuisance") %||nzchar% "x",
+    "brm_scenario_prefix_nuisance must be a single character string"
+  )
+  baseline <- attr(data, "brm_baseline")
+  scenario_baseline <- attr(data, "brm_scenario_baseline")
+  if (!is.null(baseline)) {
+    assert(
+      scenario_baseline ==
+        paste0(attr(data, "brm_scenario_prefix_nuisance"), baseline),
+      message = "brm_baseline name must match brm_scenario_baseline name"
+    )
+    assert(
+      data[[scenario_baseline]] == data[[baseline]] - mean(data[[baseline]]),
+      message = paste(
+        "brm_scenario_baseline must be the centered version of brm_baseline"
+      )
+    )
+  }
   interest <- attr(data, "brm_scenario_interest")
   nuisance <- attr(data, "brm_scenario_nuisance")
   parameterization <- attr(data, "brm_scenario_parameterization")

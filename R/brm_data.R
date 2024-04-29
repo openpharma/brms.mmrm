@@ -326,6 +326,12 @@ brm_data_validate.default <- function(data) {
     is.numeric(data[[outcome]]),
     message = "outcome variable in the data must be numeric."
   )
+  if (!is.null(baseline)) {
+    assert(
+      is.numeric(data[[outcome]]),
+      message = "baseline variable must be numeric if supplied."
+    )
+  }
   for (column in c(baseline, group, subgroup, time, patient, covariates)) {
     assert(
       !anyNA(data[[column]]),

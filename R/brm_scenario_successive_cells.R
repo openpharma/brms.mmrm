@@ -105,6 +105,8 @@ brm_scenario_successive_cells <- function(
     interest = scenario$interest,
     nuisance = nuisance,
     parameterization = scenario$parameterization,
+    prefix_interest = prefix_interest,
+    prefix_nuisance = prefix_nuisance,
     subclass = "brms_mmrm_successive_cells"
   )
 }
