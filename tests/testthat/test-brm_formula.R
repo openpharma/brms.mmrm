@@ -536,7 +536,7 @@ test_that("brm_formula() scenario non-subgroup", {
       levels = c("present", "absent")
     )
   scenario <- brm_scenario_successive_cells(data)
-  out <- brm_formula(scenario)
+  out <- brm_formula(scenario, check_rank = TRUE)
   expect_s3_class(out, "brms_mmrm_formula_scenario")
   expect_s3_class(out, "brms_mmrm_formula")
   expect_s3_class(out, "brmsformula")

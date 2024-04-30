@@ -8,6 +8,15 @@ scenario_nuisance <- function(
   baseline_subgroup_time,
   baseline_time
 ) {
+  assert(
+    !all(is.na(data[[attr(data, "brm_outcome")]])),
+    message = paste(
+      "all variables in the outcome variable are missing,",
+      "which prevents brms.mmrm from checking that the model matrix",
+      "will have full rank when supplied to brms.",
+      "Please supply a dataset with at least some non-missing outcomes."
+    )
+  )
   text <- "'%s' in must be TRUE or FALSE."
   assert_lgl(covariates, sprintf(text, "covariates"))
   assert_lgl(baseline, sprintf(text, "baseline"))
@@ -95,9 +104,6 @@ nuisance_baseline_terms <- function(data, baseline, formula) {
 
 nuisance_full_rank <- function(data, interest, nuisance) {
   index <- !is.na(data[[attr(data, "brm_outcome")]])
-  if (!any(index)) {
-    return(nuisance[, character(0L)])
-  }
   interest <- interest[index, ]
   nuisance <- nuisance[index, ]
   matrix <- as.matrix(dplyr::bind_cols(interest, nuisance))
