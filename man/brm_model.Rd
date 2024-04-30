@@ -94,7 +94,7 @@ tmp <- utils::capture.output(
   )
 )
 # The output model is a brms model fit object.
-model
+suppressWarnings(print(model))
 # The `prior_summary()` function shows the full prior specification
 # which reflects the fully realized fixed effects parameterization.
 brms::prior_summary(model)
