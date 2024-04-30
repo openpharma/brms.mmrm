@@ -8,25 +8,18 @@
 \usage{
 brm_formula(
   data,
-  covariates = TRUE,
+  check_rank = TRUE,
   variance = "heterogeneous",
   correlation = "unstructured",
   autoregressive_order = 1L,
   moving_average_order = 1L,
   residual_covariance_arma_estimation = FALSE,
-  baseline = !is.null(attr(data, "brm_baseline")),
-  baseline_subgroup = !is.null(attr(data, "brm_baseline")) && !is.null(attr(data,
-    "brm_subgroup")),
-  baseline_subgroup_time = !is.null(attr(data, "brm_baseline")) && !is.null(attr(data,
-    "brm_subgroup")),
-  baseline_time = !is.null(attr(data, "brm_baseline")),
-  check_rank = TRUE,
   ...
 )
 
 \method{brm_formula}{default}(
   data,
-  covariates = TRUE,
+  check_rank = TRUE,
   variance = "heterogeneous",
   correlation = "unstructured",
   autoregressive_order = 1L,
@@ -39,6 +32,7 @@ brm_formula(
   baseline_subgroup_time = !is.null(attr(data, "brm_baseline")) && !is.null(attr(data,
     "brm_subgroup")),
   baseline_time = !is.null(attr(data, "brm_baseline")),
+  covariates = TRUE,
   group = TRUE,
   group_subgroup = !is.null(attr(data, "brm_subgroup")),
   group_subgroup_time = !is.null(attr(data, "brm_subgroup")),
@@ -46,7 +40,6 @@ brm_formula(
   subgroup = !is.null(attr(data, "brm_subgroup")),
   subgroup_time = !is.null(attr(data, "brm_subgroup")),
   time = TRUE,
-  check_rank = TRUE,
   ...,
   effect_baseline = NULL,
   effect_group = NULL,
@@ -57,26 +50,22 @@ brm_formula(
 
 \method{brm_formula}{brms_mmrm_scenario}(
   data,
+  check_rank = TRUE,
   variance = "heterogeneous",
   correlation = "unstructured",
   autoregressive_order = 1L,
   moving_average_order = 1L,
   residual_covariance_arma_estimation = FALSE,
-  check_rank = TRUE,
   ...
 )
 }
 \arguments{
 \item{data}{A classed data frame from \code{\link[=brm_data]{brm_data()}}.}
 
-\item{covariates}{Logical of length 1.
-\code{TRUE} (default) to include any additive covariates declared with
-the \code{covariates} argument of \code{\link[=brm_data]{brm_data()}},
-\code{FALSE} to omit.
-For informative prior scenarios, this option is set in
-functions like \code{\link[=brm_scenario_successive_cells]{brm_scenario_successive_cells()}} rather than in
-\code{\link[=brm_formula]{brm_formula()}} in order to make sure columns are appropriately
-centered and the underlying model matrix has full rank.}
+\item{check_rank}{\code{TRUE} to check the rank of the model matrix and
+throw an error if rank deficiency is detected. \code{FALSE} to skip
+this check. Rank-deficient models may have non-identifiable
+parameters and it is recommended to choose a full-rank parameterization.}
 
 \item{variance}{Character of length 1, variance structure for the
 residuals. \code{"heterogeneous"} declares a different variance component
@@ -141,6 +130,11 @@ Directly supplied to the \code{cov} argument in \code{brms} for
 \code{"moving_average"} correlation structures. C.f.
 \url{https://paul-buerkner.github.io/brms/reference/arma.html}.}
 
+\item{...}{Named arguments to specific \code{\link[=brm_formula]{brm_formula()}} methods.}
+
+\item{intercept}{Logical of length 1.
+\code{TRUE} (default) to include an intercept, \code{FALSE} to omit.}
+
 \item{baseline}{Logical of length 1.
 \code{TRUE} to include an additive effect for baseline
 response, \code{FALSE} to omit.
@@ -172,15 +166,14 @@ functions like \code{\link[=brm_scenario_successive_cells]{brm_scenario_successi
 \code{\link[=brm_formula]{brm_formula()}} in order to make sure columns are appropriately
 centered and the underlying model matrix has full rank.}
 
-\item{check_rank}{\code{TRUE} to check the rank of the model matrix and
-throw an error if rank deficiency is detected. \code{FALSE} to skip
-this check. Rank-deficient models may have non-identifiable
-parameters and it is recommended to choose a full-rank parameterization.}
-
-\item{...}{Named arguments to specific \code{\link[=brm_formula]{brm_formula()}} methods.}
-
-\item{intercept}{Logical of length 1.
-\code{TRUE} (default) to include an intercept, \code{FALSE} to omit.}
+\item{covariates}{Logical of length 1.
+\code{TRUE} (default) to include any additive covariates declared with
+the \code{covariates} argument of \code{\link[=brm_data]{brm_data()}},
+\code{FALSE} to omit.
+For informative prior scenarios, this option is set in
+functions like \code{\link[=brm_scenario_successive_cells]{brm_scenario_successive_cells()}} rather than in
+\code{\link[=brm_formula]{brm_formula()}} in order to make sure columns are appropriately
+centered and the underlying model matrix has full rank.}
 
 \item{group}{Logical of length 1.
 \code{TRUE} (default) to include additive effects for

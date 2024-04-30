@@ -238,19 +238,12 @@
 #' formula
 brm_formula <- function(
   data,
-  covariates = TRUE,
+  check_rank = TRUE,
   variance = "heterogeneous",
   correlation = "unstructured",
   autoregressive_order = 1L,
   moving_average_order = 1L,
   residual_covariance_arma_estimation = FALSE,
-  baseline = !is.null(attr(data, "brm_baseline")),
-  baseline_subgroup = !is.null(attr(data, "brm_baseline")) &&
-    !is.null(attr(data, "brm_subgroup")),
-  baseline_subgroup_time = !is.null(attr(data, "brm_baseline")) &&
-    !is.null(attr(data, "brm_subgroup")),
-  baseline_time = !is.null(attr(data, "brm_baseline")),
-  check_rank = TRUE,
   ...
 ) {
   UseMethod("brm_formula")
@@ -261,7 +254,7 @@ brm_formula <- function(
 #' @method brm_formula default
 brm_formula.default <- function(
   data,
-  covariates = TRUE,
+  check_rank = TRUE,
   variance = "heterogeneous",
   correlation = "unstructured",
   autoregressive_order = 1L,
@@ -274,6 +267,7 @@ brm_formula.default <- function(
   baseline_subgroup_time = !is.null(attr(data, "brm_baseline")) &&
     !is.null(attr(data, "brm_subgroup")),
   baseline_time = !is.null(attr(data, "brm_baseline")),
+  covariates = TRUE,
   group = TRUE,
   group_subgroup = !is.null(attr(data, "brm_subgroup")),
   group_subgroup_time = !is.null(attr(data, "brm_subgroup")),
@@ -281,7 +275,6 @@ brm_formula.default <- function(
   subgroup = !is.null(attr(data, "brm_subgroup")),
   subgroup_time = !is.null(attr(data, "brm_subgroup")),
   time = TRUE,
-  check_rank = TRUE,
   ...,
   effect_baseline = NULL,
   effect_group = NULL,
@@ -447,12 +440,12 @@ brm_formula.default <- function(
 #' @method brm_formula brms_mmrm_scenario
 brm_formula.brms_mmrm_scenario <- function(
   data,
+  check_rank = TRUE,
   variance = "heterogeneous",
   correlation = "unstructured",
   autoregressive_order = 1L,
   moving_average_order = 1L,
   residual_covariance_arma_estimation = FALSE,
-  check_rank = TRUE,
   ...
 ) {
   brm_data_validate(data)
@@ -558,7 +551,7 @@ term_correlation <- function(
 formula_check_rank <- function(data, formula) {
   data <- data[!is.na(data[[attr(data, "brm_outcome")]]), ]
   matrix <- brms::make_standata(data = data, formula = formula)$X
-  rank <- Matrix::rankMatrix(matrix)
+  rank <- qr(matrix)$rank
   assert(
     ncol(matrix) == as.integer(rank),
     message = paste0(

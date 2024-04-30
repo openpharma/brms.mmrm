@@ -60,7 +60,8 @@ data <- brm_simulate_continuous(data, names = c("age", "biomarker"))
 formula <- brm_formula(
   data = data,
   baseline = FALSE,
-  baseline_time = FALSE
+  baseline_time = FALSE,
+  check_rank = FALSE
 )
 brm_prior_simple(
   data = data,

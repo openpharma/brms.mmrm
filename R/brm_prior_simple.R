@@ -29,7 +29,8 @@
 #' formula <- brm_formula(
 #'   data = data,
 #'   baseline = FALSE,
-#'   baseline_time = FALSE
+#'   baseline_time = FALSE,
+#'   check_rank = FALSE
 #' )
 #' brm_prior_simple(
 #'   data = data,
