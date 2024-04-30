@@ -42,6 +42,7 @@ test_that("brm_scenario_successive_cells() change and non-subgroup", {
   expect_equal(attributes_data, attributes_scenario)
   interest <- attr(out, "brm_scenario_interest")
   nuisance <- attr(out, "brm_scenario_nuisance")
+  expect_equal(max(abs(colMeans(out[, nuisance]))), 0)
   expect_equal(
     sort(interest),
     sort(
@@ -67,10 +68,143 @@ test_that("brm_scenario_successive_cells() change and non-subgroup", {
       )
     )
   )
+  expect_true(all(interest %in% colnames(out)))
+  expect_true(all(nuisance %in% colnames(out)))
+  expect_equal(
+    sort(interest),
+    sort(grep("y_", colnames(out), value = TRUE))
+  )
+  expect_equal(
+    sort(nuisance),
+    sort(grep("z_", colnames(out), value = TRUE))
+  )
   param <- attr(out, "brm_scenario_parameterization")
   expect_equal(param$variable, interest)
   expect_equal(param$group, rep(c("group_1", "group_2"), each = 3L))
   expect_equal(param$time, rep(c("time_2", "time_3", "time_4"), times = 2L))
+})
+
+test_that("brm_scenario_successive_cells() change non-sub options", {
+  set.seed(0L)
+  data <- brm_simulate_outline(
+    n_group = 2,
+    n_patient = 100,
+    n_time = 4,
+    rate_dropout = 0,
+    rate_lapse = 0
+  ) |>
+    dplyr::mutate(response = rnorm(n = dplyr::n())) |>
+    brm_data_change() |>
+    brm_simulate_continuous(names = c("biomarker1", "biomarker2")) |>
+    brm_simulate_categorical(
+      names = c("status1", "status2"),
+      levels = c("present", "absent")
+    ) |>
+    dplyr::mutate(response = rnorm(n = dplyr::n()))
+  interest_exp <- sort(
+    c(
+      "y_group_1_time_2",
+      "y_group_1_time_3",
+      "y_group_1_time_4",
+      "y_group_2_time_2",
+      "y_group_2_time_3",
+      "y_group_2_time_4"
+    )
+  )
+  out <- brm_scenario_successive_cells(
+    data,
+    prefix_interest = "y_",
+    prefix_nuisance = "z_",
+    baseline = FALSE,
+    baseline_time = TRUE,
+    covariates = TRUE
+  )
+  nuisance <- attr(out, "brm_scenario_nuisance")
+  expect_equal(max(abs(colMeans(out[, nuisance]))), 0)
+  expect_equal(sort(attr(out, "brm_scenario_interest")), interest_exp)
+  expect_equal(
+    sort(attr(out, "brm_scenario_nuisance")),
+    sort(
+      c(
+        "z_biomarker1",
+        "z_biomarker2",
+        "z_baseline.timetime_2",
+        "z_baseline.timetime_3",
+        "z_baseline.timetime_4",
+        "z_status1_absent",
+        "z_status2_present"
+      )
+    )
+  )
+  out <- brm_scenario_successive_cells(
+    data,
+    prefix_interest = "y_",
+    prefix_nuisance = "z_",
+    baseline = FALSE,
+    baseline_time = TRUE,
+    covariates = FALSE
+  )
+  nuisance <- attr(out, "brm_scenario_nuisance")
+  expect_equal(max(abs(colMeans(out[, nuisance]))), 0)
+  expect_equal(sort(attr(out, "brm_scenario_interest")), interest_exp)
+  expect_equal(
+    sort(attr(out, "brm_scenario_nuisance")),
+    sort(
+      c(
+        "z_baseline.timetime_2",
+        "z_baseline.timetime_3",
+        "z_baseline.timetime_4"
+      )
+    )
+  )
+  out <- brm_scenario_successive_cells(
+    data,
+    prefix_interest = "y_",
+    prefix_nuisance = "z_",
+    baseline = TRUE,
+    baseline_time = FALSE,
+    covariates = FALSE
+  )
+  nuisance <- attr(out, "brm_scenario_nuisance")
+  expect_equal(max(abs(colMeans(out[, nuisance]))), 0)
+  expect_equal(sort(attr(out, "brm_scenario_interest")), interest_exp)
+  expect_equal(
+    sort(attr(out, "brm_scenario_nuisance")),
+    "z_baseline"
+  )
+  out <- brm_scenario_successive_cells(
+    data,
+    prefix_interest = "y_",
+    prefix_nuisance = "z_",
+    baseline = FALSE,
+    baseline_time = FALSE,
+    covariates = FALSE
+  )
+  nuisance <- attr(out, "brm_scenario_nuisance")
+  expect_equal(sort(attr(out, "brm_scenario_interest")), interest_exp)
+  expect_equal(attr(out, "brm_scenario_nuisance"), character(0L))
+  out <- brm_scenario_successive_cells(
+    data,
+    prefix_interest = "y_",
+    prefix_nuisance = "z_",
+    baseline = FALSE,
+    baseline_time = FALSE,
+    covariates = TRUE
+  )
+  nuisance <- attr(out, "brm_scenario_nuisance")
+  expect_equal(max(abs(colMeans(out[, nuisance]))), 0)
+  expect_equal(sort(attr(out, "brm_scenario_interest")), interest_exp)
+  expect_equal(
+    attr(out, "brm_scenario_nuisance"),
+    sort(
+      c(
+        "z_biomarker1",
+        "z_biomarker2",
+        "z_status1_absent",
+        "z_status2_present"
+      )
+    )
+  )
 })
 
 test_that("brm_scenario_successive_cells() non-change subgroup", {
@@ -105,6 +239,7 @@ test_that("brm_scenario_successive_cells() non-change subgroup", {
   expect_equal(attributes_data, attributes_scenario)
   interest <- attr(out, "brm_scenario_interest")
   nuisance <- attr(out, "brm_scenario_nuisance")
+  expect_equal(max(abs(colMeans(out[, nuisance]))), 0)
   expect_equal(
     sort(interest),
     sort(
@@ -141,6 +276,17 @@ test_that("brm_scenario_successive_cells() non-change subgroup", {
       )
     )
   )
+  expect_true(all(interest %in% colnames(out)))
+  expect_true(all(nuisance %in% colnames(out)))
+  expect_equal(
+    sort(interest),
+    sort(grep("x_", colnames(out), value = TRUE))
+  )
+  expect_equal(
+    sort(nuisance),
+    sort(grep("nuisance_", colnames(out), value = TRUE))
+  )
+  expect_equal(max(abs(colMeans(out[, nuisance]))), 0)
   param <- attr(out, "brm_scenario_parameterization")
   expect_equal(param$variable, interest)
   expect_equal(param$group, rep(c("group_1", "group_2"), each = 9L))
@@ -152,4 +298,98 @@ test_that("brm_scenario_successive_cells() non-change subgroup", {
     )
   )
   expect_equal(param$time, rep(c("time_1", "time_2", "time_3"), times = 6L))
+})
+
+test_that("brm_scenario_successive_cells() baseline-subgroup interactions", {
+  set.seed(0L)
+  data <- brm_simulate_outline(
+    n_group = 2,
+    n_subgroup = 3,
+    n_patient = 100,
+    n_time = 3,
+    rate_dropout = 0,
+    rate_lapse = 0
+  ) |>
+    dplyr::mutate(response = rnorm(n = dplyr::n())) |>
+    brm_data_change() |>
+    brm_simulate_continuous(names = c("biomarker1", "biomarker2")) |>
+    brm_simulate_categorical(
+      names = c("status1", "status2"),
+      levels = c("present", "absent")
+    )
+  interest_exp <- sort(
+    c(
+      "x_group_1_subgroup_1_time_2",
+      "x_group_1_subgroup_1_time_3",
+      "x_group_1_subgroup_2_time_2",
+      "x_group_1_subgroup_2_time_3",
+      "x_group_1_subgroup_3_time_2",
+      "x_group_1_subgroup_3_time_3",
+      "x_group_2_subgroup_1_time_2",
+      "x_group_2_subgroup_1_time_3",
+      "x_group_2_subgroup_2_time_2",
+      "x_group_2_subgroup_2_time_3",
+      "x_group_2_subgroup_3_time_2",
+      "x_group_2_subgroup_3_time_3"
+    )
+  )
+  out <- brm_scenario_successive_cells(
+    data,
+    baseline = FALSE,
+    baseline_subgroup = FALSE,
+    baseline_subgroup_time = FALSE,
+    baseline_time = FALSE,
+    covariates = FALSE
+  )
+  interest <- attr(out, "brm_scenario_interest")
+  nuisance <- attr(out, "brm_scenario_nuisance")
+  expect_equal(sort(interest), interest_exp)
+  expect_equal(sort(nuisance), character(0L))
+  out <- brm_scenario_successive_cells(
+    data,
+    baseline = FALSE,
+    baseline_subgroup = TRUE,
+    baseline_subgroup_time = FALSE,
+    baseline_time = FALSE,
+    covariates = FALSE
+  )
+  interest <- attr(out, "brm_scenario_interest")
+  nuisance <- attr(out, "brm_scenario_nuisance")
+  expect_equal(max(abs(colMeans(out[, nuisance]))), 0)
+  expect_equal(sort(interest), interest_exp)
+  expect_equal(
+    sort(nuisance),
+    sort(
+      c(
+        "nuisance_baseline.subgroupsubgroup_1",
+        "nuisance_baseline.subgroupsubgroup_2",
+        "nuisance_baseline.subgroupsubgroup_3"
+      )
+    )
+  )
+  out <- brm_scenario_successive_cells(
+    data,
+    baseline = FALSE,
+    baseline_subgroup = FALSE,
+    baseline_subgroup_time = TRUE,
+    baseline_time = FALSE,
+    covariates = FALSE
+  )
+  interest <- attr(out, "brm_scenario_interest")
+  nuisance <- attr(out, "brm_scenario_nuisance")
+  expect_equal(max(abs(colMeans(out[, nuisance]))), 0)
+  expect_equal(sort(interest), interest_exp)
+  expect_equal(
+    sort(nuisance),
+    sort(
+      c(
+        "nuisance_baseline.subgroupsubgroup_1.timetime_2",
+        "nuisance_baseline.subgroupsubgroup_1.timetime_3",
+        "nuisance_baseline.subgroupsubgroup_2.timetime_2",
+        "nuisance_baseline.subgroupsubgroup_2.timetime_3",
+        "nuisance_baseline.subgroupsubgroup_3.timetime_2",
+        "nuisance_baseline.subgroupsubgroup_3.timetime_3"
+      )
+    )
+  )
 })
