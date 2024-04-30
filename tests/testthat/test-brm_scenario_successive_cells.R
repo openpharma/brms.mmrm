@@ -44,6 +44,10 @@ test_that("brm_scenario_successive_cells() change and non-subgroup", {
   nuisance <- attr(out, "brm_scenario_nuisance")
   expect_equal(max(abs(colMeans(out[, nuisance]))), 0)
   expect_equal(
+    qr(out[, c(interest, nuisance), drop = FALSE])$rank,
+    length(interest) + length(nuisance)
+  )
+  expect_equal(
     sort(interest),
     sort(
       c(
@@ -119,7 +123,12 @@ test_that("brm_scenario_successive_cells() change non-sub options", {
     baseline_time = TRUE,
     covariates = TRUE
   )
+  interest <- attr(out, "brm_scenario_interest")
   nuisance <- attr(out, "brm_scenario_nuisance")
+  expect_equal(
+    qr(out[, c(interest, nuisance), drop = FALSE])$rank,
+    length(interest) + length(nuisance)
+  )
   expect_equal(max(abs(colMeans(out[, nuisance]))), 0)
   expect_equal(sort(attr(out, "brm_scenario_interest")), interest_exp)
   expect_equal(
@@ -144,7 +153,12 @@ test_that("brm_scenario_successive_cells() change non-sub options", {
     baseline_time = TRUE,
     covariates = FALSE
   )
+  interest <- attr(out, "brm_scenario_interest")
   nuisance <- attr(out, "brm_scenario_nuisance")
+  expect_equal(
+    qr(out[, c(interest, nuisance), drop = FALSE])$rank,
+    length(interest) + length(nuisance)
+  )
   expect_equal(max(abs(colMeans(out[, nuisance]))), 0)
   expect_equal(sort(attr(out, "brm_scenario_interest")), interest_exp)
   expect_equal(
@@ -165,7 +179,12 @@ test_that("brm_scenario_successive_cells() change non-sub options", {
     baseline_time = FALSE,
     covariates = FALSE
   )
+  interest <- attr(out, "brm_scenario_interest")
   nuisance <- attr(out, "brm_scenario_nuisance")
+  expect_equal(
+    qr(out[, c(interest, nuisance), drop = FALSE])$rank,
+    length(interest) + length(nuisance)
+  )
   expect_equal(max(abs(colMeans(out[, nuisance]))), 0)
   expect_equal(sort(attr(out, "brm_scenario_interest")), interest_exp)
   expect_equal(
@@ -180,7 +199,12 @@ test_that("brm_scenario_successive_cells() change non-sub options", {
     baseline_time = FALSE,
     covariates = FALSE
   )
+  interest <- attr(out, "brm_scenario_interest")
   nuisance <- attr(out, "brm_scenario_nuisance")
+  expect_equal(
+    qr(out[, c(interest, nuisance), drop = FALSE])$rank,
+    length(interest) + length(nuisance)
+  )
   expect_equal(sort(attr(out, "brm_scenario_interest")), interest_exp)
   expect_equal(attr(out, "brm_scenario_nuisance"), character(0L))
   out <- brm_scenario_successive_cells(
@@ -239,6 +263,10 @@ test_that("brm_scenario_successive_cells() non-change subgroup", {
   expect_equal(attributes_data, attributes_scenario)
   interest <- attr(out, "brm_scenario_interest")
   nuisance <- attr(out, "brm_scenario_nuisance")
+  expect_equal(
+    qr(out[, c(interest, nuisance), drop = FALSE])$rank,
+    length(interest) + length(nuisance)
+  )
   expect_equal(max(abs(colMeans(out[, nuisance]))), 0)
   expect_equal(
     sort(interest),
@@ -343,6 +371,10 @@ test_that("brm_scenario_successive_cells() baseline-subgroup interactions", {
   )
   interest <- attr(out, "brm_scenario_interest")
   nuisance <- attr(out, "brm_scenario_nuisance")
+  expect_equal(
+    qr(out[, c(interest, nuisance), drop = FALSE])$rank,
+    length(interest) + length(nuisance)
+  )
   expect_equal(sort(interest), interest_exp)
   expect_equal(sort(nuisance), character(0L))
   out <- brm_scenario_successive_cells(
@@ -355,6 +387,10 @@ test_that("brm_scenario_successive_cells() baseline-subgroup interactions", {
   )
   interest <- attr(out, "brm_scenario_interest")
   nuisance <- attr(out, "brm_scenario_nuisance")
+  expect_equal(
+    qr(out[, c(interest, nuisance), drop = FALSE])$rank,
+    length(interest) + length(nuisance)
+  )
   expect_equal(max(abs(colMeans(out[, nuisance]))), 0)
   expect_equal(sort(interest), interest_exp)
   expect_equal(
@@ -377,6 +413,10 @@ test_that("brm_scenario_successive_cells() baseline-subgroup interactions", {
   )
   interest <- attr(out, "brm_scenario_interest")
   nuisance <- attr(out, "brm_scenario_nuisance")
+  expect_equal(
+    qr(out[, c(interest, nuisance), drop = FALSE])$rank,
+    length(interest) + length(nuisance)
+  )
   expect_equal(max(abs(colMeans(out[, nuisance]))), 0)
   expect_equal(sort(interest), interest_exp)
   expect_equal(
