@@ -52,19 +52,35 @@
 #'   response, `FALSE` to omit.
 #'   Default is `TRUE` if [brm_data()] previously declared a baseline
 #'   variable in the dataset.
+#'   For informative prior scenarios, this option is set in
+#'   functions like [brm_scenario_successive_cells()] rather than in
+#'   [brm_formula()] in order to make sure columns are appropriately
+#'   centered and the underlying model matrix has full rank.
 #' @param baseline_subgroup Logical of length 1.
 #'   `TRUE` to include baseline-by-subgroup interaction, `FALSE` to omit.
 #'   Default is `TRUE` if [brm_data()] previously declared baseline
 #'   and subgroup variables in the dataset.
+#'   For informative prior scenarios, this option is set in
+#'   functions like [brm_scenario_successive_cells()] rather than in
+#'   [brm_formula()] in order to make sure columns are appropriately
+#'   centered and the underlying model matrix has full rank.
 #' @param baseline_subgroup_time Logical of length 1.
 #'   `TRUE` to include baseline-by-subgroup-by-time interaction,
 #'   `FALSE` to omit.
 #'   Default is `TRUE` if [brm_data()] previously declared baseline
 #'   and subgroup variables in the dataset.
+#'   For informative prior scenarios, this option is set in
+#'   functions like [brm_scenario_successive_cells()] rather than in
+#'   [brm_formula()] in order to make sure columns are appropriately
+#'   centered and the underlying model matrix has full rank.
 #' @param baseline_time Logical of length 1.
 #'   `TRUE` to include baseline-by-time interaction, `FALSE` to omit.
 #'   Default is `TRUE` if [brm_data()] previously declared a baseline
 #'   variable in the dataset.
+#'   For informative prior scenarios, this option is set in
+#'   functions like [brm_scenario_successive_cells()] rather than in
+#'   [brm_formula()] in order to make sure columns are appropriately
+#'   centered and the underlying model matrix has full rank.
 #' @param group Logical of length 1.
 #'   `TRUE` (default) to include additive effects for
 #'   treatment groups, `FALSE` to omit.
@@ -94,6 +110,11 @@
 #'   `TRUE` (default) to include any additive covariates declared with
 #'   the `covariates` argument of [brm_data()],
 #'   `FALSE` to omit.
+#'   For informative prior scenarios, this option is set in
+#'   functions like [brm_scenario_successive_cells()] rather than in
+#'   [brm_formula()] in order to make sure columns are appropriately
+#'   centered and the underlying model matrix has full rank.
+#' @param baseline_subgroup Logical of length 1.
 #' @param variance Character of length 1, variance structure for the
 #'   residuals. `"heterogeneous"` declares a different variance component
 #'   for each discrete time point, `"homogeneous"` declares a single
@@ -426,28 +447,14 @@ brm_formula.default <- function(
 #' @method brm_formula brms_mmrm_scenario
 brm_formula.brms_mmrm_scenario <- function(
   data,
-  covariates = TRUE,
   variance = "heterogeneous",
   correlation = "unstructured",
   autoregressive_order = 1L,
   moving_average_order = 1L,
   residual_covariance_arma_estimation = FALSE,
-  baseline = !is.null(attr(data, "brm_scenario_baseline")),
-  baseline_subgroup = !is.null(attr(data, "brm_scenario_baseline")) &&
-    !is.null(attr(data, "brm_subgroup")),
-  baseline_subgroup_time = !is.null(attr(data, "brm_scenario_baseline")) &&
-    !is.null(attr(data, "brm_subgroup")),
-  baseline_time = !is.null(attr(data, "brm_scenario_baseline")),
-  check_rank = TRUE,
   ...
 ) {
   brm_data_validate(data)
-  text <- "'%s' in brm_formula() must be TRUE or FALSE."
-  assert_lgl(baseline, sprintf(text, "baseline"))
-  assert_lgl(baseline_subgroup, sprintf(text, "baseline_subgroup"))
-  assert_lgl(baseline_subgroup_time, sprintf(text, "baseline_subgroup_time"))
-  assert_lgl(baseline_time, sprintf(text, "baseline_time"))
-  assert_lgl(covariates, sprintf(text, "covariates"))
   brm_formula_validate_correlation(correlation)
   brm_formula_validate_variance(variance)
   assert_lgl(
@@ -471,20 +478,14 @@ brm_formula.brms_mmrm_scenario <- function(
     message = "moving_average_order must be a nonnegative integer of length 1"
   )
   name_outcome <- attr(data, "brm_outcome")
-  name_subgroup <- attr(data, "brm_subgroup")
   name_time <- attr(data, "brm_time")
   name_patient <- attr(data, "brm_patient")
-  name_baseline <- attr(data, "brm_scenario_baseline")
   interest <- attr(data, "brm_scenario_interest")
   nuisance <- setdiff(attr(data, "brm_scenario_nuisance"), name_baseline)
   terms <- c(
     term("0", TRUE),
     unlist(lapply(interest, term, condition = TRUE)),
-    term(name_baseline, baseline),
-    term(c(name_baseline, name_subgroup), baseline_subgroup),
-    term(c(name_baseline, name_subgroup, name_time), baseline_subgroup_time),
-    term(c(name_baseline, name_time), baseline_time),
-    unlist(lapply(nuisance, term, condition = covariates)),
+    unlist(lapply(nuisance, term, condition = TRUE)),
     term_correlation(
       correlation = correlation,
       name_time = name_time,
@@ -505,11 +506,6 @@ brm_formula.brms_mmrm_scenario <- function(
   brms_formula <- brms::brmsformula(formula = formula_fixed, formula_sigma)
   formula <- brm_formula_scenario_new(
     formula = brms_formula,
-    brm_baseline = baseline,
-    brm_baseline_subgroup = baseline_subgroup,
-    brm_baseline_subgroup_time = baseline_subgroup_time,
-    brm_baseline_time = baseline_time,
-    brm_covariates = covariates,
     brm_variance = variance,
     brm_correlation = correlation,
     brm_autoregressive_order = autoregressive_order,
@@ -522,6 +518,60 @@ brm_formula.brms_mmrm_scenario <- function(
     formula_check_rank(data = data, formula = formula)
   }
   formula
+}
+
+term <- function(labels, condition) {
+  if_any(condition, paste0(labels, collapse = ":"), character(0L))
+}
+
+term_correlation <- function(
+  correlation,
+  name_time,
+  name_patient,
+  autoregressive_order,
+  moving_average_order,
+  residual_covariance_arma_estimation
+) {
+  if (identical(as.character(correlation), "diagonal")) {
+    return(NULL)
+  }
+  fun <- switch(
+    correlation,
+    unstructured = "unstr",
+    autoregressive_moving_average = "arma",
+    autoregressive = "ar",
+    moving_average = "ma",
+    compound_symmetry = "cosy"
+  )
+  args <- list(
+    time = as.symbol(name_time),
+    gr = as.symbol(name_patient),
+    p = autoregressive_order,
+    q = moving_average_order,
+    cov = residual_covariance_arma_estimation
+  )[names(formals(getNamespace("brms")[[fun]]))]
+  call <- as.call(c(as.symbol(fun), args))
+  paste(deparse(call), collapse = " ")
+}
+
+formula_check_rank <- function(data, formula) {
+  data <- data[!is.na(data[[attr(data, "brm_outcome")]]), ]
+  matrix <- brms::make_standata(data = data, formula = formula)$X
+  rank <- Matrix::rankMatrix(matrix)
+  assert(
+    ncol(matrix) == as.integer(rank),
+    message = paste0(
+      "model matrix has ",
+      ncol(matrix),
+      " columns but rank ",
+      rank,
+      " after removing rows with missing outcomes. ",
+      "Please consider a different parameterization to make the ",
+      "model matrix full-rank. Otherwise, fixed effects may not be ",
+      "identifiable and MCMC sampling may not converge. ",
+      "Set check_rank = FALSE in brm_formula() to suppress this error."
+    )
+  )
 }
 
 brm_formula_new <- function(
@@ -572,11 +622,6 @@ brm_formula_new <- function(
 
 brm_formula_scenario_new <- function(
   formula,
-  brm_baseline,
-  brm_baseline_subgroup,
-  brm_baseline_subgroup_time,
-  brm_baseline_time,
-  brm_covariates,
   brm_variance,
   brm_correlation,
   brm_autoregressive_order,
@@ -588,11 +633,6 @@ brm_formula_scenario_new <- function(
     class = unique(
       c("brms_mmrm_formula_scenario", "brms_mmrm_formula", class(formula))
     ),
-    brm_baseline = brm_baseline,
-    brm_baseline_subgroup = brm_baseline_subgroup,
-    brm_baseline_subgroup_time = brm_baseline_subgroup_time,
-    brm_baseline_time = brm_baseline_time,
-    brm_covariates = brm_covariates,
     brm_variance = brm_variance,
     brm_correlation = brm_correlation,
     brm_autoregressive_order = brm_autoregressive_order,
@@ -645,23 +685,6 @@ brm_formula_validate.brms_mmrm_formula_scenario <- function(formula) {
     inherits(., "brms_mmrm_formula"),
     inherits(., "brmsformula"),
     message = "please use brm_formula() to create the model formula"
-  )
-  attributes <- c(
-    "brm_baseline",
-    "brm_baseline_subgroup",
-    "brm_baseline_subgroup_time",
-    "brm_baseline_time",
-    "brm_covariates"
-  )
-  for (attribute in attributes) {
-    assert_lgl(
-      attr(formula, attribute),
-      message = paste(attribute, "attribute must be TRUE or FALSE in formula")
-    )
-  }
-  assert_lgl(
-    attr(formula, "brm_covariates"),
-    message = "'brm_covariates' attribute must be TRUE or FALSE in formula"
   )
   brm_formula_validate_covariance(formula)
 }
@@ -724,83 +747,6 @@ brm_formula_validate_variance <- function(variance) {
     message = paste(
       "variance arg must be one of:",
       paste(choices, collapse = ", ")
-    )
-  )
-}
-
-brm_formula_has_subgroup <- function(formula) {
-  attributes <- c(
-    "brm_baseline_subgroup",
-    "brm_baseline_subgroup_time",
-    "brm_group_subgroup",
-    "brm_group_subgroup_time",
-    "brm_subgroup",
-    "brm_subgroup_time"
-  )
-  any(unlist(lapply(attributes, attr, x = formula)))
-}
-
-brm_formula_has_nuisance <- function(formula) {
-  attributes <- c(
-    "brm_baseline",
-    "brm_baseline_subgroup",
-    "brm_baseline_subgroup_time",
-    "brm_baseline_time",
-    "brm_covariates"
-  )
-  any(unlist(lapply(attributes, attr, x = formula)))
-}
-
-term <- function(labels, condition) {
-  if_any(condition, paste0(labels, collapse = ":"), character(0L))
-}
-
-term_correlation <- function(
-  correlation,
-  name_time,
-  name_patient,
-  autoregressive_order,
-  moving_average_order,
-  residual_covariance_arma_estimation
-) {
-  if (identical(as.character(correlation), "diagonal")) {
-    return(NULL)
-  }
-  fun <- switch(
-    correlation,
-    unstructured = "unstr",
-    autoregressive_moving_average = "arma",
-    autoregressive = "ar",
-    moving_average = "ma",
-    compound_symmetry = "cosy"
-  )
-  args <- list(
-    time = as.symbol(name_time),
-    gr = as.symbol(name_patient),
-    p = autoregressive_order,
-    q = moving_average_order,
-    cov = residual_covariance_arma_estimation
-  )[names(formals(getNamespace("brms")[[fun]]))]
-  call <- as.call(c(as.symbol(fun), args))
-  paste(deparse(call), collapse = " ")
-}
-
-formula_check_rank <- function(data, formula) {
-  data <- data[!is.na(data[[attr(data, "brm_outcome")]]), ]
-  matrix <- brms::make_standata(data = data, formula = formula)$X
-  rank <- Matrix::rankMatrix(matrix)
-  assert(
-    ncol(matrix) == as.integer(rank),
-    message = paste0(
-      "model matrix has ",
-      ncol(matrix),
-      " columns but rank ",
-      rank,
-      " after removing rows with missing outcomes. ",
-      "Please consider a different parameterization to make the ",
-      "model matrix full-rank. Otherwise, fixed effects may not be ",
-      "identifiable and MCMC sampling may not converge. ",
-      "Set check_rank = FALSE in brm_formula() to suppress this error."
     )
   )
 }

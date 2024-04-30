@@ -1,192 +1,50 @@
-brm_scenario_init <- function(
+scenario_nuisance <- function(
   data,
   interest,
-  nuisance,
-  parameterization,
-  prefix_interest,
-  prefix_nuisance,
-  subclass
+  prefix,
+  covariates,
+  baseline,
+  baseline_subgroup,
+  baseline_subgroup_time,
+  baseline_time
 ) {
-  data_interest <- intersect(colnames(data), colnames(interest))
-  data_nuisance <- intersect(colnames(data), colnames(nuisance))
-  interest_nuisance <- intersect(colnames(interest), colnames(nuisance))
-  assert(
-    !length(data_interest),
-    message = paste0(
-      "conflicting column names between the data and generated fixed ",
-      "effects of interest: ",
-      paste(data_interest, collapse = ", "),
-      ". Please choose a prefix_interest value to make column names unique."
-    )
-  )
-  assert(
-    !length(data_nuisance),
-    message = paste0(
-      "conflicting column names between the data and generated nuisance ",
-      "fixed effects of interest: ",
-      paste(data_nuisance, collapse = ", "),
-      ". Please choose a prefix_nuisance value to make column names unique."
-    )
-  )
-  assert(
-    !length(interest_nuisance),
-    message = paste0(
-      "conflicting column names between generated fixed effects",
-      "of interest and generated nuisance variables: ",
-      paste(interest_nuisance, collapse = ", "),
-      ". Please choose different values for prefix_interest and ",
-      "prefix_nuisance value to make column names unique."
-    )
-  )
-  baseline <- if_any(
-    is.null(attr(data, "brm_baseline")),
-    NULL,
-    paste0(prefix_nuisance, attr(data, "brm_baseline"))
-  )
-  scenario <- brm_scenario_new(
-    scenario = dplyr::bind_cols(interest, nuisance, data),
-    data = data,
-    subclass = subclass,
-    brm_scenario_interest = colnames(interest),
-    brm_scenario_nuisance = colnames(nuisance),
-    brm_scenario_parameterization = parameterization,
-    brm_scenario_baseline = baseline,
-    brm_scenario_prefix_interest = prefix_interest,
-    brm_scenario_prefix_nuisance = prefix_nuisance
-  )
-  brm_data_validate(scenario)
-  scenario
-}
-
-brm_scenario_new <- function(
-  scenario,
-  data,
-  subclass,
-  brm_scenario_interest,
-  brm_scenario_nuisance,
-  brm_scenario_parameterization,
-  brm_scenario_baseline,
-  brm_scenario_prefix_interest,
-  brm_scenario_prefix_nuisance
-) {
-  args <- brm_data_attributes(data)
-  args$.Data <- tibble::new_tibble(
-    x = scenario,
-    class = c(subclass, "brms_mmrm_scenario", "brms_mmrm_data")
-  )
-  args$brm_scenario_interest <- brm_scenario_interest
-  args$brm_scenario_nuisance <- brm_scenario_nuisance
-  args$brm_scenario_parameterization <- brm_scenario_parameterization
-  args$brm_scenario_baseline <- brm_scenario_baseline
-  args$brm_scenario_prefix_interest <- brm_scenario_prefix_interest
-  args$brm_scenario_prefix_nuisance <- brm_scenario_prefix_nuisance
-  do.call(what = structure, args = args)
-}
-
-#' @export
-brm_data_validate.brms_mmrm_scenario <- function(data) {
-  assert_chr(
-    attr(data, "brm_scenario_prefix_interest") %||nzchar% "x",
-    "brm_scenario_prefix_interest must be a single character string"
-  )
-  assert_chr(
-    attr(data, "brm_scenario_prefix_nuisance") %||nzchar% "x",
-    "brm_scenario_prefix_nuisance must be a single character string"
-  )
-  baseline <- attr(data, "brm_baseline")
-  scenario_baseline <- attr(data, "brm_scenario_baseline")
-  if (!is.null(baseline)) {
-    assert(
-      scenario_baseline ==
-        paste0(attr(data, "brm_scenario_prefix_nuisance"), baseline),
-      message = "brm_baseline name must match brm_scenario_baseline name"
-    )
-    assert(
-      data[[scenario_baseline]] == data[[baseline]] - mean(data[[baseline]]),
-      message = paste(
-        "brm_scenario_baseline must be the centered version of brm_baseline"
-      )
+  text <- "'%s' in must be TRUE or FALSE."
+  assert_lgl(covariates, sprintf(text, "covariates"))
+  assert_lgl(baseline, sprintf(text, "baseline"))
+  assert_lgl(baseline_subgroup, sprintf(text, "baseline_subgroup"))
+  assert_lgl(baseline_subgroup_time, sprintf(text, "baseline_subgroup_time"))
+  assert_lgl(baseline_time, sprintf(text, "baseline_time"))
+  out <- tibble::new_tibble(list(), nrow = nrow(data))
+  has_baseline <- !is.null(attr(data, "brm_baseline"))
+  has_subgroup <- !is.null(attr(data, "brm_subgroup"))
+  if (covariates) {
+    out <- dplyr::bind_cols(out, nuisance_covariates(data))
+  }
+  if (baseline && has_baseline) {
+    out <- dplyr::bind_cols(out, nuisance_baseline(data))
+  }
+  if (baseline_subgroup && has_baseline && has_subgroup) {
+    out <- dplyr::bind_cols(out, nuisance_baseline_subgroup(data))
+  }
+  if (baseline_subgroup_time && has_baseline && has_subgroup) {
+    out <- dplyr::bind_cols(out, nuisance_baseline_subgroup_time(data))
+  }
+  if (baseline_time && has_baseline) {
+    out <- dplyr::bind_cols(out, nuisance_baseline_time(data))
+  }
+  if (!is.null(out) && ncol(out)) {
+    colnames(out) <- brm_levels(paste0(prefix, colnames(out)))
+    out <- nuisance_full_rank(
+      data = data,
+      interest = interest,
+      nuisance = out
     )
   }
-  interest <- attr(data, "brm_scenario_interest")
-  nuisance <- attr(data, "brm_scenario_nuisance")
-  parameterization <- attr(data, "brm_scenario_parameterization")
-  assert_chr_vec(
-    interest,
-    "brm_scenario_interest attribute must be a character vector"
-  )
-  assert_chr_vec(
-    nuisance,
-    "brm_scenario_nuisance attribute must be a character vector"
-  )
-  assert(
-    is.data.frame(parameterization),
-    message = "brm_scenario_parameterization attribute must be a data frame"
-  )
-  assert(
-    c("group", "time", "variable") %in% colnames(parameterization),
-    message = paste(
-      "brm_scenario_parameterization attribute must have columns",
-      "\"group\", \"time\", and \"variable\"."
-    )
-  )
-  assert(
-    colnames(parameterization) %in%
-      c("group", "subgroup", "time", "variable"),
-    message = paste(
-      "brm_scenario_parameterization attribute columns cannot be",
-      "anything other than",
-      "\"group\", \"subgroup\", \"time\", or \"variable\"."
-    )
-  )
-  assert(
-    sort(parameterization$variable) ==
-      sort(attr(data, "brm_scenario_interest")),
-    message = paste(
-      "the \"variable\" column of the brm_scenario_parameterization",
-      "attribute must agree with the values in the",
-      "brm_scenario_interest attribute."
-    )
-  )
-  assert(
-    !anyDuplicated(parameterization$variable),
-    message = "parameterization$variable must have all unique values"
-  )
-  groups <- attr(data, "brm_levels_group")
-  subgroups <- attr(data, "brm_levels_subgroup")
-  times <- attr(data, "brm_levels_time")
-  n_group <- length(groups)
-  n_subgroup <- length(subgroups)
-  n_time <- length(times)
-  if (brm_data_has_subgroup(data)) {
-    assert(
-      parameterization$group == rep(groups, each = n_subgroup * n_time),
-      message = "malformed or misordered parameterization group levels"
-    )
-    assert(
-      parameterization$subgroup ==
-        rep(rep(subgroups, times = n_group), each = n_time),
-      message = "malformed or misordered parameterization group levels"
-    )
-    assert(
-      parameterization$time == rep(times, times = n_group * n_subgroup),
-      message = "malformed or misordered parameterization group levels"
-    )
-  } else {
-    assert(
-      parameterization$group == rep(groups, each = n_time),
-      message = "malformed or misordered parameterization group levels"
-    )
-    assert(
-      parameterization$time == rep(times, times = n_group),
-      message = "malformed or misordered parameterization group levels"
-    )
-  }
-  NextMethod()
+  out
 }
 
-scenario_nuisance <- function(data, prefix) {
-  names <- c(attr(data, "brm_covariates"), attr(data, "brm_baseline"))
+nuisance_covariates <- function(data) {
+  names <- attr(data, "brm_covariates")
   names_continuous <- Filter(\(x) is.numeric(data[[x]]), names)
   names_categorical <- setdiff(names, names_continuous)
   out <- data[, names_continuous]
@@ -198,25 +56,76 @@ scenario_nuisance <- function(data, prefix) {
   for (name in colnames(out)) {
     out[[name]] <- out[[name]] - mean(out[[name]])
   }
-  if (ncol(out)) {
-    colnames(out) <- brm_levels(paste0(prefix, colnames(out)))
-  }
   out
 }
 
-brm_data_remove_scenario <- function(data) {
-  attributes <- brm_scenario_attributes(data)
-  data <- data[, setdiff(colnames(data), attr(data, "brm_scenario_interest"))]
-  data <- data[, setdiff(colnames(data), attr(data, "brm_scenario_nuisance"))]
-  for (name in names(attributes)) {
-    attr(data, name) <- NULL
-  }
-  class(data) <- class(brm_data_new(list(x = "x")))
-  data
+nuisance_baseline <- function(data) {
+  baseline <- attr(data, "brm_baseline")
+  data[[baseline]] <- data[[baseline]] - mean(data[[baseline]])
+  data[, baseline, drop = FALSE]
 }
 
-brm_scenario_attributes <- function(data) {
-  out <- attributes(data)
-  out <- out[grep("^brm_scenario_", names(out), value = TRUE)]
-  out
+nuisance_baseline_subgroup <- function(data) {
+  baseline <- attr(data, "brm_baseline")
+  subgroup <- attr(data, "brm_subgroup")
+  formula <- as.formula(paste0("~ 0 + ", baseline, ":", subgroup))
+  nuisance_baseline_terms(data, baseline, formula)
+}
+
+nuisance_baseline_subgroup_time <- function(data) {
+  baseline <- attr(data, "brm_baseline")
+  subgroup <- attr(data, "brm_subgroup")
+  time <- attr(data, "brm_time")
+  formula <- as.formula(paste0("~ 0 + ", baseline, ":", subgroup, ":", time))
+  nuisance_baseline_terms(data, baseline, formula)
+}
+
+nuisance_baseline_time <- function(data) {
+  baseline <- attr(data, "brm_baseline")
+  time <- attr(data, "brm_time")
+  formula <- as.formula(paste0("~ 0 + ", baseline, ":", time))
+  nuisance_baseline_terms(data, baseline, formula)
+}
+
+nuisance_baseline_terms <- function(data, baseline, formula) {
+  matrix <- model.matrix(object = formula, data = data)
+  matrix <- sweep(matrix, MARGIN = 2L, STATS = colMeans(matrix), FUN = "-")
+  tibble::as_tibble(as.data.frame(matrix))
+}
+
+nuisance_full_rank <- function(data, interest, nuisance) {
+  index <- !is.na(data[[attr(data, "brm_outcome")]])
+  if (!any(index)) {
+    return(nuisance[, character(0L)])
+  }
+  interest <- interest[index, ]
+  nuisance <- nuisance[index, ]
+  matrix <- as.matrix(dplyr::bind_cols(interest, nuisance))
+  names <- columns_full_rank(matrix)
+  dropped_interest <- setdiff(colnames(interest), names)
+  assert(
+    length(dropped_interest) < 1L,
+    message = paste0(
+      "dropped columns of interest while trying to make the ",
+      "model matrix full-rank: ",
+      paste(dropped_interest, collapse = ", "),
+      ". Please submit a bug report to ",
+      "https://github.com/openpharma/brms.mmrm/issues ",
+      "and include a small runnable reproducible example."
+    )
+  )
+  nuisance[, intersect(colnames(nuisance), names), drop = FALSE]
+}
+
+columns_full_rank <- function(x) {
+  x <- drop_zero_columns(x)
+  columns <- colnames(x)
+  qr <- base::qr(x)
+  rank <- qr$rank
+  columns[qr$pivot[seq_len(rank)]]
+}
+
+drop_zero_columns <- function(x) {
+  sums <- colSums(abs(x))
+  x[, sums > .Machine$double.eps, drop = FALSE]
 }

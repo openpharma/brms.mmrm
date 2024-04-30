@@ -28,7 +28,6 @@
 #'   position_dodge theme_gray xlab ylab
 #' @importFrom ggridges geom_density_ridges2
 #' @importFrom MASS mvrnorm
-#' @importFrom Matrix rankMatrix
 #' @importFrom posterior as_draws_df mcse_mean mcse_median mcse_quantile
 #'   mcse_sd
 #' @importFrom purrr map_dbl map_df map2_df

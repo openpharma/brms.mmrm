@@ -6,24 +6,71 @@
 \usage{
 brm_scenario_successive_cells(
   data,
+  covariates = TRUE,
   prefix_interest = "x_",
-  prefix_nuisance = "nuisance_"
+  prefix_nuisance = "nuisance_",
+  baseline = !is.null(attr(data, "brm_baseline")),
+  baseline_subgroup = !is.null(attr(data, "brm_baseline")) && !is.null(attr(data,
+    "brm_subgroup")),
+  baseline_subgroup_time = !is.null(attr(data, "brm_baseline")) && !is.null(attr(data,
+    "brm_subgroup")),
+  baseline_time = !is.null(attr(data, "brm_baseline"))
 )
 }
 \arguments{
-\item{data}{A special classed \code{tibble} returned from \code{\link[=brm_data]{brm_data()}}.
-It should have one row per patient per discrete time point.}
+\item{data}{A classed data frame from \code{\link[=brm_data]{brm_data()}}.}
+
+\item{covariates}{Logical of length 1.
+\code{TRUE} (default) to include any additive covariates declared with
+the \code{covariates} argument of \code{\link[=brm_data]{brm_data()}},
+\code{FALSE} to omit.
+For informative prior scenarios, this option is set in
+functions like \code{\link[=brm_scenario_successive_cells]{brm_scenario_successive_cells()}} rather than in
+\code{\link[=brm_formula]{brm_formula()}} in order to make sure columns are appropriately
+centered and the underlying model matrix has full rank.}
 
 \item{prefix_interest}{Character string to prepend to the new columns
 of generated fixed effects of interest (relating to group, subgroup,
 and/or time).
 In rare cases, you may need to set a non-default prefix to prevent
 name conflicts with existing columns in the data, or rename
-the columns in your data.}
+the columns in your data.
+\code{prefix_interest} must not be the same value as \code{prefix_nuisance}.}
 
 \item{prefix_nuisance}{Same as \code{prefix_interest}, but relating to
 generated fixed effects NOT of interest (not relating to group,
-subgroup, or time).}
+subgroup, or time). Must not be the same value as \code{prefix_interest}.}
+
+\item{baseline}{Logical of length 1.
+\code{TRUE} to include an additive effect for baseline
+response, \code{FALSE} to omit.
+Default is \code{TRUE} if \code{\link[=brm_data]{brm_data()}} previously declared a baseline
+variable in the dataset.
+For informative prior scenarios, this option is set in
+functions like \code{\link[=brm_scenario_successive_cells]{brm_scenario_successive_cells()}} rather than in
+\code{\link[=brm_formula]{brm_formula()}} in order to make sure columns are appropriately
+centered and the underlying model matrix has full rank.}
+
+\item{baseline_subgroup}{Logical of length 1.}
+
+\item{baseline_subgroup_time}{Logical of length 1.
+\code{TRUE} to include baseline-by-subgroup-by-time interaction,
+\code{FALSE} to omit.
+Default is \code{TRUE} if \code{\link[=brm_data]{brm_data()}} previously declared baseline
+and subgroup variables in the dataset.
+For informative prior scenarios, this option is set in
+functions like \code{\link[=brm_scenario_successive_cells]{brm_scenario_successive_cells()}} rather than in
+\code{\link[=brm_formula]{brm_formula()}} in order to make sure columns are appropriately
+centered and the underlying model matrix has full rank.}
+
+\item{baseline_time}{Logical of length 1.
+\code{TRUE} to include baseline-by-time interaction, \code{FALSE} to omit.
+Default is \code{TRUE} if \code{\link[=brm_data]{brm_data()}} previously declared a baseline
+variable in the dataset.
+For informative prior scenarios, this option is set in
+functions like \code{\link[=brm_scenario_successive_cells]{brm_scenario_successive_cells()}} rather than in
+\code{\link[=brm_formula]{brm_formula()}} in order to make sure columns are appropriately
+centered and the underlying model matrix has full rank.}
 }
 \value{
 A special classed \code{tibble} with data tailored to

@@ -57,19 +57,11 @@ brm_formula(
 
 \method{brm_formula}{brms_mmrm_scenario}(
   data,
-  covariates = TRUE,
   variance = "heterogeneous",
   correlation = "unstructured",
   autoregressive_order = 1L,
   moving_average_order = 1L,
   residual_covariance_arma_estimation = FALSE,
-  baseline = !is.null(attr(data, "brm_scenario_baseline")),
-  baseline_subgroup = !is.null(attr(data, "brm_scenario_baseline")) &&
-    !is.null(attr(data, "brm_subgroup")),
-  baseline_subgroup_time = !is.null(attr(data, "brm_scenario_baseline")) &&
-    !is.null(attr(data, "brm_subgroup")),
-  baseline_time = !is.null(attr(data, "brm_scenario_baseline")),
-  check_rank = TRUE,
   ...
 )
 }
@@ -79,7 +71,11 @@ brm_formula(
 \item{covariates}{Logical of length 1.
 \code{TRUE} (default) to include any additive covariates declared with
 the \code{covariates} argument of \code{\link[=brm_data]{brm_data()}},
-\code{FALSE} to omit.}
+\code{FALSE} to omit.
+For informative prior scenarios, this option is set in
+functions like \code{\link[=brm_scenario_successive_cells]{brm_scenario_successive_cells()}} rather than in
+\code{\link[=brm_formula]{brm_formula()}} in order to make sure columns are appropriately
+centered and the underlying model matrix has full rank.}
 
 \item{variance}{Character of length 1, variance structure for the
 residuals. \code{"heterogeneous"} declares a different variance component
@@ -148,23 +144,32 @@ Directly supplied to the \code{cov} argument in \code{brms} for
 \code{TRUE} to include an additive effect for baseline
 response, \code{FALSE} to omit.
 Default is \code{TRUE} if \code{\link[=brm_data]{brm_data()}} previously declared a baseline
-variable in the dataset.}
+variable in the dataset.
+For informative prior scenarios, this option is set in
+functions like \code{\link[=brm_scenario_successive_cells]{brm_scenario_successive_cells()}} rather than in
+\code{\link[=brm_formula]{brm_formula()}} in order to make sure columns are appropriately
+centered and the underlying model matrix has full rank.}
 
-\item{baseline_subgroup}{Logical of length 1.
-\code{TRUE} to include baseline-by-subgroup interaction, \code{FALSE} to omit.
-Default is \code{TRUE} if \code{\link[=brm_data]{brm_data()}} previously declared baseline
-and subgroup variables in the dataset.}
+\item{baseline_subgroup}{Logical of length 1.}
 
 \item{baseline_subgroup_time}{Logical of length 1.
 \code{TRUE} to include baseline-by-subgroup-by-time interaction,
 \code{FALSE} to omit.
 Default is \code{TRUE} if \code{\link[=brm_data]{brm_data()}} previously declared baseline
-and subgroup variables in the dataset.}
+and subgroup variables in the dataset.
+For informative prior scenarios, this option is set in
+functions like \code{\link[=brm_scenario_successive_cells]{brm_scenario_successive_cells()}} rather than in
+\code{\link[=brm_formula]{brm_formula()}} in order to make sure columns are appropriately
+centered and the underlying model matrix has full rank.}
 
 \item{baseline_time}{Logical of length 1.
 \code{TRUE} to include baseline-by-time interaction, \code{FALSE} to omit.
 Default is \code{TRUE} if \code{\link[=brm_data]{brm_data()}} previously declared a baseline
-variable in the dataset.}
+variable in the dataset.
+For informative prior scenarios, this option is set in
+functions like \code{\link[=brm_scenario_successive_cells]{brm_scenario_successive_cells()}} rather than in
+\code{\link[=brm_formula]{brm_formula()}} in order to make sure columns are appropriately
+centered and the underlying model matrix has full rank.}
 
 \item{check_rank}{\code{TRUE} to check the rank of the model matrix and
 throw an error if rank deficiency is detected. \code{FALSE} to skip

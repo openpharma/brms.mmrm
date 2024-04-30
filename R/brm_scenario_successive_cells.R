@@ -41,6 +41,7 @@
 #'   extra columns with the `"scenario_"` prefix, as well as special
 #'   attributes to tell downstream functions like [brm_formula()] what to
 #'   do with the object.
+#' @inheritParams brm_formula
 #' @inheritParams brm_model
 #' @param prefix_interest Character string to prepend to the new columns
 #'   of generated fixed effects of interest (relating to group, subgroup,
@@ -48,9 +49,10 @@
 #'   In rare cases, you may need to set a non-default prefix to prevent
 #'   name conflicts with existing columns in the data, or rename
 #'   the columns in your data.
+#'   `prefix_interest` must not be the same value as `prefix_nuisance`.
 #' @param prefix_nuisance Same as `prefix_interest`, but relating to
 #'   generated fixed effects NOT of interest (not relating to group,
-#'   subgroup, or time).
+#'   subgroup, or time). Must not be the same value as `prefix_interest`.
 #' @examples
 #' if (identical(Sys.getenv("BRM_EXAMPLES", unset = ""), "true")) {
 #' set.seed(0L)
@@ -80,8 +82,15 @@
 #' }
 brm_scenario_successive_cells <- function(
   data,
+  covariates = TRUE,
   prefix_interest = "x_",
-  prefix_nuisance = "nuisance_"
+  prefix_nuisance = "nuisance_",
+  baseline = !is.null(attr(data, "brm_baseline")),
+  baseline_subgroup = !is.null(attr(data, "brm_baseline")) &&
+    !is.null(attr(data, "brm_subgroup")),
+  baseline_subgroup_time = !is.null(attr(data, "brm_baseline")) &&
+    !is.null(attr(data, "brm_subgroup")),
+  baseline_time = !is.null(attr(data, "brm_baseline"))
 ) {
   brm_data_validate.default(data)
   data <- brm_data_remove_scenario(data)
@@ -94,19 +103,30 @@ brm_scenario_successive_cells <- function(
     prefix_nuisance %||nzchar% "x",
     "prefix_nuisance must be a single character string"
   )
+  assert(
+    prefix_interest != prefix_nuisance,
+    message = "prefix_interest and prefix_nuisance must be different"
+  )
   scenario <- if_any(
     brm_data_has_subgroup(data),
     scenario_successive_cells_subgroup(data, prefix_interest),
     scenario_successive_cells(data, prefix_interest)
   )
-  nuisance <- scenario_nuisance(data, prefix = prefix_nuisance)
+  nuisance <- scenario_nuisance(
+    data = data,
+    interest = scenario$interest,
+    prefix = prefix_nuisance,
+    covariates = covariates,
+    baseline = baseline,
+    baseline_subgroup = baseline_subgroup,
+    baseline_subgroup_time = baseline_subgroup_time,
+    baseline_time = baseline_time
+  )
   brm_scenario_init(
     data = data,
     interest = scenario$interest,
     nuisance = nuisance,
     parameterization = scenario$parameterization,
-    prefix_interest = prefix_interest,
-    prefix_nuisance = prefix_nuisance,
     subclass = "brms_mmrm_successive_cells"
   )
 }
