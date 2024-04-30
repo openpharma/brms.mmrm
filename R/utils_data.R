@@ -17,7 +17,7 @@ brm_has_subgroup.brms_mmrm_data <- function(data, formula) {
 
 #' @export
 brm_has_subgroup.brms_mmrm_scenario <- function(data, formula) {
-  attr(data, "brm_subgroup")
+  !is.null(attr(data, "brm_subgroup"))
 }
 
 brm_has_nuisance <- function(data, formula) {
