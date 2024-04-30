@@ -16,7 +16,7 @@ brm_has_subgroup.brms_mmrm_data <- function(data, formula) {
 }
 
 #' @export
-brm_has_subgroup.brms_mmrm_scenario <- function(data, formula) {
+brm_has_subgroup.brms_mmrm_archetype <- function(data, formula) {
   !is.null(attr(data, "brm_subgroup"))
 }
 
@@ -37,8 +37,8 @@ brm_has_nuisance.brms_mmrm_data <- function(data, formula) {
 }
 
 #' @export
-brm_has_nuisance.brms_mmrm_scenario <- function(data, formula) {
-  length(attr(data, "brm_scenario_nuisance")) > 0L
+brm_has_nuisance.brms_mmrm_archetype <- function(data, formula) {
+  length(attr(data, "brm_archetype_nuisance")) > 0L
 }
 
 unname_df <- function(x) {

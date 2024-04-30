@@ -1,4 +1,4 @@
-test_that("brm_scenario_successive_cells() change and non-subgroup", {
+test_that("brm_archetype_successive_cells() change and non-subgroup", {
   set.seed(0L)
   data <- brm_simulate_outline(
     n_group = 2,
@@ -15,14 +15,14 @@ test_that("brm_scenario_successive_cells() change and non-subgroup", {
       levels = c("present", "absent")
     ) |>
     dplyr::mutate(response = rnorm(n = dplyr::n()))
-  out <- brm_scenario_successive_cells(
+  out <- brm_archetype_successive_cells(
     data,
     prefix_interest = "y_",
     prefix_nuisance = "z_",
     baseline = TRUE,
     baseline_time = FALSE
   )
-  out2 <- brm_scenario_successive_cells(
+  out2 <- brm_archetype_successive_cells(
     out,
     prefix_interest = "y_",
     prefix_nuisance = "z_",
@@ -33,15 +33,15 @@ test_that("brm_scenario_successive_cells() change and non-subgroup", {
   expect_silent(brm_data_validate(out))
   expect_true(all(class(data) %in% class(out)))
   expect_s3_class(out, "brms_mmrm_successive_cells")
-  expect_s3_class(out, "brms_mmrm_scenario")
+  expect_s3_class(out, "brms_mmrm_archetype")
   attributes_data <- brm_data_attributes(data)
-  attributes_scenario <- brm_data_attributes(out)
-  attributes_scenario$brm_scenario_parameterization <- NULL
-  attributes_scenario$brm_scenario_interest <- NULL
-  attributes_scenario$brm_scenario_nuisance <- NULL
-  expect_equal(attributes_data, attributes_scenario)
-  interest <- attr(out, "brm_scenario_interest")
-  nuisance <- attr(out, "brm_scenario_nuisance")
+  attributes_archetype <- brm_data_attributes(out)
+  attributes_archetype$brm_archetype_parameterization <- NULL
+  attributes_archetype$brm_archetype_interest <- NULL
+  attributes_archetype$brm_archetype_nuisance <- NULL
+  expect_equal(attributes_data, attributes_archetype)
+  interest <- attr(out, "brm_archetype_interest")
+  nuisance <- attr(out, "brm_archetype_nuisance")
   expect_equal(max(abs(colMeans(out[, nuisance]))), 0)
   expect_equal(
     qr(out[, c(interest, nuisance), drop = FALSE])$rank,
@@ -82,13 +82,13 @@ test_that("brm_scenario_successive_cells() change and non-subgroup", {
     sort(nuisance),
     sort(grep("z_", colnames(out), value = TRUE))
   )
-  param <- attr(out, "brm_scenario_parameterization")
+  param <- attr(out, "brm_archetype_parameterization")
   expect_equal(param$variable, interest)
   expect_equal(param$group, rep(c("group_1", "group_2"), each = 3L))
   expect_equal(param$time, rep(c("time_2", "time_3", "time_4"), times = 2L))
 })
 
-test_that("brm_scenario_successive_cells() change non-sub options", {
+test_that("brm_archetype_successive_cells() change non-sub options", {
   set.seed(0L)
   data <- brm_simulate_outline(
     n_group = 2,
@@ -115,7 +115,7 @@ test_that("brm_scenario_successive_cells() change non-sub options", {
       "y_group_2_time_4"
     )
   )
-  out <- brm_scenario_successive_cells(
+  out <- brm_archetype_successive_cells(
     data,
     prefix_interest = "y_",
     prefix_nuisance = "z_",
@@ -123,16 +123,16 @@ test_that("brm_scenario_successive_cells() change non-sub options", {
     baseline_time = TRUE,
     covariates = TRUE
   )
-  interest <- attr(out, "brm_scenario_interest")
-  nuisance <- attr(out, "brm_scenario_nuisance")
+  interest <- attr(out, "brm_archetype_interest")
+  nuisance <- attr(out, "brm_archetype_nuisance")
   expect_equal(
     qr(out[, c(interest, nuisance), drop = FALSE])$rank,
     length(interest) + length(nuisance)
   )
   expect_equal(max(abs(colMeans(out[, nuisance]))), 0)
-  expect_equal(sort(attr(out, "brm_scenario_interest")), interest_exp)
+  expect_equal(sort(attr(out, "brm_archetype_interest")), interest_exp)
   expect_equal(
-    sort(attr(out, "brm_scenario_nuisance")),
+    sort(attr(out, "brm_archetype_nuisance")),
     sort(
       c(
         "z_biomarker1",
@@ -145,7 +145,7 @@ test_that("brm_scenario_successive_cells() change non-sub options", {
       )
     )
   )
-  out <- brm_scenario_successive_cells(
+  out <- brm_archetype_successive_cells(
     data,
     prefix_interest = "y_",
     prefix_nuisance = "z_",
@@ -153,16 +153,16 @@ test_that("brm_scenario_successive_cells() change non-sub options", {
     baseline_time = TRUE,
     covariates = FALSE
   )
-  interest <- attr(out, "brm_scenario_interest")
-  nuisance <- attr(out, "brm_scenario_nuisance")
+  interest <- attr(out, "brm_archetype_interest")
+  nuisance <- attr(out, "brm_archetype_nuisance")
   expect_equal(
     qr(out[, c(interest, nuisance), drop = FALSE])$rank,
     length(interest) + length(nuisance)
   )
   expect_equal(max(abs(colMeans(out[, nuisance]))), 0)
-  expect_equal(sort(attr(out, "brm_scenario_interest")), interest_exp)
+  expect_equal(sort(attr(out, "brm_archetype_interest")), interest_exp)
   expect_equal(
-    sort(attr(out, "brm_scenario_nuisance")),
+    sort(attr(out, "brm_archetype_nuisance")),
     sort(
       c(
         "z_baseline.timetime_2",
@@ -171,7 +171,7 @@ test_that("brm_scenario_successive_cells() change non-sub options", {
       )
     )
   )
-  out <- brm_scenario_successive_cells(
+  out <- brm_archetype_successive_cells(
     data,
     prefix_interest = "y_",
     prefix_nuisance = "z_",
@@ -179,19 +179,19 @@ test_that("brm_scenario_successive_cells() change non-sub options", {
     baseline_time = FALSE,
     covariates = FALSE
   )
-  interest <- attr(out, "brm_scenario_interest")
-  nuisance <- attr(out, "brm_scenario_nuisance")
+  interest <- attr(out, "brm_archetype_interest")
+  nuisance <- attr(out, "brm_archetype_nuisance")
   expect_equal(
     qr(out[, c(interest, nuisance), drop = FALSE])$rank,
     length(interest) + length(nuisance)
   )
   expect_equal(max(abs(colMeans(out[, nuisance]))), 0)
-  expect_equal(sort(attr(out, "brm_scenario_interest")), interest_exp)
+  expect_equal(sort(attr(out, "brm_archetype_interest")), interest_exp)
   expect_equal(
-    sort(attr(out, "brm_scenario_nuisance")),
+    sort(attr(out, "brm_archetype_nuisance")),
     "z_baseline"
   )
-  out <- brm_scenario_successive_cells(
+  out <- brm_archetype_successive_cells(
     data,
     prefix_interest = "y_",
     prefix_nuisance = "z_",
@@ -199,15 +199,15 @@ test_that("brm_scenario_successive_cells() change non-sub options", {
     baseline_time = FALSE,
     covariates = FALSE
   )
-  interest <- attr(out, "brm_scenario_interest")
-  nuisance <- attr(out, "brm_scenario_nuisance")
+  interest <- attr(out, "brm_archetype_interest")
+  nuisance <- attr(out, "brm_archetype_nuisance")
   expect_equal(
     qr(out[, c(interest, nuisance), drop = FALSE])$rank,
     length(interest) + length(nuisance)
   )
-  expect_equal(sort(attr(out, "brm_scenario_interest")), interest_exp)
-  expect_equal(attr(out, "brm_scenario_nuisance"), character(0L))
-  out <- brm_scenario_successive_cells(
+  expect_equal(sort(attr(out, "brm_archetype_interest")), interest_exp)
+  expect_equal(attr(out, "brm_archetype_nuisance"), character(0L))
+  out <- brm_archetype_successive_cells(
     data,
     prefix_interest = "y_",
     prefix_nuisance = "z_",
@@ -215,11 +215,11 @@ test_that("brm_scenario_successive_cells() change non-sub options", {
     baseline_time = FALSE,
     covariates = TRUE
   )
-  nuisance <- attr(out, "brm_scenario_nuisance")
+  nuisance <- attr(out, "brm_archetype_nuisance")
   expect_equal(max(abs(colMeans(out[, nuisance]))), 0)
-  expect_equal(sort(attr(out, "brm_scenario_interest")), interest_exp)
+  expect_equal(sort(attr(out, "brm_archetype_interest")), interest_exp)
   expect_equal(
-    attr(out, "brm_scenario_nuisance"),
+    attr(out, "brm_archetype_nuisance"),
     sort(
       c(
         "z_biomarker1",
@@ -231,7 +231,7 @@ test_that("brm_scenario_successive_cells() change non-sub options", {
   )
 })
 
-test_that("brm_scenario_successive_cells() non-change subgroup", {
+test_that("brm_archetype_successive_cells() non-change subgroup", {
   set.seed(0L)
   data <- brm_simulate_outline(
     n_group = 2,
@@ -248,21 +248,21 @@ test_that("brm_scenario_successive_cells() non-change subgroup", {
       levels = c("present", "absent")
     ) |>
     dplyr::mutate(response = rnorm(n = dplyr::n()))
-  out <- brm_scenario_successive_cells(data)
-  out2 <- brm_scenario_successive_cells(out)
+  out <- brm_archetype_successive_cells(data)
+  out2 <- brm_archetype_successive_cells(out)
   expect_equal(out, out2)
   expect_silent(brm_data_validate(out))
   expect_true(all(class(data) %in% class(out)))
   expect_s3_class(out, "brms_mmrm_successive_cells")
-  expect_s3_class(out, "brms_mmrm_scenario")
+  expect_s3_class(out, "brms_mmrm_archetype")
   attributes_data <- brm_data_attributes(data)
-  attributes_scenario <- brm_data_attributes(out)
-  attributes_scenario$brm_scenario_parameterization <- NULL
-  attributes_scenario$brm_scenario_interest <- NULL
-  attributes_scenario$brm_scenario_nuisance <- NULL
-  expect_equal(attributes_data, attributes_scenario)
-  interest <- attr(out, "brm_scenario_interest")
-  nuisance <- attr(out, "brm_scenario_nuisance")
+  attributes_archetype <- brm_data_attributes(out)
+  attributes_archetype$brm_archetype_parameterization <- NULL
+  attributes_archetype$brm_archetype_interest <- NULL
+  attributes_archetype$brm_archetype_nuisance <- NULL
+  expect_equal(attributes_data, attributes_archetype)
+  interest <- attr(out, "brm_archetype_interest")
+  nuisance <- attr(out, "brm_archetype_nuisance")
   expect_equal(
     qr(out[, c(interest, nuisance), drop = FALSE])$rank,
     length(interest) + length(nuisance)
@@ -315,7 +315,7 @@ test_that("brm_scenario_successive_cells() non-change subgroup", {
     sort(grep("nuisance_", colnames(out), value = TRUE))
   )
   expect_equal(max(abs(colMeans(out[, nuisance]))), 0)
-  param <- attr(out, "brm_scenario_parameterization")
+  param <- attr(out, "brm_archetype_parameterization")
   expect_equal(param$variable, interest)
   expect_equal(param$group, rep(c("group_1", "group_2"), each = 9L))
   expect_equal(
@@ -328,7 +328,7 @@ test_that("brm_scenario_successive_cells() non-change subgroup", {
   expect_equal(param$time, rep(c("time_1", "time_2", "time_3"), times = 6L))
 })
 
-test_that("brm_scenario_successive_cells() baseline-subgroup interactions", {
+test_that("brm_archetype_successive_cells() baseline-subgroup interactions", {
   set.seed(0L)
   data <- brm_simulate_outline(
     n_group = 2,
@@ -361,7 +361,7 @@ test_that("brm_scenario_successive_cells() baseline-subgroup interactions", {
       "x_group_2_subgroup_3_time_3"
     )
   )
-  out <- brm_scenario_successive_cells(
+  out <- brm_archetype_successive_cells(
     data,
     baseline = FALSE,
     baseline_subgroup = FALSE,
@@ -369,15 +369,15 @@ test_that("brm_scenario_successive_cells() baseline-subgroup interactions", {
     baseline_time = FALSE,
     covariates = FALSE
   )
-  interest <- attr(out, "brm_scenario_interest")
-  nuisance <- attr(out, "brm_scenario_nuisance")
+  interest <- attr(out, "brm_archetype_interest")
+  nuisance <- attr(out, "brm_archetype_nuisance")
   expect_equal(
     qr(out[, c(interest, nuisance), drop = FALSE])$rank,
     length(interest) + length(nuisance)
   )
   expect_equal(sort(interest), interest_exp)
   expect_equal(sort(nuisance), character(0L))
-  out <- brm_scenario_successive_cells(
+  out <- brm_archetype_successive_cells(
     data,
     baseline = FALSE,
     baseline_subgroup = TRUE,
@@ -385,8 +385,8 @@ test_that("brm_scenario_successive_cells() baseline-subgroup interactions", {
     baseline_time = FALSE,
     covariates = FALSE
   )
-  interest <- attr(out, "brm_scenario_interest")
-  nuisance <- attr(out, "brm_scenario_nuisance")
+  interest <- attr(out, "brm_archetype_interest")
+  nuisance <- attr(out, "brm_archetype_nuisance")
   expect_equal(
     qr(out[, c(interest, nuisance), drop = FALSE])$rank,
     length(interest) + length(nuisance)
@@ -403,7 +403,7 @@ test_that("brm_scenario_successive_cells() baseline-subgroup interactions", {
       )
     )
   )
-  out <- brm_scenario_successive_cells(
+  out <- brm_archetype_successive_cells(
     data,
     baseline = FALSE,
     baseline_subgroup = FALSE,
@@ -411,8 +411,8 @@ test_that("brm_scenario_successive_cells() baseline-subgroup interactions", {
     baseline_time = FALSE,
     covariates = FALSE
   )
-  interest <- attr(out, "brm_scenario_interest")
-  nuisance <- attr(out, "brm_scenario_nuisance")
+  interest <- attr(out, "brm_archetype_interest")
+  nuisance <- attr(out, "brm_archetype_nuisance")
   expect_equal(
     qr(out[, c(interest, nuisance), drop = FALSE])$rank,
     length(interest) + length(nuisance)

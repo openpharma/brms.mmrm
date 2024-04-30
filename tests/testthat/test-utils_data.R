@@ -74,7 +74,7 @@ test_that("brm_has_subgroup() on regular data", {
   }
 })
 
-test_that("brm_has_subgroup() on scenario", {
+test_that("brm_has_subgroup() on archetype", {
   data <- brm_simulate_outline(
     n_group = 2,
     n_patient = 100,
@@ -89,9 +89,9 @@ test_that("brm_has_subgroup() on scenario", {
       names = c("status1", "status2"),
       levels = c("present", "absent")
     )
-  scenario <- brm_scenario_successive_cells(data)
-  formula <- brm_formula(scenario)
-  expect_false(brm_has_subgroup(scenario, formula))
+  archetype <- brm_archetype_successive_cells(data)
+  formula <- brm_formula(archetype)
+  expect_false(brm_has_subgroup(archetype, formula))
   data <- brm_simulate_outline(
     n_group = 2,
     n_subgroup = 3,
@@ -107,9 +107,9 @@ test_that("brm_has_subgroup() on scenario", {
       names = c("status1", "status2"),
       levels = c("present", "absent")
     )
-  scenario <- brm_scenario_successive_cells(data)
-  formula <- brm_formula(scenario)
-  expect_true(brm_has_subgroup(scenario, formula))
+  archetype <- brm_archetype_successive_cells(data)
+  formula <- brm_formula(archetype)
+  expect_true(brm_has_subgroup(archetype, formula))
 })
 
 test_that("brm_has_nuisance() on regular data", {
@@ -169,7 +169,7 @@ test_that("brm_has_nuisance() on regular data", {
   }
 })
 
-test_that("brm_has_nuisance() on scenario", {
+test_that("brm_has_nuisance() on archetype", {
   data <- brm_simulate_outline(
     n_group = 2,
     n_patient = 100,
@@ -178,9 +178,9 @@ test_that("brm_has_nuisance() on scenario", {
     rate_lapse = 0
   ) |>
     dplyr::mutate(response = rnorm(n = dplyr::n()))
-  scenario <- brm_scenario_successive_cells(data)
-  formula <- brm_formula(scenario)
-  expect_false(brm_has_nuisance(scenario, formula))
+  archetype <- brm_archetype_successive_cells(data)
+  formula <- brm_formula(archetype)
+  expect_false(brm_has_nuisance(archetype, formula))
   data <- brm_simulate_outline(
     n_group = 2,
     n_patient = 100,
@@ -195,7 +195,7 @@ test_that("brm_has_nuisance() on scenario", {
       names = c("status1", "status2"),
       levels = c("present", "absent")
     )
-  scenario <- brm_scenario_successive_cells(data)
-  formula <- brm_formula(scenario)
-  expect_true(brm_has_nuisance(scenario, formula))
+  archetype <- brm_archetype_successive_cells(data)
+  formula <- brm_formula(archetype)
+  expect_true(brm_has_nuisance(archetype, formula))
 })

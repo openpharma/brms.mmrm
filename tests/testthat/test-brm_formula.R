@@ -519,7 +519,7 @@ test_that("brm_formula() with individual terms", {
   }
 })
 
-test_that("brm_formula() scenario non-subgroup", {
+test_that("brm_formula() archetype non-subgroup", {
   set.seed(0L)
   data <- brm_simulate_outline(
     n_group = 2,
@@ -535,9 +535,9 @@ test_that("brm_formula() scenario non-subgroup", {
       names = c("status1", "status2"),
       levels = c("present", "absent")
     )
-  scenario <- brm_scenario_successive_cells(data)
-  out <- brm_formula(scenario, check_rank = TRUE)
-  expect_s3_class(out, "brms_mmrm_formula_scenario")
+  archetype <- brm_archetype_successive_cells(data)
+  out <- brm_formula(archetype, check_rank = TRUE)
+  expect_s3_class(out, "brms_mmrm_formula_archetype")
   expect_s3_class(out, "brms_mmrm_formula")
   expect_s3_class(out, "brmsformula")
   expect_equal(attr(out, "brm_variance"), "heterogeneous")
