@@ -452,6 +452,20 @@ brm_chr_head_unique <- function(x, n = 30L) {
 }
 
 brm_data_fill <- function(data) {
+  UseMethod("brm_data_fill")
+}
+
+#' @export
+brm_data_fill.default <- function(data) {
+  brm_error(
+    "brm_data_fill() is only valid for brm_data() objects,",
+    "not arbitrary data or informative prior archetypes."
+  )
+}
+
+#' @export
+brm_data_fill.brms_mmrm_data <- function(data) {
+  class <- class(data)
   attributes <- brm_data_attributes(data)
   baseline <- attr(data, "brm_baseline")
   group <- attr(data, "brm_group")
@@ -461,11 +475,22 @@ brm_data_fill <- function(data) {
   patient <- attr(data, "brm_patient")
   covariates <- attr(data, "brm_covariates")
   missing <- attr(data, "brm_missing")
+  interest <- attr(data, "brm_archetype_interest")
+  nuisance <- attr(data, "brm_archetype_nuisance")
   args <- list(data = data, as.symbol(patient), as.symbol(time))
   data <- do.call(what = tidyr::complete, args = args)
   args <- list(.data = data, as.symbol(patient), as.symbol(time))
   data <- do.call(what = dplyr::arrange, args = args)
-  for (column in c(baseline, group, subgroup, covariates, missing)) {
+  columns <- c(
+    baseline,
+    group,
+    subgroup,
+    covariates,
+    missing,
+    interest,
+    nuisance
+  )
+  for (column in columns) {
     data[[column]] <- brm_data_fill_column(data[[column]], data[[patient]])
   }
   args <- if_any(
@@ -484,8 +509,11 @@ brm_data_fill <- function(data) {
       as.symbol(time)
     )
   )
-  attributes$data <- do.call(what = dplyr::arrange, args = args)
-  out <- do.call(what = brm_data_new, args = attributes)
+  out <- do.call(what = dplyr::arrange, args = args)
+  class(out) <- class
+  for (name in names(attributes)) {
+    attr(out, name) <- attributes[[name]]
+  }
   assert(
     out[[time]] == rep(levels_time, times = nrow(data) / length(levels_time)),
     message = paste(

@@ -114,7 +114,17 @@ brm_transform_marginal <- function(
   if (!brm_has_subgroup(data = data, formula = formula)) {
     average_within_subgroup <- FALSE
   }
-  data <- brm_data_fill(data)
+  time <- attr(data, "brm_time")
+  levels_time <- attr(data, "brm_levels_time")
+  assert(
+    data[[time]] == rep(levels_time, times = nrow(data) / length(levels_time)),
+    message = paste(
+      "data in brm_transform_marginal() must be filled. If needed,",
+      "please rerun your data through brm_data() and convert to an",
+      "informative prior archetype (e.g. brm_archetype_successive_cells())",
+      "if needed."
+    )
+  )
   data[[attr(data, "brm_outcome")]] <- seq_len(nrow(data))
   grid <- transform_marginal_grid(data = data)
   grid <- transform_marginal_continuous(

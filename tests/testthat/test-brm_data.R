@@ -417,3 +417,7 @@ test_that("brm_data() deprecate level_baseline", {
     class = "brm_deprecate"
   )
 })
+
+test_that("brm_data() on bad object", {
+  expect_error(brm_data_fill("Swiss cheese"), class = "brm_error")
+})
