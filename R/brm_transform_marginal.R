@@ -70,6 +70,7 @@
 #'   baseline_time = FALSE
 #' )
 #' transform <- brm_transform_marginal(data = data, formula = formula)
+#' print(transform)
 #' }
 brm_transform_marginal <- function(
   data,

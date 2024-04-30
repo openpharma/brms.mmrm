@@ -64,6 +64,7 @@ if (identical(Sys.getenv("BRM_EXAMPLES", unset = ""), "true")) {
 set.seed(0L)
 data <- brm_simulate_outline()
 data <- brm_simulate_continuous(data, names = c("age", "biomarker"))
+data$response <- rnorm(nrow(data))
 formula <- brm_formula(
   data = data,
   baseline = FALSE,
