@@ -18,12 +18,16 @@ test_that("brm_scenario_successive_cells() change and non-subgroup", {
   out <- brm_scenario_successive_cells(
     data,
     prefix_interest = "y_",
-    prefix_nuisance = "z_"
+    prefix_nuisance = "z_",
+    baseline = TRUE,
+    baseline_time = FALSE
   )
   out2 <- brm_scenario_successive_cells(
     out,
     prefix_interest = "y_",
-    prefix_nuisance = "z_"
+    prefix_nuisance = "z_",
+    baseline = TRUE,
+    baseline_time = FALSE
   )
   expect_equal(out, out2)
   expect_silent(brm_data_validate(out))
@@ -32,12 +36,6 @@ test_that("brm_scenario_successive_cells() change and non-subgroup", {
   expect_s3_class(out, "brms_mmrm_scenario")
   attributes_data <- brm_data_attributes(data)
   attributes_scenario <- brm_data_attributes(out)
-  expect_equal(attributes_scenario$brm_scenario_prefix_interest, "y_")
-  expect_equal(attributes_scenario$brm_scenario_prefix_nuisance, "z_")
-  expect_equal(attributes_scenario$brm_scenario_baseline, "z_baseline")
-  attributes_scenario$brm_scenario_prefix_interest <- NULL
-  attributes_scenario$brm_scenario_prefix_nuisance <- NULL
-  attributes_scenario$brm_scenario_baseline <- NULL
   attributes_scenario$brm_scenario_parameterization <- NULL
   attributes_scenario$brm_scenario_interest <- NULL
   attributes_scenario$brm_scenario_nuisance <- NULL
@@ -65,7 +63,6 @@ test_that("brm_scenario_successive_cells() change and non-subgroup", {
         "z_biomarker2",
         "z_baseline",
         "z_status1_absent",
-        "z_status1_present",
         "z_status2_present"
       )
     )
@@ -102,11 +99,6 @@ test_that("brm_scenario_successive_cells() non-change subgroup", {
   expect_s3_class(out, "brms_mmrm_scenario")
   attributes_data <- brm_data_attributes(data)
   attributes_scenario <- brm_data_attributes(out)
-  expect_equal(attributes_scenario$brm_scenario_prefix_interest, "x_")
-  expect_equal(attributes_scenario$brm_scenario_prefix_nuisance, "nuisance_")
-  expect_null(attributes_scenario$brm_scenario_baseline)
-  attributes_scenario$brm_scenario_prefix_interest <- NULL
-  attributes_scenario$brm_scenario_prefix_nuisance <- NULL
   attributes_scenario$brm_scenario_parameterization <- NULL
   attributes_scenario$brm_scenario_interest <- NULL
   attributes_scenario$brm_scenario_nuisance <- NULL
@@ -145,7 +137,6 @@ test_that("brm_scenario_successive_cells() non-change subgroup", {
         "nuisance_biomarker1",
         "nuisance_biomarker2",
         "nuisance_status1_absent",
-        "nuisance_status1_present",
         "nuisance_status2_present"
       )
     )
