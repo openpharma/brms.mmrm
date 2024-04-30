@@ -93,8 +93,8 @@ brm_transform_marginal <- function(
   )
   if (is.null(average_within_subgroup)) {
     average_within_subgroup <- FALSE
-    subgroup_and_nuisance <- brm_formula_has_subgroup(formula) &&
-      brm_formula_has_nuisance(formula)
+    subgroup_and_nuisance <- brm_has_subgroup(data, formula = formula) &&
+      brm_has_nuisance(data = data, formula = formula)
     if (subgroup_and_nuisance) {
       brm_message_session(
         "In brm_transform_marginal(), the formula specifies a subgroup and ",
@@ -110,7 +110,7 @@ brm_transform_marginal <- function(
       )
     }
   }
-  if (!brm_formula_has_subgroup(formula)) {
+  if (!brm_has_subgroup(data = data, formula = formula)) {
     average_within_subgroup <- FALSE
   }
   data <- brm_data_fill(data)
@@ -223,7 +223,7 @@ transform_marginal_names_discrete <- function(data) {
 }
 
 brm_transform_marginal_names_rows <- function(data, formula, grid) {
-  has_subgroup <- brm_formula_has_subgroup(formula)
+  has_subgroup <- brm_has_subgroup(data, formula = formula)
   group <- grid[[attr(data, "brm_group")]]
   subgroup <- if_any(has_subgroup, grid[[attr(data, "brm_subgroup")]], NULL)
   time <- grid[[attr(data, "brm_time")]]

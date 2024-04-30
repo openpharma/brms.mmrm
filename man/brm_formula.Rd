@@ -62,6 +62,7 @@ brm_formula(
   autoregressive_order = 1L,
   moving_average_order = 1L,
   residual_covariance_arma_estimation = FALSE,
+  check_rank = TRUE,
   ...
 )
 }

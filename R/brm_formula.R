@@ -452,6 +452,7 @@ brm_formula.brms_mmrm_scenario <- function(
   autoregressive_order = 1L,
   moving_average_order = 1L,
   residual_covariance_arma_estimation = FALSE,
+  check_rank = TRUE,
   ...
 ) {
   brm_data_validate(data)
@@ -481,7 +482,7 @@ brm_formula.brms_mmrm_scenario <- function(
   name_time <- attr(data, "brm_time")
   name_patient <- attr(data, "brm_patient")
   interest <- attr(data, "brm_scenario_interest")
-  nuisance <- setdiff(attr(data, "brm_scenario_nuisance"), name_baseline)
+  nuisance <- attr(data, "brm_scenario_nuisance")
   terms <- c(
     term("0", TRUE),
     unlist(lapply(interest, term, condition = TRUE)),

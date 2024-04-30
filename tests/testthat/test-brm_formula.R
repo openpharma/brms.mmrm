@@ -519,61 +519,6 @@ test_that("brm_formula() with individual terms", {
   }
 })
 
-test_that("brm_formula_has_subgroup()", {
-  data <- brm_data(
-    data = tibble::tibble(
-      CHG = c(1, 2),
-      TIME = c("x", "y"),
-      BASELINE = c(2, 3),
-      GROUP = c("x", "y"),
-      USUBJID = c("x", "y"),
-      SUBGROUP = c("x", "y")
-    ),
-    outcome = "CHG",
-    role = "change",
-    group = "GROUP",
-    subgroup = "SUBGROUP",
-    time = "TIME",
-    baseline = "BASELINE",
-    patient = "USUBJID",
-    reference_group = "x",
-    reference_subgroup = "x"
-  )
-  template <- list(
-    data = data,
-    intercept = FALSE,
-    baseline = FALSE,
-    baseline_subgroup = FALSE,
-    baseline_subgroup_time = FALSE,
-    baseline_time = FALSE,
-    group = FALSE,
-    group_subgroup = FALSE,
-    group_subgroup_time = FALSE,
-    group_time = FALSE,
-    subgroup = FALSE,
-    subgroup_time = FALSE,
-    time = FALSE,
-    check_rank = FALSE
-  )
-  with_subgroup <- c(
-    "baseline_subgroup",
-    "baseline_subgroup_time",
-    "group_subgroup",
-    "group_subgroup_time",
-    "subgroup",
-    "subgroup_time"
-  )
-  for (term in setdiff(names(template), c("data", "check_rank"))) {
-    args <- template
-    args[[term]] <- TRUE
-    formula <- do.call(what = brm_formula, args = args)
-    expect_equal(
-      brm_formula_has_subgroup(formula),
-      term %in% with_subgroup
-    )
-  }
-})
-
 test_that("brm_formula() scenario non-subgroup", {
   set.seed(0L)
   data <- brm_simulate_outline(
@@ -591,16 +536,10 @@ test_that("brm_formula() scenario non-subgroup", {
       levels = c("present", "absent")
     )
   scenario <- brm_scenario_successive_cells(data)
-  out <- brm_formula(
-    scenario,
-    baseline = FALSE,
-    baseline_time = FALSE,
-    check_rank = FALSE
-  )
+  out <- brm_formula(scenario)
   expect_s3_class(out, "brms_mmrm_formula_scenario")
   expect_s3_class(out, "brms_mmrm_formula")
   expect_s3_class(out, "brmsformula")
-  expect_true(attr(out, "brm_covariates"))
   expect_equal(attr(out, "brm_variance"), "heterogeneous")
   expect_equal(attr(out, "brm_correlation"), "unstructured")
   expect_equal(attr(out, "brm_autoregressive_order"), 1L)
@@ -609,165 +548,18 @@ test_that("brm_formula() scenario non-subgroup", {
   expect_equal(
     deparse(out[[1L]], width.cutoff = 500L),
     paste(
-      "change ~ 0 + x_group_1_time_2 + x_group_1_time_3 + x_group_1_time_4",
-      "+ x_group_2_time_2 + x_group_2_time_3 + x_group_2_time_4",
-      "+ nuisance_biomarker1 + nuisance_biomarker2",
-      "+ nuisance_status1_absent + nuisance_status1_present",
-      "+ nuisance_status2_present",
-      "+ unstr(time = time, gr = patient)"
+      "change ~ 0 + x_group_1_time_2 + x_group_1_time_3 + x_group_1_time_4 +",
+      "x_group_2_time_2 + x_group_2_time_3 + x_group_2_time_4 +",
+      "nuisance_biomarker1 + nuisance_biomarker2 + nuisance_status1_absent +",
+      "nuisance_status2_present + nuisance_baseline +",
+      "nuisance_baseline.timetime_2 + nuisance_baseline.timetime_3 +",
+      "unstr(time = time, gr = patient)"
     )
   )
   expect_equal(
     deparse(out[[2L]][[1L]], width.cutoff = 500L),
     paste(
       "sigma ~ 0 + time"
-    )
-  )
-  out <- brm_formula(
-    scenario,
-    baseline = TRUE,
-    baseline_time = FALSE,
-    check_rank = FALSE
-  )
-  expect_equal(
-    deparse(out[[1L]], width.cutoff = 500L),
-    paste(
-      "change ~ 0 + x_group_1_time_2 + x_group_1_time_3 + x_group_1_time_4",
-      "+ x_group_2_time_2 + x_group_2_time_3 + x_group_2_time_4",
-      "+ nuisance_baseline",
-      "+ nuisance_biomarker1 + nuisance_biomarker2",
-      "+ nuisance_status1_absent + nuisance_status1_present",
-      "+ nuisance_status2_present",
-      "+ unstr(time = time, gr = patient)"
-    )
-  )
-  out <- brm_formula(
-    scenario,
-    baseline = FALSE,
-    baseline_time = TRUE,
-    check_rank = FALSE
-  )
-  expect_equal(
-    deparse(out[[1L]], width.cutoff = 500L),
-    paste(
-      "change ~ 0 + x_group_1_time_2 + x_group_1_time_3 + x_group_1_time_4",
-      "+ x_group_2_time_2 + x_group_2_time_3 + x_group_2_time_4",
-      "+ nuisance_baseline:time",
-      "+ nuisance_biomarker1 + nuisance_biomarker2",
-      "+ nuisance_status1_absent + nuisance_status1_present",
-      "+ nuisance_status2_present",
-      "+ unstr(time = time, gr = patient)"
-    )
-  )
-})
-
-test_that("brm_scenario_successive_cells() non-change subgroup w/o covs", {
-  skip_on_cran()
-  set.seed(0L)
-  data <- brm_simulate_outline(
-    n_group = 2,
-    n_subgroup = 3,
-    n_patient = 100,
-    n_time = 3,
-    rate_dropout = 0,
-    rate_lapse = 0
-  ) |>
-    brm_simulate_continuous(names = c("biomarker1", "biomarker2")) |>
-    brm_simulate_categorical(
-      names = c("status1", "status2"),
-      levels = c("present", "absent")
-    ) |>
-    dplyr::mutate(response = rnorm(n = dplyr::n()))
-  scenario <- brm_scenario_successive_cells(data)
-  out <- brm_formula(
-    scenario,
-    covariates = FALSE,
-    variance = "homogeneous",
-    correlation = "autoregressive",
-    autoregressive_order = 2L,
-    brm_moving_average_order = 3L,
-    residual_covariance_arma_estimation = TRUE,
-    check_rank = FALSE
-  )
-  expect_s3_class(out, "brms_mmrm_formula_scenario")
-  expect_s3_class(out, "brms_mmrm_formula")
-  expect_s3_class(out, "brmsformula")
-  expect_false(attr(out, "brm_covariates"))
-  expect_equal(attr(out, "brm_correlation"), "autoregressive")
-  expect_equal(attr(out, "brm_variance"), "homogeneous")
-  expect_equal(attr(out, "brm_autoregressive_order"), 2L)
-  expect_equal(attr(out, "brm_moving_average_order"), 1L)
-  expect_true(attr(out, "brm_residual_covariance_arma_estimation"))
-  expect_equal(
-    trimws(deparse(out[[1L]], width.cutoff = 500L)[1L]),
-    paste(
-      "response ~ 0 + x_group_1_subgroup_1_time_1 +",
-      "x_group_1_subgroup_1_time_2 +",
-      "x_group_1_subgroup_1_time_3 + x_group_1_subgroup_2_time_1 +",
-      "x_group_1_subgroup_2_time_2 + x_group_1_subgroup_2_time_3 +",
-      "x_group_1_subgroup_3_time_1 + x_group_1_subgroup_3_time_2 +",
-      "x_group_1_subgroup_3_time_3 + x_group_2_subgroup_1_time_1 +",
-      "x_group_2_subgroup_1_time_2 + x_group_2_subgroup_1_time_3 +",
-      "x_group_2_subgroup_2_time_1 + x_group_2_subgroup_2_time_2 +",
-      "x_group_2_subgroup_2_time_3 + x_group_2_subgroup_3_time_1 +",
-      "x_group_2_subgroup_3_time_2 +"
-    )
-  )
-  expect_equal(
-    trimws(deparse(out[[1L]], width.cutoff = 500L)[2L]),
-    paste(
-      "x_group_2_subgroup_3_time_3 +",
-      "ar(time = time, gr = patient, p = 2L, cov = TRUE)"
-    )
-  )
-  expect_equal(
-    deparse(out[[2L]][[1L]], width.cutoff = 500L),
-    paste(
-      "sigma ~ 1"
-    )
-  )
-})
-
-test_that("brm_scenario_successive_cells() subgroup baseline interactions", {
-  skip_on_cran()
-  set.seed(0L)
-  data <- brm_simulate_outline(
-    n_group = 2,
-    n_subgroup = 2,
-    n_patient = 100,
-    n_time = 3,
-    rate_dropout = 0,
-    rate_lapse = 0
-  ) |>
-    dplyr::mutate(response = rnorm(n = dplyr::n())) |>
-    brm_simulate_continuous(names = c("biomarker1", "biomarker2")) |>
-    brm_simulate_categorical(
-      names = c("status1", "status2"),
-      levels = c("present", "absent")
-    ) |>
-    dplyr::mutate(response = rnorm(n = dplyr::n())) |>
-    brm_data_change()
-  scenario <- brm_scenario_successive_cells(data)
-  out <- brm_formula(
-    scenario,
-    baseline = TRUE,
-    baseline_subgroup = TRUE,
-    baseline_subgroup_time = TRUE,
-    baseline_time = TRUE,
-    covariates = FALSE,
-    check_rank = FALSE,
-    correlation = "diagonal"
-  )
-  expect_equal(
-    deparse(out[[1L]], width.cutoff = 500L),
-    paste(
-      "change ~ 0 + x_group_1_subgroup_1_time_2 +",
-      "x_group_1_subgroup_1_time_3 + x_group_1_subgroup_2_time_2 +",
-      "x_group_1_subgroup_2_time_3 + x_group_2_subgroup_1_time_2 +",
-      "x_group_2_subgroup_1_time_3 + x_group_2_subgroup_2_time_2 +",
-      "x_group_2_subgroup_2_time_3 + nuisance_baseline +",
-      "nuisance_baseline:subgroup + nuisance_baseline:subgroup:time +",
-      "nuisance_baseline:time"
     )
   )
 })
