@@ -152,7 +152,11 @@ brm_transform_marginal <- function(
 }
 
 transform_marginal_grid <- function(data) {
-  args <- lapply(c("brm_group", "brm_subgroup", "brm_time"), attr, x = data)
+  args <- lapply(
+    c("brm_group", "brm_subgroup", "brm_time", "brm_archetype_interest"),
+    attr,
+    x = data
+  )
   args <- lapply(unlist(args), as.symbol)
   args$.data <- data
   grid <- do.call(what = dplyr::distinct, args = args)
@@ -220,6 +224,11 @@ transform_marginal_formula <- function(data, formula) {
 }
 
 transform_marginal_names_continuous <- function(data) {
+  UseMethod("transform_marginal_names_continuous")
+}
+
+#' @export
+transform_marginal_names_continuous.brms_mmrm_data <- function(data) {
   choices <- c(
     attr(data, "brm_outcome"),
     attr(data, "brm_baseline"),
@@ -228,9 +237,28 @@ transform_marginal_names_continuous <- function(data) {
   intersect(names(Filter(is.numeric, data)), choices)
 }
 
+#' @export
+transform_marginal_names_continuous.brms_mmrm_archetype <- function(data) {
+  choices <- c(
+    attr(data, "brm_outcome"),
+    attr(data, "brm_archetype_nuisance")
+  )
+  intersect(names(Filter(is.numeric, data)), choices)
+}
+
 transform_marginal_names_discrete <- function(data) {
+  UseMethod("transform_marginal_names_discrete")
+}
+
+#' @export
+transform_marginal_names_discrete.brms_mmrm_data <- function(data) {
   choices <- c(attr(data, "brm_covariates"))
   Filter(function(name) !is.numeric(data[[name]]), choices)
+}
+
+#' @export
+transform_marginal_names_discrete.brms_mmrm_archetype <- function(data) {
+  character(0L)
 }
 
 brm_transform_marginal_names_rows <- function(data, formula, grid) {
