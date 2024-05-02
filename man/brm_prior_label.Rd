@@ -4,13 +4,7 @@
 \alias{brm_prior_label}
 \title{Label a prior with levels in the data.}
 \usage{
-brm_prior_label(
-  label = NULL,
-  code = NA_character_,
-  group = NA,
-  subgroup = NA,
-  time = NA
-)
+brm_prior_label(label = NULL, code, group, subgroup = NULL, time)
 }
 \arguments{
 \item{label}{A \code{tibble} with the prior labeling scheme so far,
@@ -27,11 +21,12 @@ See the documentation \code{\link[brms:set_prior]{brms::set_prior()}} for more d
 in the data to label the prior. The treatment group column
 is the one you identified with the \code{group} argument of \code{\link[=brm_data]{brm_data()}}.}
 
-\item{subgroup}{Value of length 1, level of the subgroiup column
+\item{subgroup}{Value of length 1, level of the subgroup column
 in the data to label the prior. The subgroup column
-is the one you identified with the \code{subgroup} argument of \code{\link[=brm_data]{brm_data()}}.
-Not every dataset has a subgroup. If yours does not, please use
-the default value \code{NA}.}
+is the one you identified with the \code{subgroup} argument of \code{\link[=brm_data]{brm_data()}},
+if applicable. Not every dataset has a subgroup variable.
+If yours does not, please either ignore this argument or set it to
+\code{NULL}.}
 
 \item{time}{Value of length 1, level of the discrete time column
 in the data to label the prior. The discrete time column
@@ -51,25 +46,6 @@ using a collection of levels in the data.
 
 Informative prior archetypes use a labeling scheme to assign priors
 to fixed effects. How it works:
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{1. First, assign the prior of each parameter a collection
-  of labels from the data. This can be done manually or with
-  successive calls to [brm_prior_label()].
-2. Supply the labeling scheme to [brm_prior_archetype()].
-  [brm_prior_archetype()] uses attributes of the archetype
-  to map labeled priors to their rightful parameters in the model.
-}\if{html}{\out{</div>}}
-
-For informative prior archetypes, this process is much more convenient
-and robust than manually calling \code{\link[brms:set_prior]{brms::set_prior()}}.
-However, it requires an understanding of how the labels of the priors
-map to parameters in the model. This mapping varies from archetype
-to archetype, and it is documented in the help pages of
-archetype-specific functions such as \code{\link[=brm_archetype_successive_cells]{brm_archetype_successive_cells()}}.
-
-
-Informative prior archetypes use a labeling scheme to assign priors.
-How it works:
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{1. First, assign the prior of each parameter a collection
   of labels from the data. This can be done manually or with

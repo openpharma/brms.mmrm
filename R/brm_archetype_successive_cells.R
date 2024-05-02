@@ -3,7 +3,7 @@
 #' @family informative prior archetypes
 #' @description Create an informative prior archetype where the fixed effects
 #'   are successive differences between adjacent time points.
-#' @details In this mapping, each fixed effect is either an intercept
+#' @details In this archetype, each fixed effect is either an intercept
 #'   on the first time point or the difference between two adjacent time
 #'   points, and each treatment group has its own set of fixed effects
 #'   independent of the other treatment groups.
@@ -26,7 +26,7 @@
 #'   For group A, `beta_1` is the time 1 intercept, `beta_2` represents
 #'   time 2 minus time 1, and `beta_3` represents time 3 minus time 2.
 #'   `beta_4`, `beta_5`, and `beta_6` represent the analogous roles.
-#' @section Nuisance variables in informative prior archetypes:
+#' @section Nuisance variables:
 #'   In the presence of covariate adjustment, functions like
 #'   [brm_archetype_successive_cells()] convert nuisance factors into binary
 #'   dummy variables, then center all those dummy variables and any
@@ -36,6 +36,18 @@
 #'   In other words, preprocessing nuisance variables this way preserves
 #'   the interpretations of the fixed effects of interest, and it ensures
 #'   informative priors can be specified correctly.
+#' @inheritSection brm_prior_archetype Prior labeling
+#' @section Prior labeling for [brm_archetype_successive_cells()]:
+#'   Within each treatment group, each intercept is labeled by the earliest
+#'   time point, and each successive difference term gets the successive
+#'   time point as the label.
+#'   To illustrate, consider the example in the Details section.
+#'   In the labeling scheme for [brm_archetype_successive_cells()],
+#'   you can label the prior on `beta_1` using
+#'   `brm_prior_label(code = "normal(1.2, 5)", group = "A", time = "1")`.
+#'   Similarly, you cal label the prior on `beta_5` with
+#'   `brm_prior_label(code = "normal(1.3, 7)", group = "b", time = "2")`.
+#'   See the examples for details.
 #' @return A special classed `tibble` with data tailored to
 #'   the successive differences archetype. The dataset is augmented with
 #'   extra columns with the `"archetype_"` prefix, as well as special
@@ -77,7 +89,51 @@
 #'   starts_with("biomarker"),
 #'   starts_with("status")
 #' )
-#' brm_archetype_successive_cells(data)
+#' archetype <- brm_archetype_successive_cells(data)
+#' archetype
+#' formula <- brm_formula(archetype)
+#' formula
+#' label <- brm_prior_label(
+#'   code = "normal(1, 1)",
+#'   group = "group_1",
+#'   time = "time_2"
+#' ) |>
+#'   brm_prior_label("normal(1, 2)", group = "group_1", time = "time_3") |>
+#'   brm_prior_label("normal(1, 3)", group = "group_1", time = "time_4") |>
+#'   brm_prior_label("normal(2, 1)", group = "group_2", time = "time_2") |>
+#'   brm_prior_label("normal(2, 2)", group = "group_2", time = "time_3") |>
+#'   brm_prior_label("normal(2, 3)", group = "group_2", time = "time_4")
+#' label
+#' prior <- brm_prior_archetype(archetype, label)
+#' prior
+#' class(prior)
+#' if (identical(Sys.getenv("BRM_EXAMPLES", unset = ""), "true")) {
+#' tmp <- utils::capture.output(
+#'   suppressMessages(
+#'     suppressWarnings(
+#'       model <- brm_model(
+#'         data = archetype,
+#'         formula = formula,
+#'         prior = prior,
+#'         chains = 1,
+#'         iter = 100,
+#'         refresh = 0
+#'       )
+#'     )
+#'   )
+#' )
+#' suppressWarnings(print(model))
+#' brms::prior_summary(model)
+#' draws <- brm_marginal_draws(
+#'   data = archetype,
+#'   formula = formula,
+#'   model = model
+#' )
+#' summaries_model <- brm_marginal_summaries(draws)
+#' summaries_data <- brm_marginal_data(data)
+#' brm_plot_draws(draws$difference_group)
+#' brm_plot_compare(model = summaries_model, data = summaries_data)
+#' }
 brm_archetype_successive_cells <- function(
   data,
   covariates = TRUE,
