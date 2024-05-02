@@ -131,7 +131,6 @@
 #' )
 #' summaries_model <- brm_marginal_summaries(draws)
 #' summaries_data <- brm_marginal_data(data)
-#' brm_plot_draws(draws$difference_group)
 #' brm_plot_compare(model = summaries_model, data = summaries_data)
 #' }
 brm_archetype_successive_cells <- function(
