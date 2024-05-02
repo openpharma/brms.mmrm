@@ -1,12 +1,12 @@
-#' @title Informative priors for archetypes
+#' @title Informative priors for fixed effects in archetypes
 #' @export
 #' @family priors
-#' @description Create a `brms` prior for an informative prior archetype.
+#' @description Create a `brms` prior for fixed effects in an archetype.
 #' @return A `brms` prior object that you can supply to the `prior`
 #'   argument of [brm_model()].
 #' @section Prior labeling:
-#'   Informative prior archetypes use a labeling scheme to assign priors.
-#'   How it works:
+#'   Informative prior archetypes use a labeling scheme to assign priors
+#'   to fixed effects. How it works:
 #'
 #'     1. First, assign the prior of each parameter a collection
 #'       of labels from the data. This can be done manually or with
@@ -49,6 +49,9 @@
 #'   brm_prior_label("normal(2, 2)", group = "group_2", time = "time_2") |>
 #'   brm_prior_label("normal(2, 3)", group = "group_2", time = "time_3")
 #' label
+#' prior <- brm_prior_archetype(archetype, label)
+#' prior
+#' class(prior)
 brm_prior_archetype <- function(archetype, label) {
   brm_data_validate(archetype)
   assert(
@@ -56,5 +59,41 @@ brm_prior_archetype <- function(archetype, label) {
     message = "archetype must be an informative prior archetype"
   )
   map <- attr(archetype, "brm_archetype_mapping")
-  
+  fields <- intersect(colnames(map), c("group", "subgroup", "time"))
+  assert(
+    label,
+    is.data.frame(.),
+    c("code", fields) %in% colnames(.),
+    message = paste(
+      "label must be a data frame or tibble with columns",
+      "'code', 'group', and 'time' (and 'subgroup' if applicable)."
+    )
+  )
+  for (field in fields) {
+    map[[field]] <- brm_levels(map[[field]])
+    label[[field]] <- brm_levels(label[[field]])
+    assert(
+      label[[field]] %in% unique(map[[field]]),
+      message = paste(
+        "Mismatch between the",
+        field,
+        "levels of the archetype vs the labeling scheme.",
+        "Please ensure you are assigning the correct values of",
+        "group and time (and subgroup if applicable) to",
+        "label argument of brm_prior_archetype()."
+      )
+    )
+  }
+  joined <- dplyr::inner_join(x = map, y = label, by = fields)
+  priors <- lapply(
+    X = seq_len(nrow(joined)),
+    FUN = function(index) {
+      brms::set_prior(
+        prior = joined$code[index],
+        class = "b",
+        coef = joined$variable[index]
+      )
+    }
+  )
+  do.call(what = c, args = priors)
 }

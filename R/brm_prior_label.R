@@ -19,11 +19,12 @@
 #' @param group Value of length 1, level of the treatment group column
 #'   in the data to label the prior. The treatment group column
 #'   is the one you identified with the `group` argument of [brm_data()].
-#' @param subgroup Value of length 1, level of the subgroiup column
+#' @param subgroup Value of length 1, level of the subgroup column
 #'   in the data to label the prior. The subgroup column
-#'   is the one you identified with the `subgroup` argument of [brm_data()].
-#'   Not every dataset has a subgroup. If yours does not, please use
-#'   the default value `NA`.
+#'   is the one you identified with the `subgroup` argument of [brm_data()],
+#'   if applicable. Not every dataset has a subgroup variable.
+#'   If yours does not, please either ignore this argument or set it to
+#'   `NULL`.
 #' @param time Value of length 1, level of the discrete time column
 #'   in the data to label the prior. The discrete time column
 #'   is the one you identified with the `time` argument of [brm_data()].
@@ -57,10 +58,10 @@
 #' label
 brm_prior_label <- function(
   label = NULL,
-  code = NA_character_,
-  group = NA,
-  subgroup = NA,
-  time = NA
+  code,
+  group,
+  subgroup = NULL,
+  time
 ) {
   assert(
     is.null(label) || is.data.frame(label),
@@ -68,15 +69,16 @@ brm_prior_label <- function(
   )
   assert_chr(code, "code must be a character string")
   assert(length(group) == 1L, message = "group must have length 1")
-  assert(length(subgroup) == 1L, message = "subgroup must have length 1")
-  assert(length(time) == 1L, message = "time must have length 1")
-  dplyr::bind_rows(
-    label,
-    tibble::tibble(
-      code = code,
-      group = group,
-      subgroup = subgroup,
-      time = time
-    )
+  assert(
+    subgroup,
+    is.null(.) || length(.) == 1L,
+    message = "subgroup must have length 1"
   )
+  assert(length(time) == 1L, message = "time must have length 1")
+  args <- list(code = code, group = group, time = time)
+  if (!is.null(subgroup)) {
+    args$subgroup <- subgroup
+  }
+  out <- dplyr::bind_rows(label, do.call(what = tibble::tibble, args = args))
+  out[, intersect(c("code", "group", "subgroup", "time"), colnames(out))]
 }
