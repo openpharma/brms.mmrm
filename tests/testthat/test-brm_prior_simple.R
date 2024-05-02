@@ -1,4 +1,4 @@
-test_that("brm_prior_simple()", {
+test_that("brm_prior_simple() produces correct prior", {
   set.seed(0L)
   data <- brm_simulate_outline()
   data <- brm_simulate_continuous(data, names = c("age", "biomarker"))
