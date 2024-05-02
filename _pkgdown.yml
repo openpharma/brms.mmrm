@@ -38,6 +38,8 @@ reference:
   - 'brm_archetype_successive_cells'
 - title: Priors
   contents:
+  - 'brm_prior_archetype'
+  - 'brm_prior_label'
   - 'brm_prior_simple'
 - title: Models
   contents:

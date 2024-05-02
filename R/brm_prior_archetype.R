@@ -1,12 +1,12 @@
-#' @title Informative priors for fixed effects in archetypes
+#' @title Informative priors for archetypes
 #' @export
 #' @family priors
-#' @description Create a `brms` prior for fixed effects in an archetype.
+#' @description Create a `brms` prior for an informative prior archetype.
 #' @return A `brms` prior object that you can supply to the `prior`
 #'   argument of [brm_model()].
 #' @section Prior labeling:
-#'   Informative prior archetypes use a labeling scheme to assign priors
-#'   to fixed effects. How it works:
+#'   Informative prior archetypes use a labeling scheme to assign priors.
+#'   How it works:
 #'
 #'     1. First, assign the prior of each parameter a collection
 #'       of labels from the data. This can be done manually or with
@@ -56,23 +56,5 @@ brm_prior_archetype <- function(archetype, label) {
     message = "archetype must be an informative prior archetype"
   )
   map <- attr(archetype, "brm_archetype_mapping")
-  if (!brm_has_subgroup(data = archetype, formula = NULL)) {
-    label$subgroup <- NULL
-  }
-  joined <- dplyr::inner_join(
-    x = map,
-    y = label,
-    by = intersect(colnames(map), c("group", "subgroup", "time"))
-  )
-  priors <- lapply(
-    X = seq_len(nrow(joined)),
-    FUN = function(index) {
-      brms::set_prior(
-        prior = joined$code[index],
-        class = "b",
-        coef = joined$variable[index]
-      )
-    }
-  )
-  do.call(what = c, args = priors)
+  
 }
