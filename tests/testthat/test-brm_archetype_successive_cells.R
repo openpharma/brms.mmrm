@@ -36,7 +36,7 @@ test_that("brm_archetype_successive_cells() change and non-subgroup", {
   expect_s3_class(out, "brms_mmrm_archetype")
   attributes_data <- brm_data_attributes(data)
   attributes_archetype <- brm_data_attributes(out)
-  attributes_archetype$brm_archetype_parameterization <- NULL
+  attributes_archetype$brm_archetype_mapping <- NULL
   attributes_archetype$brm_archetype_interest <- NULL
   attributes_archetype$brm_archetype_nuisance <- NULL
   expect_equal(attributes_data, attributes_archetype)
@@ -82,7 +82,7 @@ test_that("brm_archetype_successive_cells() change and non-subgroup", {
     sort(nuisance),
     sort(grep("z_", colnames(out), value = TRUE))
   )
-  param <- attr(out, "brm_archetype_parameterization")
+  param <- attr(out, "brm_archetype_mapping")
   expect_equal(param$variable, interest)
   expect_equal(param$group, rep(c("group_1", "group_2"), each = 3L))
   expect_equal(param$time, rep(c("time_2", "time_3", "time_4"), times = 2L))
@@ -257,7 +257,7 @@ test_that("brm_archetype_successive_cells() non-change subgroup", {
   expect_s3_class(out, "brms_mmrm_archetype")
   attributes_data <- brm_data_attributes(data)
   attributes_archetype <- brm_data_attributes(out)
-  attributes_archetype$brm_archetype_parameterization <- NULL
+  attributes_archetype$brm_archetype_mapping <- NULL
   attributes_archetype$brm_archetype_interest <- NULL
   attributes_archetype$brm_archetype_nuisance <- NULL
   expect_equal(attributes_data, attributes_archetype)
@@ -315,7 +315,7 @@ test_that("brm_archetype_successive_cells() non-change subgroup", {
     sort(grep("nuisance_", colnames(out), value = TRUE))
   )
   expect_equal(max(abs(colMeans(out[, nuisance]))), 0)
-  param <- attr(out, "brm_archetype_parameterization")
+  param <- attr(out, "brm_archetype_mapping")
   expect_equal(param$variable, interest)
   expect_equal(param$group, rep(c("group_1", "group_2"), each = 9L))
   expect_equal(

@@ -6,8 +6,8 @@
 #' @section [brm_data()] formulas:
 #'   For a [brm_data()] dataset,
 #'   [brm_formula()] builds an R formula for an MMRM based on
-#'   the details in the data and your choice of parameterization.
-#'   Customize your parameterization by toggling on or off
+#'   the details in the data and your choice of mapping.
+#'   Customize your mapping by toggling on or off
 #'   the various `TRUE`/`FALSE` arguments of [brm_formula()],
 #'   such as `intercept`, `baseline`, and `group_time`.
 #'   All plausible additive effects, two-way interactions, and
@@ -33,7 +33,7 @@
 #' @section Parameterization:
 #'   For a formula on a [brm_data()] dataset,
 #'   the formula is not the only factor
-#'   that determines the fixed effect parameterization.
+#'   that determines the fixed effect mapping.
 #'   The ordering of the categorical variables in the data,
 #'   as well as the `contrast` option in R, affect the
 #'   construction of the model matrix. To see the model
@@ -42,7 +42,7 @@
 #'   of the returned list. See the examples below for a
 #'   demonstration.
 #' @return An object of class `"brmsformula"` returned from
-#'   `brms::brmsformula()`. It contains the fixed effect parameterization,
+#'   `brms::brmsformula()`. It contains the fixed effect mapping,
 #'   correlation structure, and residual variance structure.
 #' @param data A classed data frame from [brm_data()].
 #' @param intercept Logical of length 1.
@@ -128,7 +128,7 @@
 #'
 #'   The variance structure is encoded in the
 #'   `sigma ~ ...` part of the output formula. To see the variance
-#'   parameterization for yourself, use `brms::make_standata()`
+#'   mapping for yourself, use `brms::make_standata()`
 #'   on the formula and data, or `brms::prior_summary()` or
 #'   `posterior::as_draws_df()` on the model.
 #' @param correlation Character of length 1, name of the correlation
@@ -174,7 +174,7 @@
 #' @param check_rank `TRUE` to check the rank of the model matrix and
 #'   throw an error if rank deficiency is detected. `FALSE` to skip
 #'   this check. Rank-deficient models may have non-identifiable
-#'   parameters and it is recommended to choose a full-rank parameterization.
+#'   parameters and it is recommended to choose a full-rank mapping.
 #' @param ... Named arguments to specific [brm_formula()] methods.
 #' @param effect_baseline Deprecated on 2024-01-16 (version 0.0.2.9002).
 #'   Use `baseline` instead.
@@ -209,10 +209,10 @@
 #' formula
 #' # Optional: set the contrast option, which determines the model matrix.
 #' options(contrasts = c(unordered = "contr.SAS", ordered = "contr.poly"))
-#' # See the fixed effect parameterization you get from the data:
+#' # See the fixed effect mapping you get from the data:
 #' head(brms::make_standata(formula = formula, data = data)$X)
 #' # Specify a different contrast method to use an alternative
-#' # parameterization when fitting the model with brm_model():
+#' # mapping when fitting the model with brm_model():
 #' options(
 #'   contrasts = c(unordered = "contr.treatment", ordered = "contr.poly")
 #' )
@@ -560,7 +560,7 @@ formula_check_rank <- function(data, formula) {
       " columns but rank ",
       rank,
       " after removing rows with missing outcomes. ",
-      "Please consider a different parameterization to make the ",
+      "Please consider a different mapping to make the ",
       "model matrix full-rank. Otherwise, fixed effects may not be ",
       "identifiable and MCMC sampling may not converge. ",
       "Set check_rank = FALSE in brm_formula() to suppress this error."

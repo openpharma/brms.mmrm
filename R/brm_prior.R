@@ -42,7 +42,7 @@ brm_prior_archetype <- function(archetype, label) {
     inherits(archetype, "brms_mmrm_archetype"),
     message = "archetype must be an informative prior archetype"
   )
-  param <- attr(archetype, "brm_archetype_parameterization")
+  param <- attr(archetype, "brm_archetype_mapping")
   
 }
 

@@ -59,7 +59,7 @@ Set to \code{NULL} to omit.}
 to indicate the control group.
 \code{reference_group} only applies to the post-processing that happens
 in functions like \code{\link[=brm_marginal_draws]{brm_marginal_draws()}} downstream of the model.
-It does not control the fixed effect parameterization in the
+It does not control the fixed effect mapping in the
 model matrix that \code{brms} derives from the formula from \code{brm_formula()}.}
 
 \item{level_control}{Deprecated on 2024-01-11 (version 0.2.0.9002).
@@ -69,7 +69,7 @@ Use \code{reference_group} instead.}
 level of the \code{subgroup} column
 to use as a reference for pairwise differences in when computing
 marginal means downstream of the model.
-It does not control the fixed effect parameterization in the
+It does not control the fixed effect mapping in the
 model matrix that \code{brms} derives from the formula from \code{brm_formula()}.}
 
 \item{reference_time}{Character of length 1 or \code{NULL},
@@ -84,7 +84,7 @@ if \code{role} is \code{"response"}.
 
 Note: \code{reference_time} only applies to the post-processing that happens
 in functions like \code{\link[=brm_marginal_draws]{brm_marginal_draws()}} downstream of the model.
-It does not control the fixed effect parameterization in the
+It does not control the fixed effect mapping in the
 model matrix that \code{brms} derives from the formula from \code{brm_formula()}.}
 
 \item{level_baseline}{Deprecated on 2024-01-11 (version 0.2.0.9002).

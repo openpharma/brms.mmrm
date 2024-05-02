@@ -7,7 +7,7 @@
 #' @param data A special classed `tibble` returned from [brm_data()].
 #'   It should have one row per patient per discrete time point.
 #' @param formula An object of class `"brmsformula"` from [brm_formula()]
-#'   or `brms::brmsformula()`. Should include the full parameterization
+#'   or `brms::brmsformula()`. Should include the full mapping
 #'   of the model, including fixed effects, residual correlation,
 #'   and heterogeneity in the discrete-time-specific residual variance
 #'   components.
@@ -37,10 +37,10 @@
 #' )
 #' # Optional: set the contrast option, which determines the model matrix.
 #' options(contrasts = c(unordered = "contr.SAS", ordered = "contr.poly"))
-#' # See the fixed effect parameterization you get from the data:
+#' # See the fixed effect mapping you get from the data:
 #' head(brms::make_standata(formula = formula, data = data)$X)
 #' # Specify a different contrast method to use an alternative
-#' # parameterization when fitting the model with brm_model():
+#' # mapping when fitting the model with brm_model():
 #' options(
 #'   contrasts = c(unordered = "contr.treatment", ordered = "contr.poly")
 #' )
@@ -62,7 +62,7 @@
 #' # The output model is a brms model fit object.
 #' suppressWarnings(print(model))
 #' # The `prior_summary()` function shows the full prior specification
-#' # which reflects the fully realized fixed effects parameterization.
+#' # which reflects the fully realized fixed effects mapping.
 #' brms::prior_summary(model)
 #' }
 brm_model <- function(

@@ -17,7 +17,7 @@ brm_model(
 It should have one row per patient per discrete time point.}
 
 \item{formula}{An object of class \code{"brmsformula"} from \code{\link[=brm_formula]{brm_formula()}}
-or \code{brms::brmsformula()}. Should include the full parameterization
+or \code{brms::brmsformula()}. Should include the full mapping
 of the model, including fixed effects, residual correlation,
 and heterogeneity in the discrete-time-specific residual variance
 components.}
@@ -41,7 +41,7 @@ Fit an MMRM model using \code{brms}.
 
 For a formula on a \code{\link[=brm_data]{brm_data()}} dataset,
 the formula is not the only factor
-that determines the fixed effect parameterization.
+that determines the fixed effect mapping.
 The ordering of the categorical variables in the data,
 as well as the \code{contrast} option in R, affect the
 construction of the model matrix. To see the model
@@ -71,10 +71,10 @@ formula <- brm_formula(
 )
 # Optional: set the contrast option, which determines the model matrix.
 options(contrasts = c(unordered = "contr.SAS", ordered = "contr.poly"))
-# See the fixed effect parameterization you get from the data:
+# See the fixed effect mapping you get from the data:
 head(brms::make_standata(formula = formula, data = data)$X)
 # Specify a different contrast method to use an alternative
-# parameterization when fitting the model with brm_model():
+# mapping when fitting the model with brm_model():
 options(
   contrasts = c(unordered = "contr.treatment", ordered = "contr.poly")
 )
@@ -96,7 +96,7 @@ tmp <- utils::capture.output(
 # The output model is a brms model fit object.
 suppressWarnings(print(model))
 # The `prior_summary()` function shows the full prior specification
-# which reflects the fully realized fixed effects parameterization.
+# which reflects the fully realized fixed effects mapping.
 brms::prior_summary(model)
 }
 }

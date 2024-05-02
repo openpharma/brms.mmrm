@@ -49,7 +49,7 @@
 #'   to indicate the control group.
 #'   `reference_group` only applies to the post-processing that happens
 #'   in functions like [brm_marginal_draws()] downstream of the model.
-#'   It does not control the fixed effect parameterization in the
+#'   It does not control the fixed effect mapping in the
 #'   model matrix that `brms` derives from the formula from `brm_formula()`.
 #' @param level_control Deprecated on 2024-01-11 (version 0.2.0.9002).
 #'   Use `reference_group` instead.
@@ -57,7 +57,7 @@
 #'   level of the `subgroup` column
 #'   to use as a reference for pairwise differences in when computing
 #'   marginal means downstream of the model.
-#'   It does not control the fixed effect parameterization in the
+#'   It does not control the fixed effect mapping in the
 #'   model matrix that `brms` derives from the formula from `brm_formula()`.
 #' @param reference_time Character of length 1 or `NULL`,
 #'   level of the `time` column to indicate the baseline time point.
@@ -71,7 +71,7 @@
 #'
 #'   Note: `reference_time` only applies to the post-processing that happens
 #'   in functions like [brm_marginal_draws()] downstream of the model.
-#'   It does not control the fixed effect parameterization in the
+#'   It does not control the fixed effect mapping in the
 #'   model matrix that `brms` derives from the formula from `brm_formula()`.
 #' @param level_baseline Deprecated on 2024-01-11 (version 0.2.0.9002).
 #'   Use `reference_time` instead.

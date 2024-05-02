@@ -2,7 +2,7 @@ brm_archetype_init <- function(
   data,
   interest,
   nuisance,
-  parameterization,
+  mapping,
   subclass
 ) {
   data_interest <- intersect(colnames(data), colnames(interest))
@@ -42,7 +42,7 @@ brm_archetype_init <- function(
     subclass = subclass,
     brm_archetype_interest = colnames(interest),
     brm_archetype_nuisance = colnames(nuisance),
-    brm_archetype_parameterization = parameterization
+    brm_archetype_mapping = mapping
   )
   brm_data_validate(archetype)
   archetype
@@ -54,7 +54,7 @@ brm_archetype_new <- function(
   subclass,
   brm_archetype_interest,
   brm_archetype_nuisance,
-  brm_archetype_parameterization
+  brm_archetype_mapping
 ) {
   args <- brm_data_attributes(data)
   args$.Data <- tibble::new_tibble(
@@ -63,7 +63,7 @@ brm_archetype_new <- function(
   )
   args$brm_archetype_interest <- brm_archetype_interest
   args$brm_archetype_nuisance <- brm_archetype_nuisance
-  args$brm_archetype_parameterization <- brm_archetype_parameterization
+  args$brm_archetype_mapping <- brm_archetype_mapping
   do.call(what = structure, args = args)
 }
 
@@ -71,7 +71,7 @@ brm_archetype_new <- function(
 brm_data_validate.brms_mmrm_archetype <- function(data) {
   interest <- attr(data, "brm_archetype_interest")
   nuisance <- attr(data, "brm_archetype_nuisance")
-  parameterization <- attr(data, "brm_archetype_parameterization")
+  mapping <- attr(data, "brm_archetype_mapping")
   assert_chr_vec(
     interest,
     "brm_archetype_interest attribute must be a character vector"
@@ -81,37 +81,37 @@ brm_data_validate.brms_mmrm_archetype <- function(data) {
     "brm_archetype_nuisance attribute must be a character vector"
   )
   assert(
-    is.data.frame(parameterization),
-    message = "brm_archetype_parameterization attribute must be a data frame"
+    is.data.frame(mapping),
+    message = "brm_archetype_mapping attribute must be a data frame"
   )
   assert(
-    c("group", "time", "variable") %in% colnames(parameterization),
+    c("group", "time", "variable") %in% colnames(mapping),
     message = paste(
-      "brm_archetype_parameterization attribute must have columns",
+      "brm_archetype_mapping attribute must have columns",
       "\"group\", \"time\", and \"variable\"."
     )
   )
   assert(
-    colnames(parameterization) %in%
+    colnames(mapping) %in%
       c("group", "subgroup", "time", "variable"),
     message = paste(
-      "brm_archetype_parameterization attribute columns cannot be",
+      "brm_archetype_mapping attribute columns cannot be",
       "anything other than",
       "\"group\", \"subgroup\", \"time\", or \"variable\"."
     )
   )
   assert(
-    sort(parameterization$variable) ==
+    sort(mapping$variable) ==
       sort(attr(data, "brm_archetype_interest")),
     message = paste(
-      "the \"variable\" column of the brm_archetype_parameterization",
+      "the \"variable\" column of the brm_archetype_mapping",
       "attribute must agree with the values in the",
       "brm_archetype_interest attribute."
     )
   )
   assert(
-    !anyDuplicated(parameterization$variable),
-    message = "parameterization$variable must have all unique values"
+    !anyDuplicated(mapping$variable),
+    message = "mapping$variable must have all unique values"
   )
   groups <- attr(data, "brm_levels_group")
   subgroups <- attr(data, "brm_levels_subgroup")
@@ -121,26 +121,26 @@ brm_data_validate.brms_mmrm_archetype <- function(data) {
   n_time <- length(times)
   if (brm_data_has_subgroup(data)) {
     assert(
-      parameterization$group == rep(groups, each = n_subgroup * n_time),
-      message = "malformed or misordered parameterization group levels"
+      mapping$group == rep(groups, each = n_subgroup * n_time),
+      message = "malformed or misordered mapping group levels"
     )
     assert(
-      parameterization$subgroup ==
+      mapping$subgroup ==
         rep(rep(subgroups, times = n_group), each = n_time),
-      message = "malformed or misordered parameterization group levels"
+      message = "malformed or misordered mapping group levels"
     )
     assert(
-      parameterization$time == rep(times, times = n_group * n_subgroup),
-      message = "malformed or misordered parameterization group levels"
+      mapping$time == rep(times, times = n_group * n_subgroup),
+      message = "malformed or misordered mapping group levels"
     )
   } else {
     assert(
-      parameterization$group == rep(groups, each = n_time),
-      message = "malformed or misordered parameterization group levels"
+      mapping$group == rep(groups, each = n_time),
+      message = "malformed or misordered mapping group levels"
     )
     assert(
-      parameterization$time == rep(times, times = n_group),
-      message = "malformed or misordered parameterization group levels"
+      mapping$time == rep(times, times = n_group),
+      message = "malformed or misordered mapping group levels"
     )
   }
   NextMethod()

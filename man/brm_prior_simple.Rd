@@ -18,7 +18,7 @@ brm_prior_simple(
 It should have one row per patient per discrete time point.}
 
 \item{formula}{An object of class \code{"brmsformula"} from \code{\link[=brm_formula]{brm_formula()}}
-or \code{brms::brmsformula()}. Should include the full parameterization
+or \code{brms::brmsformula()}. Should include the full mapping
 of the model, including fixed effects, residual correlation,
 and heterogeneity in the discrete-time-specific residual variance
 components.}
@@ -71,5 +71,9 @@ brm_prior_simple(
   sigma = "student_t(2, 0, 4)",
   correlation = "lkj(2.5)"
 )
+}
+\seealso{
+Other priors: 
+\code{\link{brm_prior_label}()}
 }
 \concept{priors}

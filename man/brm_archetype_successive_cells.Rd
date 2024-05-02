@@ -84,7 +84,7 @@ Create an informative prior archetype where the fixed effects
 are successive differences between adjacent time points.
 }
 \details{
-In this parameterization, each fixed effect is either an intercept
+In this mapping, each fixed effect is either an intercept
 on the first time point or the difference between two adjacent time
 points, and each treatment group has its own set of fixed effects
 independent of the other treatment groups.
@@ -93,7 +93,7 @@ To illustrate, suppose the dataset has two treatment groups A and B,
 time points 1, 2, and 3, and no other covariates.
 Let \code{mu_gt} be the conditional expectation of the response at group
 \code{g} time \code{t} given data and hyperparameters. Then, the cell-means-like
-successive differences parameterization declares model coefficients
+successive differences mapping declares model coefficients
 \code{beta_1}, \code{beta_2}, ... \code{beta_6} as follows:
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{  `mu_A1 = beta_1`
@@ -123,7 +123,6 @@ informative priors can be specified correctly.
 }
 
 \examples{
-if (identical(Sys.getenv("BRM_EXAMPLES", unset = ""), "true")) {
 set.seed(0L)
 data <- brm_simulate_outline(
   n_group = 2,
@@ -148,6 +147,5 @@ dplyr::select(
   starts_with("status")
 )
 brm_archetype_successive_cells(data)
-}
 }
 \concept{informative prior archetypes}

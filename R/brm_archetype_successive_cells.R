@@ -3,7 +3,7 @@
 #' @family informative prior archetypes
 #' @description Create an informative prior archetype where the fixed effects
 #'   are successive differences between adjacent time points.
-#' @details In this parameterization, each fixed effect is either an intercept
+#' @details In this mapping, each fixed effect is either an intercept
 #'   on the first time point or the difference between two adjacent time
 #'   points, and each treatment group has its own set of fixed effects
 #'   independent of the other treatment groups.
@@ -12,7 +12,7 @@
 #'   time points 1, 2, and 3, and no other covariates.
 #'   Let `mu_gt` be the conditional expectation of the response at group
 #'   `g` time `t` given data and hyperparameters. Then, the cell-means-like
-#'   successive differences parameterization declares model coefficients
+#'   successive differences mapping declares model coefficients
 #'   `beta_1`, `beta_2`, ... `beta_6` as follows:
 #'
 #'       `mu_A1 = beta_1`
@@ -124,7 +124,7 @@ brm_archetype_successive_cells <- function(
     data = data,
     interest = archetype$interest,
     nuisance = nuisance,
-    parameterization = archetype$parameterization,
+    mapping = archetype$mapping,
     subclass = "brms_mmrm_successive_cells"
   )
 }
@@ -151,12 +151,12 @@ archetype_successive_cells <- function(data, prefix) {
   names <- brm_levels(names)
   colnames(matrix) <- names
   interest <- tibble::as_tibble(as.data.frame(matrix))
-  parameterization <- tibble::tibble(
+  mapping <- tibble::tibble(
     group = names_group,
     time = names_time,
     variable = names
   )
-  list(interest = interest, parameterization = parameterization)
+  list(interest = interest, mapping = mapping)
 }
 
 archetype_successive_cells_subgroup <- function(data, prefix) {
@@ -190,11 +190,11 @@ archetype_successive_cells_subgroup <- function(data, prefix) {
   names <- brm_levels(names)
   colnames(matrix) <- names
   interest <- tibble::as_tibble(as.data.frame(matrix))
-  parameterization <- tibble::tibble(
+  mapping <- tibble::tibble(
     group = names_group,
     subgroup = names_subgroup,
     time = names_time,
     variable = names
   )
-  list(interest = interest, parameterization = parameterization)
+  list(interest = interest, mapping = mapping)
 }
