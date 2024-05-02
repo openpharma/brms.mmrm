@@ -54,7 +54,6 @@
 #'   generated fixed effects NOT of interest (not relating to group,
 #'   subgroup, or time). Must not be the same value as `prefix_interest`.
 #' @examples
-#' if (identical(Sys.getenv("BRM_EXAMPLES", unset = ""), "true")) {
 #' set.seed(0L)
 #' data <- brm_simulate_outline(
 #'   n_group = 2,
@@ -79,7 +78,6 @@
 #'   starts_with("status")
 #' )
 #' brm_archetype_successive_cells(data)
-#' }
 brm_archetype_successive_cells <- function(
   data,
   covariates = TRUE,
