@@ -72,3 +72,4 @@ citation(package = "brms.mmrm", auto = x)
   Recommendations for the Primary Analysis of Continuous Endpoints
   in Longitudinal Clinical Trials.
   Ther Innov Regul Sci 42, 303–319 (2008).
+* Holzhauer, B., and Weber, S. (2024), "Bayesian mixed effects model for repeated measures," in Applied Modeling in Drug Development, Novartis AG. <https://opensource.nibr.com/bamdd/src/02h_mmrm.html>.
