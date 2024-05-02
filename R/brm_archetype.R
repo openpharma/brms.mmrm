@@ -170,7 +170,7 @@ summary.brms_mmrm_archetype <- function(object, ...) {
   transform <- transform[, attr(object, "brm_archetype_interest")]
   marginals <- gsub("|", ":", rownames(transform), fixed = TRUE)
   lines <- c(
-    "This tibble is an informative prior archetype in brms.mmrm.",
+    "This object is an informative prior archetype in brms.mmrm.",
     "The fixed effect parameters of interest express the",
     "marginal means as follows (on the link scale):",
     ""
