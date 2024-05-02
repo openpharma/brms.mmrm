@@ -12,6 +12,7 @@ articles:
   - usage
   - subgroup
   - simulation
+  - archetypes
 - title: Validation
   navbar: Validation
   contents:
