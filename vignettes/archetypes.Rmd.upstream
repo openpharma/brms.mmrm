@@ -109,7 +109,7 @@ formula <- brm_formula(archetype)
 formula
 ```
 
-The model can accept the archtype, formula, and prior.
+The model can accept the archetype, formula, and prior.
 
 ```{r}
 model <- brm_model(
