@@ -49,6 +49,12 @@ brm_data_change <- function(
 ) {
   brm_data_validate(data)
   assert(
+    !inherits(data, "brms_mmrm_archetype"),
+    message = paste(
+      "data in brm_data_change() cannot be an informative prior archetype"
+    )
+  )
+  assert(
     attr(data, "brm_role") == "response",
     message = paste(
       "outcome variable must be raw response",

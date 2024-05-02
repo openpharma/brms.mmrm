@@ -60,7 +60,8 @@ brm_formula(
 )
 }
 \arguments{
-\item{data}{A classed data frame from \code{\link[=brm_data]{brm_data()}}.}
+\item{data}{A classed data frame from \code{\link[=brm_data]{brm_data()}}, or an informative
+prior archetype from a function like \code{\link[=brm_archetype_successive_cells]{brm_archetype_successive_cells()}}.}
 
 \item{check_rank}{\code{TRUE} to check the rank of the model matrix and
 throw an error if rank deficiency is detected. \code{FALSE} to skip

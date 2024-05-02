@@ -44,7 +44,8 @@
 #' @return An object of class `"brmsformula"` returned from
 #'   `brms::brmsformula()`. It contains the fixed effect mapping,
 #'   correlation structure, and residual variance structure.
-#' @param data A classed data frame from [brm_data()].
+#' @param data A classed data frame from [brm_data()], or an informative
+#'   prior archetype from a function like [brm_archetype_successive_cells()].
 #' @param intercept Logical of length 1.
 #'   `TRUE` (default) to include an intercept, `FALSE` to omit.
 #' @param baseline Logical of length 1.

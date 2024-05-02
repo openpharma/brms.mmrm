@@ -22,6 +22,7 @@ test_that("brm_archetype_successive_cells() change and non-subgroup", {
     baseline = TRUE,
     baseline_time = FALSE
   )
+  tmp <- capture.output(summary(out))
   out2 <- brm_archetype_successive_cells(
     out,
     prefix_interest = "y_",

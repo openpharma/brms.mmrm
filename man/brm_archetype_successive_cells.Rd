@@ -18,7 +18,8 @@ brm_archetype_successive_cells(
 )
 }
 \arguments{
-\item{data}{A classed data frame from \code{\link[=brm_data]{brm_data()}}.}
+\item{data}{A classed data frame from \code{\link[=brm_data]{brm_data()}}, or an informative
+prior archetype from a function like \code{\link[=brm_archetype_successive_cells]{brm_archetype_successive_cells()}}.}
 
 \item{covariates}{Logical of length 1.
 \code{TRUE} (default) to include any additive covariates declared with
@@ -183,18 +184,19 @@ dplyr::select(
 )
 archetype <- brm_archetype_successive_cells(data)
 archetype
+summary(archetype)
 formula <- brm_formula(archetype)
 formula
 label <- brm_prior_label(
-  code = "normal(1, 1)",
+  code = "normal(1, 2.2)",
   group = "group_1",
   time = "time_2"
 ) |>
-  brm_prior_label("normal(1, 2)", group = "group_1", time = "time_3") |>
-  brm_prior_label("normal(1, 3)", group = "group_1", time = "time_4") |>
-  brm_prior_label("normal(2, 1)", group = "group_2", time = "time_2") |>
-  brm_prior_label("normal(2, 2)", group = "group_2", time = "time_3") |>
-  brm_prior_label("normal(2, 3)", group = "group_2", time = "time_4")
+  brm_prior_label("normal(1, 3.3)", group = "group_1", time = "time_3") |>
+  brm_prior_label("normal(1, 4.4)", group = "group_1", time = "time_4") |>
+  brm_prior_label("normal(2, 2.2)", group = "group_2", time = "time_2") |>
+  brm_prior_label("normal(2, 3.3)", group = "group_2", time = "time_3") |>
+  brm_prior_label("normal(2, 4.4)", group = "group_2", time = "time_4")
 label
 prior <- brm_prior_archetype(archetype, label)
 prior

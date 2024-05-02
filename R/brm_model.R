@@ -4,8 +4,7 @@
 #' @description Fit an MMRM model using `brms`.
 #' @inheritSection brm_formula Parameterization
 #' @return A fitted model object from `brms`.
-#' @param data A special classed `tibble` returned from [brm_data()].
-#'   It should have one row per patient per discrete time point.
+#' @inheritParams brm_formula
 #' @param formula An object of class `"brmsformula"` from [brm_formula()]
 #'   or `brms::brmsformula()`. Should include the full mapping
 #'   of the model, including fixed effects, residual correlation,

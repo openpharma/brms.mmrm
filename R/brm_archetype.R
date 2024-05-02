@@ -162,3 +162,29 @@ brm_archetype_attributes <- function(data) {
   out <- out[grep("^brm_archetype_", names(out), value = TRUE)]
   out
 }
+
+#' @export
+summary.brms_mmrm_archetype <- function(object, ...) {
+  formula <- brm_formula(object)
+  transform <- brm_transform_marginal(object, formula, prefix = "")
+  transform <- transform[, attr(object, "brm_archetype_interest")]
+  marginals <- gsub("|", ":", rownames(transform), fixed = TRUE)
+  lines <- c(
+    "This tibble is an informative prior archetype in brms.mmrm.",
+    "The fixed effect parameters of interest express the",
+    "marginal means as follows (on the link scale):",
+    ""
+  )
+  for (index in seq_along(marginals)) {
+    coef <- transform[index, ]
+    terms <- colnames(transform)[coef != 0]
+    coef <- coef[coef != 0]
+    prefix <- ifelse(coef == 1, "", paste0(coef, "*"))
+    terms <- paste0(prefix, terms)
+    line <- paste("  ", marginals[index], "=", paste(terms, collapse = " + "))
+    lines <- c(lines, line)
+  }
+  lines <- paste("#", lines, sep = " ")
+  cat(lines, sep = "\n")
+  invisible()
+}

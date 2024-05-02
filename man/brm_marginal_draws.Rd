@@ -15,9 +15,14 @@ brm_marginal_draws(
 )
 }
 \arguments{
-\item{data}{Classed tibble with preprocessed data from \code{\link[=brm_data]{brm_data()}}.}
+\item{data}{A classed data frame from \code{\link[=brm_data]{brm_data()}}, or an informative
+prior archetype from a function like \code{\link[=brm_archetype_successive_cells]{brm_archetype_successive_cells()}}.}
 
-\item{formula}{Model formula from \code{\link[=brm_formula]{brm_formula()}}.}
+\item{formula}{An object of class \code{"brmsformula"} from \code{\link[=brm_formula]{brm_formula()}}
+or \code{brms::brmsformula()}. Should include the full mapping
+of the model, including fixed effects, residual correlation,
+and heterogeneity in the discrete-time-specific residual variance
+components.}
 
 \item{model}{A fitted model object from \code{\link[=brm_model]{brm_model()}}.}
 

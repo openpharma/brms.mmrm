@@ -14,8 +14,8 @@ brm_prior_simple(
 )
 }
 \arguments{
-\item{data}{A special classed \code{tibble} returned from \code{\link[=brm_data]{brm_data()}}.
-It should have one row per patient per discrete time point.}
+\item{data}{A classed data frame from \code{\link[=brm_data]{brm_data()}}, or an informative
+prior archetype from a function like \code{\link[=brm_archetype_successive_cells]{brm_archetype_successive_cells()}}.}
 
 \item{formula}{An object of class \code{"brmsformula"} from \code{\link[=brm_formula]{brm_formula()}}
 or \code{brms::brmsformula()}. Should include the full mapping

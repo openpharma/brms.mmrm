@@ -27,8 +27,7 @@
 #'   * `difference_subgroup`: subgroup differences: the `difference_group`
 #'     at each subgroup level minus the `difference_group` at the subgroup
 #'     reference level (`reference_subgroup`).
-#' @param data Classed tibble with preprocessed data from [brm_data()].
-#' @param formula Model formula from [brm_formula()].
+#' @inheritParams brm_model
 #' @param model A fitted model object from [brm_model()].
 #' @param transform Matrix with one row per marginal mean and one column
 #'   per model parameter. [brm_marginal_draws()] uses this matrix
