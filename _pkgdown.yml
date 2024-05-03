@@ -39,6 +39,7 @@ reference:
   - 'brm_archetype_cells'
   - 'brm_archetype_effects'
   - 'brm_archetype_successive_cells'
+  - 'brm_archetype_successive_effects'
 - title: Priors
   contents:
   - 'brm_prior_archetype'
