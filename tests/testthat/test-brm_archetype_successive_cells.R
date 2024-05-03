@@ -87,6 +87,25 @@ test_that("brm_archetype_successive_cells() change and non-subgroup", {
   expect_equal(param$variable, interest)
   expect_equal(param$group, rep(c("group_1", "group_2"), each = 3L))
   expect_equal(param$time, rep(c("time_2", "time_3", "time_4"), times = 2L))
+  grid <- dplyr::distinct(
+    out,
+    group,
+    time,
+    y_group_1_time_2,
+    y_group_1_time_3,
+    y_group_1_time_4,
+    y_group_2_time_2,
+    y_group_2_time_3,
+    y_group_2_time_4
+  ) |>
+    dplyr::arrange(group, time)
+  expect_equal(nrow(grid), 6L)
+  expect_equal(grid$group, rep(c("group_1", "group_2"), each = 3L))
+  expect_equal(grid$time, rep(paste0("time_", c(2L, 3L, 4L)), times = 2L))
+  expect_equal(
+    unname(as.matrix(grid[, seq(3L, 8L)])),
+    kronecker(diag(2), diag(3) + lower.tri(diag(3)))
+  )
 })
 
 test_that("brm_archetype_successive_cells() change non-sub options", {
@@ -327,6 +346,45 @@ test_that("brm_archetype_successive_cells() non-change subgroup", {
     )
   )
   expect_equal(param$time, rep(c("time_1", "time_2", "time_3"), times = 6L))
+  
+  
+  
+  grid <- dplyr::distinct(
+    out,
+    group,
+    subgroup,
+    time,
+    x_group_1_subgroup_1_time_1,
+    x_group_1_subgroup_1_time_2,
+    x_group_1_subgroup_1_time_3,
+    x_group_1_subgroup_2_time_1,
+    x_group_1_subgroup_2_time_2,
+    x_group_1_subgroup_2_time_3,
+    x_group_1_subgroup_3_time_1,
+    x_group_1_subgroup_3_time_2,
+    x_group_1_subgroup_3_time_3,
+    x_group_2_subgroup_1_time_1,
+    x_group_2_subgroup_1_time_2,
+    x_group_2_subgroup_1_time_3,
+    x_group_2_subgroup_2_time_1,
+    x_group_2_subgroup_2_time_2,
+    x_group_2_subgroup_2_time_3,
+    x_group_2_subgroup_3_time_1,
+    x_group_2_subgroup_3_time_2,
+    x_group_2_subgroup_3_time_3
+  ) |>
+    dplyr::arrange(group, subgroup, time)
+  expect_equal(nrow(grid), 18L)
+  expect_equal(grid$group, rep(c("group_1", "group_2"), each = 9L))
+  expect_equal(
+    grid$subgroup,
+    rep(rep(paste0("subgroup_", seq_len(3L)), each = 3L), times = 2L)
+  )
+  expect_equal(grid$time, rep(paste0("time_", seq_len(3L)), times = 6L))
+  expect_equal(
+    unname(as.matrix(grid[, seq(4L, 21L)])),
+    kronecker(diag(6L), diag(3L) + lower.tri(diag(3L)))
+  )
 })
 
 test_that("brm_archetype_successive_cells() baseline-subgroup interactions", {
