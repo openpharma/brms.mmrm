@@ -346,9 +346,6 @@ test_that("brm_archetype_successive_cells() non-change subgroup", {
     )
   )
   expect_equal(param$time, rep(c("time_1", "time_2", "time_3"), times = 6L))
-  
-  
-  
   grid <- dplyr::distinct(
     out,
     group,
