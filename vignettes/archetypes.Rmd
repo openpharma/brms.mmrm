@@ -55,7 +55,7 @@ dplyr::select(
 #> # ℹ 590 more rows
 ```
 
-Suppose we want to place informative priors on the successive differences between adjacent time points. This approach is appropriate and desirable in many situations because the structure naturally captures the prior correlations among adjacent visits of a clinical trial. To do this, we create an instance of the "successive cells" archetype.
+The functions listed at <https://openpharma.github.io/brms.mmrm/reference/index.html#informative-prior-archetypes> can create different kinds of informative prior archetypes from a dataset like the one above. For example, suppose we want to place informative priors on the successive differences between adjacent time points. This approach is appropriate and desirable in many situations because the structure naturally captures the prior correlations among adjacent visits of a clinical trial. To do this, we create an instance of the "successive cells" archetype.
 
 
 ```r
