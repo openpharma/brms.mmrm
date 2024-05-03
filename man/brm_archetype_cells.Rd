@@ -91,8 +91,8 @@ mean for a given value of treatment group and discrete time
 \section{Prior labeling for \code{\link[=brm_archetype_cells]{brm_archetype_cells()}}}{
 
 Within each treatment group, each model parameter is a cell mean,
-and the labeling scheme in \code{\link[=brm_prior_label]{brm_prior_label()}} and \code{\link[=prior_archetype]{prior_archetype()}}
-translate easily. For example,
+and the labeling scheme in \code{\link[=brm_prior_label]{brm_prior_label()}} and
+\code{\link[=brm_prior_archetype]{brm_prior_archetype()}} translate easily. For example,
 \code{brm_prior_label(code = "normal(1.2, 5)", group = "B", time = "VISIT2")}
 declares a \code{normal(1.2, 5)} prior on the cell mean of treatment
 group \code{B} at discrete time point \code{VISIT2}.

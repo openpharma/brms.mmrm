@@ -9,8 +9,8 @@
 #' @inheritSection brm_prior_archetype Prior labeling
 #' @section Prior labeling for [brm_archetype_cells()]:
 #'   Within each treatment group, each model parameter is a cell mean,
-#'   and the labeling scheme in [brm_prior_label()] and [prior_archetype()]
-#'   translate easily. For example,
+#'   and the labeling scheme in [brm_prior_label()] and
+#'   [brm_prior_archetype()] translate easily. For example,
 #'   `brm_prior_label(code = "normal(1.2, 5)", group = "B", time = "VISIT2")`
 #'   declares a `normal(1.2, 5)` prior on the cell mean of treatment
 #'   group `B` at discrete time point `VISIT2`.

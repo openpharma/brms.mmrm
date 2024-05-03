@@ -31,8 +31,8 @@
 #'   In the reference group (e.g. placebo) each fixed effect is a cell
 #'   mean at a time point. In each non-reference group, each fixed effect
 #'   is the treatment effect relative to the reference (at a time point).
-#'   The labeling scheme in [brm_prior_label()] and [prior_archetype()]
-#'   translate straightforwardly. For example,
+#'   The labeling scheme in [brm_prior_label()] and
+#'   [brm_prior_archetype()] translate straightforwardly. For example,
 #'   `brm_prior_label(code = "normal(1.2, 5)", group = "A", time = "2")`
 #'   declares a `normal(1.2, 5)` on `beta_2` (cell mean of the reference
 #'   group at time 2). Similarly,
