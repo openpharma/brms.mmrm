@@ -149,7 +149,7 @@ archetype_cells <- function(data, prefix) {
   matrix <- NULL
   for (name_group in levels_group) {
     for (name_time in levels_time) {
-      column <- data[[group]] == name_group & data[[time]] == name_time
+      column <- (data[[group]] == name_group) & (data[[time]] == name_time)
       matrix <- cbind(matrix, as.integer(column))
     }
   }

@@ -204,6 +204,7 @@ brm_plot_compare(model = summaries_model, data = summaries_data)
 }
 \seealso{
 Other informative prior archetypes: 
+\code{\link{brm_archetype_effects}()},
 \code{\link{brm_archetype_successive_cells}()}
 }
 \concept{informative prior archetypes}
