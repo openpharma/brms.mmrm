@@ -141,7 +141,8 @@ Directly supplied to the \code{cov} argument in \code{brms} for
 response, \code{FALSE} to omit.
 Default is \code{TRUE} if \code{\link[=brm_data]{brm_data()}} previously declared a baseline
 variable in the dataset.
-For informative prior archetypes, this option is set in
+Ignored for informative prior archetypes.
+For informative prior archetypes, this option should be set in
 functions like \code{\link[=brm_archetype_successive_cells]{brm_archetype_successive_cells()}} rather than in
 \code{\link[=brm_formula]{brm_formula()}} in order to make sure columns are appropriately
 centered and the underlying model matrix has full rank.}
@@ -153,7 +154,8 @@ centered and the underlying model matrix has full rank.}
 \code{FALSE} to omit.
 Default is \code{TRUE} if \code{\link[=brm_data]{brm_data()}} previously declared baseline
 and subgroup variables in the dataset.
-For informative prior archetypes, this option is set in
+Ignored for informative prior archetypes.
+For informative prior archetypes, this option should be set in
 functions like \code{\link[=brm_archetype_successive_cells]{brm_archetype_successive_cells()}} rather than in
 \code{\link[=brm_formula]{brm_formula()}} in order to make sure columns are appropriately
 centered and the underlying model matrix has full rank.}
@@ -162,7 +164,8 @@ centered and the underlying model matrix has full rank.}
 \code{TRUE} to include baseline-by-time interaction, \code{FALSE} to omit.
 Default is \code{TRUE} if \code{\link[=brm_data]{brm_data()}} previously declared a baseline
 variable in the dataset.
-For informative prior archetypes, this option is set in
+Ignored for informative prior archetypes.
+For informative prior archetypes, this option should be set in
 functions like \code{\link[=brm_archetype_successive_cells]{brm_archetype_successive_cells()}} rather than in
 \code{\link[=brm_formula]{brm_formula()}} in order to make sure columns are appropriately
 centered and the underlying model matrix has full rank.}

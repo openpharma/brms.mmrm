@@ -53,7 +53,8 @@
 #'   response, `FALSE` to omit.
 #'   Default is `TRUE` if [brm_data()] previously declared a baseline
 #'   variable in the dataset.
-#'   For informative prior archetypes, this option is set in
+#'   Ignored for informative prior archetypes.
+#'   For informative prior archetypes, this option should be set in
 #'   functions like [brm_archetype_successive_cells()] rather than in
 #'   [brm_formula()] in order to make sure columns are appropriately
 #'   centered and the underlying model matrix has full rank.
@@ -61,7 +62,8 @@
 #'   `TRUE` to include baseline-by-subgroup interaction, `FALSE` to omit.
 #'   Default is `TRUE` if [brm_data()] previously declared baseline
 #'   and subgroup variables in the dataset.
-#'   For informative prior archetypes, this option is set in
+#'   Ignored for informative prior archetypes.
+#'   For informative prior archetypes, this option should be set in
 #'   functions like [brm_archetype_successive_cells()] rather than in
 #'   [brm_formula()] in order to make sure columns are appropriately
 #'   centered and the underlying model matrix has full rank.
@@ -70,7 +72,8 @@
 #'   `FALSE` to omit.
 #'   Default is `TRUE` if [brm_data()] previously declared baseline
 #'   and subgroup variables in the dataset.
-#'   For informative prior archetypes, this option is set in
+#'   Ignored for informative prior archetypes.
+#'   For informative prior archetypes, this option should be set in
 #'   functions like [brm_archetype_successive_cells()] rather than in
 #'   [brm_formula()] in order to make sure columns are appropriately
 #'   centered and the underlying model matrix has full rank.
@@ -78,7 +81,8 @@
 #'   `TRUE` to include baseline-by-time interaction, `FALSE` to omit.
 #'   Default is `TRUE` if [brm_data()] previously declared a baseline
 #'   variable in the dataset.
-#'   For informative prior archetypes, this option is set in
+#'   Ignored for informative prior archetypes.
+#'   For informative prior archetypes, this option should be set in
 #'   functions like [brm_archetype_successive_cells()] rather than in
 #'   [brm_formula()] in order to make sure columns are appropriately
 #'   centered and the underlying model matrix has full rank.
