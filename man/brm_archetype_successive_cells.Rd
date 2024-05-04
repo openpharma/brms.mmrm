@@ -190,7 +190,7 @@ archetype
 summary(archetype)
 formula <- brm_formula(archetype)
 formula
-label <- brm_prior_label(
+prior <- brm_prior_label(
   code = "normal(1, 2.2)",
   group = "group_1",
   time = "time_2"
