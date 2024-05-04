@@ -536,6 +536,10 @@ test_that("brm_formula() archetype non-subgroup", {
       levels = c("present", "absent")
     )
   archetype <- brm_archetype_successive_cells(data)
+  expect_warning(
+    brm_formula(archetype, baseline = TRUE),
+    class = "brm_warn"
+  )
   out <- brm_formula(archetype, check_rank = TRUE)
   expect_s3_class(out, "brms_mmrm_formula_archetype")
   expect_s3_class(out, "brms_mmrm_formula")
