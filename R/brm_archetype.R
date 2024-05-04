@@ -178,7 +178,7 @@ summary.brms_mmrm_archetype <- function(object, ...) {
   for (index in seq_along(marginals)) {
     coef <- transform[index, ]
     terms <- colnames(transform)[coef != 0]
-    coef <- round(coef[coef != 0], 2)
+    coef <- round(coef[coef != 0], digits = 2)
     prefix <- ifelse(coef == 1, "", paste0(coef, "*"))
     terms <- paste0(prefix, terms)
     line <- paste("  ", marginals[index], "=", paste(terms, collapse = " + "))
