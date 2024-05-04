@@ -98,7 +98,7 @@ label
 `brm_prior_archetype()` knows how to translate the labeled priors to specific `brms` parameters on successive differences. 
 
 ```{r}
-prior <- brm_prior_archetype(archetype, label)
+prior <- brm_prior_archetype(label = label, archetype = archetype)
 prior
 ```
 
