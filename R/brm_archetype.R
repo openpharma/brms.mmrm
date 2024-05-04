@@ -179,7 +179,7 @@ summary.brms_mmrm_archetype <- function(object, ...) {
     coef <- transform[index, ]
     terms <- colnames(transform)[coef != 0]
     coef <- coef[coef != 0]
-    prefix <- ifelse(coef == 1, "", paste0(coef, "*"))
+    prefix <- ifelse(coef == 1, "", paste0(round(coef, 2), "*"))
     terms <- paste0(prefix, terms)
     line <- paste("  ", marginals[index], "=", paste(terms, collapse = " + "))
     lines <- c(lines, line)
