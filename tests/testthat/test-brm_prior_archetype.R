@@ -24,7 +24,7 @@ test_that("brm_prior_archetype() non-subgroup", {
     brm_prior_label("normal(2, 1)", group = "group_2", time = "time_1") |>
     brm_prior_label("normal(2, 2)", group = "group_2", time = "time_2") |>
     brm_prior_label("normal(2, 3)", group = "group_2", time = "time_3")
-  prior <- brm_prior_archetype(archetype, label)
+  prior <- brm_prior_archetype(archetype, label = label)
   expect_s3_class(prior, "brmsprior")
   expect_equal(
     prior$prior,
@@ -86,7 +86,7 @@ test_that("brm_prior_archetype() subgroup", {
       subgroup = "subgroup_1",
       time = "time_2"
     )
-  prior <- brm_prior_archetype(archetype, label)
+  prior <- brm_prior_archetype(archetype, label = label)
   expect_s3_class(prior, "brmsprior")
   expect_equal(
     prior$prior,

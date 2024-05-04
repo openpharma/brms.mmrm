@@ -56,10 +56,10 @@
 #'   brm_prior_label("normal(2, 2)", group = "group_2", time = "time_2") |>
 #'   brm_prior_label("normal(2, 3)", group = "group_2", time = "time_3")
 #' label
-#' prior <- brm_prior_archetype(archetype, label)
+#' prior <- brm_prior_archetype(label = label, archetype = archetype)
 #' prior
 #' class(prior)
-brm_prior_archetype <- function(archetype, label) {
+brm_prior_archetype <- function(label, archetype) {
   brm_data_validate(archetype)
   assert(
     inherits(archetype, "brms_mmrm_archetype"),
