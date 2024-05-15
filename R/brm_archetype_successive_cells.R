@@ -47,6 +47,8 @@
 #'   `brm_prior_label(code = "normal(1.2, 5)", group = "A", time = "1")`.
 #'   Similarly, you cal label the prior on `beta_5` with
 #'   `brm_prior_label(code = "normal(1.3, 7)", group = "B", time = "2")`.
+#'   To confirm that you set the prior correctly, compare the `brms` prior
+#'   with the output of `summary(your_archetype)`.
 #'   See the examples for details.
 #' @return A special classed `tibble` with data tailored to
 #'   the successive differences archetype. The dataset is augmented with

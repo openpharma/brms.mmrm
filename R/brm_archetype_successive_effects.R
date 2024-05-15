@@ -35,16 +35,7 @@
 #'   times 2 and 1, relative to treatment group A.
 #'   Similarly, `beta_6` is the treatment effect of the difference between
 #'   times 3 and 2, relative to treatment group A.
-#' @section Nuisance variables:
-#'   In the presence of covariate adjustment, functions like
-#'   [brm_archetype_successive_effects()] convert nuisance factors into binary
-#'   dummy variables, then center all those dummy variables and any
-#'   continuous nuisance variables at their means in the data.
-#'   This ensures that the main model coefficients
-#'   of interest are not implicitly conditional on a subset of the data.
-#'   In other words, preprocessing nuisance variables this way preserves
-#'   the interpretations of the fixed effects of interest, and it ensures
-#'   informative priors can be specified correctly.
+#' @inheritSection brm_archetype_successive_cells Nuisance variables
 #' @inheritSection brm_prior_archetype Prior labeling
 #' @section Prior labeling for [brm_archetype_successive_effects()]:
 #'   Within each treatment group, each intercept is labeled by the earliest
@@ -56,6 +47,8 @@
 #'   `brm_prior_label(code = "normal(1.2, 5)", group = "A", time = "1")`.
 #'   Similarly, you cal label the prior on `beta_5` with
 #'   `brm_prior_label(code = "normal(1.3, 7)", group = "B", time = "2")`.
+#'   To confirm that you set the prior correctly, compare the `brms` prior
+#'   with the output of `summary(your_archetype)`.
 #'   See the examples for details.
 #' @return A special classed `tibble` with data tailored to
 #'   the successive differences archetype. The dataset is augmented with

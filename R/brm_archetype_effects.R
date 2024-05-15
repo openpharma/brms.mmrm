@@ -39,6 +39,9 @@
 #'   `brm_prior_label(code = "normal(1.3, 6)", group = "B", time = "2")`
 #'   declares a `normal(1.3, 6)` prior on the treatment effect of group
 #'   `B` relative to group `A` at discrete time point `2`.
+#'   To confirm that you set the prior correctly, compare the `brms` prior
+#'   with the output of `summary(your_archetype)`.
+#'   See the examples for details.
 #' @return A special classed `tibble` with data tailored to
 #'   the successive differences archetype. The dataset is augmented with
 #'   extra columns with the `"archetype_"` prefix, as well as special

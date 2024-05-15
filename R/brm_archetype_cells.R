@@ -14,6 +14,9 @@
 #'   `brm_prior_label(code = "normal(1.2, 5)", group = "B", time = "VISIT2")`
 #'   declares a `normal(1.2, 5)` prior on the cell mean of treatment
 #'   group `B` at discrete time point `VISIT2`.
+#'   To confirm that you set the prior correctly, compare the `brms` prior
+#'   with the output of `summary(your_archetype)`.
+#'   See the examples for details.
 #' @return A special classed `tibble` with data tailored to
 #'   the successive differences archetype. The dataset is augmented with
 #'   extra columns with the `"archetype_"` prefix, as well as special

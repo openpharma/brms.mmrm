@@ -79,7 +79,7 @@ The factors of interest linearly map to marginal means. To see the mapping, call
 summary(archetype)
 ```
 
-The above output reveals a natural way to label parameters of interest using the marginal means they map to. For example, the `x_group_1_time_2` parameter corresponds to `group_1` and `time_2`, and the `x_group_2_time_3` parameter corresponds to `group_2` and `time_3`. We use this labeling idea to build an informative prior on the successive difference parameters `x_group_1_time_2`, `x_group_1_time_3`, etc. First, we assign univariate priors to marginal labels in a labeling scheme.
+In the printed output above, parameters of interest such as `x_group_1_time_2` and `x_group_2_time_3` are always labeled using treatment groups and time points in the data (and subgroup levels, if applicable). Even though different archetypes have different parameterizations and thus different ways of expressing marginal means, this labeling scheme remains consistent across all archetypes. `brms.mmrm` uses this to help you assign priors. First, match your priors to levels in the data.
 
 ```{r}
 label <- brm_prior_label(
@@ -95,7 +95,7 @@ label <- brm_prior_label(
 label
 ```
 
-`brm_prior_archetype()` knows how to translate the labeled priors to specific `brms` parameters on successive differences. 
+Those `group` and `time` labels map your priors to the corresponding `x_*` parameters.
 
 ```{r}
 prior <- brm_prior_archetype(label = label, archetype = archetype)
