@@ -103,6 +103,7 @@ nuisance_baseline_terms <- function(data, baseline, formula) {
 }
 
 nuisance_full_rank <- function(data, interest, nuisance) {
+  out <- nuisance
   index <- !is.na(data[[attr(data, "brm_outcome")]])
   interest <- interest[index, ]
   nuisance <- nuisance[index, ]
@@ -120,7 +121,7 @@ nuisance_full_rank <- function(data, interest, nuisance) {
       "and include a small runnable reproducible example."
     )
   )
-  nuisance[, intersect(colnames(nuisance), names), drop = FALSE]
+  out[, intersect(colnames(out), names), drop = FALSE]
 }
 
 columns_full_rank <- function(x) {
