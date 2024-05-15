@@ -103,7 +103,7 @@
 #' summary(archetype)
 #' formula <- brm_formula(archetype)
 #' formula
-#' label <- brm_prior_label(
+#' prior <- brm_prior_label(
 #'   code = "normal(1, 2.2)",
 #'   group = "group_1",
 #'   time = "time_2"
@@ -112,9 +112,8 @@
 #'   brm_prior_label("normal(1, 4.4)", group = "group_1", time = "time_4") |>
 #'   brm_prior_label("normal(2, 2.2)", group = "group_2", time = "time_2") |>
 #'   brm_prior_label("normal(2, 3.3)", group = "group_2", time = "time_3") |>
-#'   brm_prior_label("normal(2, 4.4)", group = "group_2", time = "time_4")
-#' label
-#' prior <- brm_prior_archetype(archetype, label)
+#'   brm_prior_label("normal(2, 4.4)", group = "group_2", time = "time_4") |>
+#'   brm_prior_archetype(archetype)
 #' prior
 #' class(prior)
 #' if (identical(Sys.getenv("BRM_EXAMPLES", unset = ""), "true")) {

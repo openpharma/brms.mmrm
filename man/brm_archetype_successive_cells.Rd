@@ -47,7 +47,8 @@ subgroup, or time). Must not be the same value as \code{prefix_interest}.}
 response, \code{FALSE} to omit.
 Default is \code{TRUE} if \code{\link[=brm_data]{brm_data()}} previously declared a baseline
 variable in the dataset.
-For informative prior archetypes, this option is set in
+Ignored for informative prior archetypes.
+For informative prior archetypes, this option should be set in
 functions like \code{\link[=brm_archetype_successive_cells]{brm_archetype_successive_cells()}} rather than in
 \code{\link[=brm_formula]{brm_formula()}} in order to make sure columns are appropriately
 centered and the underlying model matrix has full rank.}
@@ -59,7 +60,8 @@ centered and the underlying model matrix has full rank.}
 \code{FALSE} to omit.
 Default is \code{TRUE} if \code{\link[=brm_data]{brm_data()}} previously declared baseline
 and subgroup variables in the dataset.
-For informative prior archetypes, this option is set in
+Ignored for informative prior archetypes.
+For informative prior archetypes, this option should be set in
 functions like \code{\link[=brm_archetype_successive_cells]{brm_archetype_successive_cells()}} rather than in
 \code{\link[=brm_formula]{brm_formula()}} in order to make sure columns are appropriately
 centered and the underlying model matrix has full rank.}
@@ -68,7 +70,8 @@ centered and the underlying model matrix has full rank.}
 \code{TRUE} to include baseline-by-time interaction, \code{FALSE} to omit.
 Default is \code{TRUE} if \code{\link[=brm_data]{brm_data()}} previously declared a baseline
 variable in the dataset.
-For informative prior archetypes, this option is set in
+Ignored for informative prior archetypes.
+For informative prior archetypes, this option should be set in
 functions like \code{\link[=brm_archetype_successive_cells]{brm_archetype_successive_cells()}} rather than in
 \code{\link[=brm_formula]{brm_formula()}} in order to make sure columns are appropriately
 centered and the underlying model matrix has full rank.}
@@ -187,7 +190,7 @@ archetype
 summary(archetype)
 formula <- brm_formula(archetype)
 formula
-label <- brm_prior_label(
+prior <- brm_prior_label(
   code = "normal(1, 2.2)",
   group = "group_1",
   time = "time_2"
@@ -196,9 +199,8 @@ label <- brm_prior_label(
   brm_prior_label("normal(1, 4.4)", group = "group_1", time = "time_4") |>
   brm_prior_label("normal(2, 2.2)", group = "group_2", time = "time_2") |>
   brm_prior_label("normal(2, 3.3)", group = "group_2", time = "time_3") |>
-  brm_prior_label("normal(2, 4.4)", group = "group_2", time = "time_4")
-label
-prior <- brm_prior_archetype(archetype, label)
+  brm_prior_label("normal(2, 4.4)", group = "group_2", time = "time_4") |>
+  brm_prior_archetype(archetype)
 prior
 class(prior)
 if (identical(Sys.getenv("BRM_EXAMPLES", unset = ""), "true")) {
