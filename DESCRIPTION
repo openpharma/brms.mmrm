@@ -1,6 +1,6 @@
 Package: brms.mmrm
 Title: Bayesian MMRMs using 'brms'
-Version: 0.1.0.9004
+Version: 0.1.0.9005
 Authors@R: c(
   person(
     given = c("William", "Michael"),
