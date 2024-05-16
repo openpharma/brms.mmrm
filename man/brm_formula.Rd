@@ -336,6 +336,7 @@ formula
 }
 \seealso{
 Other models: 
+\code{\link{brm_formula_sigma}()},
 \code{\link{brm_model}()}
 }
 \concept{models}
