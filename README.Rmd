@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 [![cover](https://github.com/openpharma/brms.mmrm/workflows/cover/badge.svg)](https://github.com/openpharma/brms.mmrm/actions?query=workflow%3Acover)
 [![lint](https://github.com/openpharma/brms.mmrm/workflows/lint/badge.svg)](https://github.com/openpharma/brms.mmrm/actions?query=workflow%3Alint)
 
-The [mixed model for repeated measures (MMRM)](https://link.springer.com/article/10.1177/009286150804200402) is a popular model for longitudinal clinical trial data with continuous endpoints, and [`brms`](https://paul-buerkner.github.io/brms/) is powerful and versatile package for fitting Bayesian regression models. The `brms.mmrm` R package leverages [`brms`](https://paul-buerkner.github.io/brms/) to run [MMRMs](https://link.springer.com/article/10.1177/009286150804200402), and it supports a simplified interfaced to reduce difficulty and align with best practices for the life sciences.
+The [mixed model for repeated measures (MMRM)](https://link.springer.com/article/10.1177/009286150804200402) is a popular model for longitudinal clinical trial data with continuous endpoints, and [`brms`](https://paul-buerkner.github.io/brms/) is powerful and versatile package for fitting Bayesian regression models. The `brms.mmrm` R package leverages [`brms`](https://paul-buerkner.github.io/brms/) to run [MMRMs](https://link.springer.com/article/10.1177/009286150804200402), and it supports a simplified interface to reduce difficulty and align with best practices for the life sciences.
 
 ## Installation
 
@@ -41,7 +41,7 @@ To ensure the correctness of the model and its implementation, this package has 
 * [FEV1 data comparison between Bayesian and frequentist MMRMs](https://openpharma.github.io/brms.mmrm/articles/fev1.html).
 * [BCVA data comparison between Bayesian and frequentist MMRMs](https://openpharma.github.io/brms.mmrm/articles/bcva.html).
 
-Notably, [FEV1](https://openpharma.github.io/mmrm/latest-tag/reference/fev_data.html) and [BCVA](https://openpharma.github.io/mmrm/latest-tag/reference/bcva_data.html) are the same datasets that [`mmrm`](https://openpharma.github.io/mmrm/latest-tag/) uses to compare itself against SAS in [this vignette](https://openpharma.github.io/mmrm/latest-tag/articles/mmrm_review_methods.html). For additional validation in your functional area or domain of expertise, you may choose to run the similar analyses on your own datasets to compare `brms.mmrm` against [`mmrm`](https://openpharma.github.io/mmrm/latest-tag/) and/or SAS.
+Notably, [FEV1](https://openpharma.github.io/mmrm/latest-tag/reference/fev_data.html) and [BCVA](https://openpharma.github.io/mmrm/latest-tag/reference/bcva_data.html) are the same datasets that [`mmrm`](https://openpharma.github.io/mmrm/latest-tag/) uses to compare itself against SAS in [this vignette](https://openpharma.github.io/mmrm/latest-tag/articles/mmrm_review_methods.html). For additional validation in your functional area or domain of expertise, you may choose to run similar analyses on your own datasets to compare `brms.mmrm` against [`mmrm`](https://openpharma.github.io/mmrm/latest-tag/) and/or SAS.
 
 ## Help
 
