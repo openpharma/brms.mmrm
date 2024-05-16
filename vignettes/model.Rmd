@@ -12,51 +12,53 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-The `brms.mmrm` R package implements a mixed model of repeated measures (MMRM), a popular and flexible model to analyze continuous longitudinal outcomes (@mallinckrodt2008, @mallinckrodt2017, @bamdd). `brms.mmrm` focuses on marginal MMRMs for randomized controlled parallel studies with discrete time points, where each subject shares the same set of time points. Whereas the [`mmrm`](https://openpharma.github.io/mmrm/) package is frequentist, `brms.mmrm` fits models in Bayesian fashion using [`brms`](https://paul-buerkner.github.io/brms/) [@burkner2017].
+The `brms.mmrm` R package implements a mixed model of repeated measures (MMRM), a popular and flexible model to analyze continuous longitudinal outcomes (@mallinckrodt2008, @mallinckrodt2017, @bamdd). `brms.mmrm` focuses on marginal MMRMs for randomized controlled parallel studies with discrete time points, where each patient shares the same set of time points. Whereas the [`mmrm`](https://openpharma.github.io/mmrm/) package is frequentist, `brms.mmrm` fits models in Bayesian fashion using [`brms`](https://paul-buerkner.github.io/brms/) [@burkner2017].
 
 # Model
 
-The MMRM in `brms.mmrm` is mathematically expressed as follows. Subsequent sections define notation, data, parameters, and priors.
+The MMRM in `brms.mmrm` is mathematically expressed as follows. It is a multivariate linear model with random effects implicitly marginalized out. The standard deviations are distributional parameters, which are explained in <https://paul-buerkner.github.io/brms/articles/brms_distreg.html>.
 
 $$
 \begin{aligned}
-&y_i \stackrel{\text{ind}}{\sim} \text{Multivariate-Normal} \left (\text{mean} = X_{i} \beta, \ \text{covariance} = \text{diag}(Z_i\sigma) \cdot \Lambda \cdot \text{diag}(Z_i\sigma) \right ) \\
+&y_i \stackrel{\text{ind}}{\sim} \text{Multivariate-Normal} \left (\text{mean} = X_{i} \beta, \ \text{covariance} = \text{diag}(\sigma_i) \cdot \Lambda \cdot \text{diag}(\sigma_i) \right ) \\
 &\qquad \beta_p \stackrel{\text{ind}}{\sim} q_p() \\
 &\qquad \Lambda \sim r() \\
-&\qquad \tau_t = \log(\sigma_t) \\
-&\qquad \qquad \tau_t \stackrel{\text{ind}}{\sim} s()
+&\qquad \sigma_i = \exp(Z_i \tau) \\
+&\qquad \qquad \tau_q \stackrel{\text{ind}}{\sim} s()
 \end{aligned}
 $$
 
+The sections below define the notation, data, parameters, and priors used in the model statement above.
+
 # Notation
 
-* $i$: positive integer index of a subject or patient in the study.
-* $t$: positive integer index of a discrete time point in the study.
-* $p$: positive integer index of a model coefficient parameter $\beta_p$.
+* $i$: positive integer index of a patient (or subject) in the study.
+* $p$: positive integer index of a scalar element of the fixed effect parameter vector $\beta$.
+* $q$: positive integer index of a scalar element of the parameter vector $\tau$.
 * $\theta_j \stackrel{\text{ind}}{\sim} f()$: assuming $j$ is a positive integer index that ranges from 1 to positive integer $J$, this notation declares that parameters $\theta_1, \ldots, \theta_J$ are independent and each follow the prior distribution with a common probability density function $f()$.
 * $\theta_j \stackrel{\text{ind}}{\sim} f_j()$: same as above, except each $\theta_j$ parameter follows its own separate prior distribution with probability density function $p_j()$. $p_i()$ and $f_j()$ may differ if $i \ne j$.
 * $\text{diag}(\theta)$: diagonal matrix with the scalar elements of vector $\theta$ on the diagonal and off-diagonal elements equal to 0. The number of rows and number of columns in this matrix are both equal to the number of elements in vector $\theta$.
 
 # Data
 
-* $y_i$: numeric vector of outcome observations for subject $i$. The number of elements in the vector equals the number of discrete time points in the study, and for the purposes of this model specification, they are sorted chronologically with the first element of $y_i$ observed first in the study. One or more elements of each $y_i$ may be missing due to dropout, discontinuation, etc. The likelihood of the model assumes $y_i$ is independent of $y_j$ for $i \ne j$.
-* $X_i$: the rows of the fixed effect model matrix which correspond to subject $i$. The rows of $X_i$ correspond to the elements of the vector $y_i$ (equivalently, the discrete time points of the study), and the columns of $X_i$ correspond to the model coefficient parameters $\beta_p$. The value of $X_i$ is determined by the data and by the fixed effect parameterization declared through `brm_formula()`.
-* $Z_i$: the rows of the standard deviation model matrix which correspond to subject $i$. The rows of $Z_i$ correspond to the elements of the vector $y_i$ (equivalently, the discrete time points of the study), and the columns of $Z_i$ correspond to the scalar elements of $\sigma$. The value of $Z_i$ is determined by the data and by the fixed effect parameterization declared through `brm_formula()`.
+* $y_i$: numeric vector of outcome observations for patient $i$. The number of elements in the vector equals the number of discrete time points in the study, and for the purposes of this model specification, they are sorted chronologically with the first element of $y_i$ observed first in the study. One or more elements of each $y_i$ may be missing due to dropout, discontinuation, etc. The likelihood of the model assumes $y_i$ is independent of $y_j$ for $i \ne j$.
+* $X_i$: the rows of the fixed effect model matrix which correspond to patient $i$. The rows of $X_i$ correspond to the elements of the vector $y_i$ (equivalently, the discrete time points of the study), and the columns of $X_i$ correspond to the model coefficient parameters $\beta_p$. The value of $X_i$ is determined by the data and by the fixed effect parameterization declared through `brm_formula()`.
+* $Z_i$: the rows of the standard deviation model matrix which correspond to patient $i$. The rows of $Z_i$ correspond to the elements of the vector $y_i$ (equivalently, the discrete time points of the study), and the columns of $Z_i$ correspond to the scalar elements of the parameter vector $\tau$. The value of $Z_i$ is determined by the data and by the fixed effect parameterization declared through `brm_formula()`.
 
 # Parameters
 
 * $\beta$: vector of model coefficients. $\beta_p$ is scalar element $p$ of $\beta$. In subgroup analysis, $\beta$ contains model coefficients for different subgroup levels, as well as any interaction terms declared through the model formula.
-* $\Lambda$: matrix of pairwise correlations among each pair of time points within subjects. Outcomes measured from different subjects are assumed to be independent, and outcomes observed at different time points for the same subject are assumed to be correlated according to this matrix. $\Lambda$ is positive-definite and symmetric, and the number of rows and columns is equal to the number of discrete time points of the study. 
-* $\sigma$: in the heterogeneous variance model, $\sigma$ is a vector of time-point-specific standard deviations of the residuals on the linear scale. $\sigma_t$ is scalar element $t$ of $\sigma$. In the homogeneous variance model, $\sigma$ is a scalar shared by all time points.
-* $\tau$: same as $\sigma$, but on the natural logarithmic scale. In the heterogeneous variance case, $\tau$ is a vector of time-specific elements $\tau_t$, and each scalar element $\tau_t$ of $\tau$ is defined as the natural logarithm of $\sigma_t$. In the homogeneous variance case, $\tau$ is a scalar, still on the natural log scale (log of $\sigma$).
+* $\Lambda$: matrix of pairwise correlations among each pair of time points within patients. Outcomes measured from different patients are assumed to be independent, and outcomes observed at different time points for the same patient are assumed to be correlated according to this matrix. $\Lambda$ is positive-definite and symmetric, and the number of rows and columns is equal to the number of discrete time points of the study. 
+* $\sigma_i$: a vector of linear-scale standard deviations for patient `i`. $\sigma_i$ has one element for each unique discrete time point in the study.
+* $\tau$: a vector on the log scale which parameterizes the standard deviations of the model. $\tau_q$ is scalar element $q$ of $\tau$. For each patient $i$, each $\sigma_i$ is equal to $\exp(Z_i \tau)$. This allows `brms.mmrm` to utilize the flexibility of `brms` for distributional models: <https://paul-buerkner.github.io/brms/articles/brms_distreg.html>.
 
 # Priors
 
 The priors on the parameters depend on the `prior` argument of `brm_model()` and related functions. If priors are not specified by the user, then the [`brms`](https://paul-buerkner.github.io/brms/) package sets defaults. You can view the default priors using the [`get_prior()`](http://paul-buerkner.github.io/brms/reference/get_prior.html) function in [`brms`](https://paul-buerkner.github.io/brms/). See the [`brms`](https://paul-buerkner.github.io/brms/) for information on how [`brms`](https://paul-buerkner.github.io/brms/) sets default priors.
 
 * $q_p()$: univariate prior on the model coefficient $\beta_p$.
-* $r()$: matrix prior on the within-subject residual correlation matrix parameter $\Lambda$. Can be unstructured, autoregressive moving average, autoregressive, moving average, or compound symmetry, c.f. <https://paul-buerkner.github.io/brms/reference/autocor-terms.html>.
-* $s()$: univariate prior on the scalar components of the natural-log-standard-deviation parameter $\tau$. The components of $\tau$ are assumed independent and identically distributed with this univariate prior.
+* $r()$: matrix prior on the within-patient residual correlation matrix parameter $\Lambda$. Can be unstructured, autoregressive moving average, autoregressive, moving average, or compound symmetry, c.f. <https://paul-buerkner.github.io/brms/reference/autocor-terms.html>.
+* $s()$: univariate prior on the individual scalar components of $\tau$. The components of $\tau$ are assumed independent and identically distributed with this univariate prior.
 
 # Sampling
 
