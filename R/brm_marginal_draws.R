@@ -293,7 +293,6 @@ get_draws_sigma <- function(
 ) {
   draws <- tibble::as_tibble(posterior::as_draws_df(model))
   draws <- draws[, grep("^b_sigma_", colnames(draws), value = TRUE)]
-  draws <- exp(draws)
   x <- brms::make_standata(formula = formula, data = data)$X_sigma
   colnames(x) <- paste0("b_", colnames(x))
   x <- as.data.frame(x)
@@ -317,7 +316,7 @@ get_draws_sigma <- function(
   transform <- as.matrix(transform)
   out <- tibble::as_tibble(as.data.frame(as.matrix(draws) %*% t(transform)))
   colnames(out) <- name
-  out
+  exp(out)
 }
 
 get_draws_effect <- function(

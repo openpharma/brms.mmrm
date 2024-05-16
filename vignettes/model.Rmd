@@ -18,31 +18,13 @@ The `brms.mmrm` R package implements a mixed model of repeated measures (MMRM), 
 
 The MMRM in `brms.mmrm` is mathematically expressed as follows. Subsequent sections define notation, data, parameters, and priors.
 
-## Heterogeneous variance model
-
-If the user selects heterogeneous variance in `brm_formula()`, then the model is expressed as follows.
-
 $$
 \begin{aligned}
-&y_i \stackrel{\text{ind}}{\sim} \text{Multivariate-Normal} \left (\text{mean} = X_{i} \beta, \ \text{covariance} = \text{diag}(\sigma) \cdot \Lambda \cdot \text{diag}(\sigma) \right ) \\
+&y_i \stackrel{\text{ind}}{\sim} \text{Multivariate-Normal} \left (\text{mean} = X_{i} \beta, \ \text{covariance} = \text{diag}(Z_i\sigma) \cdot \Lambda \cdot \text{diag}(Z_i\sigma) \right ) \\
 &\qquad \beta_p \stackrel{\text{ind}}{\sim} q_p() \\
 &\qquad \Lambda \sim r() \\
 &\qquad \tau_t = \log(\sigma_t) \\
 &\qquad \qquad \tau_t \stackrel{\text{ind}}{\sim} s()
-\end{aligned}
-$$
-
-## Homogeneous variance model
-
-If the user select homogeneous variance in `brm_formula()`, then all discrete time points share the same standard deviation parameter, and $\sigma$ and $\tau$ are scalars instead of vectors.
-
-$$
-\begin{aligned}
-&y_i \stackrel{\text{ind}}{\sim} \text{Multivariate-Normal} \left (\text{mean} = X_{i} \beta, \ \text{covariance} =  \sigma^2 \Lambda  \right ) \\
-&\qquad \beta_p \stackrel{\text{ind}}{\sim} q_p() \\
-&\qquad \Lambda \sim r() \\
-&\qquad \tau = \log(\sigma) \\
-&\qquad \qquad \tau \sim s()
 \end{aligned}
 $$
 
@@ -58,7 +40,8 @@ $$
 # Data
 
 * $y_i$: numeric vector of outcome observations for subject $i$. The number of elements in the vector equals the number of discrete time points in the study, and for the purposes of this model specification, they are sorted chronologically with the first element of $y_i$ observed first in the study. One or more elements of each $y_i$ may be missing due to dropout, discontinuation, etc. The likelihood of the model assumes $y_i$ is independent of $y_j$ for $i \ne j$.
-* $X_i$: a matrix containing the rows of the model matrix that correspond to subject $i$. The rows of $X_i$ correspond to the elements of the vector $y_i$ (equivalently, the discrete time points of the study), and the columns of $X_i$ correspond to the model coefficient parameters $\beta_p$. The composition of $X_i$ is determined by the covariates in the input dataset and the choice of model formula supplied by the user (via `brm_formula()`). In subgroup analysis, $X_i$ contains columns denoting different subgroup levels, as well as any interaction terms declared through the formula.
+* $X_i$: the rows of the fixed effect model matrix which correspond to subject $i$. The rows of $X_i$ correspond to the elements of the vector $y_i$ (equivalently, the discrete time points of the study), and the columns of $X_i$ correspond to the model coefficient parameters $\beta_p$. The value of $X_i$ is determined by the data and by the fixed effect parameterization declared through `brm_formula()`.
+* $Z_i$: the rows of the standard deviation model matrix which correspond to subject $i$. The rows of $Z_i$ correspond to the elements of the vector $y_i$ (equivalently, the discrete time points of the study), and the columns of $Z_i$ correspond to the scalar elements of $\sigma$. The value of $Z_i$ is determined by the data and by the fixed effect parameterization declared through `brm_formula()`.
 
 # Parameters
 
