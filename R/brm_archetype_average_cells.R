@@ -177,7 +177,7 @@ archetype_average_cells <- function(data, prefix) {
   levels_group <- attr(data, "brm_levels_group")
   levels_time <- attr(data, "brm_levels_time")
   n_time <- length(levels_time)
-  matrix <- NULL 
+  matrix <- NULL
   for (name_group in levels_group) {
     for (name_time in levels_time) {
       if (name_time == levels_time[1L]) {
