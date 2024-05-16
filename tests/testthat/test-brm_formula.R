@@ -41,7 +41,6 @@ test_that("brm_formula() with default names and all non-subgroup terms", {
   expect_s3_class(out, "brms_mmrm_formula")
   expect_s3_class(out, "brmsformula")
   expect_equal(attr(out, "brm_correlation"), "unstructured")
-  expect_equal(attr(out, "brm_variance"), "heterogeneous")
   expect_equal(
     deparse(out[[1L]], width.cutoff = 500L),
     paste(
@@ -82,12 +81,16 @@ test_that("brm_formula() same with homogeneous variance", {
     group = TRUE,
     group_time = TRUE,
     time = TRUE,
-    variance = "homogeneous",
+    sigma = brm_formula_sigma(
+      data,
+      check_rank = FALSE,
+      time = FALSE,
+      intercept = TRUE
+    ),
     check_rank = FALSE
   )
   expect_s3_class(out, "brmsformula")
   expect_equal(attr(out, "brm_correlation"), "unstructured")
-  expect_equal(attr(out, "brm_variance"), "homogeneous")
   expect_equal(
     deparse(out[[1L]], width.cutoff = 500L),
     paste(
@@ -544,7 +547,6 @@ test_that("brm_formula() archetype non-subgroup", {
   expect_s3_class(out, "brms_mmrm_formula_archetype")
   expect_s3_class(out, "brms_mmrm_formula")
   expect_s3_class(out, "brmsformula")
-  expect_equal(attr(out, "brm_variance"), "heterogeneous")
   expect_equal(attr(out, "brm_correlation"), "unstructured")
   expect_equal(attr(out, "brm_autoregressive_order"), 1L)
   expect_equal(attr(out, "brm_moving_average_order"), 1L)
