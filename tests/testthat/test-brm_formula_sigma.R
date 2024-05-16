@@ -103,3 +103,30 @@ test_that("brm_formula() with default names and terms", {
   expect_s3_class(out, "formula")
   expect_equal(deparse(out), "sigma ~ 0 + AVISIT")
 })
+
+test_that("brm_formula() with default names and terms, subgroup", {
+  data <- brm_data(
+    data = tibble::tibble(
+      CHG = c(1, 2),
+      AVISIT = c("x", "y"),
+      baseline = c(2, 3),
+      TRT01P = c("x", "y"),
+      subgroup = c("x", "y"),
+      USUBJID = c("x", "y")
+    ),
+    outcome = "CHG",
+    role = "change",
+    group = "TRT01P",
+    subgroup = "subgroup",
+    time = "AVISIT",
+    baseline = "baseline",
+    patient = "USUBJID",
+    reference_group = "x",
+    reference_subgroup = "x"
+  )
+  out <- brm_formula_sigma(data = data, time = FALSE, subgroup = TRUE)
+  expect_s3_class(out, "brms_mmrm_formula_sigma")
+  expect_s3_class(out, "formula")
+  expect_equal(deparse(out), "sigma ~ 0 + subgroup")
+})
+
