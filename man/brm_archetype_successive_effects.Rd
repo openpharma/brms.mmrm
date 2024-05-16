@@ -99,11 +99,10 @@ reference group.
 To illustrate, suppose the dataset has two treatment groups A and B,
 time points 1, 2, and 3, and no other covariates.
 Say group A is the reference group (e.g. placebo).
-Let \code{mu_gt} be the conditional expectation of the response at group
-\code{g} time \code{t} given data and hyperparameters. Then, the
-treatment-effect-like
-successive differences parameterization has model coefficients
-\code{beta_1}, \code{beta_2}, ... \code{beta_6} as follows:
+Let \code{mu_gt} be the marginal mean of the response at group
+\code{g} time \code{t} given data and hyperparameters.
+The model has fixed effect parameters \code{beta_1}, \code{beta_2}, ..., \code{beta_6}
+which express the marginal means \code{mu_gt} as follows:
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{  `mu_A1 = beta_1`
   `mu_A2 = beta_1 + beta_2`
@@ -122,19 +121,6 @@ times 2 and 1, relative to treatment group A.
 Similarly, \code{beta_6} is the treatment effect of the difference between
 times 3 and 2, relative to treatment group A.
 }
-\section{Nuisance variables}{
-
-In the presence of covariate adjustment, functions like
-\code{\link[=brm_archetype_successive_effects]{brm_archetype_successive_effects()}} convert nuisance factors into binary
-dummy variables, then center all those dummy variables and any
-continuous nuisance variables at their means in the data.
-This ensures that the main model coefficients
-of interest are not implicitly conditional on a subset of the data.
-In other words, preprocessing nuisance variables this way preserves
-the interpretations of the fixed effects of interest, and it ensures
-informative priors can be specified correctly.
-}
-
 \section{Prior labeling for \code{\link[=brm_archetype_successive_effects]{brm_archetype_successive_effects()}}}{
 
 Within each treatment group, each intercept is labeled by the earliest
@@ -146,7 +132,22 @@ you can label the prior on \code{beta_1} using
 \code{brm_prior_label(code = "normal(1.2, 5)", group = "A", time = "1")}.
 Similarly, you cal label the prior on \code{beta_5} with
 \code{brm_prior_label(code = "normal(1.3, 7)", group = "B", time = "2")}.
+To confirm that you set the prior correctly, compare the \code{brms} prior
+with the output of \code{summary(your_archetype)}.
 See the examples for details.
+}
+
+\section{Nuisance variables}{
+
+In the presence of covariate adjustment, functions like
+\code{\link[=brm_archetype_successive_cells]{brm_archetype_successive_cells()}} convert nuisance factors into binary
+dummy variables, then center all those dummy variables and any
+continuous nuisance variables at their means in the data.
+This ensures that the main model coefficients
+of interest are not implicitly conditional on a subset of the data.
+In other words, preprocessing nuisance variables this way preserves
+the interpretations of the fixed effects of interest, and it ensures
+informative priors can be specified correctly.
 }
 
 \section{Prior labeling}{
@@ -241,6 +242,7 @@ brm_plot_compare(model = summaries_model, data = summaries_data)
 }
 \seealso{
 Other informative prior archetypes: 
+\code{\link{brm_archetype_average_cells}()},
 \code{\link{brm_archetype_cells}()},
 \code{\link{brm_archetype_effects}()},
 \code{\link{brm_archetype_successive_cells}()}

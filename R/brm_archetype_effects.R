@@ -9,10 +9,10 @@
 #'   To illustrate, suppose the dataset has two treatment groups A and B,
 #'   time points 1, 2, and 3, and no other covariates. Assume group A
 #'   is the reference group (e.g. placebo).
-#'   Let `mu_gt` be the conditional expectation of the response at group
-#'   `g` time `t` given data and hyperparameters. Then, the treatment effect
-#'   parameterization uses model coefficients
-#'   `beta_1`, `beta_2`, ... `beta_6` as follows:
+#'   Let `mu_gt` be the marginal mean of the response at group
+#'   `g` time `t` given data and hyperparameters.
+#'   The model has fixed effect parameters `beta_1`, `beta_2`, ..., `beta_6`
+#'   which express the marginal means `mu_gt` as follows:
 #'
 #'       `mu_A1 = beta_1`
 #'       `mu_A2 = beta_2`

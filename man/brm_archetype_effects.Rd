@@ -94,10 +94,10 @@ or a treatment effect.
 To illustrate, suppose the dataset has two treatment groups A and B,
 time points 1, 2, and 3, and no other covariates. Assume group A
 is the reference group (e.g. placebo).
-Let \code{mu_gt} be the conditional expectation of the response at group
-\code{g} time \code{t} given data and hyperparameters. Then, the treatment effect
-parameterization uses model coefficients
-\code{beta_1}, \code{beta_2}, ... \code{beta_6} as follows:
+Let \code{mu_gt} be the marginal mean of the response at group
+\code{g} time \code{t} given data and hyperparameters.
+The model has fixed effect parameters \code{beta_1}, \code{beta_2}, ..., \code{beta_6}
+which express the marginal means \code{mu_gt} as follows:
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{  `mu_A1 = beta_1`
   `mu_A2 = beta_2`
@@ -124,6 +124,9 @@ group at time 2). Similarly,
 \code{brm_prior_label(code = "normal(1.3, 6)", group = "B", time = "2")}
 declares a \code{normal(1.3, 6)} prior on the treatment effect of group
 \code{B} relative to group \code{A} at discrete time point \code{2}.
+To confirm that you set the prior correctly, compare the \code{brms} prior
+with the output of \code{summary(your_archetype)}.
+See the examples for details.
 }
 
 \section{Nuisance variables}{
@@ -231,6 +234,7 @@ brm_plot_compare(model = summaries_model, data = summaries_data)
 }
 \seealso{
 Other informative prior archetypes: 
+\code{\link{brm_archetype_average_cells}()},
 \code{\link{brm_archetype_cells}()},
 \code{\link{brm_archetype_successive_cells}()},
 \code{\link{brm_archetype_successive_effects}()}

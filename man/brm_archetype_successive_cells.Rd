@@ -95,10 +95,10 @@ independent of the other treatment groups.
 
 To illustrate, suppose the dataset has two treatment groups A and B,
 time points 1, 2, and 3, and no other covariates.
-Let \code{mu_gt} be the conditional expectation of the response at group
-\code{g} time \code{t} given data and hyperparameters. Then, the cell-means-like
-successive differences mapping declares model coefficients
-\code{beta_1}, \code{beta_2}, ... \code{beta_6} as follows:
+Let \code{mu_gt} be the marginal mean of the response at group
+\code{g} time \code{t} given data and hyperparameters.
+The model has fixed effect parameters \code{beta_1}, \code{beta_2}, ..., \code{beta_6}
+which express the marginal means \code{mu_gt} as follows:
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{  `mu_A1 = beta_1`
   `mu_A2 = beta_1 + beta_2`
@@ -137,6 +137,8 @@ you can label the prior on \code{beta_1} using
 \code{brm_prior_label(code = "normal(1.2, 5)", group = "A", time = "1")}.
 Similarly, you cal label the prior on \code{beta_5} with
 \code{brm_prior_label(code = "normal(1.3, 7)", group = "B", time = "2")}.
+To confirm that you set the prior correctly, compare the \code{brms} prior
+with the output of \code{summary(your_archetype)}.
 See the examples for details.
 }
 
@@ -232,6 +234,7 @@ brm_plot_compare(model = summaries_model, data = summaries_data)
 }
 \seealso{
 Other informative prior archetypes: 
+\code{\link{brm_archetype_average_cells}()},
 \code{\link{brm_archetype_cells}()},
 \code{\link{brm_archetype_effects}()},
 \code{\link{brm_archetype_successive_effects}()}

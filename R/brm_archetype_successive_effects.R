@@ -14,11 +14,10 @@
 #'   To illustrate, suppose the dataset has two treatment groups A and B,
 #'   time points 1, 2, and 3, and no other covariates.
 #'   Say group A is the reference group (e.g. placebo).
-#'   Let `mu_gt` be the conditional expectation of the response at group
-#'   `g` time `t` given data and hyperparameters. Then, the
-#'   treatment-effect-like
-#'   successive differences parameterization has model coefficients
-#'   `beta_1`, `beta_2`, ... `beta_6` as follows:
+#'   Let `mu_gt` be the marginal mean of the response at group
+#'   `g` time `t` given data and hyperparameters.
+#'   The model has fixed effect parameters `beta_1`, `beta_2`, ..., `beta_6`
+#'   which express the marginal means `mu_gt` as follows:
 #'
 #'       `mu_A1 = beta_1`
 #'       `mu_A2 = beta_1 + beta_2`
@@ -57,16 +56,7 @@
 #'   do with the object.
 #' @inheritParams brm_formula
 #' @inheritParams brm_model
-#' @param prefix_interest Character string to prepend to the new columns
-#'   of generated fixed effects of interest (relating to group, subgroup,
-#'   and/or time).
-#'   In rare cases, you may need to set a non-default prefix to prevent
-#'   name conflicts with existing columns in the data, or rename
-#'   the columns in your data.
-#'   `prefix_interest` must not be the same value as `prefix_nuisance`.
-#' @param prefix_nuisance Same as `prefix_interest`, but relating to
-#'   generated fixed effects NOT of interest (not relating to group,
-#'   subgroup, or time). Must not be the same value as `prefix_interest`.
+#' @inheritParams brm_archetype_successive_cells
 #' @examples
 #' set.seed(0L)
 #' data <- brm_simulate_outline(

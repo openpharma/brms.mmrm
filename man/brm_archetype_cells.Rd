@@ -99,6 +99,9 @@ and the labeling scheme in \code{\link[=brm_prior_label]{brm_prior_label()}} and
 \code{brm_prior_label(code = "normal(1.2, 5)", group = "B", time = "VISIT2")}
 declares a \code{normal(1.2, 5)} prior on the cell mean of treatment
 group \code{B} at discrete time point \code{VISIT2}.
+To confirm that you set the prior correctly, compare the \code{brms} prior
+with the output of \code{summary(your_archetype)}.
+See the examples for details.
 }
 
 \section{Nuisance variables}{
@@ -206,6 +209,7 @@ brm_plot_compare(model = summaries_model, data = summaries_data)
 }
 \seealso{
 Other informative prior archetypes: 
+\code{\link{brm_archetype_average_cells}()},
 \code{\link{brm_archetype_effects}()},
 \code{\link{brm_archetype_successive_cells}()},
 \code{\link{brm_archetype_successive_effects}()}
