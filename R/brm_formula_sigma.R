@@ -14,7 +14,8 @@
 #'   The default `sigma` formula is `sigma ~ 0 + time`, where `time`
 #'   is the discrete time variable in the data. This declares
 #'   one standard deviation parameter for each time point in the data.
-#' @return A base R formula to parameterize `sigma`, the linear-scale
+#' @return A base R formula with S3 class `"brms_mmrm_formula_sigma"`.
+#'   This formula controls the parameterization of `sigma`, the linear-scale
 #'   `brms` distributional parameters which represent standard deviations.
 #' @inheritParams brm_formula
 #' @param check_rank `TRUE` to check the rank of the model matrix
@@ -60,44 +61,12 @@
 #'   reference_group = "group_1",
 #'   reference_time = "time_1"
 #' )
-#' brm_formula(data)
-#' brm_formula(data = data, intercept = FALSE, baseline = FALSE)
-#' formula <- brm_formula(
-#'   data = data,
-#'   intercept = FALSE,
-#'   baseline = FALSE,
-#'   group = FALSE
-#' )
-#' formula
-#' # Optional: set the contrast option, which determines the model matrix.
-#' options(contrasts = c(unordered = "contr.SAS", ordered = "contr.poly"))
-#' # See the fixed effect mapping you get from the data:
-#' head(brms::make_standata(formula = formula, data = data)$X)
-#' # Specify a different contrast method to use an alternative
-#' # mapping when fitting the model with brm_model():
-#' options(
-#'   contrasts = c(unordered = "contr.treatment", ordered = "contr.poly")
-#' )
-#' # different model matrix than before:
-#' head(brms::make_standata(formula = formula, data = data)$X)
-#' # Formula on an informative prior archetype:
-#' data <- brm_simulate_outline(
-#'   n_group = 2,
-#'   n_patient = 100,
-#'   n_time = 4,
-#'   rate_dropout = 0,
-#'   rate_lapse = 0
-#' ) |>
-#'   dplyr::mutate(response = rnorm(n = dplyr::n())) |>
-#'   brm_data_change() |>
-#'   brm_simulate_continuous(names = c("biomarker1", "biomarker2")) |>
-#'   brm_simulate_categorical(
-#'     names = "biomarker3",
-#'     levels = c("present", "absent")
-#'   )
-#' archetype <- brm_archetype_successive_cells(data)
-#' formula <- brm_formula(data = archetype)
-#' formula
+#' homogeneous <- brm_formula_sigma(data, time = FALSE)
+#' by_group <- brm_formula_sigma(data, group = TRUE, intercept = TRUE)
+#' homogeneous
+#' by_group
+#' brm_formula(data, sigma = homogeneous)
+#' brm_formula(data, sigma = by_group)
 brm_formula_sigma <- function(
   data,
   check_rank = TRUE,
@@ -182,6 +151,7 @@ brm_formula_sigma <- function(
   if (check_rank) {
     formula_sigma_check_rank(data = data, formula = formula_check)
   }
+  class(formula_full) <- c("brms_mmrm_formula_sigma", class(formula_full))
   formula_full
 }
 

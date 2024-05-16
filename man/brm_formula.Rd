@@ -9,7 +9,7 @@
 brm_formula(
   data,
   check_rank = TRUE,
-  variance = "heterogeneous",
+  sigma = brms.mmrm::brm_formula_sigma(data = data, check_rank = check_rank),
   correlation = "unstructured",
   autoregressive_order = 1L,
   moving_average_order = 1L,
@@ -20,7 +20,7 @@ brm_formula(
 \method{brm_formula}{default}(
   data,
   check_rank = TRUE,
-  variance = "heterogeneous",
+  sigma = brms.mmrm::brm_formula_sigma(data = data, check_rank = check_rank),
   correlation = "unstructured",
   autoregressive_order = 1L,
   moving_average_order = 1L,
@@ -51,7 +51,7 @@ brm_formula(
 \method{brm_formula}{brms_mmrm_archetype}(
   data,
   check_rank = TRUE,
-  variance = "heterogeneous",
+  sigma = brms.mmrm::brm_formula_sigma(data = data, check_rank = check_rank),
   correlation = "unstructured",
   autoregressive_order = 1L,
   moving_average_order = 1L,
@@ -68,22 +68,10 @@ throw an error if rank deficiency is detected. \code{FALSE} to skip
 this check. Rank-deficient models may have non-identifiable
 parameters and it is recommended to choose a full-rank mapping.}
 
-\item{variance}{Character of length 1, variance structure for the
-residuals. \code{"heterogeneous"} declares a different variance component
-for each discrete time point, \code{"homogeneous"} declares a single
-scalar variance shared by all time points. In either case, the variance
-components are shared by all patients, and different patients are
-modeled as independent.
-
-The variance components are encoded as parameters \code{b_sigma} in the model.
-Each \code{b_sigma} is a standard deviation of residuals on the natural
-log scale.
-
-The variance structure is encoded in the
-\code{sigma ~ ...} part of the output formula. To see the variance
-mapping for yourself, use \code{brms::make_standata()}
-on the formula and data, or \code{brms::prior_summary()} or
-\code{posterior::as_draws_df()} on the model.}
+\item{sigma}{A formula produced by \code{\link[=brm_formula_sigma]{brm_formula_sigma()}}.
+The formula is a base R formula with S3 class
+\code{"brms_mmrm_formula_sigma"}, and it controls
+the parameterization of the residual standard deviations \code{sigma}.}
 
 \item{correlation}{Character of length 1, name of the correlation
 structure. The correlation matrix is a square \verb{T x T} matrix, where
@@ -304,6 +292,14 @@ formula <- brm_formula(
   group = FALSE
 )
 formula
+# Standard deviations of residuals are distributional parameters that can
+# regress on variables in the data.
+homogeneous <- brm_formula_sigma(data, time = FALSE)
+by_group <- brm_formula_sigma(data, group = TRUE, intercept = TRUE)
+homogeneous
+by_group
+brm_formula(data, sigma = homogeneous)
+brm_formula(data, sigma = by_group)
 # Optional: set the contrast option, which determines the model matrix.
 options(contrasts = c(unordered = "contr.SAS", ordered = "contr.poly"))
 # See the fixed effect mapping you get from the data:
