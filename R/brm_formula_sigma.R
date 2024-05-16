@@ -26,13 +26,21 @@
 #' @param baseline Logical of length 1.
 #'   `TRUE` to include an additive effect for baseline
 #'   response, `FALSE` to omit.
+#'   If `TRUE`, then effect size will be omitted from the output of
+#'   [brm_marginal_draws()].
 #' @param baseline_subgroup Logical of length 1.
 #'   `TRUE` to include baseline-by-subgroup interaction, `FALSE` to omit.
+#'   If `TRUE`, then effect size will be omitted from the output of
+#'   [brm_marginal_draws()].
 #' @param baseline_subgroup_time Logical of length 1.
 #'   `TRUE` to include baseline-by-subgroup-by-time interaction,
 #'   `FALSE` to omit.
+#'   If `TRUE`, then effect size will be omitted from the output of
+#'   [brm_marginal_draws()].
 #' @param baseline_time Logical of length 1.
 #'   `TRUE` to include baseline-by-time interaction, `FALSE` to omit.
+#'   If `TRUE`, then effect size will be omitted from the output of
+#'   [brm_marginal_draws()].
 #' @param group_subgroup Logical of length 1.
 #'   `TRUE` to include group-by-subgroup interaction, `FALSE` to omit.
 #' @param group_subgroup_time Logical of length 1.
@@ -48,6 +56,8 @@
 #'   `TRUE` (default) to include any additive covariates declared with
 #'   the `covariates` argument of [brm_data()],
 #'   `FALSE` to omit.
+#'   If `TRUE`, then effect size will be omitted from the output of
+#'   [brm_marginal_draws()].
 #' @param baseline_subgroup Logical of length 1.
 #' @examples
 #' set.seed(0)

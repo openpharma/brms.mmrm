@@ -37,21 +37,29 @@ may prevent the MCMC from converging.}
 
 \item{baseline}{Logical of length 1.
 \code{TRUE} to include an additive effect for baseline
-response, \code{FALSE} to omit.}
+response, \code{FALSE} to omit.
+If \code{TRUE}, then effect size will be omitted from the output of
+\code{\link[=brm_marginal_draws]{brm_marginal_draws()}}.}
 
 \item{baseline_subgroup}{Logical of length 1.}
 
 \item{baseline_subgroup_time}{Logical of length 1.
 \code{TRUE} to include baseline-by-subgroup-by-time interaction,
-\code{FALSE} to omit.}
+\code{FALSE} to omit.
+If \code{TRUE}, then effect size will be omitted from the output of
+\code{\link[=brm_marginal_draws]{brm_marginal_draws()}}.}
 
 \item{baseline_time}{Logical of length 1.
-\code{TRUE} to include baseline-by-time interaction, \code{FALSE} to omit.}
+\code{TRUE} to include baseline-by-time interaction, \code{FALSE} to omit.
+If \code{TRUE}, then effect size will be omitted from the output of
+\code{\link[=brm_marginal_draws]{brm_marginal_draws()}}.}
 
 \item{covariates}{Logical of length 1.
 \code{TRUE} (default) to include any additive covariates declared with
 the \code{covariates} argument of \code{\link[=brm_data]{brm_data()}},
-\code{FALSE} to omit.}
+\code{FALSE} to omit.
+If \code{TRUE}, then effect size will be omitted from the output of
+\code{\link[=brm_marginal_draws]{brm_marginal_draws()}}.}
 
 \item{group}{Logical of length 1.
 \code{TRUE} (default) to include additive effects for
