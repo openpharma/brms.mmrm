@@ -37,13 +37,14 @@ test_that("brm_marginal_draws() on response, no subgroup", {
   formula_exclude <- formula
   attr(formula_exclude, "brm_allow_effect_size") <- FALSE
   expect_warning(
-    brm_marginal_draws(
+    excluded <- brm_marginal_draws(
       model = model,
       formula = formula_exclude,
       data = data
     ),
     class = "brm_warn"
   )
+  expect_false("effect" %in% names(excluded))
   expect_warning(
     brm_marginal_draws(
       model = model,
