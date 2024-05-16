@@ -9,6 +9,7 @@ brm_marginal_draws(
   formula,
   model,
   transform = brms.mmrm::brm_transform_marginal(data, formula),
+  effect_size = TRUE,
   use_subgroup = NULL,
   control = NULL,
   baseline = NULL
@@ -34,6 +35,14 @@ marginal means using matrix multiplication. Please use
 only if necessary. See the methods vignettes for details on this
 matrix, as well as how \code{brms.mmrm} computes marginal means more
 generally.}
+
+\item{effect_size}{Logical, \code{TRUE} to derive posterior samples
+of effect size (treatment effect divided by residual standard
+deviation). \code{FALSE} to omit. \code{brms.mmrm} does not support
+effect size when baseline or covariates are included
+in the \code{\link[=brm_formula_sigma]{brm_formula_sigma()}} formula. If \code{effect_size} is \code{TRUE}
+in this case, then \code{\link[=brm_marginal_draws]{brm_marginal_draws()}} will automatically
+omit effect size and throw an informative warning.}
 
 \item{use_subgroup}{Deprecated. No longer used. \code{\link[=brm_marginal_draws]{brm_marginal_draws()}}
 no longer marginalizes over the subgroup declared
@@ -70,6 +79,10 @@ the \code{response} at the control group.
 \item \code{difference_subgroup}: subgroup differences: the \code{difference_group}
 at each subgroup level minus the \code{difference_group} at the subgroup
 reference level (\code{reference_subgroup}).
+\item \code{effect}: effect size, defined as the treatment difference
+divided by the residual standard deviation. Omitted if
+the \code{effect_size} argument is \code{FALSE} or if the
+\code{\link[=brm_formula_sigma]{brm_formula_sigma()}} includes baseline or covariates.
 }
 }
 \description{
