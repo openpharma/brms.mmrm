@@ -122,6 +122,12 @@ brm_formula_sigma <- function(
       message = "brm_data() found no subgroup column in the data."
     )
   }
+  exclude_effect_size <- baseline ||
+    baseline_subgroup ||
+    baseline_subgroup_time ||
+    baseline_time ||
+    covariates
+  allow_effect_size <- !exclude_effect_size
   name_role <- attr(data, "brm_role")
   name_baseline <- attr(data, "brm_baseline")
   name_group <- attr(data, "brm_group")
@@ -151,8 +157,41 @@ brm_formula_sigma <- function(
   if (check_rank) {
     formula_sigma_check_rank(data = data, formula = formula_check)
   }
-  class(formula_full) <- c("brms_mmrm_formula_sigma", class(formula_full))
-  formula_full
+  formula_sigma_new(
+    formula = formula_full,
+    brm_allow_effect_size = allow_effect_size
+  )
+}
+
+formula_sigma_new <- function(formula, brm_allow_effect_size) {
+  structure(
+    formula,
+    class = unique(c("brms_mmrm_formula_sigma", class(formula))),
+    brm_allow_effect_size = brm_allow_effect_size
+  )
+}
+
+brm_formula_sigma_validate <- function(formula) {
+  assert(
+    formula,
+    inherits(., "brms_mmrm_formula_sigma"),
+    inherits(., "formula"),
+    message = paste(
+      "expected a formula produced by brm_formula_sigma(), but",
+      "found a different kind of object."
+    )
+  )
+  assert(
+    attr(formula, "brm_allow_effect_size"),
+    is.logical(.),
+    !anyNA(.),
+    length(.) == 1L,
+    message = paste(
+      "expected the sigma formula from brm_formula_sigma() to have",
+      "a logical scalar 'brm_allow_effect_size' attribute, but",
+      "found a different kind of object in the attribute."
+    )
+  )
 }
 
 formula_sigma_check_rank <- function(data, formula) {

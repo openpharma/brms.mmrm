@@ -366,15 +366,7 @@ brm_formula.default <- function(
     group_time <- interaction_group
   }
   brm_formula_validate_correlation(correlation)
-  assert(
-    sigma,
-    inherits(., "brms_mmrm_formula_sigma"),
-    inherits(., "brms_mmrm_formula_sigma"),
-    message = paste(
-      "in brm_formula(), sigma must be a formula",
-      "produced by brm_formula_sigma()"
-    )
-  )
+  brm_formula_sigma_validate(sigma)
   name_outcome <- attr(data, "brm_outcome")
   name_role <- attr(data, "brm_role")
   name_baseline <- attr(data, "brm_baseline")
@@ -429,7 +421,8 @@ brm_formula.default <- function(
     brm_autoregressive_order = autoregressive_order,
     brm_moving_average_order = moving_average_order,
     brm_residual_covariance_arma_estimation =
-      residual_covariance_arma_estimation
+      residual_covariance_arma_estimation,
+    brm_allow_effect_size = attr(sigma, "brm_allow_effect_size")
   )
   brm_formula_validate(formula)
   if (check_rank) {
@@ -453,6 +446,7 @@ brm_formula.brms_mmrm_archetype <- function(
 ) {
   brm_data_validate(data)
   brm_formula_validate_correlation(correlation)
+  brm_formula_sigma_validate(sigma)
   assert_lgl(
     residual_covariance_arma_estimation,
     "residual_covariance_arma_estimation must be TRUE or FALSE"
@@ -519,7 +513,8 @@ brm_formula.brms_mmrm_archetype <- function(
     brm_autoregressive_order = autoregressive_order,
     brm_moving_average_order = moving_average_order,
     brm_residual_covariance_arma_estimation =
-      residual_covariance_arma_estimation
+      residual_covariance_arma_estimation,
+    brm_allow_effect_size = attr(sigma, "brm_allow_effect_size")
   )
   brm_formula_validate(formula)
   if (check_rank) {
@@ -600,7 +595,8 @@ brm_formula_new <- function(
   brm_correlation,
   brm_autoregressive_order,
   brm_moving_average_order,
-  brm_residual_covariance_arma_estimation
+  brm_residual_covariance_arma_estimation,
+  brm_allow_effect_size
 ) {
   structure(
     formula,
@@ -622,7 +618,8 @@ brm_formula_new <- function(
     brm_autoregressive_order = brm_autoregressive_order,
     brm_moving_average_order = brm_moving_average_order,
     brm_residual_covariance_arma_estimation =
-      brm_residual_covariance_arma_estimation
+      brm_residual_covariance_arma_estimation,
+    brm_allow_effect_size = brm_allow_effect_size
   )
 }
 
@@ -631,7 +628,8 @@ brm_formula_archetype_new <- function(
   brm_correlation,
   brm_autoregressive_order,
   brm_moving_average_order,
-  brm_residual_covariance_arma_estimation
+  brm_residual_covariance_arma_estimation,
+  brm_allow_effect_size
 ) {
   structure(
     formula,
@@ -642,7 +640,8 @@ brm_formula_archetype_new <- function(
     brm_autoregressive_order = brm_autoregressive_order,
     brm_moving_average_order = brm_moving_average_order,
     brm_residual_covariance_arma_estimation =
-      brm_residual_covariance_arma_estimation
+      brm_residual_covariance_arma_estimation,
+    brm_allow_effect_size = brm_allow_effect_size
   )
 }
 
@@ -671,7 +670,8 @@ brm_formula_validate.default <- function(formula) {
     "brm_subgroup",
     "brm_subgroup_time",
     "brm_time",
-    "brm_covariates"
+    "brm_covariates",
+    "brm_allow_effect_size"
   )
   for (attribute in attributes) {
     assert_lgl(
@@ -690,6 +690,15 @@ brm_formula_validate.brms_mmrm_formula_archetype <- function(formula) {
     inherits(., "brmsformula"),
     message = "please use brm_formula() to create the model formula"
   )
+  attributes <- c(
+    "brm_allow_effect_size"
+  )
+  for (attribute in attributes) {
+    assert_lgl(
+      attr(formula, attribute),
+      message = paste(attribute, "attribute must be TRUE or FALSE in formula")
+    )
+  }
   brm_formula_validate_covariance(formula)
 }
 
