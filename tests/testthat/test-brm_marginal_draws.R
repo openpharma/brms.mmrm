@@ -283,7 +283,7 @@ test_that("brm_marginal_draws() on change, homogeneous var, no subgroup", {
     data = data,
     baseline = FALSE,
     baseline_time = FALSE,
-    variance = "homogeneous"
+    sigma = brm_formula_sigma(data = data, intercept = TRUE, time = FALSE)
   )
   tmp <- utils::capture.output(
     suppressMessages(
@@ -369,7 +369,10 @@ test_that("brm_marginal_draws() on change, homogeneous var, with subgroup", {
     name_change = "change",
     name_baseline = "baseline"
   )
-  formula <- brm_formula(data = data, variance = "homogeneous")
+  formula <- brm_formula(
+    data = data,
+    sigma = brm_formula_sigma(data = data, intercept = TRUE, time = FALSE)
+  )
   tmp <- utils::capture.output(
     suppressMessages(
       suppressWarnings(

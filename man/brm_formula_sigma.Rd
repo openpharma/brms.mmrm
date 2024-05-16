@@ -101,8 +101,20 @@ The output of \code{\link[=brm_formula_sigma]{brm_formula_sigma()}} serves as in
 argument of \code{\link[=brm_formula]{brm_formula()}}.
 
 The default \code{sigma} formula is \code{sigma ~ 0 + time}, where \code{time}
-is the discrete time variable in the data. This declares
+is the discrete time variable in the data. This is the usual
+heterogeneous variance structure which declares
 one standard deviation parameter for each time point in the data.
+Alternatively, you could write
+\code{brm_formula_sigma(data, intercept = TRUE, time = FALSE)}.
+This will produce \code{sigma ~ 1}, which yields a single scalar variance
+(a structure termed "homogeneous variance").
+
+With arguments like \code{baseline} and \code{covariates}, you can
+specify extremely complicated variance structures. However,
+if baseline or covariates are used, then the output of
+\code{\link[=brm_marginal_draws]{brm_marginal_draws()}} omit effect size due to the statistical
+challenges of calculating marginal means of draws of \code{sigma}
+for this uncommon scenario.
 }
 \examples{
 set.seed(0)

@@ -12,8 +12,20 @@
 #'   argument of [brm_formula()].
 #'
 #'   The default `sigma` formula is `sigma ~ 0 + time`, where `time`
-#'   is the discrete time variable in the data. This declares
+#'   is the discrete time variable in the data. This is the usual
+#'   heterogeneous variance structure which declares
 #'   one standard deviation parameter for each time point in the data.
+#'   Alternatively, you could write
+#'   `brm_formula_sigma(data, intercept = TRUE, time = FALSE)`.
+#'   This will produce `sigma ~ 1`, which yields a single scalar variance
+#'   (a structure termed "homogeneous variance").
+#'
+#'   With arguments like `baseline` and `covariates`, you can
+#'   specify extremely complicated variance structures. However,
+#'   if baseline or covariates are used, then the output of
+#'   [brm_marginal_draws()] omit effect size due to the statistical
+#'   challenges of calculating marginal means of draws of `sigma`
+#'   for this uncommon scenario.
 #' @return A base R formula with S3 class `"brms_mmrm_formula_sigma"`.
 #'   This formula controls the parameterization of `sigma`, the linear-scale
 #'   `brms` distributional parameters which represent standard deviations.
