@@ -20,6 +20,8 @@ library(dplyr)
 
 Informative prior archetypes allow users to conveniently set informative priors in `brms.mmrm` in a robust way, guarding against common pitfalls such as reference level issues, interpretation problems, and rank deficiency.
 
+## Constructing an archetype
+
 We begin with a simulated dataset.
 
 ```{r}
@@ -79,7 +81,9 @@ The factors of interest linearly map to marginal means. To see the mapping, call
 summary(archetype)
 ```
 
-In the printed output above, parameters of interest such as `x_group_1_time_2` and `x_group_2_time_3` are always labeled using treatment groups and time points in the data (and subgroup levels, if applicable). Even though different archetypes have different parameterizations and thus different ways of expressing marginal means, this labeling scheme remains consistent across all archetypes. `brms.mmrm` uses this to help you assign priors. First, match your priors to levels in the data.
+## Informative priors
+
+In the printed output from `summary(archetype)`, parameters of interest such as `x_group_1_time_2` and `x_group_2_time_3` are always labeled using treatment groups and time points in the data (and subgroup levels, if applicable). Even though different archetypes have different parameterizations and thus different ways of expressing marginal means, this labeling scheme remains consistent across all archetypes. `brms.mmrm` uses this to help you assign priors. First, match your priors to levels in the data.
 
 ```{r}
 label <- brm_prior_label(
@@ -109,7 +113,9 @@ formula <- brm_formula(archetype)
 formula
 ```
 
-The model can accept the archetype, formula, and prior.
+## Modeling and analysis
+
+The model can accept the archetype, formula, and prior. Usage is the same as in non-archetype workflows.
 
 ```{r}
 model <- brm_model(
@@ -133,3 +139,35 @@ summaries_model <- brm_marginal_summaries(draws)
 summaries_data <- brm_marginal_data(data)
 brm_plot_compare(model = summaries_model, data = summaries_data)
 ```
+
+## Other archetypes
+
+Other informative prior archetypes use different fixed effects. For example, `brms.mmrm` supports simple cell mean and treatment effect parameterizations.
+
+```{r}
+summary(brm_archetype_cells(data))
+```
+
+```{r}
+summary(brm_archetype_effects(data))
+```
+
+There are archetypes to parameterize the average across all time points in the data. Below, `x_group_1_time_2` is the average across time points for group 1 because it is the algebraic result of simplifying `(group_1:time_2 + group_1:time_3 + group_1:time_3) / 3`.
+
+```{r}
+summary(brm_archetype_average_cells(data))
+```
+
+There is also a treatment effect version where `x_group_2_time_2` becomes the time-averaged treatment effect of group 2 relative to group 1.
+
+```{r}
+summary(brm_archetype_average_effects(data))
+```
+
+In addition, there is a treatment effect version of the successive differences archetype from earlier in the vignette.
+
+```{r}
+summary(brm_archetype_successive_effects(data))
+```
+
+There are archetypes for simple cell means and treatment effect parameterizations.

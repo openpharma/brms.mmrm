@@ -36,6 +36,8 @@ reference:
   - 'brm_simulate_simple'
 - title: Informative prior archetypes
   contents:
+  - 'brm_archetype_average_cells'
+  - 'brm_archetype_average_effects'
   - 'brm_archetype_cells'
   - 'brm_archetype_effects'
   - 'brm_archetype_successive_cells'
