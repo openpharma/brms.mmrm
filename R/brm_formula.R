@@ -583,7 +583,7 @@ formula_check_rank <- function(data, formula) {
       " columns but rank ",
       rank,
       " after removing rows with missing outcomes. ",
-      "Please consider a different mapping to make the ",
+      "Please consider a different parameterization to make the ",
       "model matrix full-rank. Otherwise, fixed effects may not be ",
       "identifiable and MCMC sampling may not converge. ",
       "Set check_rank = FALSE in brm_formula() to suppress this error."

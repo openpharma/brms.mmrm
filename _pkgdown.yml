@@ -50,6 +50,7 @@ reference:
 - title: Models
   contents:
   - 'brm_formula'
+  - 'brm_formula_sigma'
   - 'brm_model'
 - title: Marginals
   contents:
