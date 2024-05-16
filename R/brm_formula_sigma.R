@@ -173,17 +173,9 @@ brm_formula_sigma <- function(
     term(name_subgroup, subgroup),
     term(c(name_subgroup, name_time), subgroup_time),
     term(name_time, time),
-    unlist(lapply(name_covariates, term, condition = covariates)),
-    term_correlation(
-      correlation = correlation,
-      name_time = name_time,
-      name_patient = name_patient,
-      autoregressive_order = autoregressive_order,
-      moving_average_order = moving_average_order,
-      residual_covariance_arma_estimation
-    )
+    unlist(lapply(name_covariates, term, condition = covariates))
   )
-  terms <- terms[nzchar(terms)]
+  terms <- terms[nzchar(terms)] %||% "1"
   right <- paste(terms, collapse = " + ")
   formula_full <- stats::as.formula(paste("sigma ~", right))
   formula_check <- stats::as.formula(paste("~", right))
@@ -193,7 +185,7 @@ brm_formula_sigma <- function(
   formula_full
 }
 
-formula_check_rank <- function(data, formula) {
+formula_sigma_check_rank <- function(data, formula) {
   matrix <- model.matrix(object = formula, data = data)
   rank <- qr(matrix)$rank
   assert(

@@ -402,7 +402,7 @@ brm_formula.default <- function(
       residual_covariance_arma_estimation
     )
   )
-  terms <- terms[nzchar(terms)]
+  terms <- terms[nzchar(terms)] %||% "1"
   right <- paste(terms, collapse = " + ")
   formula_fixed <- stats::as.formula(paste(name_outcome, "~", right))
   formula_sigma <- if_any(
@@ -512,7 +512,7 @@ brm_formula.brms_mmrm_archetype <- function(
       residual_covariance_arma_estimation
     )
   )
-  terms <- terms[nzchar(terms)]
+  terms <- terms[nzchar(terms)] %||% "1"
   right <- paste(terms, collapse = " + ")
   formula_fixed <- stats::as.formula(paste(name_outcome, "~", right))
   formula_sigma <- if_any(
