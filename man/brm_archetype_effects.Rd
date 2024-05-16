@@ -235,6 +235,7 @@ brm_plot_compare(model = summaries_model, data = summaries_data)
 \seealso{
 Other informative prior archetypes: 
 \code{\link{brm_archetype_average_cells}()},
+\code{\link{brm_archetype_average_effects}()},
 \code{\link{brm_archetype_cells}()},
 \code{\link{brm_archetype_successive_cells}()},
 \code{\link{brm_archetype_successive_effects}()}

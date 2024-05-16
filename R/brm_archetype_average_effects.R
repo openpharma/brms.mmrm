@@ -1,25 +1,27 @@
-#' @title Cell-means-like time-averaged archetype
+#' @title Treatment effect time-averaged archetype
 #' @export
 #' @family informative prior archetypes
-#' @description Create a cell-means-like informative prior archetype
+#' @description Create a treatment effect informative prior archetype
 #'   with a special fixed effect to represent the average across time.
 #' @details This archetype has a special fixed effect for each treatment group
-#'   to represent the mean response averaged across all the time points.
+#'   to represent the mean response averaged across all the time points,
+#'   and treatment effects are explicitly parameterized.
 #'
-#'   To illustrate, suppose the dataset has two treatment groups A and B,
+#'   To illustrate, suppose the dataset has two treatment groups A
+#'   (placebo/reference group) and B (active/non-reference group),
 #'   time points 1, 2, and 3, and no other covariates.
 #'   Let `mu_gt` be the marginal mean of the response at group
 #'   `g` time `t` given data and hyperparameters.
 #'   The model has fixed effect parameters `beta_1`, `beta_2`, ..., `beta_6`
 #'   which express the marginal means `mu_gt` as follows:
 #'
-#'       `mu_A1 = 3 * beta_1 - beta_2 - beta_3`
-#'       `mu_A2 = beta_2`
-#'       `mu_A3 = beta_3`
+#'     `mu_A1 = 3 * beta_1 - beta_2 - beta_3`
+#'     `mu_A2 = beta_2`
+#'     `mu_A3 = beta_3`
 #'
-#'       `mu_B1 = 3 * beta_4 - beta_5 - beta_6`
-#'       `mu_B2 = beta_5`
-#'       `mu_B3 = beta_6`
+#'     `mu_B1 = 3 * beta_1 - beta_2 - beta_3 + 3 * beta_4 - beta_5 - beta_6`
+#'     `mu_B2 = beta_2 + beta_5`
+#'     `mu_B3 = beta_3 + beta_6`
 #'
 #'   For group A, `beta_1` is the average response in group A
 #'   averaged across time points. You can confirm this yourself
@@ -28,15 +30,17 @@
 #'   and confirming that the expression simplifies down to just `beta_1`.
 #'   `beta_2` represents the mean response in group A at time 2, and
 #'   `beta_3` represents the mean response in group A at time 3.
-#'   `beta_4`, `beta_5`, and `beta_6` are analogous for group B.
+#'   `beta_4` is the treatment effect of group B relative to group A,
+#'   averaged across time points. `beta_5` is the treatment effect of B vs A
+#'   at time 2, and `beta_6` is analogous for time 3.
 #' @inheritSection brm_archetype_successive_cells Nuisance variables
 #' @inheritSection brm_prior_archetype Prior labeling
-#' @section Prior labeling for [brm_archetype_average_cells()]:
+#' @section Prior labeling for [brm_archetype_average_effects()]:
 #'   Within each treatment group, the initial time point represents
 #'   the average, and each successive time point represents the response
 #'   within that actual time.
 #'   To illustrate, consider the example in the Details section.
-#'   In the labeling scheme for [brm_archetype_average_cells()],
+#'   In the labeling scheme for [brm_archetype_average_effects()],
 #'   you can label the prior on `beta_1` using
 #'   `brm_prior_label(code = "normal(1.2, 5)", group = "A", time = "1")`.
 #'   Similarly, you cal label the prior on `beta_5` with
@@ -45,7 +49,7 @@
 #'   with the output of `summary(your_archetype)`.
 #'   See the examples for details.
 #' @return A special classed `tibble` with data tailored to
-#'   the cell-means-like time-averaged archetype. The dataset is augmented
+#'   the treatment effect time-averaged archetype. The dataset is augmented
 #'   with extra columns with the `"archetype_"` prefix, as well as special
 #'   attributes to tell downstream functions like [brm_formula()] what to
 #'   do with the object.
@@ -76,7 +80,7 @@
 #'   starts_with("biomarker"),
 #'   starts_with("status")
 #' )
-#' archetype <- brm_archetype_average_cells(data)
+#' archetype <- brm_archetype_average_effects(data)
 #' archetype
 #' summary(archetype)
 #' formula <- brm_formula(archetype)
@@ -120,7 +124,7 @@
 #' summaries_data <- brm_marginal_data(data)
 #' brm_plot_compare(model = summaries_model, data = summaries_data)
 #' }
-brm_archetype_average_cells <- function(
+brm_archetype_average_effects <- function(
   data,
   covariates = TRUE,
   prefix_interest = "x_",
@@ -149,8 +153,8 @@ brm_archetype_average_cells <- function(
   )
   archetype <- if_any(
     brm_data_has_subgroup(data),
-    archetype_average_cells_subgroup(data, prefix_interest),
-    archetype_average_cells(data, prefix_interest)
+    archetype_average_effects_subgroup(data, prefix_interest),
+    archetype_average_effects(data, prefix_interest)
   )
   nuisance <- archetype_nuisance(
     data = data,
@@ -167,26 +171,31 @@ brm_archetype_average_cells <- function(
     interest = archetype$interest,
     nuisance = nuisance,
     mapping = archetype$mapping,
-    subclass = "brms_mmrm_average_cells"
+    subclass = "brms_mmrm_average_effects"
   )
 }
 
-archetype_average_cells <- function(data, prefix) {
+archetype_average_effects <- function(data, prefix) {
   group <- attr(data, "brm_group")
   time <- attr(data, "brm_time")
   levels_group <- attr(data, "brm_levels_group")
   levels_time <- attr(data, "brm_levels_time")
+  reference <- attr(data, "brm_reference_group")
   n_time <- length(levels_time)
   matrix <- NULL
   for (name_group in levels_group) {
+    if (name_group == reference) {
+      in_group <- rep(TRUE, nrow(data))
+    } else {
+      in_group <- data[[group]] == name_group
+    }
     for (name_time in levels_time) {
       if (name_time == levels_time[1L]) {
-        cell <- (data[[group]] == name_group) & (data[[time]] == name_time)
+        cell <- in_group & (data[[time]] == name_time)
         matrix <- cbind(matrix, n_time * as.integer(cell))
       } else {
-        plus <- (data[[group]] == name_group) & (data[[time]] == name_time)
-        minus <- (data[[group]] == name_group) &
-          (data[[time]] == levels_time[1L])
+        plus <- in_group & (data[[time]] == name_time)
+        minus <- in_group & (data[[time]] == levels_time[1L])
         matrix <- cbind(matrix, as.integer(plus) - as.integer(minus))
       }
     }
@@ -205,30 +214,36 @@ archetype_average_cells <- function(data, prefix) {
   list(interest = interest, mapping = mapping)
 }
 
-archetype_average_cells_subgroup <- function(data, prefix) {
+archetype_average_effects_subgroup <- function(data, prefix) {
   group <- attr(data, "brm_group")
   subgroup <- attr(data, "brm_subgroup")
   time <- attr(data, "brm_time")
   levels_group <- attr(data, "brm_levels_group")
   levels_subgroup <- attr(data, "brm_levels_subgroup")
   levels_time <- attr(data, "brm_levels_time")
+  reference <- attr(data, "brm_reference_group")
   n_group <- length(levels_group)
   n_subgroup <- length(levels_subgroup)
   n_time <- length(levels_time)
   matrix <- NULL
   for (name_group in levels_group) {
+    if (name_group == reference) {
+      in_group <- rep(TRUE, nrow(data))
+    } else {
+      in_group <- data[[group]] == name_group
+    }
     for (name_subgroup in levels_subgroup) {
       for (name_time in levels_time) {
         if (name_time == levels_time[1L]) {
-          cell <- (data[[group]] == name_group) &
+          cell <- in_group &
             (data[[subgroup]] == name_subgroup) &
             (data[[time]] == name_time)
           matrix <- cbind(matrix, n_time * as.integer(cell))
         } else {
-          plus <- (data[[group]] == name_group) &
+          plus <- in_group &
             (data[[subgroup]] == name_subgroup) &
             (data[[time]] == name_time)
-          minus <- (data[[group]] == name_group) &
+          minus <- in_group &
             (data[[subgroup]] == name_subgroup) &
             (data[[time]] == levels_time[1L])
           matrix <- cbind(matrix, as.integer(plus) - as.integer(minus))
