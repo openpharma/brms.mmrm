@@ -129,4 +129,3 @@ test_that("brm_formula() with default names and terms, subgroup", {
   expect_s3_class(out, "formula")
   expect_equal(deparse(out), "sigma ~ 0 + subgroup")
 })
-
