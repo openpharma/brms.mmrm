@@ -167,7 +167,7 @@ brm_archetype_average_cells <- function(
     interest = archetype$interest,
     nuisance = nuisance,
     mapping = archetype$mapping,
-    subclass = "brms_mmrm_successive_cells"
+    subclass = "brms_mmrm_average_cells"
   )
 }
 
