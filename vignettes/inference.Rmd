@@ -27,15 +27,28 @@ This vignette explains how `brms.mmrm` conducts posterior inference on a fitted 
 
 # Example data
 
-Throughout this vignette, we use the `mmrm` package's `fev_data` dataset, a simulation of a clinical trial in which chronic obstructive pulmonary disease (COPD) patients (variable `USUBJID`) were randomized to different treatment groups (variable `ARMCD`) and measured across four discrete time points (variable `AVISIT`). The given response variable is forced expired volume in one second (`FEV1`), and we are interested in the `FEV1` change from baseline to each time point (derived variable `FEV_CHG`).
+Throughout this vignette, we use the `mmrm` package's `fev_data` dataset, a simulation of a clinical trial in which chronic obstructive pulmonary disease (COPD) patients (variable `USUBJID`) were randomized to different treatment groups (variable `ARMCD`) and measured across four discrete time points (variable `AVISIT`). The given response variable is forced expired volume in one second (`FEV1`), and we are interested in the `FEV1` change from baseline to each time point (derived variable `FEV_CHG`). For this vignette, we impute missing responses in order to simplify the discussion.
 
 ```{r}
 library(dplyr)
+library(tidyr)
 data(fev_data, package = "mmrm")
 data <- fev_data |>
+  group_by(USUBJID) |>
+  complete(AVISIT) |>
+  arrange(AVISIT) |>
+  fill(
+    any_of(c("ARMCD", "FEV1_BL", "RACE", "SEX", "WEIGHT")),
+    .direction = "downup"
+  ) |>
+  mutate(FEV1 = na.locf(FEV1, na.rm = FALSE)) |>
+  mutate(FEV1 = na.locf(FEV1, na.rm = FALSE, fromLast = TRUE)) |>
+  ungroup() |>
+  filter(!is.na(FEV1)) |>
   mutate(FEV1_CHG = FEV1 - FEV1_BL, USUBJID = as.character(USUBJID)) |>
   select(-FEV1) |>
-  as_tibble()
+  as_tibble() |>
+  arrange(USUBJID, AVISIT)
 data
 ```
 
@@ -65,29 +78,11 @@ To accomplish our goals, we need to carefully construct a linear transformation 
 
 `brms.mmrm::brm_model()` returns a fitted [`brms`](https://paul-buerkner.github.io/brms/) model, and [`brms`](https://paul-buerkner.github.io/brms/) already has tools for posterior inference. Through a combination of native functions and S3 methods, [`brms`](https://paul-buerkner.github.io/brms/) integrates not only with [`posterior`](https://mc-stan.org/posterior/) and [`loo`](https://mc-stan.org/loo/), but also [`emmeans`](https://cran.r-project.org/package=emmeans) for the estimation of marginal means and downstream contrasts. 
 
-Despite the existing features in `brms`, `brms.mmrm` implements custom code to transform model coefficients into marginal means. This is because the reference grids in `emmeans` can only condition on factors explicitly declared in the model formula supplied to `brms`, whereas `brms.mmrm` needs more flexibility in order to support conditional means priors (@bedrick1996, @bedrick1997, @christensen2010, @rosner2021).
+Despite the existing features in `brms`, `brms.mmrm` implements custom code to transform model coefficients into marginal means. This is because the reference grids in `emmeans` can only condition on factors explicitly declared in the model formula supplied to `brms`, whereas `brms.mmrm` needs more flexibility in order to support [informative prior archetypes](https://openpharma.github.io/brms.mmrm/articles/archetypes.html) (@bedrick1996, @bedrick1997, @christensen2010, @rosner2021).
 
 # How `brms.mmrm` estimates marginal means
 
-To transform model coefficients into marginal means, `brms.mmrm` replicates the behavior of `emmeans` described in its [package vignettes](https://cran.r-project.org/package=emmeans/vignettes/). The only difference is that `brms.mmrm` completes the grid of patient visits to add rows for implicitly missing responses.^[Completing the grid of patient visits ensures all patients are represented equally when averaging over baseline covariates, regardless of patients who drop out early.] To simplify this vignette, let us complete the patient-visit grid and impute missing `FEV1_CHG` values so that none are missing.
-
-```{r}
-library(tidyr)
-library(zoo)
-data <- data |>
-  group_by(USUBJID) |>
-  complete(AVISIT) |>
-  arrange(AVISIT) |>
-  fill(
-    any_of(c("ARMCD", "FEV1_BL", "RACE", "SEX", "WEIGHT")),
-    .direction = "downup"
-  ) |>
-  mutate(FEV1_CHG = na.locf(FEV1_CHG, na.rm = FALSE)) |>
-  mutate(FEV1_CHG = na.locf(FEV1_CHG, na.rm = FALSE, fromLast = TRUE)) |>
-  ungroup() |>
-  filter(!is.na(FEV1_CHG)) |>
-  arrange(USUBJID, AVISIT)
-```
+To transform model coefficients into marginal means, `brms.mmrm` follows a technique similar to that of [`emmeans`](https://cran.r-project.org/package=emmeans/vignettes/).^[But unlike `emmeans`, `brms.mmrm` completes the grid of patient visits to add rows for implicitly missing responses. Completing the grid of patient visits ensures all patients are represented equally when averaging over baseline covariates, regardless of patients who drop out early.]
 
 To begin, let us fit a simple regression model using the complex formula from before.
 
@@ -163,7 +158,7 @@ marginals_custom <- transform %*% coef(model)
 marginals_custom
 ```
 
-These results agree with the marginal mean estimates from `emmeans` (within rounding error).
+These results are extremely close to the estimated marginal mean from `emmeans`.
 
 ```{r}
 marginals_emmeans |>
