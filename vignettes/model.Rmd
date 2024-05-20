@@ -16,49 +16,31 @@ The `brms.mmrm` R package implements a mixed model of repeated measures (MMRM), 
 
 # Model
 
-The MMRM in `brms.mmrm` is mathematically expressed as follows. It is a multivariate linear model with random effects implicitly marginalized out. The standard deviations are distributional parameters, which are explained in <https://paul-buerkner.github.io/brms/articles/brms_distreg.html>.
+Let $y_1, \ldots, y_N$ be independent data points observed for individual patients in a clinical trial. Each $y_n$ is a numeric vector of length $T$, where $T$ is the number of discrete time points in the dataset (e.g. patient visits in the study protocol). We model $y_n$ as follows:
 
 $$
 \begin{aligned}
-&y_i \stackrel{\text{ind}}{\sim} \text{Multivariate-Normal} \left (\text{mean} = X_{i} \beta, \ \text{covariance} = \text{diag}(\sigma_i) \cdot \Lambda \cdot \text{diag}(\sigma_i) \right ) \\
-&\qquad \beta_p \stackrel{\text{ind}}{\sim} q_p() \\
-&\qquad \Lambda \sim r() \\
-&\qquad \sigma_i = \exp(Z_i \tau) \\
-&\qquad \qquad \tau_q \stackrel{\text{ind}}{\sim} s()
+y_n \sim \text{Multivariate-Normal}\left ( \text{mean} = X_n b, \ \text{variance} = \Sigma_n \right )
+\end{aligned}
+$$
+Above, $X_n$ is the fixed effect model matrix of patient $n$, and its specific makeup is determined by arguments such as `intercept` and `group` in `brm_formula()`. $b$ is a constant-length vector of fixed effect parameters.
+
+The MMRM in `brms.mmrm` is a [distributional model](https://paul-buerkner.github.io/brms/articles/brms_distreg.html), which means it uses a linear regression structure for both the mean and the variance of the multivariate normal likelihood. In particular, the $T \times T$ symmetric positive-definite residual covariance matrix $\Sigma_n$ of patient $n$ decomposes as follows:
+
+$$
+\begin{aligned}
+\Sigma_n &= \text{diag}(\sigma_n) \cdot \Lambda \cdot \text{diag}(\sigma_n) \\
+\sigma_n &= \text{exp} \left ( Z_n b_\sigma \right)
 \end{aligned}
 $$
 
-The sections below define the notation, data, parameters, and priors used in the model statement above.
-
-# Notation
-
-* $i$: positive integer index of a patient (or subject) in the study.
-* $p$: positive integer index of a scalar element of the fixed effect parameter vector $\beta$.
-* $q$: positive integer index of a scalar element of the parameter vector $\tau$.
-* $\theta_j \stackrel{\text{ind}}{\sim} f()$: assuming $j$ is a positive integer index that ranges from 1 to positive integer $J$, this notation declares that parameters $\theta_1, \ldots, \theta_J$ are independent and each follow the prior distribution with a common probability density function $f()$.
-* $\theta_j \stackrel{\text{ind}}{\sim} f_j()$: same as above, except each $\theta_j$ parameter follows its own separate prior distribution with probability density function $p_j()$. $p_i()$ and $f_j()$ may differ if $i \ne j$.
-* $\text{diag}(\theta)$: diagonal matrix with the scalar elements of vector $\theta$ on the diagonal and off-diagonal elements equal to 0. The number of rows and number of columns in this matrix are both equal to the number of elements in vector $\theta$.
-
-# Data
-
-* $y_i$: numeric vector of outcome observations for patient $i$. The number of elements in the vector equals the number of discrete time points in the study, and for the purposes of this model specification, they are sorted chronologically with the first element of $y_i$ observed first in the study. One or more elements of each $y_i$ may be missing due to dropout, discontinuation, etc. The likelihood of the model assumes $y_i$ is independent of $y_j$ for $i \ne j$.
-* $X_i$: the rows of the fixed effect model matrix which correspond to patient $i$. The rows of $X_i$ correspond to the elements of the vector $y_i$ (equivalently, the discrete time points of the study), and the columns of $X_i$ correspond to the model coefficient parameters $\beta_p$. The value of $X_i$ is determined by the data and by the fixed effect parameterization declared through `brm_formula()`.
-* $Z_i$: the rows of the standard deviation model matrix which correspond to patient $i$. The rows of $Z_i$ correspond to the elements of the vector $y_i$ (equivalently, the discrete time points of the study), and the columns of $Z_i$ correspond to the scalar elements of the parameter vector $\tau$. The value of $Z_i$ is determined by the data and by the fixed effect parameterization declared through `brm_formula()`.
-
-# Parameters
-
-* $\beta$: vector of model coefficients. $\beta_p$ is scalar element $p$ of $\beta$. In subgroup analysis, $\beta$ contains model coefficients for different subgroup levels, as well as any interaction terms declared through the model formula.
-* $\Lambda$: matrix of pairwise correlations among each pair of time points within patients. Outcomes measured from different patients are assumed to be independent, and outcomes observed at different time points for the same patient are assumed to be correlated according to this matrix. $\Lambda$ is positive-definite and symmetric, and the number of rows and columns is equal to the number of discrete time points of the study. 
-* $\sigma_i$: a vector of linear-scale standard deviations for patient `i`. $\sigma_i$ has one element for each unique discrete time point in the study.
-* $\tau$: a vector on the log scale which parameterizes the standard deviations of the model. $\tau_q$ is scalar element $q$ of $\tau$. For each patient $i$, each $\sigma_i$ is equal to $\exp(Z_i \tau)$. This allows `brms.mmrm` to utilize the flexibility of `brms` for distributional models: <https://paul-buerkner.github.io/brms/articles/brms_distreg.html>.
+Above, $\sigma_n$ is a vector of $T$ time-specific scalar standard deviations, and $\text{diag}(\sigma_n)$ is a diagonal $T \times T$ matrix. $Z_n$ is a patient-specific matrix which controls how the [distributional parameters](https://paul-buerkner.github.io/brms/articles/brms_distreg.html) $b_\sigma$ map to the more intuitive standard deviation vector $\sigma_n$. The specific makeup of $Z_n$ is determined by the `sigma` argument of `brm_formula()`, which in turn is produced by `brm_formula_sigma()`. $\Lambda$ is a symmetric positive-definite correlation matrix with diagonal elements equal to 1 and off-diagonal elements between -1 and 1.
 
 # Priors
 
-The priors on the parameters depend on the `prior` argument of `brm_model()` and related functions. If priors are not specified by the user, then the [`brms`](https://paul-buerkner.github.io/brms/) package sets defaults. You can view the default priors using the [`get_prior()`](http://paul-buerkner.github.io/brms/reference/get_prior.html) function in [`brms`](https://paul-buerkner.github.io/brms/). See the [`brms`](https://paul-buerkner.github.io/brms/) for information on how [`brms`](https://paul-buerkner.github.io/brms/) sets default priors.
-
-* $q_p()$: univariate prior on the model coefficient $\beta_p$.
-* $r()$: matrix prior on the within-patient residual correlation matrix parameter $\Lambda$. Can be unstructured, autoregressive moving average, autoregressive, moving average, or compound symmetry, c.f. <https://paul-buerkner.github.io/brms/reference/autocor-terms.html>.
-* $s()$: univariate prior on the individual scalar components of $\tau$. The components of $\tau$ are assumed independent and identically distributed with this univariate prior.
+ The scalar components of $b$ are modeled as independent with user-defined priors specified through the `prior` argument of `brm_model()`. The hyperparameters of these priors are constant. The default priors are improper uniform for non-intercept terms and a data-dependent Student-t distribution for the intercept. The variance-related distributional parameters $b_\sigma$ are given similar priors
+ 
+For the correlation matrix $\Lambda$, the default prior in `brms.mmrm` is the [LKJ correlation distribution](https://mc-stan.org/docs/functions-reference/correlation_matrix_distributions.html#lkj-correlation) with shape parameter equal to 1. This choice of prior is synonymous with "unstructured correlation". Other correlation structures are possible, such as autoregressive, moving average, compound symmetry, and diagonal, the last of which fixes $\Lambda$ to be the constant $T \times T$ identity matrix. These alternative structures and priors are available directly through `brms`. For specific details, please consult <https://paul-buerkner.github.io/brms/reference/autocor-terms.html>.
 
 # Sampling
 
