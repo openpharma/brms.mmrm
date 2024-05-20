@@ -70,7 +70,7 @@ brm_model <- function(
   formula,
   ...,
   prior = NULL,
-  family = brms::brmsfamily(family = "gaussian", link = "identity")
+  family = brms::brmsfamily(family = "gaussian")
 ) {
   brm_data_validate(data = data)
   brm_formula_validate(formula)
@@ -120,7 +120,15 @@ brms_model_validate_family <- function(family) {
     message = "family must be for continuous outcomes"
   )
   assert(
+    identical(family$family, "gaussian"),
+    message = "family must be gaussian"
+  )
+  assert(
     identical(family$link, "identity"),
     message = "family must have the identity link"
+  )
+  assert(
+    identical(family$link_sigma, "log"),
+    message = "family must link_sigma equal to 'log'"
   )
 }
