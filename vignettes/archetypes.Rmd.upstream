@@ -99,7 +99,7 @@ label <- brm_prior_label(
 label
 ```
 
-Those `group` and `time` labels map your priors to the corresponding `x_*` parameters.
+Those `group` and `time` labels map your priors to the corresponding `x_*` parameters. `brm_prior_archetype()` accepts a collection of labeled priors and returns a `brms` prior object as documented in <https://paul-buerkner.github.io/brms/reference/set_prior.html>.
 
 ```{r}
 prior <- brm_prior_archetype(label = label, archetype = archetype)

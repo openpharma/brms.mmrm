@@ -154,7 +154,7 @@ label
 #> 6 normal(2, 4.4) group_2 time_4
 ```
 
-Those `group` and `time` labels map your priors to the corresponding `x_*` parameters.
+Those `group` and `time` labels map your priors to the corresponding `x_*` parameters. `brm_prior_archetype()` accepts a collection of labeled priors and returns a `brms` prior object as documented in <https://paul-buerkner.github.io/brms/reference/set_prior.html>.
 
 
 ```r
