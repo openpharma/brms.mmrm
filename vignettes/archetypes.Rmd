@@ -116,7 +116,7 @@ The factors of interest linearly map to marginal means. To see the mapping, call
 summary(archetype)
 #> # This object is an informative prior archetype in brms.mmrm.
 #> # The fixed effect parameters of interest express the
-#> # marginal means as follows (on the link scale):
+#> # marginal means as follows:
 #> # 
 #> #    group_1:time_2 = x_group_1_time_2
 #> #    group_1:time_3 = x_group_1_time_2 + x_group_1_time_3
@@ -266,7 +266,7 @@ Other informative prior archetypes use different fixed effects. For example, `br
 summary(brm_archetype_cells(data))
 #> # This object is an informative prior archetype in brms.mmrm.
 #> # The fixed effect parameters of interest express the
-#> # marginal means as follows (on the link scale):
+#> # marginal means as follows:
 #> # 
 #> #    group_1:time_2 = x_group_1_time_2
 #> #    group_1:time_3 = x_group_1_time_3
@@ -281,7 +281,7 @@ summary(brm_archetype_cells(data))
 summary(brm_archetype_effects(data))
 #> # This object is an informative prior archetype in brms.mmrm.
 #> # The fixed effect parameters of interest express the
-#> # marginal means as follows (on the link scale):
+#> # marginal means as follows:
 #> # 
 #> #    group_1:time_2 = x_group_1_time_2
 #> #    group_1:time_3 = x_group_1_time_3
@@ -298,7 +298,7 @@ There are archetypes to parameterize the average across all time points in the d
 summary(brm_archetype_average_cells(data))
 #> # This object is an informative prior archetype in brms.mmrm.
 #> # The fixed effect parameters of interest express the
-#> # marginal means as follows (on the link scale):
+#> # marginal means as follows:
 #> # 
 #> #    group_1:time_2 = 3*x_group_1_time_2 - x_group_1_time_3 - x_group_1_time_4
 #> #    group_1:time_3 = x_group_1_time_3
@@ -315,7 +315,7 @@ There is also a treatment effect version where `x_group_2_time_2` becomes the ti
 summary(brm_archetype_average_effects(data))
 #> # This object is an informative prior archetype in brms.mmrm.
 #> # The fixed effect parameters of interest express the
-#> # marginal means as follows (on the link scale):
+#> # marginal means as follows:
 #> # 
 #> #    group_1:time_2 = 3*x_group_1_time_2 - x_group_1_time_3 - x_group_1_time_4
 #> #    group_1:time_3 = x_group_1_time_3
@@ -332,7 +332,7 @@ In addition, there is a treatment effect version of the successive differences a
 summary(brm_archetype_successive_effects(data))
 #> # This object is an informative prior archetype in brms.mmrm.
 #> # The fixed effect parameters of interest express the
-#> # marginal means as follows (on the link scale):
+#> # marginal means as follows:
 #> # 
 #> #    group_1:time_2 = x_group_1_time_2
 #> #    group_1:time_3 = x_group_1_time_2 + x_group_1_time_3
