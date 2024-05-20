@@ -172,7 +172,7 @@ summary.brms_mmrm_archetype <- function(object, ...) {
   lines <- c(
     "This object is an informative prior archetype in brms.mmrm.",
     "The fixed effect parameters of interest express the",
-    "marginal means as follows (on the link scale):",
+    "marginal means as follows:",
     ""
   )
   for (index in seq_along(marginals)) {
