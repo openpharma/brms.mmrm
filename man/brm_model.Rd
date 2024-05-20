@@ -9,7 +9,7 @@ brm_model(
   formula,
   ...,
   prior = NULL,
-  family = brms::brmsfamily(family = "gaussian", link = "identity")
+  family = brms::brmsfamily(family = "gaussian")
 )
 }
 \arguments{

@@ -15,7 +15,7 @@ powerful and versatile package for fitting Bayesian regression models.
 The `brms.mmrm` R package leverages
 [`brms`](https://paul-buerkner.github.io/brms/) to run
 [MMRMs](https://link.springer.com/article/10.1177/009286150804200402),
-and it supports a simplified interfaced to reduce difficulty and align
+and it supports a simplified interface to reduce difficulty and align
 with best practices for the life sciences.
 
 ## Installation
@@ -56,7 +56,7 @@ are the same datasets that
 itself against SAS in [this
 vignette](https://openpharma.github.io/mmrm/latest-tag/articles/mmrm_review_methods.html).
 For additional validation in your functional area or domain of
-expertise, you may choose to run the similar analyses on your own
+expertise, you may choose to run similar analyses on your own
 datasets to compare `brms.mmrm` against
 [`mmrm`](https://openpharma.github.io/mmrm/latest-tag/) and/or SAS.
 
@@ -68,7 +68,7 @@ issues](https://github.com/openpharma/brms.mmrm), respectively.
 
 ## Thanks
 
-Thanks to the [`openstatsware`](https://www.openstatsware.org/) and [R
+Thanks to [`openstatsware`](https://www.openstatsware.org/) and the [R
 Consortium](https://www.r-consortium.org/) for providing professional
 networks to recruit skilled statisticians and developers.
 
