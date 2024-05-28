@@ -182,6 +182,61 @@ ranks_unstructured |>
   plot_ranks()
 ```
 
+# Autoregressive scenario
+
+This scenario uses an autoregressive model with order 1 for the correlation structure. Assumptions:
+
+* 2 treatment groups
+* No subgroup
+* 4 time points
+* 50 patients per treatment group
+* No covariate adjustment
+* No missing responses
+
+Model formula:
+
+```{r, echo = FALSE}
+autoregressive()$formula
+```
+
+The prior was randomly generated and used for both simulation and analysis:
+
+```{r, paged.print = FALSE}
+setup_prior(autoregressive) |>
+  select(prior, class, coef, dpar) |>
+  as.data.frame()
+```
+
+The following histograms show the SBC rank statistics which compare the prior parameter draws draws to the posterior draws. If the data simulation code and modeling code are both correct and consistent, then the rank statistics should be uniformly distributed.
+
+```{r}
+ranks_autoregressive <- read_ranks("sbc/results/autoregressive.fst")
+```
+
+Fixed effect parameter ranks:
+
+```{r}
+ranks_autoregressive |>
+  filter(grepl("^b_", parameter)) |>
+  filter(!grepl("^b_sigma", parameter)) |>
+  plot_ranks()
+```
+Log-scale standard deviation parameter ranks:
+
+```{r}
+ranks_autoregressive |>
+  filter(grepl("b_sigma", parameter)) |>
+  plot_ranks()
+```
+
+Correlation parameter ranks:
+
+```{r}
+ranks_autoregressive |>
+  filter(parameter == "ar[1]") |>
+  plot_ranks()
+```
+
 # Compound symmetry scenario
 
 This scenario uses compound symmetry for the correlation structure. Assumptions:
@@ -234,6 +289,53 @@ Correlation parameter ranks:
 ```{r}
 ranks_compound_symmetry |>
   filter(parameter == "cosy") |>
+  plot_ranks()
+```
+
+# Diagonal scenario
+
+This scenario assumes time points within patients are independent (diagonal correlation matrix). Other assumptions:
+
+* 2 treatment groups
+* No subgroup
+* 3 time points
+* 50 patients per treatment group
+* No covariate adjustment
+* No missing responses
+
+In addition, the standard deviations are parameterized differently. Model formula:
+
+```{r, echo = FALSE}
+diagonal()$formula
+```
+
+The prior was randomly generated and used for both simulation and analysis:
+
+```{r, paged.print = FALSE}
+setup_prior(diagonal) |>
+  select(prior, class, coef, dpar) |>
+  as.data.frame()
+```
+
+The following histograms show the SBC rank statistics which compare the prior parameter draws draws to the posterior draws. If the data simulation code and modeling code are both correct and consistent, then the rank statistics should be uniformly distributed.
+
+```{r}
+ranks_diagonal <- read_ranks("sbc/results/diagonal.fst")
+```
+
+Fixed effect parameter ranks:
+
+```{r}
+ranks_diagonal |>
+  filter(grepl("^b_", parameter)) |>
+  filter(!grepl("^b_sigma", parameter)) |>
+  plot_ranks()
+```
+Log-scale standard deviation parameter ranks:
+
+```{r}
+ranks_diagonal |>
+  filter(grepl("b_sigma", parameter)) |>
   plot_ranks()
 ```
 
