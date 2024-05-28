@@ -1,11 +1,13 @@
 run_simulation <- function(
-  data,
-  formula,
+  scenario,
   prior,
   chains,
   warmup,
   iter
 ) {
+  setup <- scenario()
+  data <- setup$data
+  formula <- setup$formula
   rnorm(1)
   seed <- .GlobalEnv[[".Random.seed"]]
   class(data) <- c(attr(formula, "brm_correlation"), class(data))

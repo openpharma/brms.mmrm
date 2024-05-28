@@ -19,8 +19,7 @@ simulate_response.unstructured <- function(data, formula, prior) {
   )
   n_time <- length(unique(data[[attr(data, "brm_time")]]))
   n_patient <- nrow(data) / n_time
-  shape <- prior[prior$class == "Lcortime", "shape"]
-  correlation <- trialr::rlkjcorr(n = 1L, K = n_time, eta = shape)
+  correlation <- eval(parse(text = prior[prior$class == "cortime", "r"]))
   i <- rep(seq_len(n_time), each = n_time)
   j <- rep(seq_len(n_time), times = n_time)
   cortime <- as.numeric(correlation)[j > i]
@@ -32,6 +31,8 @@ simulate_response.unstructured <- function(data, formula, prior) {
     data[[attr(data, "brm_outcome")]][rows] <- response
   }
   data$response[data$missing] <- NA_real_
+  names(beta) <- paste0("b_", names(beta))
+  names(b_sigma) <- paste0("b_sigma_", names(b_sigma))
   parameters <- c(beta, b_sigma, cortime)
   list(data = data, parameters = parameters)
 }
@@ -55,19 +56,18 @@ simulate_beta <- function(data, formula, prior, model_matrix) {
   prior_beta <- dplyr::filter(
     prior,
     class %in% c("b", "Intercept"),
-    dpar != "sigma"
+    dpar == ""
   )
   index <- match(x = colnames(model_matrix), table = prior_beta$coef)
   prior_beta <- prior_beta[index, ]
   stopifnot(all(prior_beta$coef == colnames(model_matrix)))
   n_beta <- nrow(prior_beta)
-  beta <- stats::rnorm(n = n_beta, mean = prior_beta$mean, sd = prior_beta$sd)
+  beta <- purrr::map_dbl(prior_beta$r, ~eval(parse(text = .x)))
   names(beta) <- prior_beta$coef
   stopifnot(all(sort(names(beta)) == sort(names(model_matrix))))
   stopifnot(!anyNA(names(beta)))
   stopifnot(!anyNA(beta))
   beta <- beta[colnames(model_matrix)]
-  names(beta) <- prior_beta$name
   stopifnot(!anyNA(names(beta)))
   stopifnot(!anyNA(beta))
   beta
@@ -85,12 +85,20 @@ derive_x_beta <- function(data, formula, prior, beta) {
 
 simulate_b_sigma <- function(data, formula, prior) {
   prior_b_sigma <- dplyr::arrange(dplyr::filter(prior, dpar == "sigma"), coef)
-  b_sigma <- stats::rnorm(
-    n = nrow(prior_b_sigma),
-    mean = prior_b_sigma$mean,
-    sd = prior_b_sigma$sd
+  b_sigma <-  purrr::map_dbl(prior_b_sigma$r, ~eval(parse(text = .x)))
+  names(b_sigma) <- prior_b_sigma$coef
+  stopifnot(!anyNA(names(b_sigma)))
+  stopifnot(!anyNA(b_sigma))
+  model_matrix <- get_model_matrix(
+    data = data,
+    formula = formula,
+    prior = prior,
+    which = "X_sigma"
   )
-  names(b_sigma) <- prior_b_sigma$name
+  stopifnot(all(sort(names(b_sigma)) == sort(names(model_matrix))))
+  b_sigma <- b_sigma[colnames(model_matrix)]
+  stopifnot(!anyNA(names(b_sigma)))
+  stopifnot(!anyNA(b_sigma))
   b_sigma
 }
 
@@ -101,7 +109,7 @@ derive_sigma <- function(data, formula, prior, b_sigma) {
     prior = prior,
     which = "X_sigma"
   )
-  stopifnot(all(names(b_sigma) == paste0("b_sigma_", colnames(model_matrix))))
+  stopifnot(all(names(b_sigma) == colnames(model_matrix)))
   as.numeric(exp(model_matrix %*% b_sigma))
 }
 
