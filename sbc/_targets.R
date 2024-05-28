@@ -1,13 +1,5 @@
-library(crew.aws.batch)
 library(targets)
 library(tarchetypes)
-
-# Environment variables below such as JOB_DEFINITION and BUCKET
-# are sensitive pieces of information that should not be included
-# in code. Anyone who runs this pipeline will need to supply
-# those values manually, either by editing this file
-# or by defining an .Renviron file in the root directory
-# of the pipeline.
 
 tar_option_set(
   storage = "worker",
@@ -15,26 +7,7 @@ tar_option_set(
   memory = "transient",
   format = "qs",
   garbage_collection = TRUE,
-  workspace_on_error = TRUE,
-  controller = crew_controller_aws_batch(
-    name = "brms-mmrm-sbc",
-    workers = 100L,
-    seconds_idle = 120,
-    seconds_launch = 1800,
-    launch_max = 3L,
-    processes = 2,
-    aws_batch_job_definition = "brms-mmrm-sbc",
-    aws_batch_job_queue = Sys.getenv("JOB_QUEUE", unset = "queue"),
-    aws_batch_region = Sys.getenv("REGION", unset = "region")
-  ),
-  repository = "aws",
-  resources = tar_resources(
-    aws = tar_resources_aws(
-      bucket = Sys.getenv("BUCKET", unset = "bucket"),
-      prefix = file.path(Sys.getenv("USER"), "brms-mmrm-sbc"),
-      region = Sys.getenv("REGION", unset = "region")
-    )
-  )
+  workspace_on_error = TRUE
 )
 
 tar_source()

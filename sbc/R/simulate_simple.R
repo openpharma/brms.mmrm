@@ -9,6 +9,7 @@ simulate_simple <- function(prior, chains, warmup, iter) {
     rate_dropout = 0,
     rate_lapse = 0
   )
+  outline[[attr(outline, "brm_outcome")]] <- seq_len(nrow(outline))
   formula <- brms.mmrm::brm_formula(
     data = outline,
     intercept = FALSE,
@@ -17,10 +18,11 @@ simulate_simple <- function(prior, chains, warmup, iter) {
     time = TRUE,
     baseline_time = FALSE,
     group_time = FALSE,
+    covariates = TRUE,
     correlation = "unstructured"
   )
   run_simulation(
-    outline = outline,
+    data = outline,
     formula = formula,
     prior = prior,
     chains = chains,

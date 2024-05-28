@@ -23,12 +23,21 @@ simulate_complex <- function(prior, chains, warmup, iter) {
       levels = c("level1", "level2", "level3"),
       probabilities = c(0.64, 0.26, 0.1)
     )
+  outline[[attr(outline, "brm_outcome")]] <- seq_len(nrow(outline))
   formula <- brms.mmrm::brm_formula(
     data = outline,
+    intercept = TRUE,
+    group = TRUE,
+    time = TRUE,
+    group_time = TRUE,
+    subgroup = TRUE,
+    group_subgroup = TRUE,
+    group_subgroup_time = TRUE,
+    covariates = TRUE,
     correlation = "unstructured"
   )
   run_simulation(
-    outline = outline,
+    data = outline,
     formula = formula,
     prior = prior,
     chains = chains,
