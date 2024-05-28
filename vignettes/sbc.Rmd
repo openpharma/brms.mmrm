@@ -29,55 +29,24 @@ library(tidyr)
 
 # About
 
-This vignette shows the results of a simulation-based calibration (SBC) checking study to validate the implementation of the models in `brms.mmrm`. SBC checking tests the ability of a Bayesian model to recapture the parameters used to simulate prior predictive data. For details on SBC checking, please read @Modrak2024 and the [`SBC`](https://hyunjimoon.github.io/SBC/) R package [@sbc]. This particular SBC checking study uses the [`targets`](https://docs.ropensci.org/targets/) pipeline in the [`sbc`](https://github.com/openpharma/brms.mmrm/tree/main/sbc) subdirectory of the [`brms.mmrm`](https://github.com/openpharma/brms.mmrm) package source code.
+This vignette shows the results of a simulation-based calibration (SBC) checking study to validate the implementation of the models in `brms.mmrm`. SBC checking tests the ability of a Bayesian model to recapture the parameters used to simulate prior predictive data. For details on SBC checking, please read @Modrak2024 and the [`SBC`](https://hyunjimoon.github.io/SBC/) R package [@sbc]. This particular SBC checking study uses the [`targets`](https://docs.ropensci.org/targets/) pipeline in the [`viggnettes/sbc/`](https://github.com/openpharma/brms.mmrm/tree/main/vignettes/sbc) subdirectory of the [`brms.mmrm`](https://github.com/openpharma/brms.mmrm) package source code.
 
-# Simple scenario
+# Conclusion
 
-In the simple scenario, we simulate datasets from the prior predictive distribution assuming 3 treatment groups, 4 time points, 100 patients per treatment group, no adjustment for covariates, and no missing responses. The model formula is:
+From the results below, the SBC rank statistics are approximately uniformly distributed. In other words, the posterior distribution from the `brms`/Stan MMRM modeling code matches the prior from which the datasets were simulated. This is evidence that both the subgroup and non-subgroup models in `brms.mmrm` are implemented correctly.
 
-```{r, echo = FALSE}
-n_group <- 3L
-n_patient <- 100L
-n_time <- 4L
-outline <- brms.mmrm::brm_simulate_outline(
-  n_group = n_group,
-  n_patient = n_patient,
-  n_time = n_time,
-  rate_dropout = 0,
-  rate_lapse = 0
-)
-brms.mmrm::brm_formula(
-  data = outline,
-  intercept = FALSE,
-  baseline = FALSE,
-  baseline_subgroup = FALSE,
-  baseline_subgroup_time = FALSE,
-  baseline_time = FALSE,
-  group = TRUE,
-  group_subgroup = FALSE,
-  group_subgroup_time = FALSE,
-  group_time = TRUE,
-  subgroup = FALSE,
-  subgroup_time = FALSE,
-  time = TRUE,
-  correlation = "unstructured",
-  check_rank = FALSE
-)
-```
+# Setup
 
-The prior was randomly generated and used for both simulation and analysis:
-
-```{r, paged.print = FALSE}
-fst::read_fst("sbc/prior_simple.fst")
-```
-
-The following histograms show the SBC rank statistics which compare the prior parameter draws draws to the posterior draws. If the data simulation code and modeling code are both correct and consistent, then the rank statistics should be uniformly distributed.
+We load code from the SBC checking study, and we use custom functions to read and plot rank statistics:
 
 ```{r}
 library(dplyr)
 library(ggplot2)
 library(tibble)
 library(tidyr)
+
+source("sbc/R/prior.R")
+source("sbc/R/scenarios.R")
 
 read_ranks <- function(path) {
   fst::read_fst(path) |>
@@ -99,94 +68,53 @@ plot_ranks <- function(ranks) {
 }
 ```
 
-```{r}
-simple_ranks <- read_ranks("sbc/simple.fst")
-```
+Each section below is its own SBC checking study based on a given modeling scenario.
 
-Fixed effect parameter ranks:
+# Subgroup scenario
 
-```{r}
-simple_ranks |>
-  filter(grepl("^b_", parameter)) |>
-  filter(!grepl("^b_sigma", parameter)) |>
-  plot_ranks()
-```
-Log-scale standard deviation parameter ranks:
+The subgroup scenario distinguishes itself from the others by the presence of a subgroup factor. Assumptions:
 
-```{r}
-simple_ranks |>
-  filter(grepl("b_sigma", parameter)) |>
-  plot_ranks()
-```
+* 2 treatment groups
+* 2 subgroup levels
+* 3 time points
+* 150 patients per treatment group
+* Baseline covariates (2 continuous and 2 categorical)
+* 30% dropout
+* 8% rate of independent/sporadic missing response.
 
-Correlation parameter ranks:
-
-```{r}
-simple_ranks |>
-  filter(grepl("cortime_", parameter)) |>
-  plot_ranks()
-```
-
-# Complex scenario
-
-In the complex scenario, we simulate datasets from the prior predictive distribution assuming 2 treatment groups, 2 subgroup levels, 3 time points, 150 patients per treatment group, adjustment for two continuous and two categorical baseline covariates, 30% dropout, and an 8% rate of independent/sporadic missing values. The model formula is:
+Model formula:
 
 ```{r, echo = FALSE}
-n_group <- 2L
-n_subgroup <- 2L
-n_patient <- 150L
-n_time <- 3L
-outline <- brms.mmrm::brm_simulate_outline(
-  n_group = n_group,
-  n_subgroup = n_subgroup,
-  n_patient = n_patient,
-  n_time = n_time,
-  rate_dropout = 0.3,
-  rate_lapse = 0.08
-) |>
-  brms.mmrm::brm_simulate_continuous(
-    names = c("continuous1", "continuous2")
-  ) |>
-  brms.mmrm::brm_simulate_categorical(
-    names = "balanced",
-    levels = c("level1", "level2", "level3")
-  ) |>
-  brms.mmrm::brm_simulate_categorical(
-    names = "unbalanced",
-    levels = c("level1", "level2", "level3"),
-    probabilities = c(0.64, 0.26, 0.1)
-  )
-brms.mmrm::brm_formula(
-  data = outline,
-  correlation = "unstructured",
-  check_rank = FALSE
-)
+subgroup()$formula
 ```
 
 The prior was randomly generated and used for both simulation and analysis:
 
 ```{r, paged.print = FALSE}
-fst::read_fst("sbc/prior_complex.fst")
+setup_prior(subgroup) |>
+  select(prior, class, coef, dpar) |>
+  as.data.frame()
 ```
 
 The following histograms show the SBC rank statistics which compare the prior parameter draws draws to the posterior draws. If the data simulation code and modeling code are both correct and consistent, then the rank statistics should be uniformly distributed.
 
 ```{r}
-complex_ranks <- read_ranks("sbc/complex.fst")
+ranks_subgroup <- read_ranks("sbc/results/subgroup.fst")
 ```
 
 Fixed effect parameter ranks:
 
 ```{r}
-complex_ranks |>
+ranks_subgroup |>
   filter(grepl("^b_", parameter)) |>
   filter(!grepl("^b_sigma", parameter)) |>
   plot_ranks()
 ```
-Log-scale standard deviation parameter ranks:
+
+Standard deviation parameter ranks:
 
 ```{r}
-complex_ranks |>
+ranks_subgroup |>
   filter(grepl("b_sigma", parameter)) |>
   plot_ranks()
 ```
@@ -194,13 +122,64 @@ complex_ranks |>
 Correlation parameter ranks:
 
 ```{r}
-complex_ranks |>
+ranks_subgroup |>
   filter(grepl("cortime_", parameter)) |>
   plot_ranks()
 ```
 
-# Conclusion
+# Unstructured scenario
 
-The SBC rank statistics look uniformly distributed. In other words, the posterior distribution from the `brms`/Stan MMRM modeling code matches the prior from which the datasets were simulated. This is evidence that both the subgroup and non-subgroup models in `brms.mmrm` are implemented correctly.
+This scenario uses unstructured correlation and does not use a subgroup variable. Assumptions:
+
+* 3 treatment groups
+* No subgroup
+* 4 time points
+* 100 patients per treatment group
+* No covariate adjustment
+* No missing responses
+
+Model formula:
+
+```{r, echo = FALSE}
+unstructured()$formula
+```
+
+The prior was randomly generated and used for both simulation and analysis:
+
+```{r, paged.print = FALSE}
+setup_prior(unstructured) |>
+  select(prior, class, coef, dpar) |>
+  as.data.frame()
+```
+
+The following histograms show the SBC rank statistics which compare the prior parameter draws draws to the posterior draws. If the data simulation code and modeling code are both correct and consistent, then the rank statistics should be uniformly distributed.
+
+```{r}
+ranks_unstructured <- read_ranks("sbc/results/unstructured.fst")
+```
+
+Fixed effect parameter ranks:
+
+```{r}
+ranks_unstructured |>
+  filter(grepl("^b_", parameter)) |>
+  filter(!grepl("^b_sigma", parameter)) |>
+  plot_ranks()
+```
+Log-scale standard deviation parameter ranks:
+
+```{r}
+ranks_unstructured |>
+  filter(grepl("b_sigma", parameter)) |>
+  plot_ranks()
+```
+
+Correlation parameter ranks:
+
+```{r}
+ranks_unstructured |>
+  filter(grepl("cortime_", parameter)) |>
+  plot_ranks()
+```
 
 # References
