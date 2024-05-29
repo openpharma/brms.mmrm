@@ -70,7 +70,7 @@ Those new columns constitute a custom model matrix to describe the desired param
 attr(archetype, "brm_archetype_interest")
 ```
 
-and we have nuisance variables. Some nuisance variables are continuous covariates, while others are levels of one-hot-encoded concomitant factors or interactions of those concomitant factors with baseline and/or subgroup. All nuisance variables are centered at their means so the reference level of the model is at the "center" of the data and not implicitly conditional on a subset of the data. In addition, some nuisance variables are automatically dropped in order to ensure the model matrix is full-rank. This is critically important to preserve the interpretation of the columns of interest and make sure the informative priors behave as expected.
+and we have nuisance variables. Some nuisance variables are continuous covariates, while others are levels of one-hot-encoded concomitant factors or interactions of those concomitant factors with baseline and/or subgroup. All nuisance variables are centered at their means so the reference level of the model is at the "center" of the data and not implicitly conditional on a subset of the data.^[`brm_recenter_nuisance()` can retroactively recenter a nuisance column to a fixed value other than its mean.] In addition, some nuisance variables are automatically dropped in order to ensure the model matrix is full-rank. This is critically important to preserve the interpretation of the columns of interest and make sure the informative priors behave as expected.
 
 ```{r}
 attr(archetype, "brm_archetype_nuisance")
@@ -84,12 +84,13 @@ summary(archetype)
 
 ## Informative priors
 
-Let's assume you want to assign informative priors to the fixed effect parameters of interest declared in the archetype, such as `x_group_1_time_2` and `x_group_2_time_3`. Your priors may come from expert elicitation, historical data, or some other method. Either way, `brms.mmrm` helps you assign these priors to the model without having to guess at the automatically-generated names of model coefficients in R.
+Let's assume you want to assign informative priors to the fixed effect parameters of interest declared in the archetype, such as `x_group_1_time_2` and `x_group_2_time_3`. Your priors may come from expert elicitation, historical data, or some other method, and you might consider [distributional families recommended by the Stan team](https://github.com/stan-dev/stan/wiki/prior-choice-recommendations). Either way, `brms.mmrm` helps you assign these priors to the model without having to guess at the automatically-generated names of model coefficients in R.
 
 In the printed output from `summary(archetype)`, parameters of interest such as `x_group_1_time_2` and `x_group_2_time_3` are always labeled using treatment groups and time points in the data (and subgroup levels, if applicable). Even though different archetypes have different parameterizations and thus different ways of expressing marginal means, this labeling scheme remains consistent across all archetypes. This is how `brms.mmrm` helps you assign priors. First, match your priors to levels in the data.
 
 ```{r}
-label <- brm_prior_label("student_t(4, 0.98, 2.37)",group = "group_1", time = "time_2") |>
+label <- NULL |>
+  brm_prior_label("student_t(4, 0.98, 2.37)", group = "group_1", time = "time_2") |>
   brm_prior_label("student_t(4, 1.82, 3.32)", group = "group_1", time = "time_3") |>
   brm_prior_label("student_t(4, 2.35, 4.41)", group = "group_1", time = "time_4") |>
   brm_prior_label("student_t(4, 0.31, 2.22)", group = "group_2", time = "time_2") |>
@@ -122,6 +123,14 @@ prior <- c(
 )
 prior
 ```
+
+The model still has many parameters where we did not set priors, and `brms` sets automatic defaults. You can see these defaults with `brms::default_prior()`.
+
+```{r}
+brms::default_prior(object = formula, data = archetype)
+```
+
+<https://paul-buerkner.github.io/brms/reference/set_prior.html> documents many of the default priors set by `brms`. In particular, `"(flat)"` denotes an improper uniform prior over all the real numbers.
 
 ## Modeling and analysis
 

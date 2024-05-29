@@ -49,7 +49,7 @@ archetype_nuisance <- function(
       nuisance = out
     )
   }
-  out
+  nuisance_center(out)
 }
 
 nuisance_covariates <- function(data) {
@@ -62,16 +62,11 @@ nuisance_covariates <- function(data) {
     colnames(categorical) <- paste0(colnames(categorical), "_")
     out <- dplyr::bind_cols(out, model.matrix(~ 0 + ., categorical))
   }
-  for (name in colnames(out)) {
-    out[[name]] <- out[[name]] - mean(out[[name]])
-  }
   out
 }
 
 nuisance_baseline <- function(data) {
-  baseline <- attr(data, "brm_baseline")
-  data[[baseline]] <- data[[baseline]] - mean(data[[baseline]])
-  data[, baseline, drop = FALSE]
+  data[, attr(data, "brm_baseline"), drop = FALSE]
 }
 
 nuisance_baseline_subgroup <- function(data) {
@@ -98,7 +93,6 @@ nuisance_baseline_time <- function(data) {
 
 nuisance_baseline_terms <- function(data, baseline, formula) {
   matrix <- model.matrix(object = formula, data = data)
-  matrix <- sweep(matrix, MARGIN = 2L, STATS = colMeans(matrix), FUN = "-")
   tibble::as_tibble(as.data.frame(matrix))
 }
 
@@ -135,4 +129,13 @@ columns_full_rank <- function(x) {
 drop_zero_columns <- function(x) {
   sums <- colSums(abs(x))
   x[, sums > .Machine$double.eps, drop = FALSE]
+}
+
+nuisance_center <- function(data) {
+  for (name in colnames(data)) {
+    mean <- mean(data[[name]])
+    attr(data[[name]], "brm_center") <- mean
+    data[[name]] <- data[[name]] - mean
+  }
+  data
 }

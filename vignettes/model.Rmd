@@ -34,13 +34,15 @@ $$
 \end{aligned}
 $$
 
-Above, $\sigma_n$ is a vector of $T$ time-specific scalar standard deviations, and $\text{diag}(\sigma_n)$ is a diagonal $T \times T$ matrix. $Z_n$ is a patient-specific matrix which controls how the [distributional parameters](https://paul-buerkner.github.io/brms/articles/brms_distreg.html) $b_\sigma$ map to the more intuitive standard deviation vector $\sigma_n$. The specific makeup of $Z_n$ is determined by the `sigma` argument of `brm_formula()`, which in turn is produced by `brm_formula_sigma()`. $\Lambda$ is a symmetric positive-definite correlation matrix with diagonal elements equal to 1 and off-diagonal elements between -1 and 1.
+Above, $\sigma_n$ is a vector of $T$ time-specific scalar standard deviations, and $\text{diag}(\sigma_n)$ is a diagonal $T \times T$ matrix. $Z_n$ is a patient-specific matrix which controls how the [distributional parameters](https://paul-buerkner.github.io/brms/articles/brms_distreg.html) $b_\sigma$ map to the more intuitive standard deviation vector $\sigma_n$. The specific makeup of $Z_n$ is determined by the `sigma` argument of `brm_formula()`, which in turn is produced by `brm_formula_sigma()`.
+
+$\Lambda$ is a symmetric positive-definite correlation matrix with diagonal elements equal to 1 and off-diagonal elements between -1 and 1. The structure of $\Lambda$ depends on the `correlation` argument of `brm_formula()`, which could describe an unstructured parameterization, ARMA, compound symmetry, etc. These alternative structures and priors are available directly through `brms`. For specific details, please consult <https://paul-buerkner.github.io/brms/reference/autocor-terms.html> and `?brms.mmrm::brm_formula`.
 
 # Priors
 
  The scalar components of $b$ are modeled as independent with user-defined priors specified through the `prior` argument of `brm_model()`. The hyperparameters of these priors are constant. The default priors are improper uniform for non-intercept terms and a data-dependent Student-t distribution for the intercept. The variance-related distributional parameters $b_\sigma$ are given similar priors
  
-For the correlation matrix $\Lambda$, the default prior in `brms.mmrm` is the [LKJ correlation distribution](https://mc-stan.org/docs/functions-reference/correlation_matrix_distributions.html#lkj-correlation) with shape parameter equal to 1. This choice of prior is synonymous with "unstructured correlation". Other correlation structures are possible, such as autoregressive, moving average, compound symmetry, and diagonal, the last of which fixes $\Lambda$ to be the constant $T \times T$ identity matrix. These alternative structures and priors are available directly through `brms`. For specific details, please consult <https://paul-buerkner.github.io/brms/reference/autocor-terms.html>.
+For the correlation matrix $\Lambda$, the default prior in `brms.mmrm` is the [LKJ correlation distribution](https://mc-stan.org/docs/functions-reference/correlation_matrix_distributions.html#lkj-correlation) with shape parameter equal to 1. This choice of prior is only valid for unstructured correlation matrices. Other correlation structures, such ARMA, will parameterize $\Lambda$ and allow users to set priors on those new specialized parameters.
 
 # Sampling
 
