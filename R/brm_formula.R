@@ -120,22 +120,10 @@
 #'   [brm_formula()] in order to make sure columns are appropriately
 #'   centered and the underlying model matrix has full rank.
 #' @param baseline_subgroup Logical of length 1.
-#' @param variance Character of length 1, variance structure for the
-#'   residuals. `"heterogeneous"` declares a different variance component
-#'   for each discrete time point, `"homogeneous"` declares a single
-#'   scalar variance shared by all time points. In either case, the variance
-#'   components are shared by all patients, and different patients are
-#'   modeled as independent.
-#'
-#'   The variance components are encoded as parameters `b_sigma` in the model.
-#'   Each `b_sigma` is a standard deviation of residuals on the natural
-#'   log scale.
-#'
-#'   The variance structure is encoded in the
-#'   `sigma ~ ...` part of the output formula. To see the variance
-#'   mapping for yourself, use `brms::make_standata()`
-#'   on the formula and data, or `brms::prior_summary()` or
-#'   `posterior::as_draws_df()` on the model.
+#' @param sigma A formula produced by [brm_formula_sigma()].
+#'   The formula is a base R formula with S3 class
+#'   `"brms_mmrm_formula_sigma"`, and it controls
+#'   the parameterization of the residual standard deviations `sigma`.
 #' @param correlation Character of length 1, name of the correlation
 #'   structure. The correlation matrix is a square `T x T` matrix, where
 #'   `T` is the number of discrete time points in the data.
@@ -212,6 +200,14 @@
 #'   group = FALSE
 #' )
 #' formula
+#' # Standard deviations of residuals are distributional parameters that can
+#' # regress on variables in the data.
+#' homogeneous <- brm_formula_sigma(data, time = FALSE)
+#' by_group <- brm_formula_sigma(data, group = TRUE, intercept = TRUE)
+#' homogeneous
+#' by_group
+#' brm_formula(data, sigma = homogeneous)
+#' brm_formula(data, sigma = by_group)
 #' # Optional: set the contrast option, which determines the model matrix.
 #' options(contrasts = c(unordered = "contr.SAS", ordered = "contr.poly"))
 #' # See the fixed effect mapping you get from the data:
@@ -244,7 +240,7 @@
 brm_formula <- function(
   data,
   check_rank = TRUE,
-  variance = "heterogeneous",
+  sigma = brms.mmrm::brm_formula_sigma(data = data, check_rank = check_rank),
   correlation = "unstructured",
   autoregressive_order = 1L,
   moving_average_order = 1L,
@@ -260,7 +256,7 @@ brm_formula <- function(
 brm_formula.default <- function(
   data,
   check_rank = TRUE,
-  variance = "heterogeneous",
+  sigma = brms.mmrm::brm_formula_sigma(data = data, check_rank = check_rank),
   correlation = "unstructured",
   autoregressive_order = 1L,
   moving_average_order = 1L,
@@ -370,7 +366,7 @@ brm_formula.default <- function(
     group_time <- interaction_group
   }
   brm_formula_validate_correlation(correlation)
-  brm_formula_validate_variance(variance)
+  brm_formula_sigma_validate(sigma)
   name_outcome <- attr(data, "brm_outcome")
   name_role <- attr(data, "brm_role")
   name_baseline <- attr(data, "brm_baseline")
@@ -402,15 +398,10 @@ brm_formula.default <- function(
       residual_covariance_arma_estimation
     )
   )
-  terms <- terms[nzchar(terms)]
+  terms <- terms[nzchar(terms)] %||% "1"
   right <- paste(terms, collapse = " + ")
   formula_fixed <- stats::as.formula(paste(name_outcome, "~", right))
-  formula_sigma <- if_any(
-    variance == "heterogeneous",
-    stats::as.formula(paste("sigma ~ 0 +", name_time)),
-    sigma ~ 1
-  )
-  brms_formula <- brms::brmsformula(formula = formula_fixed, formula_sigma)
+  brms_formula <- brms::brmsformula(formula = formula_fixed, sigma)
   formula <- brm_formula_new(
     formula = brms_formula,
     brm_intercept = intercept,
@@ -426,12 +417,12 @@ brm_formula.default <- function(
     brm_subgroup_time = subgroup_time,
     brm_time = time,
     brm_covariates = covariates,
-    brm_variance = variance,
     brm_correlation = correlation,
     brm_autoregressive_order = autoregressive_order,
     brm_moving_average_order = moving_average_order,
     brm_residual_covariance_arma_estimation =
-      residual_covariance_arma_estimation
+      residual_covariance_arma_estimation,
+    brm_allow_effect_size = attr(sigma, "brm_allow_effect_size")
   )
   brm_formula_validate(formula)
   if (check_rank) {
@@ -446,7 +437,7 @@ brm_formula.default <- function(
 brm_formula.brms_mmrm_archetype <- function(
   data,
   check_rank = TRUE,
-  variance = "heterogeneous",
+  sigma = brms.mmrm::brm_formula_sigma(data = data, check_rank = check_rank),
   correlation = "unstructured",
   autoregressive_order = 1L,
   moving_average_order = 1L,
@@ -455,7 +446,7 @@ brm_formula.brms_mmrm_archetype <- function(
 ) {
   brm_data_validate(data)
   brm_formula_validate_correlation(correlation)
-  brm_formula_validate_variance(variance)
+  brm_formula_sigma_validate(sigma)
   assert_lgl(
     residual_covariance_arma_estimation,
     "residual_covariance_arma_estimation must be TRUE or FALSE"
@@ -512,23 +503,18 @@ brm_formula.brms_mmrm_archetype <- function(
       residual_covariance_arma_estimation
     )
   )
-  terms <- terms[nzchar(terms)]
+  terms <- terms[nzchar(terms)] %||% "1"
   right <- paste(terms, collapse = " + ")
   formula_fixed <- stats::as.formula(paste(name_outcome, "~", right))
-  formula_sigma <- if_any(
-    variance == "heterogeneous",
-    stats::as.formula(paste("sigma ~ 0 +", name_time)),
-    sigma ~ 1
-  )
-  brms_formula <- brms::brmsformula(formula = formula_fixed, formula_sigma)
+  brms_formula <- brms::brmsformula(formula = formula_fixed, sigma)
   formula <- brm_formula_archetype_new(
     formula = brms_formula,
-    brm_variance = variance,
     brm_correlation = correlation,
     brm_autoregressive_order = autoregressive_order,
     brm_moving_average_order = moving_average_order,
     brm_residual_covariance_arma_estimation =
-      residual_covariance_arma_estimation
+      residual_covariance_arma_estimation,
+    brm_allow_effect_size = attr(sigma, "brm_allow_effect_size")
   )
   brm_formula_validate(formula)
   if (check_rank) {
@@ -583,7 +569,7 @@ formula_check_rank <- function(data, formula) {
       " columns but rank ",
       rank,
       " after removing rows with missing outcomes. ",
-      "Please consider a different mapping to make the ",
+      "Please consider a different parameterization to make the ",
       "model matrix full-rank. Otherwise, fixed effects may not be ",
       "identifiable and MCMC sampling may not converge. ",
       "Set check_rank = FALSE in brm_formula() to suppress this error."
@@ -606,11 +592,11 @@ brm_formula_new <- function(
   brm_subgroup_time,
   brm_time,
   brm_covariates,
-  brm_variance,
   brm_correlation,
   brm_autoregressive_order,
   brm_moving_average_order,
-  brm_residual_covariance_arma_estimation
+  brm_residual_covariance_arma_estimation,
+  brm_allow_effect_size
 ) {
   structure(
     formula,
@@ -628,34 +614,34 @@ brm_formula_new <- function(
     brm_subgroup_time = brm_subgroup_time,
     brm_time = brm_time,
     brm_covariates = brm_covariates,
-    brm_variance = brm_variance,
     brm_correlation = brm_correlation,
     brm_autoregressive_order = brm_autoregressive_order,
     brm_moving_average_order = brm_moving_average_order,
     brm_residual_covariance_arma_estimation =
-      brm_residual_covariance_arma_estimation
+      brm_residual_covariance_arma_estimation,
+    brm_allow_effect_size = brm_allow_effect_size
   )
 }
 
 brm_formula_archetype_new <- function(
   formula,
-  brm_variance,
   brm_correlation,
   brm_autoregressive_order,
   brm_moving_average_order,
-  brm_residual_covariance_arma_estimation
+  brm_residual_covariance_arma_estimation,
+  brm_allow_effect_size
 ) {
   structure(
     formula,
     class = unique(
       c("brms_mmrm_formula_archetype", "brms_mmrm_formula", class(formula))
     ),
-    brm_variance = brm_variance,
     brm_correlation = brm_correlation,
     brm_autoregressive_order = brm_autoregressive_order,
     brm_moving_average_order = brm_moving_average_order,
     brm_residual_covariance_arma_estimation =
-      brm_residual_covariance_arma_estimation
+      brm_residual_covariance_arma_estimation,
+    brm_allow_effect_size = brm_allow_effect_size
   )
 }
 
@@ -684,7 +670,8 @@ brm_formula_validate.default <- function(formula) {
     "brm_subgroup",
     "brm_subgroup_time",
     "brm_time",
-    "brm_covariates"
+    "brm_covariates",
+    "brm_allow_effect_size"
   )
   for (attribute in attributes) {
     assert_lgl(
@@ -703,6 +690,15 @@ brm_formula_validate.brms_mmrm_formula_archetype <- function(formula) {
     inherits(., "brmsformula"),
     message = "please use brm_formula() to create the model formula"
   )
+  attributes <- c(
+    "brm_allow_effect_size"
+  )
+  for (attribute in attributes) {
+    assert_lgl(
+      attr(formula, attribute),
+      message = paste(attribute, "attribute must be TRUE or FALSE in formula")
+    )
+  }
   brm_formula_validate_covariance(formula)
 }
 
@@ -728,7 +724,6 @@ brm_formula_validate_covariance <- function(formula) {
     message = "moving_average_order must be a nonnegative integer of length 1"
   )
   brm_formula_validate_correlation(attr(formula, "brm_correlation"))
-  brm_formula_validate_variance(attr(formula, "brm_variance"))
 }
 
 brm_formula_validate_correlation <- function(correlation) {
@@ -748,21 +743,6 @@ brm_formula_validate_correlation <- function(correlation) {
     correlation %in% choices,
     message = paste(
       "correlation arg must be one of:",
-      paste(choices, collapse = ", ")
-    )
-  )
-}
-
-brm_formula_validate_variance <- function(variance) {
-  assert_chr(
-    variance,
-    "variance arg must be a nonempty character string"
-  )
-  choices <- c("heterogeneous", "homogeneous")
-  assert(
-    variance %in% choices,
-    message = paste(
-      "variance arg must be one of:",
       paste(choices, collapse = ", ")
     )
   )

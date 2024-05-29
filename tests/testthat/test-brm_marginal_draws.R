@@ -34,6 +34,17 @@ test_that("brm_marginal_draws() on response, no subgroup", {
     formula = formula,
     data = data
   )
+  formula_exclude <- formula
+  attr(formula_exclude, "brm_allow_effect_size") <- FALSE
+  expect_warning(
+    excluded <- brm_marginal_draws(
+      model = model,
+      formula = formula_exclude,
+      data = data
+    ),
+    class = "brm_warn"
+  )
+  expect_false("effect" %in% names(excluded))
   expect_warning(
     brm_marginal_draws(
       model = model,
@@ -283,7 +294,7 @@ test_that("brm_marginal_draws() on change, homogeneous var, no subgroup", {
     data = data,
     baseline = FALSE,
     baseline_time = FALSE,
-    variance = "homogeneous"
+    sigma = brm_formula_sigma(data = data, intercept = TRUE, time = FALSE)
   )
   tmp <- utils::capture.output(
     suppressMessages(
@@ -369,7 +380,10 @@ test_that("brm_marginal_draws() on change, homogeneous var, with subgroup", {
     name_change = "change",
     name_baseline = "baseline"
   )
-  formula <- brm_formula(data = data, variance = "homogeneous")
+  formula <- brm_formula(
+    data = data,
+    sigma = brm_formula_sigma(data = data, intercept = TRUE, time = FALSE)
+  )
   tmp <- utils::capture.output(
     suppressMessages(
       suppressWarnings(

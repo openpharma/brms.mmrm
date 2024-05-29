@@ -12,68 +12,37 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-The `brms.mmrm` R package implements a mixed model of repeated measures (MMRM), a popular and flexible model to analyze continuous longitudinal outcomes (@mallinckrodt2008, @mallinckrodt2017, @bamdd). `brms.mmrm` focuses on marginal MMRMs for randomized controlled parallel studies with discrete time points, where each subject shares the same set of time points. Whereas the [`mmrm`](https://openpharma.github.io/mmrm/) package is frequentist, `brms.mmrm` fits models in Bayesian fashion using [`brms`](https://paul-buerkner.github.io/brms/) [@burkner2017].
+The `brms.mmrm` R package implements a mixed model of repeated measures (MMRM), a popular and flexible model to analyze continuous longitudinal outcomes (@mallinckrodt2008, @mallinckrodt2017, @bamdd). `brms.mmrm` focuses on marginal MMRMs for randomized controlled parallel studies with discrete time points, where each patient shares the same set of time points. Whereas the [`mmrm`](https://openpharma.github.io/mmrm/) package is frequentist, `brms.mmrm` fits models in Bayesian fashion using [`brms`](https://paul-buerkner.github.io/brms/) [@burkner2017].
 
 # Model
 
-The MMRM in `brms.mmrm` is mathematically expressed as follows. Subsequent sections define notation, data, parameters, and priors.
-
-## Heterogeneous variance model
-
-If the user selects heterogeneous variance in `brm_formula()`, then the model is expressed as follows.
+Let $y_1, \ldots, y_N$ be independent data points observed for individual patients in a clinical trial. Each $y_n$ is a numeric vector of length $T$, where $T$ is the number of discrete time points in the dataset (e.g. patient visits in the study protocol). We model $y_n$ as follows:
 
 $$
 \begin{aligned}
-&y_i \stackrel{\text{ind}}{\sim} \text{Multivariate-Normal} \left (\text{mean} = X_{i} \beta, \ \text{covariance} = \text{diag}(\sigma) \cdot \Lambda \cdot \text{diag}(\sigma) \right ) \\
-&\qquad \beta_p \stackrel{\text{ind}}{\sim} q_p() \\
-&\qquad \Lambda \sim r() \\
-&\qquad \tau_t = \log(\sigma_t) \\
-&\qquad \qquad \tau_t \stackrel{\text{ind}}{\sim} s()
+y_n \sim \text{Multivariate-Normal}\left ( \text{mean} = X_n b, \ \text{variance} = \Sigma_n \right )
 \end{aligned}
 $$
+Above, $X_n$ is the fixed effect model matrix of patient $n$, and its specific makeup is determined by arguments such as `intercept` and `group` in `brm_formula()`. $b$ is a constant-length vector of fixed effect parameters.
 
-## Homogeneous variance model
-
-If the user select homogeneous variance in `brm_formula()`, then all discrete time points share the same standard deviation parameter, and $\sigma$ and $\tau$ are scalars instead of vectors.
+The MMRM in `brms.mmrm` is a [distributional model](https://paul-buerkner.github.io/brms/articles/brms_distreg.html), which means it uses a linear regression structure for both the mean and the variance of the multivariate normal likelihood. In particular, the $T \times T$ symmetric positive-definite residual covariance matrix $\Sigma_n$ of patient $n$ decomposes as follows:
 
 $$
 \begin{aligned}
-&y_i \stackrel{\text{ind}}{\sim} \text{Multivariate-Normal} \left (\text{mean} = X_{i} \beta, \ \text{covariance} =  \sigma^2 \Lambda  \right ) \\
-&\qquad \beta_p \stackrel{\text{ind}}{\sim} q_p() \\
-&\qquad \Lambda \sim r() \\
-&\qquad \tau = \log(\sigma) \\
-&\qquad \qquad \tau \sim s()
+\Sigma_n &= \text{diag}(\sigma_n) \cdot \Lambda \cdot \text{diag}(\sigma_n) \\
+\sigma_n &= \text{exp} \left ( Z_n b_\sigma \right)
 \end{aligned}
 $$
 
-# Notation
+Above, $\sigma_n$ is a vector of $T$ time-specific scalar standard deviations, and $\text{diag}(\sigma_n)$ is a diagonal $T \times T$ matrix. $Z_n$ is a patient-specific matrix which controls how the [distributional parameters](https://paul-buerkner.github.io/brms/articles/brms_distreg.html) $b_\sigma$ map to the more intuitive standard deviation vector $\sigma_n$. The specific makeup of $Z_n$ is determined by the `sigma` argument of `brm_formula()`, which in turn is produced by `brm_formula_sigma()`.
 
-* $i$: positive integer index of a subject or patient in the study.
-* $t$: positive integer index of a discrete time point in the study.
-* $p$: positive integer index of a model coefficient parameter $\beta_p$.
-* $\theta_j \stackrel{\text{ind}}{\sim} f()$: assuming $j$ is a positive integer index that ranges from 1 to positive integer $J$, this notation declares that parameters $\theta_1, \ldots, \theta_J$ are independent and each follow the prior distribution with a common probability density function $f()$.
-* $\theta_j \stackrel{\text{ind}}{\sim} f_j()$: same as above, except each $\theta_j$ parameter follows its own separate prior distribution with probability density function $p_j()$. $p_i()$ and $f_j()$ may differ if $i \ne j$.
-* $\text{diag}(\theta)$: diagonal matrix with the scalar elements of vector $\theta$ on the diagonal and off-diagonal elements equal to 0. The number of rows and number of columns in this matrix are both equal to the number of elements in vector $\theta$.
-
-# Data
-
-* $y_i$: numeric vector of outcome observations for subject $i$. The number of elements in the vector equals the number of discrete time points in the study, and for the purposes of this model specification, they are sorted chronologically with the first element of $y_i$ observed first in the study. One or more elements of each $y_i$ may be missing due to dropout, discontinuation, etc. The likelihood of the model assumes $y_i$ is independent of $y_j$ for $i \ne j$.
-* $X_i$: a matrix containing the rows of the model matrix that correspond to subject $i$. The rows of $X_i$ correspond to the elements of the vector $y_i$ (equivalently, the discrete time points of the study), and the columns of $X_i$ correspond to the model coefficient parameters $\beta_p$. The composition of $X_i$ is determined by the covariates in the input dataset and the choice of model formula supplied by the user (via `brm_formula()`). In subgroup analysis, $X_i$ contains columns denoting different subgroup levels, as well as any interaction terms declared through the formula.
-
-# Parameters
-
-* $\beta$: vector of model coefficients. $\beta_p$ is scalar element $p$ of $\beta$. In subgroup analysis, $\beta$ contains model coefficients for different subgroup levels, as well as any interaction terms declared through the model formula.
-* $\Lambda$: matrix of pairwise correlations among each pair of time points within subjects. Outcomes measured from different subjects are assumed to be independent, and outcomes observed at different time points for the same subject are assumed to be correlated according to this matrix. $\Lambda$ is positive-definite and symmetric, and the number of rows and columns is equal to the number of discrete time points of the study. 
-* $\sigma$: in the heterogeneous variance model, $\sigma$ is a vector of time-point-specific standard deviations of the residuals on the linear scale. $\sigma_t$ is scalar element $t$ of $\sigma$. In the homogeneous variance model, $\sigma$ is a scalar shared by all time points.
-* $\tau$: same as $\sigma$, but on the natural logarithmic scale. In the heterogeneous variance case, $\tau$ is a vector of time-specific elements $\tau_t$, and each scalar element $\tau_t$ of $\tau$ is defined as the natural logarithm of $\sigma_t$. In the homogeneous variance case, $\tau$ is a scalar, still on the natural log scale (log of $\sigma$).
+$\Lambda$ is a symmetric positive-definite correlation matrix with diagonal elements equal to 1 and off-diagonal elements between -1 and 1. The structure of $\Lambda$ depends on the `correlation` argument of `brm_formula()`, which could describe an unstructured parameterization, ARMA, compound symmetry, etc. These alternative structures and priors are available directly through `brms`. For specific details, please consult <https://paul-buerkner.github.io/brms/reference/autocor-terms.html> and `?brms.mmrm::brm_formula`.
 
 # Priors
 
-The priors on the parameters depend on the `prior` argument of `brm_model()` and related functions. If priors are not specified by the user, then the [`brms`](https://paul-buerkner.github.io/brms/) package sets defaults. You can view the default priors using the [`get_prior()`](http://paul-buerkner.github.io/brms/reference/get_prior.html) function in [`brms`](https://paul-buerkner.github.io/brms/). See the [`brms`](https://paul-buerkner.github.io/brms/) for information on how [`brms`](https://paul-buerkner.github.io/brms/) sets default priors.
-
-* $q_p()$: univariate prior on the model coefficient $\beta_p$.
-* $r()$: matrix prior on the within-subject residual correlation matrix parameter $\Lambda$. Can be unstructured, autoregressive moving average, autoregressive, moving average, or compound symmetry, c.f. <https://paul-buerkner.github.io/brms/reference/autocor-terms.html>.
-* $s()$: univariate prior on the scalar components of the natural-log-standard-deviation parameter $\tau$. The components of $\tau$ are assumed independent and identically distributed with this univariate prior.
+ The scalar components of $b$ are modeled as independent with user-defined priors specified through the `prior` argument of `brm_model()`. The hyperparameters of these priors are constant. The default priors are improper uniform for non-intercept terms and a data-dependent Student-t distribution for the intercept. The variance-related distributional parameters $b_\sigma$ are given similar priors
+ 
+For the correlation matrix $\Lambda$, the default prior in `brms.mmrm` is the [LKJ correlation distribution](https://mc-stan.org/docs/functions-reference/correlation_matrix_distributions.html#lkj-correlation) with shape parameter equal to 1. This choice of prior is only valid for unstructured correlation matrices. Other correlation structures, such ARMA, will parameterize $\Lambda$ and allow users to set priors on those new specialized parameters.
 
 # Sampling
 
