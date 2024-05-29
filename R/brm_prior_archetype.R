@@ -45,18 +45,14 @@
 #'   )
 #' archetype <- brm_archetype_successive_cells(data)
 #' dplyr::distinct(data, group, time)
-#' label <- brm_prior_label(
-#'   code = "normal(1, 1)",
-#'   group = "group_1",
-#'   time = "time_1"
-#' ) |>
+#' prior <- NULL |>
+#'   brm_prior_label("normal(1, 1)", group = "group_1", time = "time_1") |>
 #'   brm_prior_label("normal(1, 2)", group = "group_1", time = "time_2") |>
 #'   brm_prior_label("normal(1, 3)", group = "group_1", time = "time_3") |>
 #'   brm_prior_label("normal(2, 1)", group = "group_2", time = "time_1") |>
 #'   brm_prior_label("normal(2, 2)", group = "group_2", time = "time_2") |>
-#'   brm_prior_label("normal(2, 3)", group = "group_2", time = "time_3")
-#' label
-#' prior <- brm_prior_archetype(label = label, archetype = archetype)
+#'   brm_prior_label("normal(2, 3)", group = "group_2", time = "time_3") |>
+#'   brm_prior_archetype(archetype = archetype)
 #' prior
 #' class(prior)
 brm_prior_archetype <- function(label, archetype) {
