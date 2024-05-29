@@ -12,7 +12,7 @@ brm_data() dataset or an informative prior archetype."><meta property="og:image"
     
     <a class="navbar-brand me-2" href="../index.html">brms.mmrm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9004</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9005</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,7 +74,7 @@ brm_data() dataset or an informative prior archetype."><meta property="og:image"
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">brm_formula</span><span class="op">(</span></span>
 <span>  <span class="va">data</span>,</span>
 <span>  check_rank <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  variance <span class="op">=</span> <span class="st">"heterogeneous"</span>,</span>
+<span>  sigma <span class="op">=</span> <span class="fu">brms.mmrm</span><span class="fu">::</span><span class="fu"><a href="brm_formula_sigma.html">brm_formula_sigma</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">data</span>, check_rank <span class="op">=</span> <span class="va">check_rank</span><span class="op">)</span>,</span>
 <span>  correlation <span class="op">=</span> <span class="st">"unstructured"</span>,</span>
 <span>  autoregressive_order <span class="op">=</span> <span class="fl">1L</span>,</span>
 <span>  moving_average_order <span class="op">=</span> <span class="fl">1L</span>,</span>
@@ -86,7 +86,7 @@ brm_data() dataset or an informative prior archetype."><meta property="og:image"
 <span><span class="fu">brm_formula</span><span class="op">(</span></span>
 <span>  <span class="va">data</span>,</span>
 <span>  check_rank <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  variance <span class="op">=</span> <span class="st">"heterogeneous"</span>,</span>
+<span>  sigma <span class="op">=</span> <span class="fu">brms.mmrm</span><span class="fu">::</span><span class="fu"><a href="brm_formula_sigma.html">brm_formula_sigma</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">data</span>, check_rank <span class="op">=</span> <span class="va">check_rank</span><span class="op">)</span>,</span>
 <span>  correlation <span class="op">=</span> <span class="st">"unstructured"</span>,</span>
 <span>  autoregressive_order <span class="op">=</span> <span class="fl">1L</span>,</span>
 <span>  moving_average_order <span class="op">=</span> <span class="fl">1L</span>,</span>
@@ -118,7 +118,7 @@ brm_data() dataset or an informative prior archetype."><meta property="og:image"
 <span><span class="fu">brm_formula</span><span class="op">(</span></span>
 <span>  <span class="va">data</span>,</span>
 <span>  check_rank <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  variance <span class="op">=</span> <span class="st">"heterogeneous"</span>,</span>
+<span>  sigma <span class="op">=</span> <span class="fu">brms.mmrm</span><span class="fu">::</span><span class="fu"><a href="brm_formula_sigma.html">brm_formula_sigma</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">data</span>, check_rank <span class="op">=</span> <span class="va">check_rank</span><span class="op">)</span>,</span>
 <span>  correlation <span class="op">=</span> <span class="st">"unstructured"</span>,</span>
 <span>  autoregressive_order <span class="op">=</span> <span class="fl">1L</span>,</span>
 <span>  moving_average_order <span class="op">=</span> <span class="fl">1L</span>,</span>
@@ -141,21 +141,11 @@ this check. Rank-deficient models may have non-identifiable
 parameters and it is recommended to choose a full-rank mapping.</p></dd>
 
 
-<dt>variance</dt>
-<dd><p>Character of length 1, variance structure for the
-residuals. <code>"heterogeneous"</code> declares a different variance component
-for each discrete time point, <code>"homogeneous"</code> declares a single
-scalar variance shared by all time points. In either case, the variance
-components are shared by all patients, and different patients are
-modeled as independent.</p>
-<p>The variance components are encoded as parameters <code>b_sigma</code> in the model.
-Each <code>b_sigma</code> is a standard deviation of residuals on the natural
-log scale.</p>
-<p>The variance structure is encoded in the
-<code>sigma ~ ...</code> part of the output formula. To see the variance
-mapping for yourself, use <code><a href="https://paul-buerkner.github.io/brms/reference/standata.html" class="external-link">brms::make_standata()</a></code>
-on the formula and data, or <code><a href="https://mc-stan.org/rstantools/reference/prior_summary.html" class="external-link">brms::prior_summary()</a></code> or
-<code><a href="https://mc-stan.org/posterior/reference/draws_df.html" class="external-link">posterior::as_draws_df()</a></code> on the model.</p></dd>
+<dt>sigma</dt>
+<dd><p>A formula produced by <code><a href="brm_formula_sigma.html">brm_formula_sigma()</a></code>.
+The formula is a base R formula with S3 class
+<code>"brms_mmrm_formula_sigma"</code>, and it controls
+the parameterization of the residual standard deviations <code>sigma</code>.</p></dd>
 
 
 <dt>correlation</dt>
@@ -402,6 +392,7 @@ demonstration.</p>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p>Other models: 
+<code><a href="brm_formula_sigma.html">brm_formula_sigma</a>()</code>,
 <code><a href="brm_model.html">brm_model</a>()</code></p></div>
     </div>
 
@@ -433,6 +424,26 @@ demonstration.</p>
 <span class="r-in"><span><span class="va">formula</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> response ~ 0 + group:time + time + unstr(time = time, gr = patient) </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> sigma ~ 0 + time</span>
+<span class="r-in"><span><span class="co"># Standard deviations of residuals are distributional parameters that can</span></span></span>
+<span class="r-in"><span><span class="co"># regress on variables in the data.</span></span></span>
+<span class="r-in"><span><span class="va">homogeneous</span> <span class="op">&lt;-</span> <span class="fu"><a href="brm_formula_sigma.html">brm_formula_sigma</a></span><span class="op">(</span><span class="va">data</span>, time <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">by_group</span> <span class="op">&lt;-</span> <span class="fu"><a href="brm_formula_sigma.html">brm_formula_sigma</a></span><span class="op">(</span><span class="va">data</span>, group <span class="op">=</span> <span class="cn">TRUE</span>, intercept <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">homogeneous</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sigma ~ 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"brm_allow_effect_size")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x559a2e6ef120&gt;</span>
+<span class="r-in"><span><span class="va">by_group</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sigma ~ group + time</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"brm_allow_effect_size")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x559a2e882610&gt;</span>
+<span class="r-in"><span><span class="fu">brm_formula</span><span class="op">(</span><span class="va">data</span>, sigma <span class="op">=</span> <span class="va">homogeneous</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> response ~ group + group:time + time + unstr(time = time, gr = patient) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sigma ~ 0</span>
+<span class="r-in"><span><span class="fu">brm_formula</span><span class="op">(</span><span class="va">data</span>, sigma <span class="op">=</span> <span class="va">by_group</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> response ~ group + group:time + time + unstr(time = time, gr = patient) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sigma ~ group + time</span>
 <span class="r-in"><span><span class="co"># Optional: set the contrast option, which determines the model matrix.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>contrasts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>unordered <span class="op">=</span> <span class="st">"contr.SAS"</span>, ordered <span class="op">=</span> <span class="st">"contr.poly"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># See the fixed effect mapping you get from the data:</span></span></span>

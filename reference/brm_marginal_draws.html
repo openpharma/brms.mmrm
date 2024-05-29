@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">brms.mmrm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9004</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9005</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,6 +73,7 @@
 <span>  <span class="va">formula</span>,</span>
 <span>  <span class="va">model</span>,</span>
 <span>  transform <span class="op">=</span> <span class="fu">brms.mmrm</span><span class="fu">::</span><span class="fu"><a href="brm_transform_marginal.html">brm_transform_marginal</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">formula</span><span class="op">)</span>,</span>
+<span>  effect_size <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  use_subgroup <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  control <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  baseline <span class="op">=</span> <span class="cn">NULL</span></span>
@@ -107,6 +108,16 @@ marginal means using matrix multiplication. Please use
 only if necessary. See the methods vignettes for details on this
 matrix, as well as how <code>brms.mmrm</code> computes marginal means more
 generally.</p></dd>
+
+
+<dt>effect_size</dt>
+<dd><p>Logical, <code>TRUE</code> to derive posterior samples
+of effect size (treatment effect divided by residual standard
+deviation). <code>FALSE</code> to omit. <code>brms.mmrm</code> does not support
+effect size when baseline or covariates are included
+in the <code><a href="brm_formula_sigma.html">brm_formula_sigma()</a></code> formula. If <code>effect_size</code> is <code>TRUE</code>
+in this case, then <code>brm_marginal_draws()</code> will automatically
+omit effect size and throw an informative warning.</p></dd>
 
 
 <dt>use_subgroup</dt>
@@ -151,6 +162,10 @@ the <code>response</code> at the control group.</p></li>
 <li><p><code>difference_subgroup</code>: subgroup differences: the <code>difference_group</code>
 at each subgroup level minus the <code>difference_group</code> at the subgroup
 reference level (<code>reference_subgroup</code>).</p></li>
+<li><p><code>effect</code>: effect size, defined as the treatment difference
+divided by the residual standard deviation. Omitted if
+the <code>effect_size</code> argument is <code>FALSE</code> or if the
+<code><a href="brm_formula_sigma.html">brm_formula_sigma()</a></code> includes baseline or covariates.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="separation-string">Separation string<a class="anchor" aria-label="anchor" href="#separation-string"></a></h2>

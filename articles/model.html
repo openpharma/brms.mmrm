@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">brms.mmrm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9004</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9005</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -105,171 +105,76 @@ al. (2008)</span>, <span class="citation">Mallinckrodt and Lipkovich
 (2017)</span>, <span class="citation">Holzhauer and Weber
 (2024)</span>). <code>brms.mmrm</code> focuses on marginal MMRMs for
 randomized controlled parallel studies with discrete time points, where
-each subject shares the same set of time points. Whereas the <a href="https://openpharma.github.io/mmrm/" class="external-link"><code>mmrm</code></a> package
+each patient shares the same set of time points. Whereas the <a href="https://openpharma.github.io/mmrm/" class="external-link"><code>mmrm</code></a> package
 is frequentist, <code>brms.mmrm</code> fits models in Bayesian fashion
 using <a href="https://paul-buerkner.github.io/brms/" class="external-link"><code>brms</code></a> <span class="citation">(Bürkner 2017)</span>.</p>
 <div class="section level2">
 <h2 id="model">Model<a class="anchor" aria-label="anchor" href="#model"></a>
 </h2>
-<p>The MMRM in <code>brms.mmrm</code> is mathematically expressed as
-follows. Subsequent sections define notation, data, parameters, and
-priors.</p>
-<div class="section level3">
-<h3 id="heterogeneous-variance-model">Heterogeneous variance model<a class="anchor" aria-label="anchor" href="#heterogeneous-variance-model"></a>
-</h3>
-<p>If the user selects heterogeneous variance in
-<code><a href="../reference/brm_formula.html">brm_formula()</a></code>, then the model is expressed as follows.</p>
+<p>Let <span class="math inline">\(y_1, \ldots, y_N\)</span> be
+independent data points observed for individual patients in a clinical
+trial. Each <span class="math inline">\(y_n\)</span> is a numeric vector
+of length <span class="math inline">\(T\)</span>, where <span class="math inline">\(T\)</span> is the number of discrete time points
+in the dataset (e.g. patient visits in the study protocol). We model
+<span class="math inline">\(y_n\)</span> as follows:</p>
 <p><span class="math display">\[
 \begin{aligned}
-&amp;y_i \stackrel{\text{ind}}{\sim} \text{Multivariate-Normal} \left
-(\text{mean} = X_{i} \beta, \ \text{covariance} = \text{diag}(\sigma)
-\cdot \Lambda \cdot \text{diag}(\sigma) \right ) \\
-&amp;\qquad \beta_p \stackrel{\text{ind}}{\sim} q_p() \\
-&amp;\qquad \Lambda \sim r() \\
-&amp;\qquad \tau_t = \log(\sigma_t) \\
-&amp;\qquad \qquad \tau_t \stackrel{\text{ind}}{\sim} s()
+y_n \sim \text{Multivariate-Normal}\left ( \text{mean} = X_n b, \
+\text{variance} = \Sigma_n \right )
 \end{aligned}
-\]</span></p>
-</div>
-<div class="section level3">
-<h3 id="homogeneous-variance-model">Homogeneous variance model<a class="anchor" aria-label="anchor" href="#homogeneous-variance-model"></a>
-</h3>
-<p>If the user select homogeneous variance in
-<code><a href="../reference/brm_formula.html">brm_formula()</a></code>, then all discrete time points share the same
-standard deviation parameter, and <span class="math inline">\(\sigma\)</span> and <span class="math inline">\(\tau\)</span> are scalars instead of vectors.</p>
+\]</span> Above, <span class="math inline">\(X_n\)</span> is the fixed
+effect model matrix of patient <span class="math inline">\(n\)</span>,
+and its specific makeup is determined by arguments such as
+<code>intercept</code> and <code>group</code> in
+<code><a href="../reference/brm_formula.html">brm_formula()</a></code>. <span class="math inline">\(b\)</span> is a
+constant-length vector of fixed effect parameters.</p>
+<p>The MMRM in <code>brms.mmrm</code> is a <a href="https://paul-buerkner.github.io/brms/articles/brms_distreg.html" class="external-link">distributional
+model</a>, which means it uses a linear regression structure for both
+the mean and the variance of the multivariate normal likelihood. In
+particular, the <span class="math inline">\(T \times T\)</span>
+symmetric positive-definite residual covariance matrix <span class="math inline">\(\Sigma_n\)</span> of patient <span class="math inline">\(n\)</span> decomposes as follows:</p>
 <p><span class="math display">\[
 \begin{aligned}
-&amp;y_i \stackrel{\text{ind}}{\sim} \text{Multivariate-Normal} \left
-(\text{mean} = X_{i} \beta, \ \text{covariance} =  \sigma^2
-\Lambda  \right ) \\
-&amp;\qquad \beta_p \stackrel{\text{ind}}{\sim} q_p() \\
-&amp;\qquad \Lambda \sim r() \\
-&amp;\qquad \tau = \log(\sigma) \\
-&amp;\qquad \qquad \tau \sim s()
+\Sigma_n &amp;= \text{diag}(\sigma_n) \cdot \Lambda \cdot
+\text{diag}(\sigma_n) \\
+\sigma_n &amp;= \text{exp} \left ( Z_n b_\sigma \right)
 \end{aligned}
 \]</span></p>
-</div>
-</div>
-<div class="section level2">
-<h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a>
-</h2>
-<ul>
-<li>
-<span class="math inline">\(i\)</span>: positive integer index of a
-subject or patient in the study.</li>
-<li>
-<span class="math inline">\(t\)</span>: positive integer index of a
-discrete time point in the study.</li>
-<li>
-<span class="math inline">\(p\)</span>: positive integer index of a
-model coefficient parameter <span class="math inline">\(\beta_p\)</span>.</li>
-<li>
-<span class="math inline">\(\theta_j \stackrel{\text{ind}}{\sim}
-f()\)</span>: assuming <span class="math inline">\(j\)</span> is a
-positive integer index that ranges from 1 to positive integer <span class="math inline">\(J\)</span>, this notation declares that parameters
-<span class="math inline">\(\theta_1, \ldots, \theta_J\)</span> are
-independent and each follow the prior distribution with a common
-probability density function <span class="math inline">\(f()\)</span>.</li>
-<li>
-<span class="math inline">\(\theta_j \stackrel{\text{ind}}{\sim}
-f_j()\)</span>: same as above, except each <span class="math inline">\(\theta_j\)</span> parameter follows its own
-separate prior distribution with probability density function <span class="math inline">\(p_j()\)</span>. <span class="math inline">\(p_i()\)</span> and <span class="math inline">\(f_j()\)</span> may differ if <span class="math inline">\(i \ne j\)</span>.</li>
-<li>
-<span class="math inline">\(\text{diag}(\theta)\)</span>: diagonal
-matrix with the scalar elements of vector <span class="math inline">\(\theta\)</span> on the diagonal and off-diagonal
-elements equal to 0. The number of rows and number of columns in this
-matrix are both equal to the number of elements in vector <span class="math inline">\(\theta\)</span>.</li>
-</ul>
-</div>
-<div class="section level2">
-<h2 id="data">Data<a class="anchor" aria-label="anchor" href="#data"></a>
-</h2>
-<ul>
-<li>
-<span class="math inline">\(y_i\)</span>: numeric vector of outcome
-observations for subject <span class="math inline">\(i\)</span>. The
-number of elements in the vector equals the number of discrete time
-points in the study, and for the purposes of this model specification,
-they are sorted chronologically with the first element of <span class="math inline">\(y_i\)</span> observed first in the study. One or
-more elements of each <span class="math inline">\(y_i\)</span> may be
-missing due to dropout, discontinuation, etc. The likelihood of the
-model assumes <span class="math inline">\(y_i\)</span> is independent of
-<span class="math inline">\(y_j\)</span> for <span class="math inline">\(i \ne j\)</span>.</li>
-<li>
-<span class="math inline">\(X_i\)</span>: a matrix containing the
-rows of the model matrix that correspond to subject <span class="math inline">\(i\)</span>. The rows of <span class="math inline">\(X_i\)</span> correspond to the elements of the
-vector <span class="math inline">\(y_i\)</span> (equivalently, the
-discrete time points of the study), and the columns of <span class="math inline">\(X_i\)</span> correspond to the model coefficient
-parameters <span class="math inline">\(\beta_p\)</span>. The composition
-of <span class="math inline">\(X_i\)</span> is determined by the
-covariates in the input dataset and the choice of model formula supplied
-by the user (via <code><a href="../reference/brm_formula.html">brm_formula()</a></code>). In subgroup analysis,
-<span class="math inline">\(X_i\)</span> contains columns denoting
-different subgroup levels, as well as any interaction terms declared
-through the formula.</li>
-</ul>
-</div>
-<div class="section level2">
-<h2 id="parameters">Parameters<a class="anchor" aria-label="anchor" href="#parameters"></a>
-</h2>
-<ul>
-<li>
-<span class="math inline">\(\beta\)</span>: vector of model
-coefficients. <span class="math inline">\(\beta_p\)</span> is scalar
-element <span class="math inline">\(p\)</span> of <span class="math inline">\(\beta\)</span>. In subgroup analysis, <span class="math inline">\(\beta\)</span> contains model coefficients for
-different subgroup levels, as well as any interaction terms declared
-through the model formula.</li>
-<li>
-<span class="math inline">\(\Lambda\)</span>: matrix of pairwise
-correlations among each pair of time points within subjects. Outcomes
-measured from different subjects are assumed to be independent, and
-outcomes observed at different time points for the same subject are
-assumed to be correlated according to this matrix. <span class="math inline">\(\Lambda\)</span> is positive-definite and
-symmetric, and the number of rows and columns is equal to the number of
-discrete time points of the study.</li>
-<li>
-<span class="math inline">\(\sigma\)</span>: in the heterogeneous
-variance model, <span class="math inline">\(\sigma\)</span> is a vector
-of time-point-specific standard deviations of the residuals on the
-linear scale. <span class="math inline">\(\sigma_t\)</span> is scalar
-element <span class="math inline">\(t\)</span> of <span class="math inline">\(\sigma\)</span>. In the homogeneous variance
-model, <span class="math inline">\(\sigma\)</span> is a scalar shared by
-all time points.</li>
-<li>
-<span class="math inline">\(\tau\)</span>: same as <span class="math inline">\(\sigma\)</span>, but on the natural logarithmic
-scale. In the heterogeneous variance case, <span class="math inline">\(\tau\)</span> is a vector of time-specific
-elements <span class="math inline">\(\tau_t\)</span>, and each scalar
-element <span class="math inline">\(\tau_t\)</span> of <span class="math inline">\(\tau\)</span> is defined as the natural logarithm
-of <span class="math inline">\(\sigma_t\)</span>. In the homogeneous
-variance case, <span class="math inline">\(\tau\)</span> is a scalar,
-still on the natural log scale (log of <span class="math inline">\(\sigma\)</span>).</li>
-</ul>
+<p>Above, <span class="math inline">\(\sigma_n\)</span> is a vector of
+<span class="math inline">\(T\)</span> time-specific scalar standard
+deviations, and <span class="math inline">\(\text{diag}(\sigma_n)\)</span> is a diagonal <span class="math inline">\(T \times T\)</span> matrix. <span class="math inline">\(Z_n\)</span> is a patient-specific matrix which
+controls how the <a href="https://paul-buerkner.github.io/brms/articles/brms_distreg.html" class="external-link">distributional
+parameters</a> <span class="math inline">\(b_\sigma\)</span> map to the
+more intuitive standard deviation vector <span class="math inline">\(\sigma_n\)</span>. The specific makeup of <span class="math inline">\(Z_n\)</span> is determined by the
+<code>sigma</code> argument of <code><a href="../reference/brm_formula.html">brm_formula()</a></code>, which in turn
+is produced by <code><a href="../reference/brm_formula_sigma.html">brm_formula_sigma()</a></code>.</p>
+<p><span class="math inline">\(\Lambda\)</span> is a symmetric
+positive-definite correlation matrix with diagonal elements equal to 1
+and off-diagonal elements between -1 and 1. The structure of <span class="math inline">\(\Lambda\)</span> depends on the
+<code>correlation</code> argument of <code><a href="../reference/brm_formula.html">brm_formula()</a></code>, which
+could describe an unstructured parameterization, ARMA, compound
+symmetry, etc. These alternative structures and priors are available
+directly through <code>brms</code>. For specific details, please consult
+<a href="https://paul-buerkner.github.io/brms/reference/autocor-terms.html" class="external-link uri">https://paul-buerkner.github.io/brms/reference/autocor-terms.html</a>
+and <code><a href="../reference/brm_formula.html">?brms.mmrm::brm_formula</a></code>.</p>
 </div>
 <div class="section level2">
 <h2 id="priors">Priors<a class="anchor" aria-label="anchor" href="#priors"></a>
 </h2>
-<p>The priors on the parameters depend on the <code>prior</code>
-argument of <code><a href="../reference/brm_model.html">brm_model()</a></code> and related functions. If priors
-are not specified by the user, then the <a href="https://paul-buerkner.github.io/brms/" class="external-link"><code>brms</code></a>
-package sets defaults. You can view the default priors using the <a href="http://paul-buerkner.github.io/brms/reference/get_prior.html" class="external-link"><code>get_prior()</code></a>
-function in <a href="https://paul-buerkner.github.io/brms/" class="external-link"><code>brms</code></a>. See
-the <a href="https://paul-buerkner.github.io/brms/" class="external-link"><code>brms</code></a> for
-information on how <a href="https://paul-buerkner.github.io/brms/" class="external-link"><code>brms</code></a> sets
-default priors.</p>
-<ul>
-<li>
-<span class="math inline">\(q_p()\)</span>: univariate prior on the
-model coefficient <span class="math inline">\(\beta_p\)</span>.</li>
-<li>
-<span class="math inline">\(r()\)</span>: matrix prior on the
-within-subject residual correlation matrix parameter <span class="math inline">\(\Lambda\)</span>. Can be unstructured,
-autoregressive moving average, autoregressive, moving average, or
-compound symmetry, c.f. <a href="https://paul-buerkner.github.io/brms/reference/autocor-terms.html" class="external-link uri">https://paul-buerkner.github.io/brms/reference/autocor-terms.html</a>.</li>
-<li>
-<span class="math inline">\(s()\)</span>: univariate prior on the
-scalar components of the natural-log-standard-deviation parameter <span class="math inline">\(\tau\)</span>. The components of <span class="math inline">\(\tau\)</span> are assumed independent and
-identically distributed with this univariate prior.</li>
-</ul>
+<p>The scalar components of <span class="math inline">\(b\)</span> are
+modeled as independent with user-defined priors specified through the
+<code>prior</code> argument of <code><a href="../reference/brm_model.html">brm_model()</a></code>. The
+hyperparameters of these priors are constant. The default priors are
+improper uniform for non-intercept terms and a data-dependent Student-t
+distribution for the intercept. The variance-related distributional
+parameters <span class="math inline">\(b_\sigma\)</span> are given
+similar priors</p>
+<p>For the correlation matrix <span class="math inline">\(\Lambda\)</span>, the default prior in
+<code>brms.mmrm</code> is the <a href="https://mc-stan.org/docs/functions-reference/correlation_matrix_distributions.html#lkj-correlation" class="external-link">LKJ
+correlation distribution</a> with shape parameter equal to 1. This
+choice of prior is only valid for unstructured correlation matrices.
+Other correlation structures, such ARMA, will parameterize <span class="math inline">\(\Lambda\)</span> and allow users to set priors on
+those new specialized parameters.</p>
 </div>
 <div class="section level2">
 <h2 id="sampling">Sampling<a class="anchor" aria-label="anchor" href="#sampling"></a>
