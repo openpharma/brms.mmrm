@@ -128,7 +128,7 @@ data <- brm_data(
   reference_group = "group_1",
   reference_time = "time_1"
 )
-homogeneous <- brm_formula_sigma(data, time = FALSE)
+homogeneous <- brm_formula_sigma(data, time = FALSE, intercept = TRUE)
 by_group <- brm_formula_sigma(data, group = TRUE, intercept = TRUE)
 homogeneous
 by_group
