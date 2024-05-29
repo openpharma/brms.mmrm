@@ -1,19 +1,22 @@
 test_that("brm_simulate_prior() runs", {
   skip_on_cran()
   set.seed(0L)
-  data <- brm_simulate_outline()
+  data <- brm_simulate_outline(n_patient = 10L, n_time = 3L)
   data <- brm_simulate_continuous(data, names = c("age", "biomarker"))
   formula <- brm_formula(
     data = data,
     baseline = FALSE,
-    baseline_time = FALSE
+    baseline_time = FALSE,
+    check_rank = FALSE
   )
   tmp <- utils::capture.output(
     suppressMessages(
       suppressWarnings(
         out <- brm_simulate_prior(
           data = data,
-          formula = formula
+          formula = formula,
+          iter = 20,
+          warmup = 10
         )
       )
     )

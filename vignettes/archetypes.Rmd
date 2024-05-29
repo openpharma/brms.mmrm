@@ -1,0 +1,440 @@
+---
+title: "Informative prior archetypes"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Informative prior archetypes}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+
+Informative prior archetypes allow users to conveniently set informative priors in `brms.mmrm` in a robust way, guarding against common pitfalls such as reference level issues, interpretation problems, and rank deficiency.
+
+## Constructing an archetype
+
+We begin with a simulated dataset.
+
+
+```r
+library(brms.mmrm)
+set.seed(0L)
+data <- brm_simulate_outline(
+  n_group = 2,
+  n_patient = 100,
+  n_time = 4,
+  rate_dropout = 0,
+  rate_lapse = 0
+) |>
+  dplyr::mutate(response = rnorm(n = dplyr::n())) |>
+  brm_data_change() |>
+  brm_simulate_continuous(names = c("biomarker1", "biomarker2")) |>
+  brm_simulate_categorical(
+    names = c("status1", "status2"),
+    levels = c("present", "absent")
+  )
+dplyr::select(
+  data,
+  group,
+  time,
+  patient,
+  starts_with("biomarker"),
+  starts_with("status")
+)
+#> # A tibble: 600 × 7
+#>    group   time   patient     biomarker1 biomarker2 status1 status2
+#>    <chr>   <chr>  <chr>            <dbl>      <dbl> <chr>   <chr>  
+#>  1 group_1 time_2 patient_001     -1.42      -0.287 absent  present
+#>  2 group_1 time_3 patient_001     -1.42      -0.287 absent  present
+#>  3 group_1 time_4 patient_001     -1.42      -0.287 absent  present
+#>  4 group_1 time_2 patient_002     -1.67       1.84  absent  present
+#>  5 group_1 time_3 patient_002     -1.67       1.84  absent  present
+#>  6 group_1 time_4 patient_002     -1.67       1.84  absent  present
+#>  7 group_1 time_2 patient_003      1.38      -0.157 absent  absent 
+#>  8 group_1 time_3 patient_003      1.38      -0.157 absent  absent 
+#>  9 group_1 time_4 patient_003      1.38      -0.157 absent  absent 
+#> 10 group_1 time_2 patient_004     -0.920     -1.39  present present
+#> # ℹ 590 more rows
+```
+
+The functions listed at <https://openpharma.github.io/brms.mmrm/reference/index.html#informative-prior-archetypes> can create different kinds of informative prior archetypes from a dataset like the one above. For example, suppose we want to place informative priors on the successive differences between adjacent time points. This approach is appropriate and desirable in many situations because the structure naturally captures the prior correlations among adjacent visits of a clinical trial. To do this, we create an instance of the "successive cells" archetype.
+
+
+```r
+archetype <- brm_archetype_successive_cells(data, baseline = FALSE)
+```
+
+The instance of the archetype is an ordinary tibble, but it adds new columns.
+
+
+```r
+archetype
+#> # A tibble: 600 × 23
+#>    x_group_1_time_2 x_group_1_time_3 x_group_1_time_4 x_group_2_time_2
+#>  *            <dbl>            <dbl>            <dbl>            <dbl>
+#>  1                1                0                0                0
+#>  2                1                1                0                0
+#>  3                1                1                1                0
+#>  4                1                0                0                0
+#>  5                1                1                0                0
+#>  6                1                1                1                0
+#>  7                1                0                0                0
+#>  8                1                1                0                0
+#>  9                1                1                1                0
+#> 10                1                0                0                0
+#> # ℹ 590 more rows
+#> # ℹ 19 more variables: x_group_2_time_3 <dbl>, x_group_2_time_4 <dbl>,
+#> #   nuisance_biomarker1 <dbl>, nuisance_biomarker2 <dbl>,
+#> #   nuisance_status1_absent <dbl>, nuisance_status2_present <dbl>,
+#> #   nuisance_baseline.timetime_2 <dbl>, nuisance_baseline.timetime_3 <dbl>,
+#> #   nuisance_baseline.timetime_4 <dbl>, patient <chr>, time <chr>,
+#> #   change <dbl>, missing <lgl>, baseline <dbl>, group <chr>, …
+```
+
+Those new columns constitute a custom model matrix to describe the desired parameterization. We have effects of interest to express successive differences,
+
+
+```r
+attr(archetype, "brm_archetype_interest")
+#> [1] "x_group_1_time_2" "x_group_1_time_3" "x_group_1_time_4" "x_group_2_time_2"
+#> [5] "x_group_2_time_3" "x_group_2_time_4"
+```
+
+and we have nuisance variables. Some nuisance variables are continuous covariates, while others are levels of one-hot-encoded concomitant factors or interactions of those concomitant factors with baseline and/or subgroup. All nuisance variables are centered at their means so the reference level of the model is at the "center" of the data and not implicitly conditional on a subset of the data.^[`brm_recenter_nuisance()` can retroactively recenter a nuisance column to a fixed value other than its mean.] In addition, some nuisance variables are automatically dropped in order to ensure the model matrix is full-rank. This is critically important to preserve the interpretation of the columns of interest and make sure the informative priors behave as expected.
+
+
+```r
+attr(archetype, "brm_archetype_nuisance")
+#> [1] "nuisance_biomarker1"          "nuisance_biomarker2"         
+#> [3] "nuisance_status1_absent"      "nuisance_status2_present"    
+#> [5] "nuisance_baseline.timetime_2" "nuisance_baseline.timetime_3"
+#> [7] "nuisance_baseline.timetime_4"
+```
+
+The factors of interest linearly map to marginal means. To see the mapping, call `summary()` on the archetype. The printed output helps build intuition on how the archetype is parameterized and what those parameters are doing.
+
+
+```r
+summary(archetype)
+#> # This object is an informative prior archetype in brms.mmrm.
+#> # The fixed effect parameters of interest express the
+#> # marginal means as follows:
+#> # 
+#> #    group_1:time_2 = x_group_1_time_2
+#> #    group_1:time_3 = x_group_1_time_2 + x_group_1_time_3
+#> #    group_1:time_4 = x_group_1_time_2 + x_group_1_time_3 + x_group_1_time_4
+#> #    group_2:time_2 = x_group_2_time_2
+#> #    group_2:time_3 = x_group_2_time_2 + x_group_2_time_3
+#> #    group_2:time_4 = x_group_2_time_2 + x_group_2_time_3 + x_group_2_time_4
+```
+
+## Informative priors
+
+Let's assume you want to assign informative priors to the fixed effect parameters of interest declared in the archetype, such as `x_group_1_time_2` and `x_group_2_time_3`. Your priors may come from expert elicitation, historical data, or some other method, and you might consider [distributional families recommended by the Stan team](https://github.com/stan-dev/stan/wiki/prior-choice-recommendations). Either way, `brms.mmrm` helps you assign these priors to the model without having to guess at the automatically-generated names of model coefficients in R.
+
+In the printed output from `summary(archetype)`, parameters of interest such as `x_group_1_time_2` and `x_group_2_time_3` are always labeled using treatment groups and time points in the data (and subgroup levels, if applicable). Even though different archetypes have different parameterizations and thus different ways of expressing marginal means, this labeling scheme remains consistent across all archetypes. This is how `brms.mmrm` helps you assign priors. First, match your priors to levels in the data.
+
+
+```r
+label <- NULL |>
+  brm_prior_label("student_t(4, 0.98, 2.37)", group = "group_1", time = "time_2") |>
+  brm_prior_label("student_t(4, 1.82, 3.32)", group = "group_1", time = "time_3") |>
+  brm_prior_label("student_t(4, 2.35, 4.41)", group = "group_1", time = "time_4") |>
+  brm_prior_label("student_t(4, 0.31, 2.22)", group = "group_2", time = "time_2") |>
+  brm_prior_label("student_t(4, 1.94, 2.85)", group = "group_2", time = "time_3") |>
+  brm_prior_label("student_t(4, 2.33, 3.41)", group = "group_2", time = "time_4")
+label
+#> # A tibble: 6 × 3
+#>   code                     group   time  
+#>   <chr>                    <chr>   <chr> 
+#> 1 student_t(4, 0.98, 2.37) group_1 time_2
+#> 2 student_t(4, 1.82, 3.32) group_1 time_3
+#> 3 student_t(4, 2.35, 4.41) group_1 time_4
+#> 4 student_t(4, 0.31, 2.22) group_2 time_2
+#> 5 student_t(4, 1.94, 2.85) group_2 time_3
+#> 6 student_t(4, 2.33, 3.41) group_2 time_4
+```
+
+Those `group` and `time` labels map your priors to the corresponding `x_*` parameters. `brm_prior_archetype()` accepts a collection of labeled priors and returns a `brms` prior object as documented in <https://paul-buerkner.github.io/brms/reference/set_prior.html>.
+
+
+```r
+prior <- brm_prior_archetype(label = label, archetype = archetype)
+prior
+#>                     prior class             coef group resp dpar nlpar   lb
+#>  student_t(4, 0.98, 2.37)     b x_group_1_time_2                       <NA>
+#>  student_t(4, 1.82, 3.32)     b x_group_1_time_3                       <NA>
+#>  student_t(4, 2.35, 4.41)     b x_group_1_time_4                       <NA>
+#>  student_t(4, 0.31, 2.22)     b x_group_2_time_2                       <NA>
+#>  student_t(4, 1.94, 2.85)     b x_group_2_time_3                       <NA>
+#>  student_t(4, 2.33, 3.41)     b x_group_2_time_4                       <NA>
+#>    ub source
+#>  <NA>   user
+#>  <NA>   user
+#>  <NA>   user
+#>  <NA>   user
+#>  <NA>   user
+#>  <NA>   user
+```
+
+In less common situations, you may wish to assign priors to nuisance parameters. For example, our model accounts for interactions between baseline and discrete time, and it may be reasonable to assign priors to these slopes based on high-quality historical data. This requires a thorough understanding of the fixed effect structure of the model, but it can be done directly through `brms`. First, check the formula for the included nuisance parameters. `brm_formula()` automatically understands archetypes.
+
+
+```r
+brm_formula(archetype)
+#> change ~ 0 + x_group_1_time_2 + x_group_1_time_3 + x_group_1_time_4 + x_group_2_time_2 + x_group_2_time_3 + x_group_2_time_4 + nuisance_biomarker1 + nuisance_biomarker2 + nuisance_status1_absent + nuisance_status2_present + nuisance_baseline.timetime_2 + nuisance_baseline.timetime_3 + nuisance_baseline.timetime_4 + unstr(time = time, gr = patient) 
+#> sigma ~ 0 + time
+```
+
+The `"nuisance_*"` terms are the nuisance variables, and the ones involving baseline are `nuisance_baseline.timetime_2`, `nuisance_baseline.timetime_3`, and `nuisance_baseline.timetime_4`. Because there is no overall slope for baseline, we can interpret each term as the linear rate of change in the outcome variable per unit increase in baseline for a given discrete time point. Suppose we use this interpretation to construct informative priors `student_t(4, 2.1, 4.8)`, `student_t(4, 3.2, 5.2)`, and `student_t(4, 2.5, 5.7)`, respectively. Use `brms::set_prior()` and `c()` to append these priors to our existing `prior` object:
+
+
+```r
+prior <- c(
+  prior,
+  set_prior("student_t(4, 2.17, 4.86)", coef = "nuisance_baseline.timetime_2"),
+  set_prior("student_t(4, 3.22, 5.25)", coef = "nuisance_baseline.timetime_3"),
+  set_prior("student_t(4, 2.53, 5.75)", coef = "nuisance_baseline.timetime_4")
+)
+prior
+#>                     prior class                         coef group resp dpar
+#>  student_t(4, 0.98, 2.37)     b             x_group_1_time_2                
+#>  student_t(4, 1.82, 3.32)     b             x_group_1_time_3                
+#>  student_t(4, 2.35, 4.41)     b             x_group_1_time_4                
+#>  student_t(4, 0.31, 2.22)     b             x_group_2_time_2                
+#>  student_t(4, 1.94, 2.85)     b             x_group_2_time_3                
+#>  student_t(4, 2.33, 3.41)     b             x_group_2_time_4                
+#>  student_t(4, 2.17, 4.86)     b nuisance_baseline.timetime_2                
+#>  student_t(4, 3.22, 5.25)     b nuisance_baseline.timetime_3                
+#>  student_t(4, 2.53, 5.75)     b nuisance_baseline.timetime_4                
+#>  nlpar   lb   ub source
+#>        <NA> <NA>   user
+#>        <NA> <NA>   user
+#>        <NA> <NA>   user
+#>        <NA> <NA>   user
+#>        <NA> <NA>   user
+#>        <NA> <NA>   user
+#>        <NA> <NA>   user
+#>        <NA> <NA>   user
+#>        <NA> <NA>   user
+```
+
+The model still has many parameters where we did not set priors, and `brms` sets automatic defaults. You can see these defaults with `brms::default_prior()`.
+
+
+```r
+brms::default_prior(object = formula, data = archetype)
+#>   prior   class                         coef group resp  dpar nlpar lb ub
+#>  (flat)       b                                                          
+#>  (flat)       b nuisance_baseline.timetime_2                             
+#>  (flat)       b nuisance_baseline.timetime_3                             
+#>  (flat)       b nuisance_baseline.timetime_4                             
+#>  (flat)       b          nuisance_biomarker1                             
+#>  (flat)       b          nuisance_biomarker2                             
+#>  (flat)       b      nuisance_status1_absent                             
+#>  (flat)       b     nuisance_status2_present                             
+#>  (flat)       b             x_group_1_time_2                             
+#>  (flat)       b             x_group_1_time_3                             
+#>  (flat)       b             x_group_1_time_4                             
+#>  (flat)       b             x_group_2_time_2                             
+#>  (flat)       b             x_group_2_time_3                             
+#>  (flat)       b             x_group_2_time_4                             
+#>  lkj(1) cortime                                                          
+#>  (flat)       b                                         sigma            
+#>  (flat)       b                   timetime_2            sigma            
+#>  (flat)       b                   timetime_3            sigma            
+#>  (flat)       b                   timetime_4            sigma            
+#>        source
+#>       default
+#>  (vectorized)
+#>  (vectorized)
+#>  (vectorized)
+#>  (vectorized)
+#>  (vectorized)
+#>  (vectorized)
+#>  (vectorized)
+#>  (vectorized)
+#>  (vectorized)
+#>  (vectorized)
+#>  (vectorized)
+#>  (vectorized)
+#>  (vectorized)
+#>       default
+#>       default
+#>  (vectorized)
+#>  (vectorized)
+#>  (vectorized)
+```
+
+<https://paul-buerkner.github.io/brms/reference/set_prior.html> documents many of the default priors set by `brms`. In particular, `"(flat)"` denotes an improper uniform prior over all the real numbers.
+
+## Modeling and analysis
+
+The downstream methods in `brms.mmrm` automatically understand how to work with informative prior archetypes. Notably, the formula uses custom interest and nuisance variables instead of the original variables in the data.
+
+
+```r
+formula <- brm_formula(archetype)
+formula
+#> change ~ 0 + x_group_1_time_2 + x_group_1_time_3 + x_group_1_time_4 + x_group_2_time_2 + x_group_2_time_3 + x_group_2_time_4 + nuisance_biomarker1 + nuisance_biomarker2 + nuisance_status1_absent + nuisance_status2_present + nuisance_baseline.timetime_2 + nuisance_baseline.timetime_3 + nuisance_baseline.timetime_4 + unstr(time = time, gr = patient) 
+#> sigma ~ 0 + time
+```
+
+The model can accept the archetype, formula, and prior. Usage is the same as in non-archetype workflows.
+
+
+```r
+model <- brm_model(
+  data = archetype,
+  formula = formula,
+  prior = prior,
+  refresh = 0
+)
+#> Compiling Stan program...
+#> Start sampling
+brms::prior_summary(model)
+#>                     prior    class                         coef group resp  dpar nlpar
+#>                    (flat)        b                                                    
+#>  student_t(4, 2.17, 4.86)        b nuisance_baseline.timetime_2                       
+#>  student_t(4, 3.22, 5.25)        b nuisance_baseline.timetime_3                       
+#>  student_t(4, 2.53, 5.75)        b nuisance_baseline.timetime_4                       
+#>                    (flat)        b          nuisance_biomarker1                       
+#>                    (flat)        b          nuisance_biomarker2                       
+#>                    (flat)        b      nuisance_status1_absent                       
+#>                    (flat)        b     nuisance_status2_present                       
+#>  student_t(4, 0.98, 2.37)        b             x_group_1_time_2                       
+#>  student_t(4, 1.82, 3.32)        b             x_group_1_time_3                       
+#>  student_t(4, 2.35, 4.41)        b             x_group_1_time_4                       
+#>  student_t(4, 0.31, 2.22)        b             x_group_2_time_2                       
+#>  student_t(4, 1.94, 2.85)        b             x_group_2_time_3                       
+#>  student_t(4, 2.33, 3.41)        b             x_group_2_time_4                       
+#>                    (flat)        b                                         sigma      
+#>                    (flat)        b                   timetime_2            sigma      
+#>                    (flat)        b                   timetime_3            sigma      
+#>                    (flat)        b                   timetime_4            sigma      
+#>      lkj_corr_cholesky(1) Lcortime                                                    
+#>  lb ub       source
+#>             default
+#>                user
+#>                user
+#>                user
+#>        (vectorized)
+#>        (vectorized)
+#>        (vectorized)
+#>        (vectorized)
+#>                user
+#>                user
+#>                user
+#>                user
+#>                user
+#>                user
+#>             default
+#>        (vectorized)
+#>        (vectorized)
+#>        (vectorized)
+#>             default
+```
+
+Marginal mean estimation, post-processing, and visualization automatically understand the archetype without any user intervention.
+
+
+```r
+draws <- brm_marginal_draws(
+  data = archetype,
+  formula = formula,
+  model = model
+)
+summaries_model <- brm_marginal_summaries(draws)
+summaries_data <- brm_marginal_data(data)
+brm_plot_compare(model = summaries_model, data = summaries_data)
+```
+
+<div class="figure" style="text-align: center">
+<img src="archetypes_figures/archetype_compare_data-1.png" alt="plot of chunk archetype_compare_data"  />
+<p class="caption">plot of chunk archetype_compare_data</p>
+</div>
+
+## Other archetypes
+
+Other informative prior archetypes use different fixed effects. For example, `brms.mmrm` supports simple cell mean and treatment effect parameterizations.
+
+
+```r
+summary(brm_archetype_cells(data))
+#> # This object is an informative prior archetype in brms.mmrm.
+#> # The fixed effect parameters of interest express the
+#> # marginal means as follows:
+#> # 
+#> #    group_1:time_2 = x_group_1_time_2
+#> #    group_1:time_3 = x_group_1_time_3
+#> #    group_1:time_4 = x_group_1_time_4
+#> #    group_2:time_2 = x_group_2_time_2
+#> #    group_2:time_3 = x_group_2_time_3
+#> #    group_2:time_4 = x_group_2_time_4
+```
+
+
+```r
+summary(brm_archetype_effects(data))
+#> # This object is an informative prior archetype in brms.mmrm.
+#> # The fixed effect parameters of interest express the
+#> # marginal means as follows:
+#> # 
+#> #    group_1:time_2 = x_group_1_time_2
+#> #    group_1:time_3 = x_group_1_time_3
+#> #    group_1:time_4 = x_group_1_time_4
+#> #    group_2:time_2 = x_group_1_time_2 + x_group_2_time_2
+#> #    group_2:time_3 = x_group_1_time_3 + x_group_2_time_3
+#> #    group_2:time_4 = x_group_1_time_4 + x_group_2_time_4
+```
+
+There are archetypes to parameterize the average across all time points in the data. Below, `x_group_1_time_2` is the average across time points for group 1 because it is the algebraic result of simplifying `(group_1:time_2 + group_1:time_3 + group_1:time_3) / 3`.
+
+
+```r
+summary(brm_archetype_average_cells(data))
+#> # This object is an informative prior archetype in brms.mmrm.
+#> # The fixed effect parameters of interest express the
+#> # marginal means as follows:
+#> # 
+#> #    group_1:time_2 = 3*x_group_1_time_2 - x_group_1_time_3 - x_group_1_time_4
+#> #    group_1:time_3 = x_group_1_time_3
+#> #    group_1:time_4 = x_group_1_time_4
+#> #    group_2:time_2 = 3*x_group_2_time_2 - x_group_2_time_3 - x_group_2_time_4
+#> #    group_2:time_3 = x_group_2_time_3
+#> #    group_2:time_4 = x_group_2_time_4
+```
+
+There is also a treatment effect version where `x_group_2_time_2` becomes the time-averaged treatment effect of group 2 relative to group 1.
+
+
+```r
+summary(brm_archetype_average_effects(data))
+#> # This object is an informative prior archetype in brms.mmrm.
+#> # The fixed effect parameters of interest express the
+#> # marginal means as follows:
+#> # 
+#> #    group_1:time_2 = 3*x_group_1_time_2 - x_group_1_time_3 - x_group_1_time_4
+#> #    group_1:time_3 = x_group_1_time_3
+#> #    group_1:time_4 = x_group_1_time_4
+#> #    group_2:time_2 = 3*x_group_1_time_2 - x_group_1_time_3 - x_group_1_time_4 + 3*x_group_2_time_2 - x_group_2_time_3 - x_group_2_time_4
+#> #    group_2:time_3 = x_group_1_time_3 + x_group_2_time_3
+#> #    group_2:time_4 = x_group_1_time_4 + x_group_2_time_4
+```
+
+In addition, there is a treatment effect version of the successive differences archetype from earlier in the vignette.
+
+
+```r
+summary(brm_archetype_successive_effects(data))
+#> # This object is an informative prior archetype in brms.mmrm.
+#> # The fixed effect parameters of interest express the
+#> # marginal means as follows:
+#> # 
+#> #    group_1:time_2 = x_group_1_time_2
+#> #    group_1:time_3 = x_group_1_time_2 + x_group_1_time_3
+#> #    group_1:time_4 = x_group_1_time_2 + x_group_1_time_3 + x_group_1_time_4
+#> #    group_2:time_2 = x_group_1_time_2 + x_group_2_time_2
+#> #    group_2:time_3 = x_group_1_time_2 + x_group_1_time_3 + x_group_2_time_2 + x_group_2_time_3
+#> #    group_2:time_4 = x_group_1_time_2 + x_group_1_time_3 + x_group_1_time_4 + x_group_2_time_2 + x_group_2_time_3 + x_group_2_time_4
+```

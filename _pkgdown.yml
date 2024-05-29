@@ -12,6 +12,7 @@ articles:
   - usage
   - subgroup
   - simulation
+  - archetypes
 - title: Validation
   navbar: Validation
   contents:
@@ -33,8 +34,21 @@ reference:
   - 'brm_simulate_outline'
   - 'brm_simulate_prior'
   - 'brm_simulate_simple'
+- title: Informative prior archetypes
+  contents:
+  - 'brm_archetype_average_cells'
+  - 'brm_archetype_average_effects'
+  - 'brm_archetype_cells'
+  - 'brm_archetype_effects'
+  - 'brm_archetype_successive_cells'
+  - 'brm_archetype_successive_effects'
+- title: Archetype utilities
+  contents:
+  - 'brm_recenter_nuisance'
 - title: Priors
   contents:
+  - 'brm_prior_archetype'
+  - 'brm_prior_label'
   - 'brm_prior_simple'
 - title: Models
   contents:

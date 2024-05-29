@@ -347,3 +347,204 @@ test_that("brm_transform_marginal(), change, subgroup, local", {
     )
   }
 })
+
+test_that("archetype non-subgroup no nuisance", {
+  data <- brm_simulate_outline(
+    n_group = 2,
+    n_patient = 100,
+    n_time = 3,
+    rate_dropout = 0,
+    rate_lapse = 0
+  ) |>
+    dplyr::mutate(response = rnorm(n = dplyr::n()))
+  scenario <- brm_archetype_successive_cells(data)
+  transform <- brm_transform_marginal(
+    data = scenario,
+    formula = brm_formula(scenario)
+  )
+  expect_equal(
+    rownames(transform),
+    c(
+      "group_1|time_1",
+      "group_1|time_2",
+      "group_1|time_3",
+      "group_2|time_1",
+      "group_2|time_2",
+      "group_2|time_3"
+    )
+  )
+  expect_equal(
+    sort(colnames(transform)),
+    sort(
+      c(
+        "b_x_group_1_time_1",
+        "b_x_group_1_time_2",
+        "b_x_group_1_time_3",
+        "b_x_group_2_time_1",
+        "b_x_group_2_time_2",
+        "b_x_group_2_time_3"
+      )
+    )
+  )
+  expect_equal(
+    unname(transform),
+    kronecker(diag(2), diag(3) + lower.tri(diag(3)))
+  )
+  terms <- c("response ~ 0", grep("^x_", colnames(scenario), value = TRUE))
+  formula <- as.formula(paste(terms, collapse = " + "))
+  sdif <- coef(lm(formula, data = scenario))
+  cell <- coef(lm(response ~ 0 + time:group, data = data))
+  expect_equal(as.numeric(transform %*% sdif), as.numeric(cell))
+})
+
+test_that("archetype non-subgroup with nuisance", {
+  data <- brm_simulate_outline(
+    n_group = 2,
+    n_patient = 100,
+    n_time = 3,
+    rate_dropout = 0,
+    rate_lapse = 0
+  ) |>
+    dplyr::mutate(response = rnorm(n = dplyr::n())) |>
+    brm_simulate_continuous(names = c("biomarker1", "biomarker2")) |>
+    brm_simulate_categorical(
+      names = c("status1", "status2"),
+      levels = c("present", "absent")
+    )
+  scenario <- brm_archetype_successive_cells(data, prefix_nuisance = "z_")
+  transform <- brm_transform_marginal(
+    data = scenario,
+    formula = brm_formula(scenario)
+  )
+  expect_equal(
+    rownames(transform),
+    c(
+      "group_1|time_1",
+      "group_1|time_2",
+      "group_1|time_3",
+      "group_2|time_1",
+      "group_2|time_2",
+      "group_2|time_3"
+    )
+  )
+  expect_equal(
+    sort(colnames(transform)),
+    sort(
+      c(
+        "b_x_group_1_time_1",
+        "b_x_group_1_time_2",
+        "b_x_group_1_time_3",
+        "b_x_group_2_time_1",
+        "b_x_group_2_time_2",
+        "b_x_group_2_time_3",
+        "b_z_biomarker1",
+        "b_z_biomarker2",
+        "b_z_status1_absent",
+        "b_z_status2_present"
+      )
+    )
+  )
+  expect_equal(
+    unname(transform[, seq_len(6)]),
+    kronecker(diag(2), diag(3) + lower.tri(diag(3)))
+  )
+  expect_equal(max(abs(transform[, seq(7, 10)])), 0)
+  terms <- c(
+    "response ~ 0",
+    grep("^x_|^z_", colnames(scenario), value = TRUE)
+  )
+  formula <- as.formula(paste(terms, collapse = " + "))
+  sdif <- coef(lm(formula, data = scenario))
+  terms <- c(
+    "response ~ 0 + time:group",
+    grep("^z_", colnames(scenario), value = TRUE)
+  )
+  formula <- as.formula(paste(terms, collapse = " + "))
+  cell <- coef(lm(formula, data = scenario))
+  nuisance <- grep("^z_", names(cell), value = TRUE)
+  cell <- cell[c(setdiff(names(cell), nuisance), nuisance)]
+  expect_equal(as.numeric(transform %*% sdif), as.numeric(cell)[seq_len(6L)])
+})
+
+test_that("archetype subgroup with nuisance, average_within_subgroup = F", {
+  data <- brm_simulate_outline(
+    n_group = 2,
+    n_subgroup = 2,
+    n_patient = 100,
+    n_time = 3,
+    rate_dropout = 0,
+    rate_lapse = 0
+  ) |>
+    dplyr::mutate(response = rnorm(n = dplyr::n())) |>
+    brm_simulate_continuous(names = c("biomarker1", "biomarker2")) |>
+    brm_simulate_categorical(
+      names = c("status1", "status2"),
+      levels = c("present", "absent")
+    )
+  scenario <- brm_archetype_successive_cells(data, prefix_nuisance = "z_")
+  transform <- brm_transform_marginal(
+    data = scenario,
+    formula = brm_formula(scenario),
+    average_within_subgroup = FALSE
+  )
+  expect_equal(
+    rownames(transform),
+    c(
+      "group_1|subgroup_1|time_1",
+      "group_1|subgroup_1|time_2",
+      "group_1|subgroup_1|time_3",
+      "group_1|subgroup_2|time_1",
+      "group_1|subgroup_2|time_2",
+      "group_1|subgroup_2|time_3",
+      "group_2|subgroup_1|time_1",
+      "group_2|subgroup_1|time_2",
+      "group_2|subgroup_1|time_3",
+      "group_2|subgroup_2|time_1",
+      "group_2|subgroup_2|time_2",
+      "group_2|subgroup_2|time_3"
+    )
+  )
+  expect_equal(
+    sort(colnames(transform)),
+    sort(
+      c(
+        "b_x_group_1_subgroup_1_time_1",
+        "b_x_group_1_subgroup_1_time_2",
+        "b_x_group_1_subgroup_1_time_3",
+        "b_x_group_1_subgroup_2_time_1",
+        "b_x_group_1_subgroup_2_time_2",
+        "b_x_group_1_subgroup_2_time_3",
+        "b_x_group_2_subgroup_1_time_1",
+        "b_x_group_2_subgroup_1_time_2",
+        "b_x_group_2_subgroup_1_time_3",
+        "b_x_group_2_subgroup_2_time_1",
+        "b_x_group_2_subgroup_2_time_2",
+        "b_x_group_2_subgroup_2_time_3",
+        "b_z_biomarker1",
+        "b_z_biomarker2",
+        "b_z_status1_absent",
+        "b_z_status2_present"
+      )
+    )
+  )
+  expect_equal(
+    unname(transform[, seq_len(12)]),
+    kronecker(diag(4), diag(3) + lower.tri(diag(3)))
+  )
+  expect_equal(max(abs(transform[, seq(13, 16)])), 0)
+  terms <- c(
+    "response ~ 0",
+    grep("^x_|^z_", colnames(scenario), value = TRUE)
+  )
+  formula <- as.formula(paste(terms, collapse = " + "))
+  sdif <- coef(lm(formula, data = scenario))
+  terms <- c(
+    "response ~ 0 + time:subgroup:group",
+    grep("^z_", colnames(scenario), value = TRUE)
+  )
+  formula <- as.formula(paste(terms, collapse = " + "))
+  cell <- coef(lm(formula, data = scenario))
+  nuisance <- grep("^z_", names(cell), value = TRUE)
+  cell <- cell[c(setdiff(names(cell), nuisance), nuisance)]
+  expect_equal(as.numeric(transform %*% sdif), as.numeric(cell)[seq_len(12L)])
+})

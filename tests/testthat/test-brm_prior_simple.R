@@ -5,7 +5,8 @@ test_that("brm_prior_simple() unstructured", {
   formula <- brm_formula(
     data = data,
     baseline = FALSE,
-    baseline_time = FALSE
+    baseline_time = FALSE,
+    check_rank = FALSE
   )
   expect_warning(
     brm_prior_simple(
@@ -46,7 +47,8 @@ test_that("brm_prior_simple() arma", {
     data = data,
     baseline = FALSE,
     baseline_time = FALSE,
-    correlation = "autoregressive_moving_average"
+    correlation = "autoregressive_moving_average",
+    check_rank = FALSE
   )
   out <- brm_prior_simple(
     data = data,
@@ -78,7 +80,8 @@ test_that("brm_prior_simple() cosy", {
     data = data,
     baseline = FALSE,
     baseline_time = FALSE,
-    correlation = "compound_symmetry"
+    correlation = "compound_symmetry",
+    check_rank = FALSE
   )
   out <- brm_prior_simple(
     data = data,

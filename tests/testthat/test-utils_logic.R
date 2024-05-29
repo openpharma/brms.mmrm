@@ -12,6 +12,11 @@ test_that("%|||%", {
   expect_equal(NULL %|||% "y", "y")
 })
 
+test_that("%||nzchar%", {
+  expect_equal("x" %||nzchar% "y", "x")
+  expect_equal("" %||nzchar% "y", "y")
+})
+
 test_that("if_any()", {
   expect_equal(if_any(TRUE, "x", "y"), "x")
   expect_equal(if_any(FALSE, "x", "y"), "y")

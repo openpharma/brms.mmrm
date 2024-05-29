@@ -2,10 +2,29 @@
 % Please edit documentation in R/brm_formula.R
 \name{brm_formula}
 \alias{brm_formula}
+\alias{brm_formula.default}
+\alias{brm_formula.brms_mmrm_archetype}
 \title{Model formula}
 \usage{
 brm_formula(
   data,
+  check_rank = TRUE,
+  variance = "heterogeneous",
+  correlation = "unstructured",
+  autoregressive_order = 1L,
+  moving_average_order = 1L,
+  residual_covariance_arma_estimation = FALSE,
+  ...
+)
+
+\method{brm_formula}{default}(
+  data,
+  check_rank = TRUE,
+  variance = "heterogeneous",
+  correlation = "unstructured",
+  autoregressive_order = 1L,
+  moving_average_order = 1L,
+  residual_covariance_arma_estimation = FALSE,
   intercept = TRUE,
   baseline = !is.null(attr(data, "brm_baseline")),
   baseline_subgroup = !is.null(attr(data, "brm_baseline")) && !is.null(attr(data,
@@ -13,6 +32,7 @@ brm_formula(
   baseline_subgroup_time = !is.null(attr(data, "brm_baseline")) && !is.null(attr(data,
     "brm_subgroup")),
   baseline_time = !is.null(attr(data, "brm_baseline")),
+  covariates = TRUE,
   group = TRUE,
   group_subgroup = !is.null(attr(data, "brm_subgroup")),
   group_subgroup_time = !is.null(attr(data, "brm_subgroup")),
@@ -20,83 +40,50 @@ brm_formula(
   subgroup = !is.null(attr(data, "brm_subgroup")),
   subgroup_time = !is.null(attr(data, "brm_subgroup")),
   time = TRUE,
-  covariates = TRUE,
-  correlation = "unstructured",
-  autoregressive_order = 1L,
-  moving_average_order = 1L,
-  residual_covariance_arma_estimation = FALSE,
-  variance = "heterogeneous",
+  ...,
   effect_baseline = NULL,
   effect_group = NULL,
   effect_time = NULL,
   interaction_baseline = NULL,
   interaction_group = NULL
 )
+
+\method{brm_formula}{brms_mmrm_archetype}(
+  data,
+  check_rank = TRUE,
+  variance = "heterogeneous",
+  correlation = "unstructured",
+  autoregressive_order = 1L,
+  moving_average_order = 1L,
+  residual_covariance_arma_estimation = FALSE,
+  ...
+)
 }
 \arguments{
-\item{data}{A classed data frame from \code{\link[=brm_data]{brm_data()}}.}
+\item{data}{A classed data frame from \code{\link[=brm_data]{brm_data()}}, or an informative
+prior archetype from a function like \code{\link[=brm_archetype_successive_cells]{brm_archetype_successive_cells()}}.}
 
-\item{intercept}{Logical of length 1.
-\code{TRUE} (default) to include an intercept, \code{FALSE} to omit.}
+\item{check_rank}{\code{TRUE} to check the rank of the model matrix and
+throw an error if rank deficiency is detected. \code{FALSE} to skip
+this check. Rank-deficient models may have non-identifiable
+parameters and it is recommended to choose a full-rank mapping.}
 
-\item{baseline}{Logical of length 1.
-\code{TRUE} to include an additive effect for baseline
-response, \code{FALSE} to omit.
-Default is \code{TRUE} if \code{\link[=brm_data]{brm_data()}} previously declared a baseline
-variable in the dataset.}
+\item{variance}{Character of length 1, variance structure for the
+residuals. \code{"heterogeneous"} declares a different variance component
+for each discrete time point, \code{"homogeneous"} declares a single
+scalar variance shared by all time points. In either case, the variance
+components are shared by all patients, and different patients are
+modeled as independent.
 
-\item{baseline_subgroup}{Logical of length 1.
-\code{TRUE} to include baseline-by-subgroup interaction, \code{FALSE} to omit.
-Default is \code{TRUE} if \code{\link[=brm_data]{brm_data()}} previously declared baseline
-and subgroup variables in the dataset.}
+The variance components are encoded as parameters \code{b_sigma} in the model.
+Each \code{b_sigma} is a standard deviation of residuals on the natural
+log scale.
 
-\item{baseline_subgroup_time}{Logical of length 1.
-\code{TRUE} to include baseline-by-subgroup-by-time interaction,
-\code{FALSE} to omit.
-Default is \code{TRUE} if \code{\link[=brm_data]{brm_data()}} previously declared baseline
-and subgroup variables in the dataset.}
-
-\item{baseline_time}{Logical of length 1.
-\code{TRUE} to include baseline-by-time interaction, \code{FALSE} to omit.
-Default is \code{TRUE} if \code{\link[=brm_data]{brm_data()}} previously declared a baseline
-variable in the dataset.}
-
-\item{group}{Logical of length 1.
-\code{TRUE} (default) to include additive effects for
-treatment groups, \code{FALSE} to omit.}
-
-\item{group_subgroup}{Logical of length 1.
-\code{TRUE} to include group-by-subgroup interaction, \code{FALSE} to omit.
-Default is \code{TRUE} if \code{\link[=brm_data]{brm_data()}} previously declared a subgroup
-variable in the dataset.}
-
-\item{group_subgroup_time}{Logical of length 1.
-\code{TRUE} to include group-by-subgroup-by-time interaction, \code{FALSE} to omit.
-Default is \code{TRUE} if \code{\link[=brm_data]{brm_data()}} previously declared a subgroup
-variable in the dataset.}
-
-\item{group_time}{Logical of length 1.
-\code{TRUE} (default) to include group-by-time interaction, \code{FALSE} to omit.}
-
-\item{subgroup}{Logical of length 1.
-\code{TRUE} to include additive fixed effects for subgroup levels,
-\code{FALSE} to omit.
-Default is \code{TRUE} if \code{\link[=brm_data]{brm_data()}} previously declared a subgroup
-variable in the dataset.}
-
-\item{subgroup_time}{Logical of length 1.
-\code{TRUE} to include subgroup-by-time interaction, \code{FALSE} to omit.
-Default is \code{TRUE} if \code{\link[=brm_data]{brm_data()}} previously declared a subgroup
-variable in the dataset.}
-
-\item{time}{Logical of length 1.
-\code{TRUE} (default) to include a additive effect for discrete time,
-\code{FALSE} to omit.}
-
-\item{covariates}{Logical of length 1.
-\code{TRUE} (default) to include any additive covariates declared with
-the \code{covariates} argument of \code{\link[=brm_data]{brm_data()}},
-\code{FALSE} to omit.}
+The variance structure is encoded in the
+\code{sigma ~ ...} part of the output formula. To see the variance
+mapping for yourself, use \code{brms::make_standata()}
+on the formula and data, or \code{brms::prior_summary()} or
+\code{posterior::as_draws_df()} on the model.}
 
 \item{correlation}{Character of length 1, name of the correlation
 structure. The correlation matrix is a square \verb{T x T} matrix, where
@@ -144,22 +131,85 @@ Directly supplied to the \code{cov} argument in \code{brms} for
 \code{"moving_average"} correlation structures. C.f.
 \url{https://paul-buerkner.github.io/brms/reference/arma.html}.}
 
-\item{variance}{Character of length 1, variance structure for the
-residuals. \code{"heterogeneous"} declares a different variance component
-for each discrete time point, \code{"homogeneous"} declares a single
-scalar variance shared by all time points. In either case, the variance
-components are shared by all patients, and different patients are
-modeled as independent.
+\item{...}{Named arguments to specific \code{\link[=brm_formula]{brm_formula()}} methods.}
 
-The variance components are encoded as parameters \code{b_sigma} in the model.
-Each \code{b_sigma} is a standard deviation of residuals on the natural
-log scale.
+\item{intercept}{Logical of length 1.
+\code{TRUE} (default) to include an intercept, \code{FALSE} to omit.}
 
-The variance structure is encoded in the
-\code{sigma ~ ...} part of the output formula. To see the variance
-parameterization for yourself, use \code{brms::make_standata()}
-on the formula and data, or \code{brms::prior_summary()} or
-\code{posterior::as_draws_df()} on the model.}
+\item{baseline}{Logical of length 1.
+\code{TRUE} to include an additive effect for baseline
+response, \code{FALSE} to omit.
+Default is \code{TRUE} if \code{\link[=brm_data]{brm_data()}} previously declared a baseline
+variable in the dataset.
+Ignored for informative prior archetypes.
+For informative prior archetypes, this option should be set in
+functions like \code{\link[=brm_archetype_successive_cells]{brm_archetype_successive_cells()}} rather than in
+\code{\link[=brm_formula]{brm_formula()}} in order to make sure columns are appropriately
+centered and the underlying model matrix has full rank.}
+
+\item{baseline_subgroup}{Logical of length 1.}
+
+\item{baseline_subgroup_time}{Logical of length 1.
+\code{TRUE} to include baseline-by-subgroup-by-time interaction,
+\code{FALSE} to omit.
+Default is \code{TRUE} if \code{\link[=brm_data]{brm_data()}} previously declared baseline
+and subgroup variables in the dataset.
+Ignored for informative prior archetypes.
+For informative prior archetypes, this option should be set in
+functions like \code{\link[=brm_archetype_successive_cells]{brm_archetype_successive_cells()}} rather than in
+\code{\link[=brm_formula]{brm_formula()}} in order to make sure columns are appropriately
+centered and the underlying model matrix has full rank.}
+
+\item{baseline_time}{Logical of length 1.
+\code{TRUE} to include baseline-by-time interaction, \code{FALSE} to omit.
+Default is \code{TRUE} if \code{\link[=brm_data]{brm_data()}} previously declared a baseline
+variable in the dataset.
+Ignored for informative prior archetypes.
+For informative prior archetypes, this option should be set in
+functions like \code{\link[=brm_archetype_successive_cells]{brm_archetype_successive_cells()}} rather than in
+\code{\link[=brm_formula]{brm_formula()}} in order to make sure columns are appropriately
+centered and the underlying model matrix has full rank.}
+
+\item{covariates}{Logical of length 1.
+\code{TRUE} (default) to include any additive covariates declared with
+the \code{covariates} argument of \code{\link[=brm_data]{brm_data()}},
+\code{FALSE} to omit.
+For informative prior archetypes, this option is set in
+functions like \code{\link[=brm_archetype_successive_cells]{brm_archetype_successive_cells()}} rather than in
+\code{\link[=brm_formula]{brm_formula()}} in order to make sure columns are appropriately
+centered and the underlying model matrix has full rank.}
+
+\item{group}{Logical of length 1.
+\code{TRUE} (default) to include additive effects for
+treatment groups, \code{FALSE} to omit.}
+
+\item{group_subgroup}{Logical of length 1.
+\code{TRUE} to include group-by-subgroup interaction, \code{FALSE} to omit.
+Default is \code{TRUE} if \code{\link[=brm_data]{brm_data()}} previously declared a subgroup
+variable in the dataset.}
+
+\item{group_subgroup_time}{Logical of length 1.
+\code{TRUE} to include group-by-subgroup-by-time interaction, \code{FALSE} to omit.
+Default is \code{TRUE} if \code{\link[=brm_data]{brm_data()}} previously declared a subgroup
+variable in the dataset.}
+
+\item{group_time}{Logical of length 1.
+\code{TRUE} (default) to include group-by-time interaction, \code{FALSE} to omit.}
+
+\item{subgroup}{Logical of length 1.
+\code{TRUE} to include additive fixed effects for subgroup levels,
+\code{FALSE} to omit.
+Default is \code{TRUE} if \code{\link[=brm_data]{brm_data()}} previously declared a subgroup
+variable in the dataset.}
+
+\item{subgroup_time}{Logical of length 1.
+\code{TRUE} to include subgroup-by-time interaction, \code{FALSE} to omit.
+Default is \code{TRUE} if \code{\link[=brm_data]{brm_data()}} previously declared a subgroup
+variable in the dataset.}
+
+\item{time}{Logical of length 1.
+\code{TRUE} (default) to include a additive effect for discrete time,
+\code{FALSE} to omit.}
 
 \item{effect_baseline}{Deprecated on 2024-01-16 (version 0.0.2.9002).
 Use \code{baseline} instead.}
@@ -178,16 +228,19 @@ Use \code{group_time} instead.}
 }
 \value{
 An object of class \code{"brmsformula"} returned from
-\code{brms::brmsformula()}. It contains the fixed effect parameterization,
+\code{brms::brmsformula()}. It contains the fixed effect mapping,
 correlation structure, and residual variance structure.
 }
 \description{
-Build a model formula for an MMRM.
+Build a model formula for an MMRM, either for a generic
+\code{\link[=brm_data]{brm_data()}} dataset or an informative prior archetype.
 }
-\details{
+\section{\code{\link[=brm_data]{brm_data()}} formulas}{
+
+For a \code{\link[=brm_data]{brm_data()}} dataset,
 \code{\link[=brm_formula]{brm_formula()}} builds an R formula for an MMRM based on
-the details in the data and your choice of parameterization.
-Customize your parameterization by toggling on or off
+the details in the data and your choice of mapping.
+Customize your mapping by toggling on or off
 the various \code{TRUE}/\code{FALSE} arguments of \code{\link[=brm_formula]{brm_formula()}},
 such as \code{intercept}, \code{baseline}, and \code{group_time}.
 All plausible additive effects, two-way interactions, and
@@ -201,10 +254,26 @@ group together. Rationale: in a randomized controlled experiment,
 baseline and treatment group assignment should be uncorrelated.
 }
 }
+
+\section{Formulas for informative prior archetypes}{
+
+Functions like \code{\link[=brm_archetype_successive_cells]{brm_archetype_successive_cells()}}
+tailor datasets to informative prior archetypes. For these specialized
+tailored datasets, \code{\link[=brm_formula]{brm_formula()}} works differently. It still applies
+the variance and correlation structure of your choosing, and it still
+lets you choose whether to adjust for nuisance covariates,
+but it no longer lets you toggle on/off individual terms in the model,
+such as \code{intercept}, \code{baseline}, or \code{group}. Instead, to ensure the
+correct interpretation of the parameters, \code{\link[=brm_formula]{brm_formula()}} uses
+the \verb{x_*} and \verb{nuisance_*} columns generated by
+\code{brm_archetype_successive_cells( prefix_interest = "x_", prefix_nuisance = "nuisance_")}.
+}
+
 \section{Parameterization}{
 
-The formula is not the only factor
-that determines the fixed effect parameterization.
+For a formula on a \code{\link[=brm_data]{brm_data()}} dataset,
+the formula is not the only factor
+that determines the fixed effect mapping.
 The ordering of the categorical variables in the data,
 as well as the \code{contrast} option in R, affect the
 construction of the model matrix. To see the model
@@ -237,15 +306,33 @@ formula <- brm_formula(
 formula
 # Optional: set the contrast option, which determines the model matrix.
 options(contrasts = c(unordered = "contr.SAS", ordered = "contr.poly"))
-# See the fixed effect parameterization you get from the data:
+# See the fixed effect mapping you get from the data:
 head(brms::make_standata(formula = formula, data = data)$X)
 # Specify a different contrast method to use an alternative
-# parameterization when fitting the model with brm_model():
+# mapping when fitting the model with brm_model():
 options(
   contrasts = c(unordered = "contr.treatment", ordered = "contr.poly")
 )
 # different model matrix than before:
 head(brms::make_standata(formula = formula, data = data)$X)
+# Formula on an informative prior archetype:
+data <- brm_simulate_outline(
+  n_group = 2,
+  n_patient = 100,
+  n_time = 4,
+  rate_dropout = 0,
+  rate_lapse = 0
+) |>
+  dplyr::mutate(response = rnorm(n = dplyr::n())) |>
+  brm_data_change() |>
+  brm_simulate_continuous(names = c("biomarker1", "biomarker2")) |>
+  brm_simulate_categorical(
+    names = "biomarker3",
+    levels = c("present", "absent")
+  )
+archetype <- brm_archetype_successive_cells(data)
+formula <- brm_formula(data = archetype)
+formula
 }
 \seealso{
 Other models: 

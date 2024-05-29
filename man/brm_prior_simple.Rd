@@ -18,11 +18,11 @@ brm_prior_simple(
 )
 }
 \arguments{
-\item{data}{A tidy data frame with one row per patient per discrete
-time point.}
+\item{data}{A classed data frame from \code{\link[=brm_data]{brm_data()}}, or an informative
+prior archetype from a function like \code{\link[=brm_archetype_successive_cells]{brm_archetype_successive_cells()}}.}
 
 \item{formula}{An object of class \code{"brmsformula"} from \code{\link[=brm_formula]{brm_formula()}}
-or \code{brms::brmsformula()}. Should include the full parameterization
+or \code{brms::brmsformula()}. Should include the full mapping
 of the model, including fixed effects, residual correlation,
 and heterogeneity in the discrete-time-specific residual variance
 components.}
@@ -96,7 +96,8 @@ data <- brm_simulate_continuous(data, names = c("age", "biomarker"))
 formula <- brm_formula(
   data = data,
   baseline = FALSE,
-  baseline_time = FALSE
+  baseline_time = FALSE,
+  check_rank = FALSE
 )
 brm_prior_simple(
   data = data,
@@ -106,5 +107,10 @@ brm_prior_simple(
   sigma = "student_t(2, 0, 4)",
   unstructured = "lkj(2.5)"
 )
+}
+\seealso{
+Other priors: 
+\code{\link{brm_prior_archetype}()},
+\code{\link{brm_prior_label}()}
 }
 \concept{priors}

@@ -70,6 +70,7 @@
 #'   baseline_time = FALSE
 #' )
 #' transform <- brm_transform_marginal(data = data, formula = formula)
+#' print(transform)
 #' }
 brm_transform_marginal <- function(
   data,
@@ -93,8 +94,8 @@ brm_transform_marginal <- function(
   )
   if (is.null(average_within_subgroup)) {
     average_within_subgroup <- FALSE
-    subgroup_and_nuisance <- brm_formula_has_subgroup(formula) &&
-      brm_formula_has_nuisance(formula)
+    subgroup_and_nuisance <- brm_has_subgroup(data, formula = formula) &&
+      brm_has_nuisance(data = data, formula = formula)
     if (subgroup_and_nuisance) {
       brm_message_session(
         "In brm_transform_marginal(), the formula specifies a subgroup and ",
@@ -110,10 +111,20 @@ brm_transform_marginal <- function(
       )
     }
   }
-  if (!brm_formula_has_subgroup(formula)) {
+  if (!brm_has_subgroup(data = data, formula = formula)) {
     average_within_subgroup <- FALSE
   }
-  data <- brm_data_fill(data)
+  time <- attr(data, "brm_time")
+  levels_time <- attr(data, "brm_levels_time")
+  assert(
+    data[[time]] == rep(levels_time, times = nrow(data) / length(levels_time)),
+    message = paste(
+      "data in brm_transform_marginal() must be filled. If needed,",
+      "please rerun your data through brm_data() and convert to an",
+      "informative prior archetype (e.g. brm_archetype_successive_cells())",
+      "if needed."
+    )
+  )
   data[[attr(data, "brm_outcome")]] <- seq_len(nrow(data))
   grid <- transform_marginal_grid(data = data)
   grid <- transform_marginal_continuous(
@@ -141,7 +152,11 @@ brm_transform_marginal <- function(
 }
 
 transform_marginal_grid <- function(data) {
-  args <- lapply(c("brm_group", "brm_subgroup", "brm_time"), attr, x = data)
+  args <- lapply(
+    c("brm_group", "brm_subgroup", "brm_time", "brm_archetype_interest"),
+    attr,
+    x = data
+  )
   args <- lapply(unlist(args), as.symbol)
   args$.data <- data
   grid <- do.call(what = dplyr::distinct, args = args)
@@ -209,6 +224,11 @@ transform_marginal_formula <- function(data, formula) {
 }
 
 transform_marginal_names_continuous <- function(data) {
+  UseMethod("transform_marginal_names_continuous")
+}
+
+#' @export
+transform_marginal_names_continuous.brms_mmrm_data <- function(data) {
   choices <- c(
     attr(data, "brm_outcome"),
     attr(data, "brm_baseline"),
@@ -217,13 +237,32 @@ transform_marginal_names_continuous <- function(data) {
   intersect(names(Filter(is.numeric, data)), choices)
 }
 
+#' @export
+transform_marginal_names_continuous.brms_mmrm_archetype <- function(data) {
+  choices <- c(
+    attr(data, "brm_outcome"),
+    attr(data, "brm_archetype_nuisance")
+  )
+  intersect(names(Filter(is.numeric, data)), choices)
+}
+
 transform_marginal_names_discrete <- function(data) {
+  UseMethod("transform_marginal_names_discrete")
+}
+
+#' @export
+transform_marginal_names_discrete.brms_mmrm_data <- function(data) {
   choices <- c(attr(data, "brm_covariates"))
   Filter(function(name) !is.numeric(data[[name]]), choices)
 }
 
+#' @export
+transform_marginal_names_discrete.brms_mmrm_archetype <- function(data) {
+  character(0L)
+}
+
 brm_transform_marginal_names_rows <- function(data, formula, grid) {
-  has_subgroup <- brm_formula_has_subgroup(formula)
+  has_subgroup <- brm_has_subgroup(data, formula = formula)
   group <- grid[[attr(data, "brm_group")]]
   subgroup <- if_any(has_subgroup, grid[[attr(data, "brm_subgroup")]], NULL)
   time <- grid[[attr(data, "brm_time")]]

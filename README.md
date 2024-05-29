@@ -84,7 +84,7 @@ By contributing to this project, you agree to abide by its terms.
     To cite package 'brms.mmrm' in publications use:
 
       Landau WM, Kunzmann K, Sidi Y, Stock C (????). _brms.mmrm: Bayesian
-      MMRMs using 'brms'_. R package version 0.1.0.9001,
+      MMRMs using 'brms'_. R package version 0.1.0.9003,
       <https://github.com/openpharma/brms.mmrm>.
 
     A BibTeX entry for LaTeX users is
@@ -92,7 +92,7 @@ By contributing to this project, you agree to abide by its terms.
       @Manual{,
         title = {brms.mmrm: Bayesian MMRMs using 'brms'},
         author = {William Michael Landau and Kevin Kunzmann and Yoni Sidi and Christian Stock},
-        note = {R package version 0.1.0.9001},
+        note = {R package version 0.1.0.9003},
         url = {https://github.com/openpharma/brms.mmrm},
       }
 
@@ -104,3 +104,6 @@ By contributing to this project, you agree to abide by its terms.
 - Mallinckrodt, C.H., Lane, P.W., Schnell, D. et al. Recommendations for
   the Primary Analysis of Continuous Endpoints in Longitudinal Clinical
   Trials. Ther Innov Regul Sci 42, 303–319 (2008).
+- Holzhauer, B., and Weber, S. (2024), “Bayesian mixed effects model for
+  repeated measures,” in Applied Modeling in Drug Development, Novartis
+  AG. <https://opensource.nibr.com/bamdd/src/02h_mmrm.html>.

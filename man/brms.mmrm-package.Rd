@@ -18,6 +18,10 @@ and align with the best practices of the life sciences.
 multilevel models using Stan,"
 Journal of Statistical Software, 80, 1–28.
 https://doi.org/10.18637/jss.v080.i01.
+\item Holzhauer, B., and Weber, S. (2024),
+"Bayesian mixed effects model for repeated measures,"
+in Applied Modeling in Drug Development, Novartis AG.
+\url{https://opensource.nibr.com/bamdd/src/02h_mmrm.html}.
 \item Mallinckrodt, C. H., Lane, P. W., Schnell, D., and others (2008),
 "Recommendations for the primary analysis of continuous endpoints
 in longitudinal clinical trials,"

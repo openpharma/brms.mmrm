@@ -7,7 +7,8 @@
 brm_marginal_draws_average(data, draws, times = NULL, label = "average")
 }
 \arguments{
-\item{data}{Classed tibble with preprocessed data from \code{\link[=brm_data]{brm_data()}}.}
+\item{data}{A classed data frame from \code{\link[=brm_data]{brm_data()}}, or an informative
+prior archetype from a function like \code{\link[=brm_archetype_successive_cells]{brm_archetype_successive_cells()}}.}
 
 \item{draws}{List of posterior draws from \code{\link[=brm_marginal_draws]{brm_marginal_draws()}}.}
 

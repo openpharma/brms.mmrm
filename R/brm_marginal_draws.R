@@ -27,8 +27,7 @@
 #'   * `difference_subgroup`: subgroup differences: the `difference_group`
 #'     at each subgroup level minus the `difference_group` at the subgroup
 #'     reference level (`reference_subgroup`).
-#' @param data Classed tibble with preprocessed data from [brm_data()].
-#' @param formula Model formula from [brm_formula()].
+#' @inheritParams brm_model
 #' @param model A fitted model object from [brm_model()].
 #' @param transform Matrix with one row per marginal mean and one column
 #'   per model parameter. [brm_marginal_draws()] uses this matrix
@@ -122,7 +121,7 @@ brm_marginal_draws <- function(
   reference_group <- attr(data, "brm_reference_group")
   reference_subgroup <- attr(data, "brm_reference_subgroup")
   reference_time <- attr(data, "brm_reference_time")
-  has_subgroup <- brm_formula_has_subgroup(formula)
+  has_subgroup <- brm_has_subgroup(data = data, formula = formula)
   draws_model <- posterior::as_draws_df(model)
   index_mcmc <- tibble::as_tibble(draws_model)[, names_mcmc]
   draws_beta <- dplyr::select(

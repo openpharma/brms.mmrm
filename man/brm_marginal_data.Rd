@@ -11,7 +11,8 @@ brm_marginal_data(
 )
 }
 \arguments{
-\item{data}{A classed data frame from \code{\link[=brm_data]{brm_data()}}.}
+\item{data}{A classed data frame from \code{\link[=brm_data]{brm_data()}}, or an informative
+prior archetype from a function like \code{\link[=brm_archetype_successive_cells]{brm_archetype_successive_cells()}}.}
 
 \item{level}{Numeric of length 1 from 0 to 1, level of the confidence
 intervals.}

@@ -1,11 +1,11 @@
 test_that("brm_formula() with default names and all terms", {
   data <- brm_data(
     data = tibble::tibble(
-      CHG = 1,
-      AVISIT = "x",
-      baseline = 2,
-      TRT01P = "x",
-      USUBJID = "x"
+      CHG = c(1, 2),
+      AVISIT = c("x", "y"),
+      baseline = c(2, 3),
+      TRT01P = c("x", "y"),
+      USUBJID = c("x", "y")
     ),
     outcome = "CHG",
     role = "change",
@@ -24,7 +24,8 @@ test_that("brm_formula() with default names and all terms", {
         effect_time = TRUE,
         effect_baseline = TRUE,
         interaction_baseline = TRUE,
-        interaction_group = TRUE
+        interaction_group = TRUE,
+        check_rank = FALSE
       ),
       class = "brm_deprecate"
     )
@@ -48,12 +49,12 @@ test_that("brm_formula() with default names and all terms", {
 test_that("brm_formula() with all user-supplied columns and all terms", {
   data <- brm_data(
     data = tibble::tibble(
-      y = 1,
-      t = "x",
-      b = 2,
-      g = "x",
-      p = "x",
-      a = 1
+      y = c(1, 1),
+      t = c("x", "y"),
+      b = c(2, 2),
+      g = c("x", "y"),
+      p = c("x", "y"),
+      a = c(1, 2)
     ),
     outcome = "y",
     role = "change",
@@ -73,7 +74,8 @@ test_that("brm_formula() with all user-supplied columns and all terms", {
         effect_time = TRUE,
         effect_baseline = TRUE,
         interaction_baseline = TRUE,
-        interaction_group = TRUE
+        interaction_group = TRUE,
+        check_rank = FALSE
       ),
       class = "brm_deprecate"
     )
@@ -93,11 +95,11 @@ test_that("brm_formula() with all user-supplied columns and all terms", {
 test_that("brm_formula() without intercept", {
   data <- brm_data(
     data = tibble::tibble(
-      CHG = 1,
-      AVISIT = "x",
-      baseline = 2,
-      TRT01P = "x",
-      USUBJID = "x"
+      CHG = c(1, 2),
+      AVISIT = c("x", "y"),
+      baseline = c(2, 3),
+      TRT01P = c("x", "y"),
+      USUBJID = c("x", "y")
     ),
     outcome = "CHG",
     role = "change",
@@ -116,7 +118,8 @@ test_that("brm_formula() without intercept", {
         effect_time = TRUE,
         effect_baseline = TRUE,
         interaction_baseline = TRUE,
-        interaction_group = TRUE
+        interaction_group = TRUE,
+        check_rank = FALSE
       ),
       class = "brm_deprecate"
     )
@@ -139,11 +142,11 @@ test_that("brm_formula() without intercept", {
 test_that("brm_formula() without group effect", {
   data <- brm_data(
     data = tibble::tibble(
-      CHG = 1,
-      AVISIT = "x",
-      baseline = 2,
-      TRT01P = "x",
-      USUBJID = "x"
+      CHG = c(1, 2),
+      AVISIT = c("x", "y"),
+      baseline = c(2, 3),
+      TRT01P = c("x", "y"),
+      USUBJID = c("x", "y")
     ),
     outcome = "CHG",
     role = "change",
@@ -162,7 +165,8 @@ test_that("brm_formula() without group effect", {
         effect_time = TRUE,
         effect_baseline = TRUE,
         interaction_baseline = TRUE,
-        interaction_group = TRUE
+        interaction_group = TRUE,
+        check_rank = FALSE
       ),
       class = "brm_deprecate"
     )
@@ -185,11 +189,11 @@ test_that("brm_formula() without group effect", {
 test_that("brm_formula() without time effect", {
   data <- brm_data(
     data = tibble::tibble(
-      CHG = 1,
-      AVISIT = "x",
-      baseline = 2,
-      TRT01P = "x",
-      USUBJID = "x"
+      CHG = c(1, 3),
+      AVISIT = c("x", "y"),
+      baseline = c(2, 2),
+      TRT01P = c("x", "y"),
+      USUBJID = c("x", "y")
     ),
     outcome = "CHG",
     role = "change",
@@ -208,7 +212,8 @@ test_that("brm_formula() without time effect", {
         effect_time = FALSE,
         effect_baseline = TRUE,
         interaction_baseline = TRUE,
-        interaction_group = TRUE
+        interaction_group = TRUE,
+        check_rank = FALSE
       ),
       class = "brm_deprecate"
     )
@@ -231,11 +236,11 @@ test_that("brm_formula() without time effect", {
 test_that("brm_formula() without baseline effect", {
   data <- brm_data(
     data = tibble::tibble(
-      CHG = 1,
-      AVISIT = "x",
-      baseline = 2,
-      TRT01P = "x",
-      USUBJID = "x"
+      CHG = c(1, 2),
+      AVISIT = c("x", "y"),
+      baseline = c(2, 3),
+      TRT01P = c("x", "y"),
+      USUBJID = c("x", "y")
     ),
     outcome = "CHG",
     role = "change",
@@ -254,7 +259,8 @@ test_that("brm_formula() without baseline effect", {
         effect_time = TRUE,
         effect_baseline = FALSE,
         interaction_baseline = TRUE,
-        interaction_group = TRUE
+        interaction_group = TRUE,
+        check_rank = FALSE
       ),
       class = "brm_deprecate"
     )
@@ -277,11 +283,11 @@ test_that("brm_formula() without baseline effect", {
 test_that("brm_formula() without baseline interaction", {
   data <- brm_data(
     data = tibble::tibble(
-      CHG = 1,
-      AVISIT = "x",
-      baseline = 2,
-      TRT01P = "x",
-      USUBJID = "x"
+      CHG = c(1, 2),
+      AVISIT = c("x", "y"),
+      baseline = c(2, 3),
+      TRT01P = c("x", "y"),
+      USUBJID = c("x", "y")
     ),
     outcome = "CHG",
     role = "change",
@@ -300,7 +306,8 @@ test_that("brm_formula() without baseline interaction", {
         effect_time = TRUE,
         effect_baseline = TRUE,
         interaction_baseline = FALSE,
-        interaction_group = TRUE
+        interaction_group = TRUE,
+        check_rank = FALSE
       ),
       class = "brm_deprecate"
     )
@@ -323,11 +330,11 @@ test_that("brm_formula() without baseline interaction", {
 test_that("brm_formula() without group interaction", {
   data <- brm_data(
     data = tibble::tibble(
-      CHG = 1,
-      AVISIT = "x",
-      baseline = 2,
-      TRT01P = "x",
-      USUBJID = "x"
+      CHG = c(1, 2),
+      AVISIT = c("x", "y"),
+      baseline = c(2, 3),
+      TRT01P = c("x", "y"),
+      USUBJID = c("x", "y")
     ),
     outcome = "CHG",
     role = "change",
@@ -346,7 +353,8 @@ test_that("brm_formula() without group interaction", {
         effect_time = TRUE,
         effect_baseline = TRUE,
         interaction_baseline = TRUE,
-        interaction_group = FALSE
+        interaction_group = FALSE,
+        check_rank = FALSE
       ),
       class = "brm_deprecate"
     )

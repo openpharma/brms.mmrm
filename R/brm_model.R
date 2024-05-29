@@ -1,13 +1,12 @@
-#' @title Basic MMRM
+#' @title Fit an MMRM.
 #' @export
 #' @family models
-#' @description Fit a basic MMRM model using `brms`.
+#' @description Fit an MMRM model using `brms`.
 #' @inheritSection brm_formula Parameterization
 #' @return A fitted model object from `brms`.
-#' @param data A tidy data frame with one row per patient per discrete
-#'   time point.
+#' @inheritParams brm_formula
 #' @param formula An object of class `"brmsformula"` from [brm_formula()]
-#'   or `brms::brmsformula()`. Should include the full parameterization
+#'   or `brms::brmsformula()`. Should include the full mapping
 #'   of the model, including fixed effects, residual correlation,
 #'   and heterogeneity in the discrete-time-specific residual variance
 #'   components.
@@ -37,10 +36,10 @@
 #' )
 #' # Optional: set the contrast option, which determines the model matrix.
 #' options(contrasts = c(unordered = "contr.SAS", ordered = "contr.poly"))
-#' # See the fixed effect parameterization you get from the data:
+#' # See the fixed effect mapping you get from the data:
 #' head(brms::make_standata(formula = formula, data = data)$X)
 #' # Specify a different contrast method to use an alternative
-#' # parameterization when fitting the model with brm_model():
+#' # mapping when fitting the model with brm_model():
 #' options(
 #'   contrasts = c(unordered = "contr.treatment", ordered = "contr.poly")
 #' )
@@ -60,9 +59,9 @@
 #'   )
 #' )
 #' # The output model is a brms model fit object.
-#' model
+#' suppressWarnings(print(model))
 #' # The `prior_summary()` function shows the full prior specification
-#' # which reflects the fully realized fixed effects parameterization.
+#' # which reflects the fully realized fixed effects mapping.
 #' brms::prior_summary(model)
 #' }
 brm_model <- function(
@@ -72,7 +71,7 @@ brm_model <- function(
   prior = NULL,
   family = brms::brmsfamily(family = "gaussian")
 ) {
-  brm_data_validate(data = data)
+  brm_data_validate(data)
   brm_formula_validate(formula)
   brms_model_validate_family(family)
   assert(
