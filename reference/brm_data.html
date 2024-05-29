@@ -28,6 +28,7 @@
     <a class="dropdown-item" href="../articles/usage.html">Usage</a>
     <a class="dropdown-item" href="../articles/subgroup.html">Subgroup analysis</a>
     <a class="dropdown-item" href="../articles/simulation.html">Simulation</a>
+    <a class="dropdown-item" href="../articles/archetypes.html">Informative prior archetypes</a>
     <div class="dropdown-divider"></div>
     <h6 class="dropdown-header" data-toc-skip>Validation</h6>
     <a class="dropdown-item" href="../articles/sbc.html">Simulation-based calibration checking</a>
@@ -145,7 +146,7 @@ Set to <code>NULL</code> to omit.</p></dd>
 to indicate the control group.
 <code>reference_group</code> only applies to the post-processing that happens
 in functions like <code><a href="brm_marginal_draws.html">brm_marginal_draws()</a></code> downstream of the model.
-It does not control the fixed effect parameterization in the
+It does not control the fixed effect mapping in the
 model matrix that <code>brms</code> derives from the formula from <code><a href="brm_formula.html">brm_formula()</a></code>.</p></dd>
 
 
@@ -159,7 +160,7 @@ Use <code>reference_group</code> instead.</p></dd>
 level of the <code>subgroup</code> column
 to use as a reference for pairwise differences in when computing
 marginal means downstream of the model.
-It does not control the fixed effect parameterization in the
+It does not control the fixed effect mapping in the
 model matrix that <code>brms</code> derives from the formula from <code><a href="brm_formula.html">brm_formula()</a></code>.</p></dd>
 
 
@@ -175,7 +176,7 @@ and set <code>reference_time</code> to a non-null value in <code>data[[time]]</c
 if <code>role</code> is <code>"response"</code>.</p>
 <p>Note: <code>reference_time</code> only applies to the post-processing that happens
 in functions like <code><a href="brm_marginal_draws.html">brm_marginal_draws()</a></code> downstream of the model.
-It does not control the fixed effect parameterization in the
+It does not control the fixed effect mapping in the
 model matrix that <code>brms</code> derives from the formula from <code><a href="brm_formula.html">brm_formula()</a></code>.</p></dd>
 
 

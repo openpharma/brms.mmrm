@@ -2,6 +2,7 @@ pandoc: 3.1.11
 pkgdown: 2.0.9
 pkgdown_sha: ~
 articles:
+  archetypes: archetypes.html
   bcva: bcva.html
   fev1: fev1.html
   inference: inference.html
@@ -10,5 +11,5 @@ articles:
   simulation: simulation.html
   subgroup: subgroup.html
   usage: usage.html
-last_built: 2024-05-20T18:36Z
+last_built: 2024-05-29T20:36Z
 

@@ -28,6 +28,7 @@
     <a class="dropdown-item" href="../articles/usage.html">Usage</a>
     <a class="dropdown-item" href="../articles/subgroup.html">Subgroup analysis</a>
     <a class="dropdown-item" href="../articles/simulation.html">Simulation</a>
+    <a class="dropdown-item" href="../articles/archetypes.html">Informative prior archetypes</a>
     <div class="dropdown-divider"></div>
     <h6 class="dropdown-header" data-toc-skip>Validation</h6>
     <a class="dropdown-item" href="../articles/sbc.html">Simulation-based calibration checking</a>
@@ -84,13 +85,13 @@
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>data</dt>
-<dd><p>A tidy data frame with one row per patient per discrete
-time point.</p></dd>
+<dd><p>A classed data frame from <code><a href="brm_data.html">brm_data()</a></code>, or an informative
+prior archetype from a function like <code><a href="brm_archetype_successive_cells.html">brm_archetype_successive_cells()</a></code>.</p></dd>
 
 
 <dt>formula</dt>
 <dd><p>An object of class <code>"brmsformula"</code> from <code><a href="brm_formula.html">brm_formula()</a></code>
-or <code><a href="https://paul-buerkner.github.io/brms/reference/brmsformula.html" class="external-link">brms::brmsformula()</a></code>. Should include the full parameterization
+or <code><a href="https://paul-buerkner.github.io/brms/reference/brmsformula.html" class="external-link">brms::brmsformula()</a></code>. Should include the full mapping
 of the model, including fixed effects, residual correlation,
 and heterogeneity in the discrete-time-specific residual variance
 components.</p></dd>
@@ -175,6 +176,12 @@ However, each class of parameters is set as a whole. In other words,
 <code>brm_prior_simple()</code> cannot assign different priors
 to different fixed effect parameters.</p>
     </div>
+    <div class="section level2">
+    <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
+    <div class="dont-index"><p>Other priors: 
+<code><a href="brm_prior_archetype.html">brm_prior_archetype</a>()</code>,
+<code><a href="brm_prior_label.html">brm_prior_label</a>()</code></p></div>
+    </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
@@ -184,7 +191,8 @@ to different fixed effect parameters.</p>
 <span class="r-in"><span><span class="va">formula</span> <span class="op">&lt;-</span> <span class="fu"><a href="brm_formula.html">brm_formula</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  data <span class="op">=</span> <span class="va">data</span>,</span></span>
 <span class="r-in"><span>  baseline <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
-<span class="r-in"><span>  baseline_time <span class="op">=</span> <span class="cn">FALSE</span></span></span>
+<span class="r-in"><span>  baseline_time <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>  check_rank <span class="op">=</span> <span class="cn">FALSE</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">brm_prior_simple</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  data <span class="op">=</span> <span class="va">data</span>,</span></span>

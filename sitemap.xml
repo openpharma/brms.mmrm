@@ -16,6 +16,9 @@
     <loc>/LICENSE.html</loc>
   </url>
   <url>
+    <loc>/articles/archetypes.html</loc>
+  </url>
+  <url>
     <loc>/articles/bcva.html</loc>
   </url>
   <url>
@@ -52,6 +55,24 @@
     <loc>/news/index.html</loc>
   </url>
   <url>
+    <loc>/reference/brm_archetype_average_cells.html</loc>
+  </url>
+  <url>
+    <loc>/reference/brm_archetype_average_effects.html</loc>
+  </url>
+  <url>
+    <loc>/reference/brm_archetype_cells.html</loc>
+  </url>
+  <url>
+    <loc>/reference/brm_archetype_effects.html</loc>
+  </url>
+  <url>
+    <loc>/reference/brm_archetype_successive_cells.html</loc>
+  </url>
+  <url>
+    <loc>/reference/brm_archetype_successive_effects.html</loc>
+  </url>
+  <url>
     <loc>/reference/brm_data.html</loc>
   </url>
   <url>
@@ -85,7 +106,16 @@
     <loc>/reference/brm_plot_draws.html</loc>
   </url>
   <url>
+    <loc>/reference/brm_prior_archetype.html</loc>
+  </url>
+  <url>
+    <loc>/reference/brm_prior_label.html</loc>
+  </url>
+  <url>
     <loc>/reference/brm_prior_simple.html</loc>
+  </url>
+  <url>
+    <loc>/reference/brm_recenter_nuisance.html</loc>
   </url>
   <url>
     <loc>/reference/brm_simulate.html</loc>
