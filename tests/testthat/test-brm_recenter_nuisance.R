@@ -20,6 +20,7 @@ test_that("multiplication works", {
     mean(data$biomarker1),
     attr(archetype$nuisance_biomarker1, "brm_center")
   )
+  center <- mean(data$biomarker1)
   expect_equal(
     max(abs((data$biomarker1 - center) - archetype$nuisance_biomarker1)),
     0
