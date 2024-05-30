@@ -558,6 +558,25 @@
       ],
       "Hash": "97e5f5407ff6b81c9e79ca1701937162"
     },
+    "crew.cluster": {
+      "Package": "crew.cluster",
+      "Version": "0.3.1",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Requirements": [
+        "R",
+        "R6",
+        "crew",
+        "lifecycle",
+        "ps",
+        "rlang",
+        "utils",
+        "vctrs",
+        "xml2",
+        "yaml"
+      ],
+      "Hash": "4a6a569e1f2b56ce2419d412598ab1b4"
+    },
     "curl": {
       "Package": "curl",
       "Version": "5.1.0",
