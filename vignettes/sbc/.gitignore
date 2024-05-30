@@ -4,6 +4,7 @@
 .Ruserdata
 _targets
 *~
+*.log
 *out
 logs
 run.R
