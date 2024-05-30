@@ -39,8 +39,8 @@ list(
         warmup = 2000L,
         iter = 4000L
       ),
-      batches = 1,
-      reps = 100
+      batches = 100,
+      reps = 1
     ),
     tar_target(
       results,
