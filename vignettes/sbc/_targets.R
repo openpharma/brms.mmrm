@@ -27,12 +27,12 @@ list(
       run_simulation(
         scenario = scenario,
         prior = prior,
-        chains = 1, # 4L,
-        warmup = 10, # 2000L,
-        iter = 20 # 4000L
+        chains = 3L,
+        warmup = 2000L,
+        iter = 4000L
       ),
       batches = 1,
-      reps = 1 #1000
+      reps = 100
     ),
     tar_target(
       results,
