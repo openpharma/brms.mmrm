@@ -5,6 +5,7 @@
 _targets
 *~
 *out
+logs
 run.R
 job.sh
 .Renviron

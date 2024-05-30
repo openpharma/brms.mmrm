@@ -7,7 +7,14 @@ tar_option_set(
   memory = "transient",
   format = "qs",
   garbage_collection = TRUE,
-  workspace_on_error = TRUE
+  workspace_on_error = TRUE,
+  controller = crew.cluster::crew_controller_sge(
+    workers = 7L,
+    sge_cores = 3L,
+    seconds_idle = 120,
+    sge_log_output = "logs/",
+    script_lines = file.path("module load R", getRversion())
+  )
 )
 
 tar_source()
@@ -32,7 +39,7 @@ list(
         iter = 4000L
       ),
       batches = 1,
-      reps = 1000
+      reps = 100
     ),
     tar_target(
       results,
