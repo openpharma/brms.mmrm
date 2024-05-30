@@ -108,7 +108,6 @@ simulate_ma2 <- function(data, formula, prior) {
     x[1] <- e[1]
     x[2] <- e[2] + ma[1] * e[1]
     for (i in seq(3, n_time)) {
-      
       x[i] <- e[i] + ma[1] * e[i - 1] + ma[2] * e[i - 2]
     }
     data[[attr(data, "brm_outcome")]][rows] <- mu[rows] + x
