@@ -35,7 +35,7 @@ simulate_unstructured <- function(data, formula, prior) {
 
 simulate_arma22 <- function(data, formula, prior) {
   beta <- simulate_beta(data = data, formula = formula, prior = prior)
-  x_beta <- derive_x_beta(
+  mu <- derive_x_beta(
     data = data,
     formula = formula,
     prior = prior,
@@ -53,14 +53,19 @@ simulate_arma22 <- function(data, formula, prior) {
   residuals <- rnorm(n = length(sigma), mean = 0, sd = sigma)
   n_time <- length(unique(data[[attr(data, "brm_time")]]))
   n_patient <- nrow(data) / n_time
+  y <- rep(NA_real_, nrow(data))
   for (patient in seq_len(n_patient)) {
     rows <- seq_len(n_time) + n_time * (patient - 1L)
-    e <- arima.sim(
-      n = n_time,
-      model = list(ar = ar, ma = ma),
-      sd = sigma[rows]
-    )
-    data[[attr(data, "brm_outcome")]][rows] <- x_beta[rows] + as.numeric(e)
+    e <- residuals[rows]
+    x <- rep(NA_real_, n_time)
+    x[1] <- e[1]
+    x[2] <- e[2] + ma[1] * e[1] + ar[1] * x[1]
+    for (i in seq(3, n_time)) {
+      x[i] <- e[i] +
+        ma[1] * e[i - 1] + ma[2] * e[i - 2] +
+        ar[1] * x[i - 1] + ar[2] + x[i - 2]
+    }
+    data[[attr(data, "brm_outcome")]][rows] <- mu[rows] + x
   }
   data$response[data$missing] <- NA_real_
   names(beta) <- paste0("b_", names(beta))
@@ -78,7 +83,7 @@ simulate_arma22 <- function(data, formula, prior) {
 
 simulate_ma2 <- function(data, formula, prior) {
   beta <- simulate_beta(data = data, formula = formula, prior = prior)
-  x_beta <- derive_x_beta(
+  mu <- derive_x_beta(
     data = data,
     formula = formula,
     prior = prior,
@@ -95,10 +100,18 @@ simulate_ma2 <- function(data, formula, prior) {
   residuals <- rnorm(n = length(sigma), mean = 0, sd = sigma)
   n_time <- length(unique(data[[attr(data, "brm_time")]]))
   n_patient <- nrow(data) / n_time
+  y <- rep(NA_real_, nrow(data))
   for (patient in seq_len(n_patient)) {
     rows <- seq_len(n_time) + n_time * (patient - 1L)
-    e <- arima.sim(n = n_time, model = list(ma = ma), sd = sigma[rows])
-    data[[attr(data, "brm_outcome")]][rows] <- x_beta[rows] + as.numeric(e)
+    e <- residuals[rows]
+    x <- rep(NA_real_, n_time)
+    x[1] <- e[1]
+    x[2] <- e[2] + ma[1] * e[1]
+    for (i in seq(3, n_time)) {
+      
+      x[i] <- e[i] + ma[1] * e[i - 1] + ma[2] * e[i - 2]
+    }
+    data[[attr(data, "brm_outcome")]][rows] <- mu[rows] + x
   }
   data$response[data$missing] <- NA_real_
   names(beta) <- paste0("b_", names(beta))

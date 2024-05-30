@@ -19,35 +19,17 @@ random_prior <- function(data, formula) {
     prior$prior[prior$class == "cortime"] <- lkj$stan
     prior$r[prior$class == "cortime"] <- lkj$r
   }
-  for (name in c("ar", "ma")) {
+  for (name in c("ar", "ma", "cosy")) {
     if (name %in% prior$class) {
       for (index in which(prior$class == name)) {
-        beta <- random_beta()
-        prior$prior[index] <- beta$stan
-        prior$r[index] <- beta$r
-        prior$lb[index] <- 0
-        prior$ub[index] <- 1
+        prior$prior[index] <- "uniform(0.1, 0.9)"
+        prior$r[index] <- "stats::runif(n = 1, min = 0.1, max = 0.9)"
+        prior$lb[index] <- 0.1
+        prior$ub[index] <- 0.9
       }
     }
   }
-  if ("cosy" %in% prior$class) {
-    beta <- random_beta()
-    prior$prior[prior$class == "cosy"] <- beta$stan
-    prior$r[prior$class == "cosy"] <- beta$r
-  }
   prior[!is.na(prior$r), ]
-}
-
-random_beta <- function() {
-  alpha <- round(runif(n = 1L, min = 0.5, max = 2), 4)
-  beta <- round(runif(n = 1L, min = 0.5, max = 2), 4)
-  stan <- sprintf("beta(%s, %s)", alpha, beta)
-  r <- sprintf(
-    "stats::rbeta(n = 1L, shape1 = %s, shape2 = %s)",
-    alpha,
-    beta
-  )
-  list(stan = stan, r = r)
 }
 
 random_normal <- function() {
