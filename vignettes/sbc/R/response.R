@@ -33,6 +33,80 @@ simulate_unstructured <- function(data, formula, prior) {
   list(data = data, parameters = parameters)
 }
 
+simulate_arma22 <- function(data, formula, prior) {
+  beta <- simulate_beta(data = data, formula = formula, prior = prior)
+  x_beta <- derive_x_beta(
+    data = data,
+    formula = formula,
+    prior = prior,
+    beta = beta
+  )
+  b_sigma <- simulate_b_sigma(data = data, formula = formula, prior = prior)
+  sigma <- derive_sigma(
+    data = data,
+    formula = formula,
+    prior = prior,
+    b_sigma = b_sigma
+  )
+  ar <- replicate(2L, eval(parse(text = prior[prior$class == "ar", "r"])))
+  ma <- replicate(2L, eval(parse(text = prior[prior$class == "ma", "r"])))
+  residuals <- rnorm(n = length(sigma), mean = 0, sd = sigma)
+  n_time <- length(unique(data[[attr(data, "brm_time")]]))
+  n_patient <- nrow(data) / n_time
+  for (patient in seq_len(n_patient)) {
+    rows <- seq_len(n_time) + n_time * (patient - 1L)
+    e <- arima.sim(
+      n = n_time,
+      model = list(ar = ar, ma = ma),
+      sd = sigma[rows]
+    )
+    data[[attr(data, "brm_outcome")]][rows] <- x_beta[rows] + as.numeric(e)
+  }
+  data$response[data$missing] <- NA_real_
+  names(beta) <- paste0("b_", names(beta))
+  names(b_sigma) <- paste0("b_sigma_", names(b_sigma))
+  parameters <- c(
+    beta,
+    b_sigma,
+    `ar[1]` = ar[1L],
+    `ar[2]` = ar[2L],
+    `ma[1]` = ma[1L],
+    `ma[2]` = ma[2L]
+  )
+  list(data = data, parameters = parameters)
+}
+
+simulate_ma2 <- function(data, formula, prior) {
+  beta <- simulate_beta(data = data, formula = formula, prior = prior)
+  x_beta <- derive_x_beta(
+    data = data,
+    formula = formula,
+    prior = prior,
+    beta = beta
+  )
+  b_sigma <- simulate_b_sigma(data = data, formula = formula, prior = prior)
+  sigma <- derive_sigma(
+    data = data,
+    formula = formula,
+    prior = prior,
+    b_sigma = b_sigma
+  )
+  ma <- replicate(2L, eval(parse(text = prior[prior$class == "ma", "r"])))
+  residuals <- rnorm(n = length(sigma), mean = 0, sd = sigma)
+  n_time <- length(unique(data[[attr(data, "brm_time")]]))
+  n_patient <- nrow(data) / n_time
+  for (patient in seq_len(n_patient)) {
+    rows <- seq_len(n_time) + n_time * (patient - 1L)
+    e <- arima.sim(n = n_time, model = list(ma = ma), sd = sigma[rows])
+    data[[attr(data, "brm_outcome")]][rows] <- x_beta[rows] + as.numeric(e)
+  }
+  data$response[data$missing] <- NA_real_
+  names(beta) <- paste0("b_", names(beta))
+  names(b_sigma) <- paste0("b_sigma_", names(b_sigma))
+  parameters <- c(beta, b_sigma, `ma[1]` = ma[1L], `ma[2]` = ma[2L])
+  list(data = data, parameters = parameters)
+}
+
 simulate_ar1 <- function(data, formula, prior) {
   beta <- simulate_beta(data = data, formula = formula, prior = prior)
   x_beta <- derive_x_beta(

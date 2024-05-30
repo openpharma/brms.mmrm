@@ -46,6 +46,7 @@ library(tibble)
 library(tidyr)
 
 source("sbc/R/prior.R")
+source("sbc/R/response.R")
 source("sbc/R/scenarios.R")
 
 read_ranks <- function(path) {
@@ -152,7 +153,7 @@ setup_prior(unstructured) |>
   as.data.frame()
 ```
 
-The following histograms show the SBC rank statistics which compare the prior parameter draws draws to the posterior draws. If the data simulation code and modeling code are both correct and consistent, then the rank statistics should be uniformly distributed.
+SBC checking rank statistics:
 
 ```{r}
 ranks_unstructured <- read_ranks("sbc/results/unstructured.fst")
@@ -182,9 +183,10 @@ ranks_unstructured |>
   plot_ranks()
 ```
 
-# Autoregressive scenario
 
-This scenario uses an autoregressive model with order 1 for the correlation structure. Assumptions:
+# Autoregressive moving average scenario
+
+This scenario uses an autoregressive moving average (ARMA) model with autoregressive order 1 and moving average order 1. Assumptions:
 
 * 2 treatment groups
 * No subgroup
@@ -194,6 +196,55 @@ This scenario uses an autoregressive model with order 1 for the correlation stru
 * No missing responses
 
 Model formula:
+
+```{r, echo = FALSE}
+autoregressive_moving_average()$formula
+```
+
+The prior was randomly generated and used for both simulation and analysis:
+
+```{r, paged.print = FALSE}
+setup_prior(autoregressive_moving_average) |>
+  select(prior, class, coef, dpar) |>
+  as.data.frame()
+```
+
+SBC checking rank statistics:
+
+```{r}
+ranks_autoregressive_moving_average <- read_ranks(
+  "sbc/results/autoregressive_moving_average.fst"
+)
+```
+
+Fixed effect parameter ranks:
+
+```{r}
+ranks_autoregressive_moving_average |>
+  filter(grepl("^b_", parameter)) |>
+  filter(!grepl("^b_sigma", parameter)) |>
+  plot_ranks()
+```
+
+Log-scale standard deviation parameter ranks:
+
+```{r}
+ranks_autoregressive_moving_average |>
+  filter(grepl("b_sigma", parameter)) |>
+  plot_ranks()
+```
+
+Correlation parameter ranks:
+
+```{r}
+ranks_autoregressive_moving_average |>
+  filter(parameter %in% c("ar[1]", "ar[2]", "ma[1]", "ma[2]")) |>
+  plot_ranks()
+```
+
+# Autoregressive scenario
+
+This scenario is the same as above, but the correlation structure is AR(1). Model formula:
 
 ```{r, echo = FALSE}
 autoregressive()$formula
@@ -207,7 +258,7 @@ setup_prior(autoregressive) |>
   as.data.frame()
 ```
 
-The following histograms show the SBC rank statistics which compare the prior parameter draws draws to the posterior draws. If the data simulation code and modeling code are both correct and consistent, then the rank statistics should be uniformly distributed.
+SBC checking rank statistics:
 
 ```{r}
 ranks_autoregressive <- read_ranks("sbc/results/autoregressive.fst")
@@ -237,18 +288,55 @@ ranks_autoregressive |>
   plot_ranks()
 ```
 
+# Moving average scenario
+
+This scenario is the same as above, but it uses a moving average correlation structure with order 2. Model formula:
+
+```{r, echo = FALSE}
+moving_average()$formula
+```
+
+The prior was randomly generated and used for both simulation and analysis:
+
+```{r, paged.print = FALSE}
+setup_prior(moving_average) |>
+  select(prior, class, coef, dpar) |>
+  as.data.frame()
+```
+
+SBC checking rank statistics:
+
+```{r}
+ranks_moving_average <- read_ranks("sbc/results/moving_average.fst")
+```
+
+Fixed effect parameter ranks:
+
+```{r}
+ranks_moving_average |>
+  filter(grepl("^b_", parameter)) |>
+  filter(!grepl("^b_sigma", parameter)) |>
+  plot_ranks()
+```
+Log-scale standard deviation parameter ranks:
+
+```{r}
+ranks_moving_average |>
+  filter(grepl("b_sigma", parameter)) |>
+  plot_ranks()
+```
+
+Correlation parameter ranks:
+
+```{r}
+ranks_moving_average |>
+  filter(parameter %in% c("ma[1]", "ma[2]")) |>
+  plot_ranks()
+```
+
 # Compound symmetry scenario
 
-This scenario uses compound symmetry for the correlation structure. Assumptions:
-
-* 2 treatment groups
-* No subgroup
-* 4 time points
-* 50 patients per treatment group
-* No covariate adjustment
-* No missing responses
-
-Model formula:
+This scenario is the same as above, but it uses a compound symmetry correlation structure. Model formula:
 
 ```{r, echo = FALSE}
 compound_symmetry()$formula
@@ -262,7 +350,7 @@ setup_prior(compound_symmetry) |>
   as.data.frame()
 ```
 
-The following histograms show the SBC rank statistics which compare the prior parameter draws draws to the posterior draws. If the data simulation code and modeling code are both correct and consistent, then the rank statistics should be uniformly distributed.
+SBC checking rank statistics:
 
 ```{r}
 ranks_compound_symmetry <- read_ranks("sbc/results/compound_symmetry.fst")
@@ -294,16 +382,7 @@ ranks_compound_symmetry |>
 
 # Diagonal scenario
 
-This scenario assumes time points within patients are independent (diagonal correlation matrix). Other assumptions:
-
-* 2 treatment groups
-* No subgroup
-* 3 time points
-* 50 patients per treatment group
-* No covariate adjustment
-* No missing responses
-
-In addition, the standard deviations are parameterized differently. Model formula:
+This scenario is the same as above, but it uses a diagonal correlation structure (independent time points within patients). Model formula:
 
 ```{r, echo = FALSE}
 diagonal()$formula
@@ -317,7 +396,7 @@ setup_prior(diagonal) |>
   as.data.frame()
 ```
 
-The following histograms show the SBC rank statistics which compare the prior parameter draws draws to the posterior draws. If the data simulation code and modeling code are both correct and consistent, then the rank statistics should be uniformly distributed.
+SBC checking rank statistics:
 
 ```{r}
 ranks_diagonal <- read_ranks("sbc/results/diagonal.fst")
