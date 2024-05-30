@@ -33,7 +33,7 @@ simulate_unstructured <- function(data, formula, prior) {
   list(data = data, parameters = parameters)
 }
 
-simulate_autoregressive <- function(data, formula, prior) {
+simulate_ar1 <- function(data, formula, prior) {
   beta <- simulate_beta(data = data, formula = formula, prior = prior)
   x_beta <- derive_x_beta(
     data = data,
@@ -51,6 +51,7 @@ simulate_autoregressive <- function(data, formula, prior) {
   n_time <- length(unique(data[[attr(data, "brm_time")]]))
   n_patient <- nrow(data) / n_time
   ar <- eval(parse(text = prior[prior$class == "ar", "r"]))
+  stopifnot(length(ar) == 1L)
   exponent <- abs(
     matrix(
       seq_len(n_time),

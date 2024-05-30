@@ -89,7 +89,7 @@ autoregressive <- function() {
     correlation = "autoregressive",
     autoregressive_order = 1L
   )
-  list(data = data, formula = formula, simulate = simulate_autoregressive)
+  list(data = data, formula = formula, simulate = simulate_ar1)
 }
 
 compound_symmetry <- function() {

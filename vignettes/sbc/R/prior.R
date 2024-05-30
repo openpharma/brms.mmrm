@@ -19,12 +19,16 @@ random_prior <- function(data, formula) {
     prior$prior[prior$class == "cortime"] <- lkj$stan
     prior$r[prior$class == "cortime"] <- lkj$r
   }
-  if ("ar" %in% prior$class) {
-    beta <- random_beta()
-    prior$prior[prior$class == "ar"] <- beta$stan
-    prior$r[prior$class == "ar"] <- beta$r
-    prior$lb[prior$class == "ar"] <- 0
-    prior$ub[prior$class == "ar"] <- 1
+  for (name in c("ar", "ma")) {
+    if (name %in% prior$class) {
+      for (index in which(prior$class == name)) {
+        beta <- random_beta()
+        prior$prior[index] <- beta$stan
+        prior$r[index] <- beta$r
+        prior$lb[index] <- 0
+        prior$ub[index] <- 1
+      }
+    }
   }
   if ("cosy" %in% prior$class) {
     beta <- random_beta()
