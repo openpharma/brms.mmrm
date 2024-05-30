@@ -32,7 +32,7 @@ list(
         iter = 4000L
       ),
       batches = 1,
-      reps = 100
+      reps = 1000
     ),
     tar_target(
       results,
