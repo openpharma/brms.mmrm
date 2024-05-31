@@ -150,7 +150,8 @@ simulate_ar1 <- function(data, formula, prior) {
   diag(correlation) <- 1
   for (patient in seq_len(n_patient)) {
     rows <- seq_len(n_time) + n_time * (patient - 1L)
-    covariance <- diag(sigma[rows]) %*% correlation %*% diag(sigma[rows])
+    covariance <- (1 / (1 - ar ^ 2)) *
+      diag(sigma[rows]) %*% correlation %*% diag(sigma[rows])
     response <- MASS::mvrnorm(mu = x_beta[rows], Sigma = covariance)
     data[[attr(data, "brm_outcome")]][rows] <- response
   }
