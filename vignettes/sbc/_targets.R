@@ -10,7 +10,7 @@ tar_option_set(
   workspace_on_error = TRUE,
   error = "null",
   controller = crew.cluster::crew_controller_sge(
-    workers = 200L,
+    workers = 250L,
     sge_cores = 3L,
     seconds_idle = 120,
     sge_log_output = "logs/",
@@ -36,10 +36,10 @@ list(
         scenario = scenario,
         prior = prior,
         chains = 3L,
-        warmup = 2000L,
-        iter = 4000L
+        warmup = 4000L,
+        iter = 8000L
       ),
-      batches = 100,
+      batches = 1000,
       reps = 1
     ),
     tar_target(
