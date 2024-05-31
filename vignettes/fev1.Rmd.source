@@ -1,6 +1,6 @@
 ---
 title: FEV1 data comparison between Bayesian and frequentist MMRMs
-date: "`r format(Sys.time(), '%d/%m/%Y')`"
+date: "`r format(Sys.time(), '%Y-%d-%m')`"
 output:
   rmarkdown::html_document:
     theme: spacelab
@@ -269,7 +269,7 @@ for (level in visit_levels) {
 b_mmrm_summary <- b_mmrm_draws |>
   summarize_draws() |>
   select(variable, mean, sd) |>
-  filter(!(variable %in% c("lprior", "lp__"))) |>
+  filter(!(variable %in% c("Intercept", "lprior", "lp__"))) |>
   rename(bayes_estimate = mean, bayes_se = sd) |>
   mutate(
     variable = variable |>
@@ -398,4 +398,10 @@ gt(table_se) |>
     diff_se = "Difference",
     diff_relative_se = "Relative"
   )
+```
+
+## Session info {#session}
+
+```{r}
+sessionInfo()
 ```

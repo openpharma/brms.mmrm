@@ -258,7 +258,7 @@ for (level in visit_levels) {
 b_mmrm_summary <- b_mmrm_draws |>
   summarize_draws() |>
   select(variable, mean, sd) |>
-  filter(!(variable %in% c("lprior", "lp__"))) |>
+  filter(!(variable %in% c("Intercept", "lprior", "lp__"))) |>
   rename(bayes_estimate = mean, bayes_se = sd) |>
   mutate(
     variable = variable |>

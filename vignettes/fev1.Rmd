@@ -44,7 +44,6 @@ This comparison workflow requires the following packages.
 +   "parallel",
 +   "brms.mmrm",
 +   "mmrm",
-+   "emmeans",
 +   "posterior"
 + )
 > invisible(lapply(packages, library, character.only = TRUE))
@@ -1746,48 +1745,48 @@ Here is a posterior summary of model parameters, including fixed effects and pai
 #> 
 #> Correlation Structures:
 #>                    Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-#> cortime(VIS1,VIS2)     0.80      0.04     0.72     0.86 1.00    29817    26486
-#> cortime(VIS1,VIS3)     0.58      0.06     0.45     0.69 1.00    29980    25992
-#> cortime(VIS2,VIS3)     0.79      0.04     0.70     0.85 1.00    37235    26736
-#> cortime(VIS1,VIS4)     0.17      0.07     0.02     0.31 1.00    39836    26523
-#> cortime(VIS2,VIS4)     0.35      0.07     0.20     0.49 1.00    43272    25958
-#> cortime(VIS3,VIS4)     0.51      0.07     0.36     0.64 1.00    43638    25600
+#> cortime(VIS1,VIS2)     0.36      0.08     0.19     0.51 1.00    51602    25934
+#> cortime(VIS1,VIS3)     0.14      0.10    -0.06     0.33 1.00    52857    23880
+#> cortime(VIS2,VIS3)     0.04      0.10    -0.16     0.23 1.00    49144    24017
+#> cortime(VIS1,VIS4)     0.17      0.11    -0.06     0.38 1.00    49267    24904
+#> cortime(VIS2,VIS4)     0.11      0.09    -0.06     0.28 1.00    51841    24385
+#> cortime(VIS3,VIS4)     0.01      0.10    -0.18     0.21 1.00    49136    24852
 #> 
 #> Regression Coefficients:
 #>                            Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS
-#> Intercept                      1.13      2.70    -4.21     6.41 1.00    44625
-#> FEV1_BL                        0.07      0.05    -0.04     0.17 1.00    60027
-#> AVISITVIS2                    -0.08      1.26    -2.58     2.40 1.00    38274
-#> AVISITVIS3                     0.27      1.20    -2.07     2.62 1.00    36317
-#> AVISITVIS4                    -1.26      1.14    -3.49     0.95 1.00    37383
-#> RACEBlackorAfricanAmerican    -0.08      1.08    -2.21     2.03 1.00    49597
-#> RACEWhite                      0.58      1.22    -1.80     2.98 1.00    48740
-#> SEXFemale                     -0.01      0.95    -1.88     1.84 1.00    57317
-#> AVISITVIS1:ARMCDTRT           -1.75      1.90    -5.48     1.99 1.00    26028
-#> AVISITVIS2:ARMCDTRT           -2.46      1.92    -6.20     1.36 1.00    30977
-#> AVISITVIS3:ARMCDTRT           -2.66      1.90    -6.43     1.05 1.00    30450
-#> AVISITVIS4:ARMCDTRT           -1.98      1.63    -5.18     1.23 1.00    30861
-#> sigma_AVISITVIS1               2.55      0.06     2.43     2.67 1.00    40244
-#> sigma_AVISITVIS2               2.58      0.06     2.47     2.70 1.00    38175
-#> sigma_AVISITVIS3               2.55      0.06     2.44     2.68 1.00    41255
-#> sigma_AVISITVIS4               2.41      0.06     2.29     2.53 1.00    41086
+#> Intercept                     24.34      1.42    21.59    27.12 1.00    45329
+#> FEV1_BL                       -0.84      0.03    -0.89    -0.79 1.00    55921
+#> AVISITVIS2                     4.79      0.82     3.18     6.39 1.00    34165
+#> AVISITVIS3                    10.38      0.83     8.75    12.01 1.00    31754
+#> AVISITVIS4                    15.19      1.34    12.57    17.85 1.00    34809
+#> RACEBlackorAfricanAmerican     1.41      0.59     0.26     2.57 1.00    47354
+#> RACEWhite                      5.45      0.62     4.24     6.66 1.00    49043
+#> SEXFemale                      0.34      0.51    -0.66     1.34 1.00    52998
+#> AVISITVIS1:ARMCDTRT            3.99      1.06     1.89     6.08 1.00    33842
+#> AVISITVIS2:ARMCDTRT            3.94      0.83     2.29     5.58 1.00    50214
+#> AVISITVIS3:ARMCDTRT            2.98      0.67     1.67     4.31 1.00    52318
+#> AVISITVIS4:ARMCDTRT            4.42      1.69     1.11     7.78 1.00    44517
+#> sigma_AVISITVIS1               1.83      0.06     1.71     1.95 1.00    50151
+#> sigma_AVISITVIS2               1.59      0.06     1.47     1.71 1.00    53871
+#> sigma_AVISITVIS3               1.33      0.06     1.20     1.46 1.00    50428
+#> sigma_AVISITVIS4               2.28      0.06     2.16     2.40 1.00    49571
 #>                            Tail_ESS
-#> Intercept                     24929
-#> FEV1_BL                       24110
-#> AVISITVIS2                    26022
-#> AVISITVIS3                    26067
-#> AVISITVIS4                    26450
-#> RACEBlackorAfricanAmerican    25697
-#> RACEWhite                     27147
-#> SEXFemale                     24672
-#> AVISITVIS1:ARMCDTRT           25266
-#> AVISITVIS2:ARMCDTRT           26108
-#> AVISITVIS3:ARMCDTRT           27137
-#> AVISITVIS4:ARMCDTRT           25421
-#> sigma_AVISITVIS1              25694
-#> sigma_AVISITVIS2              26294
-#> sigma_AVISITVIS3              26185
-#> sigma_AVISITVIS4              26887
+#> Intercept                     23313
+#> FEV1_BL                       24977
+#> AVISITVIS2                    24844
+#> AVISITVIS3                    23618
+#> AVISITVIS4                    23548
+#> RACEBlackorAfricanAmerican    25483
+#> RACEWhite                     25692
+#> SEXFemale                     24210
+#> AVISITVIS1:ARMCDTRT           26085
+#> AVISITVIS2:ARMCDTRT           24388
+#> AVISITVIS3:ARMCDTRT           24805
+#> AVISITVIS4:ARMCDTRT           24757
+#> sigma_AVISITVIS1              24768
+#> sigma_AVISITVIS2              25617
+#> sigma_AVISITVIS3              23158
+#> sigma_AVISITVIS4              24658
 #> 
 #> Draws were sampled using sampling(NUTS). For each parameter, Bulk_ESS
 #> and Tail_ESS are effective sample size measures, and Rhat is the potential
@@ -1886,7 +1885,7 @@ We extract and standardize the Bayesian estimates.
 > b_mmrm_summary <- b_mmrm_draws |>
 +   summarize_draws() |>
 +   select(variable, mean, sd) |>
-+   filter(!(variable %in% c("lprior", "lp__"))) |>
++   filter(!(variable %in% c("Intercept", "lprior", "lp__"))) |>
 +   rename(bayes_estimate = mean, bayes_se = sd) |>
 +   mutate(
 +     variable = variable |>
@@ -2454,120 +2453,115 @@ Because of the different statistical paradigms and estimation procedures, especi
   </thead>
   <tbody class="gt_table_body">
     <tr><td headers="variable" class="gt_row gt_left">intercept</td>
-<td headers="bayes_estimate" class="gt_row gt_right">1.1350</td>
+<td headers="bayes_estimate" class="gt_row gt_right">24.3429</td>
 <td headers="freq_estimate" class="gt_row gt_right">24.3537</td>
-<td headers="diff_estimate" class="gt_row gt_right">−23.2188</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−0.9534</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0108</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0004</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">fev1_bl</td>
-<td headers="bayes_estimate" class="gt_row gt_right">0.0664</td>
+<td headers="bayes_estimate" class="gt_row gt_right">−0.8401</td>
 <td headers="freq_estimate" class="gt_row gt_right">−0.8402</td>
-<td headers="diff_estimate" class="gt_row gt_right">0.9066</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−1.0790</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">0.0001</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0001</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">avisitvis2</td>
-<td headers="bayes_estimate" class="gt_row gt_right">−0.0843</td>
+<td headers="bayes_estimate" class="gt_row gt_right">4.7948</td>
 <td headers="freq_estimate" class="gt_row gt_right">4.7904</td>
-<td headers="diff_estimate" class="gt_row gt_right">−4.8746</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−1.0176</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">0.0044</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">0.0009</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">avisitvis3</td>
-<td headers="bayes_estimate" class="gt_row gt_right">0.2691</td>
+<td headers="bayes_estimate" class="gt_row gt_right">10.3809</td>
 <td headers="freq_estimate" class="gt_row gt_right">10.3660</td>
-<td headers="diff_estimate" class="gt_row gt_right">−10.0969</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−0.9740</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">0.0149</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">0.0014</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">avisitvis4</td>
-<td headers="bayes_estimate" class="gt_row gt_right">−1.2615</td>
+<td headers="bayes_estimate" class="gt_row gt_right">15.1908</td>
 <td headers="freq_estimate" class="gt_row gt_right">15.1923</td>
-<td headers="diff_estimate" class="gt_row gt_right">−16.4538</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−1.0830</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0015</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0001</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">raceblackorafricanamerican</td>
-<td headers="bayes_estimate" class="gt_row gt_right">−0.0829</td>
+<td headers="bayes_estimate" class="gt_row gt_right">1.4123</td>
 <td headers="freq_estimate" class="gt_row gt_right">1.4192</td>
-<td headers="diff_estimate" class="gt_row gt_right">−1.5021</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−1.0584</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0069</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0048</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">racewhite</td>
-<td headers="bayes_estimate" class="gt_row gt_right">0.5806</td>
+<td headers="bayes_estimate" class="gt_row gt_right">5.4537</td>
 <td headers="freq_estimate" class="gt_row gt_right">5.4568</td>
-<td headers="diff_estimate" class="gt_row gt_right">−4.8762</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−0.8936</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0031</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0006</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">sexfemale</td>
-<td headers="bayes_estimate" class="gt_row gt_right">−0.0052</td>
+<td headers="bayes_estimate" class="gt_row gt_right">0.3417</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.3381</td>
-<td headers="diff_estimate" class="gt_row gt_right">−0.3433</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−1.0155</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">0.0035</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">0.0104</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">avisitvis1:armcdtrt</td>
-<td headers="bayes_estimate" class="gt_row gt_right">−1.7519</td>
+<td headers="bayes_estimate" class="gt_row gt_right">3.9860</td>
 <td headers="freq_estimate" class="gt_row gt_right">3.9833</td>
-<td headers="diff_estimate" class="gt_row gt_right">−5.7352</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−1.4398</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">0.0027</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">0.0007</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">avisitvis2:armcdtrt</td>
-<td headers="bayes_estimate" class="gt_row gt_right">−2.4582</td>
+<td headers="bayes_estimate" class="gt_row gt_right">3.9393</td>
 <td headers="freq_estimate" class="gt_row gt_right">3.9308</td>
-<td headers="diff_estimate" class="gt_row gt_right">−6.3890</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−1.6254</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">0.0086</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">0.0022</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">avisitvis3:armcdtrt</td>
-<td headers="bayes_estimate" class="gt_row gt_right">−2.6578</td>
+<td headers="bayes_estimate" class="gt_row gt_right">2.9830</td>
 <td headers="freq_estimate" class="gt_row gt_right">2.9837</td>
-<td headers="diff_estimate" class="gt_row gt_right">−5.6415</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−1.8908</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0007</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0002</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">avisitvis4:armcdtrt</td>
-<td headers="bayes_estimate" class="gt_row gt_right">−1.9767</td>
+<td headers="bayes_estimate" class="gt_row gt_right">4.4177</td>
 <td headers="freq_estimate" class="gt_row gt_right">4.4040</td>
-<td headers="diff_estimate" class="gt_row gt_right">−6.3807</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−1.4488</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">0.0137</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">0.0031</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">sigma_avisitvis1</td>
-<td headers="bayes_estimate" class="gt_row gt_right">12.7967</td>
+<td headers="bayes_estimate" class="gt_row gt_right">6.2310</td>
 <td headers="freq_estimate" class="gt_row gt_right">6.1506</td>
-<td headers="diff_estimate" class="gt_row gt_right">6.6461</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">1.0806</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">0.0804</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">0.0131</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">sigma_avisitvis2</td>
-<td headers="bayes_estimate" class="gt_row gt_right">13.2657</td>
+<td headers="bayes_estimate" class="gt_row gt_right">4.9122</td>
 <td headers="freq_estimate" class="gt_row gt_right">4.8526</td>
-<td headers="diff_estimate" class="gt_row gt_right">8.4131</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">1.7337</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">0.0596</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">0.0123</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">sigma_avisitvis3</td>
-<td headers="bayes_estimate" class="gt_row gt_right">12.8917</td>
+<td headers="bayes_estimate" class="gt_row gt_right">3.7752</td>
 <td headers="freq_estimate" class="gt_row gt_right">3.7153</td>
-<td headers="diff_estimate" class="gt_row gt_right">9.1764</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">2.4699</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">0.0599</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">0.0161</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">sigma_avisitvis4</td>
-<td headers="bayes_estimate" class="gt_row gt_right">11.1114</td>
+<td headers="bayes_estimate" class="gt_row gt_right">9.7952</td>
 <td headers="freq_estimate" class="gt_row gt_right">9.6417</td>
-<td headers="diff_estimate" class="gt_row gt_right">1.4697</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">0.1524</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">0.1535</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">0.0159</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">correlation_vis1_vis2</td>
-<td headers="bayes_estimate" class="gt_row gt_right">0.7963</td>
+<td headers="bayes_estimate" class="gt_row gt_right">0.3608</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.3795</td>
-<td headers="diff_estimate" class="gt_row gt_right">0.4169</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">1.0986</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0187</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0492</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">correlation_vis1_vis3</td>
-<td headers="bayes_estimate" class="gt_row gt_right">0.5833</td>
+<td headers="bayes_estimate" class="gt_row gt_right">0.1410</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.1523</td>
-<td headers="diff_estimate" class="gt_row gt_right">0.4310</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">2.8307</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0113</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0740</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">correlation_vis2_vis3</td>
-<td headers="bayes_estimate" class="gt_row gt_right">0.7873</td>
+<td headers="bayes_estimate" class="gt_row gt_right">0.0385</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.0430</td>
-<td headers="diff_estimate" class="gt_row gt_right">0.7443</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">17.2927</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0045</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.1053</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">correlation_vis1_vis4</td>
-<td headers="bayes_estimate" class="gt_row gt_right">0.1711</td>
+<td headers="bayes_estimate" class="gt_row gt_right">0.1680</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.1802</td>
-<td headers="diff_estimate" class="gt_row gt_right">−0.0091</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0504</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0122</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0676</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">correlation_vis2_vis4</td>
-<td headers="bayes_estimate" class="gt_row gt_right">0.3523</td>
+<td headers="bayes_estimate" class="gt_row gt_right">0.1114</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.1178</td>
-<td headers="diff_estimate" class="gt_row gt_right">0.2345</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">1.9915</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0063</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0539</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">correlation_vis3_vis4</td>
-<td headers="bayes_estimate" class="gt_row gt_right">0.5132</td>
+<td headers="bayes_estimate" class="gt_row gt_right">0.0139</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.0159</td>
-<td headers="diff_estimate" class="gt_row gt_right">0.4973</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">31.3491</td></tr>
-    <tr><td headers="variable" class="gt_row gt_left">intercept</td>
-<td headers="bayes_estimate" class="gt_row gt_right">2.5788</td>
-<td headers="freq_estimate" class="gt_row gt_right">24.3537</td>
-<td headers="diff_estimate" class="gt_row gt_right">−21.7750</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−0.8941</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0020</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.1255</td></tr>
   </tbody>
   
   
@@ -3051,70 +3045,65 @@ Because of the different statistical paradigms and estimation procedures, especi
   </thead>
   <tbody class="gt_table_body">
     <tr><td headers="variable" class="gt_row gt_left">intercept</td>
-<td headers="bayes_se" class="gt_row gt_right">2.6963</td>
+<td headers="bayes_se" class="gt_row gt_right">1.4172</td>
 <td headers="freq_se" class="gt_row gt_right">1.4075</td>
-<td headers="diff_se" class="gt_row gt_right">1.2888</td>
-<td headers="diff_relative_se" class="gt_row gt_right">0.9156</td></tr>
+<td headers="diff_se" class="gt_row gt_right">0.0097</td>
+<td headers="diff_relative_se" class="gt_row gt_right">0.0069</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">fev1_bl</td>
-<td headers="bayes_se" class="gt_row gt_right">0.0524</td>
+<td headers="bayes_se" class="gt_row gt_right">0.0278</td>
 <td headers="freq_se" class="gt_row gt_right">0.0278</td>
-<td headers="diff_se" class="gt_row gt_right">0.0246</td>
-<td headers="diff_relative_se" class="gt_row gt_right">0.8874</td></tr>
+<td headers="diff_se" class="gt_row gt_right">0.0000</td>
+<td headers="diff_relative_se" class="gt_row gt_right">0.0016</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">avisitvis2</td>
-<td headers="bayes_se" class="gt_row gt_right">1.2625</td>
+<td headers="bayes_se" class="gt_row gt_right">0.8172</td>
 <td headers="freq_se" class="gt_row gt_right">0.7985</td>
-<td headers="diff_se" class="gt_row gt_right">0.4640</td>
-<td headers="diff_relative_se" class="gt_row gt_right">0.5811</td></tr>
+<td headers="diff_se" class="gt_row gt_right">0.0188</td>
+<td headers="diff_relative_se" class="gt_row gt_right">0.0235</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">avisitvis3</td>
-<td headers="bayes_se" class="gt_row gt_right">1.2014</td>
+<td headers="bayes_se" class="gt_row gt_right">0.8288</td>
 <td headers="freq_se" class="gt_row gt_right">0.8132</td>
-<td headers="diff_se" class="gt_row gt_right">0.3882</td>
-<td headers="diff_relative_se" class="gt_row gt_right">0.4774</td></tr>
+<td headers="diff_se" class="gt_row gt_right">0.0156</td>
+<td headers="diff_relative_se" class="gt_row gt_right">0.0192</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">avisitvis4</td>
-<td headers="bayes_se" class="gt_row gt_right">1.1357</td>
+<td headers="bayes_se" class="gt_row gt_right">1.3385</td>
 <td headers="freq_se" class="gt_row gt_right">1.3086</td>
-<td headers="diff_se" class="gt_row gt_right">−0.1728</td>
-<td headers="diff_relative_se" class="gt_row gt_right">−0.1321</td></tr>
+<td headers="diff_se" class="gt_row gt_right">0.0299</td>
+<td headers="diff_relative_se" class="gt_row gt_right">0.0229</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">raceblackorafricanamerican</td>
-<td headers="bayes_se" class="gt_row gt_right">1.0832</td>
+<td headers="bayes_se" class="gt_row gt_right">0.5869</td>
 <td headers="freq_se" class="gt_row gt_right">0.5787</td>
-<td headers="diff_se" class="gt_row gt_right">0.5044</td>
-<td headers="diff_relative_se" class="gt_row gt_right">0.8716</td></tr>
+<td headers="diff_se" class="gt_row gt_right">0.0081</td>
+<td headers="diff_relative_se" class="gt_row gt_right">0.0140</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">racewhite</td>
-<td headers="bayes_se" class="gt_row gt_right">1.2188</td>
+<td headers="bayes_se" class="gt_row gt_right">0.6204</td>
 <td headers="freq_se" class="gt_row gt_right">0.6163</td>
-<td headers="diff_se" class="gt_row gt_right">0.6025</td>
-<td headers="diff_relative_se" class="gt_row gt_right">0.9778</td></tr>
+<td headers="diff_se" class="gt_row gt_right">0.0041</td>
+<td headers="diff_relative_se" class="gt_row gt_right">0.0067</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">sexfemale</td>
-<td headers="bayes_se" class="gt_row gt_right">0.9479</td>
+<td headers="bayes_se" class="gt_row gt_right">0.5108</td>
 <td headers="freq_se" class="gt_row gt_right">0.4927</td>
-<td headers="diff_se" class="gt_row gt_right">0.4552</td>
-<td headers="diff_relative_se" class="gt_row gt_right">0.9237</td></tr>
+<td headers="diff_se" class="gt_row gt_right">0.0180</td>
+<td headers="diff_relative_se" class="gt_row gt_right">0.0366</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">avisitvis1:armcdtrt</td>
-<td headers="bayes_se" class="gt_row gt_right">1.9039</td>
+<td headers="bayes_se" class="gt_row gt_right">1.0615</td>
 <td headers="freq_se" class="gt_row gt_right">1.0454</td>
-<td headers="diff_se" class="gt_row gt_right">0.8585</td>
-<td headers="diff_relative_se" class="gt_row gt_right">0.8212</td></tr>
+<td headers="diff_se" class="gt_row gt_right">0.0161</td>
+<td headers="diff_relative_se" class="gt_row gt_right">0.0154</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">avisitvis2:armcdtrt</td>
-<td headers="bayes_se" class="gt_row gt_right">1.9189</td>
+<td headers="bayes_se" class="gt_row gt_right">0.8333</td>
 <td headers="freq_se" class="gt_row gt_right">0.8135</td>
-<td headers="diff_se" class="gt_row gt_right">1.1054</td>
-<td headers="diff_relative_se" class="gt_row gt_right">1.3588</td></tr>
+<td headers="diff_se" class="gt_row gt_right">0.0197</td>
+<td headers="diff_relative_se" class="gt_row gt_right">0.0243</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">avisitvis3:armcdtrt</td>
-<td headers="bayes_se" class="gt_row gt_right">1.9023</td>
+<td headers="bayes_se" class="gt_row gt_right">0.6745</td>
 <td headers="freq_se" class="gt_row gt_right">0.6657</td>
-<td headers="diff_se" class="gt_row gt_right">1.2367</td>
-<td headers="diff_relative_se" class="gt_row gt_right">1.8578</td></tr>
+<td headers="diff_se" class="gt_row gt_right">0.0089</td>
+<td headers="diff_relative_se" class="gt_row gt_right">0.0133</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">avisitvis4:armcdtrt</td>
-<td headers="bayes_se" class="gt_row gt_right">1.6255</td>
+<td headers="bayes_se" class="gt_row gt_right">1.6873</td>
 <td headers="freq_se" class="gt_row gt_right">1.6605</td>
-<td headers="diff_se" class="gt_row gt_right">−0.0350</td>
-<td headers="diff_relative_se" class="gt_row gt_right">−0.0211</td></tr>
-    <tr><td headers="variable" class="gt_row gt_left">intercept</td>
-<td headers="bayes_se" class="gt_row gt_right">0.7521</td>
-<td headers="freq_se" class="gt_row gt_right">1.4075</td>
-<td headers="diff_se" class="gt_row gt_right">−0.6554</td>
-<td headers="diff_relative_se" class="gt_row gt_right">−0.4657</td></tr>
+<td headers="diff_se" class="gt_row gt_right">0.0268</td>
+<td headers="diff_relative_se" class="gt_row gt_right">0.0161</td></tr>
   </tbody>
   
   
