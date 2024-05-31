@@ -142,9 +142,9 @@ autoregressive <- function() {
     group_time = FALSE,
     covariates = FALSE,
     correlation = "autoregressive",
-    autoregressive_order = 1L
+    autoregressive_order = 2L
   )
-  list(data = data, formula = formula, simulate = simulate_ar1)
+  list(data = data, formula = formula, simulate = simulate_ar2)
 }
 
 compound_symmetry <- function() {

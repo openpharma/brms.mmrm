@@ -119,7 +119,7 @@ simulate_ma2 <- function(data, formula, prior) {
   list(data = data, parameters = parameters)
 }
 
-simulate_ar1 <- function(data, formula, prior) {
+simulate_ar2 <- function(data, formula, prior) {
   beta <- simulate_beta(data = data, formula = formula, prior = prior)
   mu <- derive_x_beta(
     data = data,
@@ -134,8 +134,8 @@ simulate_ar1 <- function(data, formula, prior) {
     prior = prior,
     b_sigma = b_sigma
   )
-  ar <- eval(parse(text = prior[prior$class == "ar", "r"]))
-  stopifnot(length(ar) == 1L)
+  ar <- replicate(2L, eval(parse(text = prior[prior$class == "ar", "r"])))
+  stopifnot(length(ar) == 2L)
   residuals <- rnorm(n = length(sigma), mean = 0, sd = sigma)
   n_time <- length(unique(data[[attr(data, "brm_time")]]))
   n_patient <- nrow(data) / n_time
@@ -145,15 +145,16 @@ simulate_ar1 <- function(data, formula, prior) {
     e <- residuals[rows]
     x <- rep(NA_real_, n_time)
     x[1] <- e[1]
-    for (i in seq(2, n_time)) {
-      x[i] <- e[i] + ar * x[i - 1]
+    x[2] <- e[2] + ar[1] * x[1]
+    for (i in seq(3, n_time)) {
+      x[i] <- e[i] + ar[1] * x[i - 1] + ar[2] * x[i - 2]
     }
     data[[attr(data, "brm_outcome")]][rows] <- mu[rows] + x
   }
   data$response[data$missing] <- NA_real_
   names(beta) <- paste0("b_", names(beta))
   names(b_sigma) <- paste0("b_sigma_", names(b_sigma))
-  parameters <- c(beta, b_sigma, `ar[1]` = ar)
+  parameters <- c(beta, b_sigma, `ar[1]` = ar[1], `ar[2]` = ar[2])
   list(data = data, parameters = parameters)
 }
 
