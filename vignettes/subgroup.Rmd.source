@@ -126,13 +126,18 @@ model_reduced <- brm_model(
 
 # Marginals
 
-`brm_marginal_draws()` automatically produces subgroup-specific marginal means if `brm_formula()` declared subgroup-specific fixed effects.
+`brm_marginal_draws()` automatically produces subgroup-specific marginal means if `brm_formula()` declared subgroup-specific fixed effects.^[See the subgroup analysis section of <https://openpharma.github.io/brms.mmrm/articles/inference.html> for an explanation of `average_within_subgroup` in `brm_transform_marginal()`]
 
 ```{r}
 draws_subgroup <- brm_marginal_draws(
   data = data,
   formula = formula_subgroup,
-  model = model_subgroup
+  model = model_subgroup,
+  transform = brm_transform_marginal(
+    data = data,
+    formula = formula_subgroup,
+    average_within_subgroup = FALSE
+  )
 )
 ```
 
@@ -140,7 +145,12 @@ draws_subgroup <- brm_marginal_draws(
 draws_reduced <- brm_marginal_draws(
   data = data,
   formula = formula_reduced,
-  model = model_reduced
+  model = model_reduced,
+  transform = brm_transform_marginal(
+    data = data,
+    formula = formula_reduced,
+    average_within_subgroup = FALSE
+  )
 )
 ```
 

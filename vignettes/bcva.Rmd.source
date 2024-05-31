@@ -1,5 +1,5 @@
 ---
-title: FEV1 data comparison between Bayesian and frequentist MMRMs
+title: BCVA data comparison between Bayesian and frequentist MMRMs
 date: "`r format(Sys.time(), '%d/%m/%Y')`"
 output:
   rmarkdown::html_document:
@@ -9,9 +9,9 @@ output:
     toc_float: yes
     number_sections: true 
 vignette: >
-  %\VignetteIndexEntry{FEV1 data comparison between Bayesian and frequentist MMRMs}
-  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{BCVA data comparison between Bayesian and frequentist MMRMs}
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
 editor_options:
   chunk_output_type: console
   markdown:
@@ -32,14 +32,13 @@ knitr::opts_chunk$set(
   fig.width = 6,
   dpi = 320,
   fig.align = "center",
-  fig.path = "fev1_figures/"
+  fig.path = "bcva_figures/"
 )
 ```
 
 # About {.unnumbered}
 
-This vignette provides an example comparison of a Bayesian MMRM fit, 
-obtained by `brms.mmrm::brm_model()`, and a frequentist MMRM fit, 
+This vignette uses the `bcva_data` dataset from the `mmrm` package to compare a Bayesian MMRM fit, obtained by `brms.mmrm::brm_model()`, and a frequentist MMRM fit, 
 obtained by `mmrm::mmrm()`. An overview of parameter estimates and 
 differences by type of MMRM is given in the [summary (Tables 4 and 5)](#Summary) 
 at the end.
@@ -59,7 +58,6 @@ packages <- c(
   "parallel",
   "brms.mmrm",
   "mmrm",
-  "emmeans",
   "posterior"
 )
 invisible(lapply(packages, library, character.only = TRUE))
@@ -75,59 +73,49 @@ set.seed(123L)
 
 ## Pre-processing
 
-This analysis exercise uses the `fev_dat` dataset contained in the `mmrm`-package:
+This analysis exercise uses the `bcva_data` dataset contained in the `mmrm` package:
 
-```{r fev_dat_1, eval=TRUE, echo=TRUE, class.source = NULL}
-data(fev_data, package = "mmrm")
+```{r bcva_dat_1, eval=TRUE, echo=TRUE, class.source = NULL}
+data(bcva_data, package = "mmrm")
 ```
 
-It is an artificial (simulated) dataset of a clinical trial investigating the 
-effect of an active treatment on `FEV1` (forced expired volume in one second),
-compared to placebo. `FEV1` is a measure of how quickly the lungs can be 
-emptied and low levels may indicate chronic obstructive pulmonary disease 
-(COPD). 
+According to <https://openpharma.github.io/mmrm/latest-tag/articles/mmrm_review_methods.html>:
 
-The dataset is a `tibble` with 800 rows and 7 variables:
+> The BCVA dataset contains data from a randomized longitudinal ophthalmology trial evaluating the change in baseline corrected visual acuity (BCVA) over the course of 10 visits. BCVA corresponds to the number of letters read from a visual acuity chart.
 
-* `USUBJID` (subject ID),
-* `AVISIT` (visit number),
-* `ARMCD` (treatment, `TRT` or `PBO`),
-* `RACE` (3-category race),
-* `SEX` (sex),
-* `FEV1_BL` (FEV1 at baseline, %),
-* `FEV1` (FEV1 at study visits),
-* `WEIGHT` (weighting variable).
+The dataset is a `tibble` with 800 rows and 7 variables. The primary endpoint for the analysis is `BCVA_CHG`.
 
-The primary endpoint for the analysis is change from baseline in `FEV1`, which we derive below and denote `FEV1_CHG`.
-
-```{r fev_dat_2, eval=TRUE, echo=TRUE, class.source = NULL}
-fev_data <- fev_data |>
-  mutate("FEV1_CHG" = FEV1 - FEV1_BL)
-```
+* `USUBJID` (subject ID)
+* `AVISITN` (visit number, numeric)
+* `AVISIT` (visit number, factor)
+* `ARMCD` (treatment, `TRT` or `CTL`)
+* `RACE` (3-category race)
+* `BCVA_BL` (BCVA at baseline)
+* `BCVA_CHG` (BCVA change from baseline)
 
 The rest of the pre-processing steps create factors for the study arm and visit and apply the usual checking and standardization steps of `brms.mmrm::brm_data()`.
 
-```{r}
-fev_data <- brm_data(
-  data = fev_data,
-  outcome = "FEV1_CHG",
+```{r }
+bcva_data <- brm_data(
+  data = bcva_data,
+  outcome = "BCVA_CHG",
   role = "change",
   group = "ARMCD",
   time = "AVISIT",
   patient = "USUBJID",
-  baseline = "FEV1_BL",
-  reference_group = "PBO",
-  covariates = c("RACE", "SEX")
+  baseline = "BCVA_BL",
+  reference_group = "CTL",
+  covariates = "RACE"
 ) |>
   mutate(ARMCD = factor(ARMCD), AVISIT = factor(AVISIT))
 ```
 
 The following table shows the first rows of the dataset.
 
-```{r fev_dat_3, eval=TRUE, echo=TRUE, class.source = NULL}
-head(fev_data) |>
+```{r bcva_dat_3, eval=TRUE, echo=TRUE, class.source = NULL}
+head(bcva_data) |>
   gt() |>
-  tab_caption(caption = md("Table 1. First rows of the pre-processed `fev_dat` dataset."))
+  tab_caption(caption = md("Table 1. First rows of the pre-processed `bcva_data` dataset."))
 ```
 
 ## Descriptive statistics
@@ -135,8 +123,8 @@ head(fev_data) |>
 Table of baseline characteristics:
 
 ```{r descr_1, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
-fev_data |>
-  select(ARMCD, USUBJID, SEX, RACE, FEV1_BL) |>
+bcva_data |>
+  select(ARMCD, USUBJID, RACE, BCVA_BL) |>
   distinct() |>
   select(-USUBJID) |>
   tbl_summary(
@@ -149,26 +137,26 @@ fev_data |>
   modify_caption("Table 2. Baseline characteristics.")
 ```
 
-Table of change from baseline in FEV1 over 52 weeks:
+Table of change from baseline in BCVA over 52 weeks:
 
 ```{r descr_2, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
-fev_data |>
+bcva_data |>
   pull(AVISIT) |>
   unique() |>
   sort() |>
   purrr::map(
-    .f = ~ fev_data |>
+    .f = ~ bcva_data |>
       filter(AVISIT %in% .x) |>
       tbl_summary(
         by = ARMCD,
-        include = FEV1_CHG,
-        type = FEV1_CHG ~ "continuous2",
-        statistic = FEV1_CHG ~ c(
+        include = BCVA_CHG,
+        type = BCVA_CHG ~ "continuous2",
+        statistic = BCVA_CHG ~ c(
           "{mean} ({sd})",
           "{median} ({p25}, {p75})",
           "{min}, {max}"
         ),
-        label = list(FEV1_CHG = paste("Visit ", .x))
+        label = list(BCVA_CHG = paste("Visit ", .x))
       )
   ) |>
   tbl_stack(quiet = TRUE) |>
@@ -177,15 +165,15 @@ fev_data |>
 
 The following figure shows the primary endpoint over the four study visits in the data.
 
-```{r descr_3, eval=TRUE, echo=TRUE, fig.align='center', out.width="75%", fig.dim = c(8, 5), fig.fig.keep='all', fig.pos="!ht", fig.cap="Figure 1. Change from baseline in FEV1 over 4 visit time points."}
-fev_data |>
+```{r descr_3, eval=TRUE, echo=TRUE, fig.align='center', out.width="75%", fig.dim = c(8, 5), fig.fig.keep='all', fig.pos="!ht", fig.cap="Figure 1. Change from baseline in BCVA over 4 visit time points."}
+bcva_data |>
   group_by(ARMCD) |>
-  ggplot(aes(x = AVISIT, y = FEV1_CHG, fill = factor(ARMCD))) +
+  ggplot(aes(x = AVISIT, y = BCVA_CHG, fill = factor(ARMCD))) +
   geom_hline(yintercept = 0, col = "grey", linewidth = 1.2) +
   geom_boxplot(na.rm = TRUE) +
   labs(
     x = "Visit",
-    y = "Change from baseline in FEV1",
+    y = "Change from baseline in BCVA",
     fill = "Treatment"
   ) +
   scale_fill_manual(values = c("darkgoldenrod2", "coral2")) +
@@ -196,11 +184,11 @@ fev_data |>
 
 ## Bayesian model
 
-The formula for the Bayesian model includes additive effects for baseline, study visit, race, sex, and study-arm-by-visit interaction.
+The formula for the Bayesian model includes additive effects for baseline, study visit, race, and study-arm-by-visit interaction.
 
 ```{r bayes_mmrm_1, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
 b_mmrm_formula <- brm_formula(
-  data = fev_data,
+  data = bcva_data,
   intercept = TRUE,
   baseline = TRUE,
   group = FALSE,
@@ -212,17 +200,17 @@ b_mmrm_formula <- brm_formula(
 print(b_mmrm_formula)
 ```
 
-We fit the model using `brms.mmrm::brm_model()`. To ensure a good basis of comparison with the frequentist model, we put an extremely diffuse prior on the intercept. The parameters already have diffuse flexible priors by default.
+We fit the model using `brms.mmrm::brm_model()`. The computation takes several minutes because of the size of the dataset. To ensure a good basis of comparison with the frequentist model, we put an extremely diffuse prior on the intercept. The parameters already have diffuse flexible priors by default.
 
 ```{r bayes_mmrm_2b, eval=TRUE, echo=TRUE, cache=FALSE, class.source = 'fold-hide'}
 b_mmrm_fit <- brm_model(
-  data = filter(fev_data, !is.na(FEV1_CHG)),
+  data = filter(bcva_data, !is.na(BCVA_CHG)),
   formula = b_mmrm_formula,
   prior = brms::prior(class = "Intercept", prior = "student_t(3, 0, 1000)"),
   iter = 10000,
   warmup = 2000,
   chains = 4,
-  cores = 1 + (detectCores() > 1),
+  cores = 4,
   refresh = 0
 )
 ```
@@ -239,9 +227,9 @@ The formula for the frequentist model is the same, except for the different synt
 
 ```{r freq_mmrm_1, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
 f_mmrm_fit <- mmrm::mmrm(
-  formula = FEV1_CHG ~ FEV1_BL + ARMCD:AVISIT + AVISIT + RACE + SEX +
+  formula = BCVA_CHG ~ BCVA_BL + ARMCD:AVISIT + AVISIT + RACE +
     us(AVISIT | USUBJID),
-  data = fev_data
+  data = bcva_data
 )
 ```
 
@@ -262,7 +250,7 @@ We extract and standardize the Bayesian estimates.
 ```{r comparison_1a, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
 b_mmrm_draws <- b_mmrm_fit |>
   as_draws_df()
-visit_levels <- sort(unique(as.character(fev_data$AVISIT)))
+visit_levels <- sort(unique(as.character(bcva_data$AVISIT)))
 for (level in visit_levels) {
   name <- paste0("b_sigma_AVISIT", level)
   b_mmrm_draws[[name]] <- exp(b_mmrm_draws[[name]])
@@ -270,7 +258,7 @@ for (level in visit_levels) {
 b_mmrm_summary <- b_mmrm_draws |>
   summarize_draws() |>
   select(variable, mean, sd) |>
-  filter(!(variable %in% c("lprior", "lp__"))) |>
+  filter(!(variable %in% c("Intercept", "lprior", "lp__"))) |>
   rename(bayes_estimate = mean, bayes_se = sd) |>
   mutate(
     variable = variable |>

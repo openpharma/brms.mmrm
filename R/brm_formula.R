@@ -558,7 +558,12 @@ term_correlation <- function(
 }
 
 formula_check_rank <- function(data, formula) {
-  data <- data[!is.na(data[[attr(data, "brm_outcome")]]), ]
+  missing <- is.na(data[[attr(data, "brm_outcome")]])
+  if (all(missing)) {
+    data[[attr(data, "brm_outcome")]] <- seq_len(nrow(data))
+  } else {
+    data <- data[!is.na(data[[attr(data, "brm_outcome")]]), ]
+  }
   matrix <- brms::make_standata(data = data, formula = formula)$X
   rank <- qr(matrix)$rank
   assert(
@@ -568,7 +573,7 @@ formula_check_rank <- function(data, formula) {
       ncol(matrix),
       " columns but rank ",
       rank,
-      " after removing rows with missing outcomes. ",
+      " (with missing outcomes removed if the outcome column is valid). ",
       "Please consider a different parameterization to make the ",
       "model matrix full-rank. Otherwise, fixed effects may not be ",
       "identifiable and MCMC sampling may not converge. ",

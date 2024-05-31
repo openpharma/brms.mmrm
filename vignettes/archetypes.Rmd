@@ -224,46 +224,7 @@ The model still has many parameters where we did not set priors, and `brms` sets
 
 ```r
 brms::default_prior(object = formula, data = archetype)
-#>   prior   class                         coef group resp  dpar nlpar lb ub
-#>  (flat)       b                                                          
-#>  (flat)       b nuisance_baseline.timetime_2                             
-#>  (flat)       b nuisance_baseline.timetime_3                             
-#>  (flat)       b nuisance_baseline.timetime_4                             
-#>  (flat)       b          nuisance_biomarker1                             
-#>  (flat)       b          nuisance_biomarker2                             
-#>  (flat)       b      nuisance_status1_absent                             
-#>  (flat)       b     nuisance_status2_present                             
-#>  (flat)       b             x_group_1_time_2                             
-#>  (flat)       b             x_group_1_time_3                             
-#>  (flat)       b             x_group_1_time_4                             
-#>  (flat)       b             x_group_2_time_2                             
-#>  (flat)       b             x_group_2_time_3                             
-#>  (flat)       b             x_group_2_time_4                             
-#>  lkj(1) cortime                                                          
-#>  (flat)       b                                         sigma            
-#>  (flat)       b                   timetime_2            sigma            
-#>  (flat)       b                   timetime_3            sigma            
-#>  (flat)       b                   timetime_4            sigma            
-#>        source
-#>       default
-#>  (vectorized)
-#>  (vectorized)
-#>  (vectorized)
-#>  (vectorized)
-#>  (vectorized)
-#>  (vectorized)
-#>  (vectorized)
-#>  (vectorized)
-#>  (vectorized)
-#>  (vectorized)
-#>  (vectorized)
-#>  (vectorized)
-#>  (vectorized)
-#>       default
-#>       default
-#>  (vectorized)
-#>  (vectorized)
-#>  (vectorized)
+#> Error in x$formula: object of type 'closure' is not subsettable
 ```
 
 <https://paul-buerkner.github.io/brms/reference/set_prior.html> documents many of the default priors set by `brms`. In particular, `"(flat)"` denotes an improper uniform prior over all the real numbers.
@@ -293,46 +254,46 @@ model <- brm_model(
 #> Compiling Stan program...
 #> Start sampling
 brms::prior_summary(model)
-#>                     prior    class                         coef group resp  dpar nlpar
-#>                    (flat)        b                                                    
-#>  student_t(4, 2.17, 4.86)        b nuisance_baseline.timetime_2                       
-#>  student_t(4, 3.22, 5.25)        b nuisance_baseline.timetime_3                       
-#>  student_t(4, 2.53, 5.75)        b nuisance_baseline.timetime_4                       
-#>                    (flat)        b          nuisance_biomarker1                       
-#>                    (flat)        b          nuisance_biomarker2                       
-#>                    (flat)        b      nuisance_status1_absent                       
-#>                    (flat)        b     nuisance_status2_present                       
-#>  student_t(4, 0.98, 2.37)        b             x_group_1_time_2                       
-#>  student_t(4, 1.82, 3.32)        b             x_group_1_time_3                       
-#>  student_t(4, 2.35, 4.41)        b             x_group_1_time_4                       
-#>  student_t(4, 0.31, 2.22)        b             x_group_2_time_2                       
-#>  student_t(4, 1.94, 2.85)        b             x_group_2_time_3                       
-#>  student_t(4, 2.33, 3.41)        b             x_group_2_time_4                       
-#>                    (flat)        b                                         sigma      
-#>                    (flat)        b                   timetime_2            sigma      
-#>                    (flat)        b                   timetime_3            sigma      
-#>                    (flat)        b                   timetime_4            sigma      
-#>      lkj_corr_cholesky(1) Lcortime                                                    
-#>  lb ub       source
-#>             default
-#>                user
-#>                user
-#>                user
-#>        (vectorized)
-#>        (vectorized)
-#>        (vectorized)
-#>        (vectorized)
-#>                user
-#>                user
-#>                user
-#>                user
-#>                user
-#>                user
-#>             default
-#>        (vectorized)
-#>        (vectorized)
-#>        (vectorized)
-#>             default
+#>                     prior    class                         coef group resp
+#>                    (flat)        b                                        
+#>  student_t(4, 2.17, 4.86)        b nuisance_baseline.timetime_2           
+#>  student_t(4, 3.22, 5.25)        b nuisance_baseline.timetime_3           
+#>  student_t(4, 2.53, 5.75)        b nuisance_baseline.timetime_4           
+#>                    (flat)        b          nuisance_biomarker1           
+#>                    (flat)        b          nuisance_biomarker2           
+#>                    (flat)        b      nuisance_status1_absent           
+#>                    (flat)        b     nuisance_status2_present           
+#>  student_t(4, 0.98, 2.37)        b             x_group_1_time_2           
+#>  student_t(4, 1.82, 3.32)        b             x_group_1_time_3           
+#>  student_t(4, 2.35, 4.41)        b             x_group_1_time_4           
+#>  student_t(4, 0.31, 2.22)        b             x_group_2_time_2           
+#>  student_t(4, 1.94, 2.85)        b             x_group_2_time_3           
+#>  student_t(4, 2.33, 3.41)        b             x_group_2_time_4           
+#>                    (flat)        b                                        
+#>                    (flat)        b                   timetime_2           
+#>                    (flat)        b                   timetime_3           
+#>                    (flat)        b                   timetime_4           
+#>      lkj_corr_cholesky(1) Lcortime                                        
+#>   dpar nlpar lb ub       source
+#>                         default
+#>                            user
+#>                            user
+#>                            user
+#>                    (vectorized)
+#>                    (vectorized)
+#>                    (vectorized)
+#>                    (vectorized)
+#>                            user
+#>                            user
+#>                            user
+#>                            user
+#>                            user
+#>                            user
+#>  sigma                  default
+#>  sigma             (vectorized)
+#>  sigma             (vectorized)
+#>  sigma             (vectorized)
+#>                         default
 ```
 
 Marginal mean estimation, post-processing, and visualization automatically understand the archetype without any user intervention.
