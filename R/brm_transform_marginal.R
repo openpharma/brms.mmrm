@@ -152,9 +152,19 @@ brm_transform_marginal <- function(
 }
 
 transform_marginal_grid <- function(data, formula) {
-  attributes <- c("brm_group", "brm_time", "brm_archetype_interest")
   if (brm_has_subgroup(data = data, formula = formula)) {
-    attributes <- c(attributes, "brm_subgroup")
+    attributes <- c(
+      "brm_group",
+      "brm_subgroup",
+      "brm_time",
+      "brm_archetype_interest"
+    )
+  } else {
+    attributes <- c(
+      "brm_group",
+      "brm_time",
+      "brm_archetype_interest"
+    )
   }
   args <- lapply(
     attributes,

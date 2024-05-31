@@ -59,7 +59,6 @@ packages <- c(
   "parallel",
   "brms.mmrm",
   "mmrm",
-  "emmeans",
   "posterior"
 )
 invisible(lapply(packages, library, character.only = TRUE))
