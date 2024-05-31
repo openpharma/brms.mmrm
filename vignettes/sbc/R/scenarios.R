@@ -87,37 +87,10 @@ autoregressive_moving_average <- function() {
     group_time = FALSE,
     covariates = FALSE,
     correlation = "autoregressive_moving_average",
-    autoregressive_order = 2L,
-    moving_average_order = 2L
+    autoregressive_order = 1L,
+    moving_average_order = 1L
   )
-  list(data = data, formula = formula, simulate = simulate_arma22)
-}
-
-moving_average <- function() {
-  n_group <- 2L
-  n_patient <- 50L
-  n_time <- 4L
-  data <- brms.mmrm::brm_simulate_outline(
-    n_group = n_group,
-    n_patient = n_patient,
-    n_time = n_time,
-    rate_dropout = 0,
-    rate_lapse = 0
-  )
-  data[[attr(data, "brm_outcome")]] <- seq_len(nrow(data))
-  formula <- brms.mmrm::brm_formula(
-    data = data,
-    intercept = FALSE,
-    baseline = FALSE,
-    group = TRUE,
-    time = TRUE,
-    baseline_time = FALSE,
-    group_time = FALSE,
-    covariates = FALSE,
-    correlation = "moving_average",
-    moving_average_order = 2L
-  )
-  list(data = data, formula = formula, simulate = simulate_ma2)
+  list(data = data, formula = formula, simulate = simulate_arma11)
 }
 
 autoregressive <- function() {
@@ -145,6 +118,33 @@ autoregressive <- function() {
     autoregressive_order = 2L
   )
   list(data = data, formula = formula, simulate = simulate_ar2)
+}
+
+moving_average <- function() {
+  n_group <- 2L
+  n_patient <- 50L
+  n_time <- 4L
+  data <- brms.mmrm::brm_simulate_outline(
+    n_group = n_group,
+    n_patient = n_patient,
+    n_time = n_time,
+    rate_dropout = 0,
+    rate_lapse = 0
+  )
+  data[[attr(data, "brm_outcome")]] <- seq_len(nrow(data))
+  formula <- brms.mmrm::brm_formula(
+    data = data,
+    intercept = FALSE,
+    baseline = FALSE,
+    group = TRUE,
+    time = TRUE,
+    baseline_time = FALSE,
+    group_time = FALSE,
+    covariates = FALSE,
+    correlation = "moving_average",
+    moving_average_order = 2L
+  )
+  list(data = data, formula = formula, simulate = simulate_ma2)
 }
 
 compound_symmetry <- function() {

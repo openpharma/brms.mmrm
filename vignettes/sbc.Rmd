@@ -238,13 +238,13 @@ Correlation parameter ranks:
 
 ```{r}
 ranks_autoregressive_moving_average |>
-  filter(parameter %in% c("ar[1]", "ar[2]", "ma[1]", "ma[2]")) |>
+  filter(parameter %in% c("ar[1]", "ma[1]")) |>
   plot_ranks()
 ```
 
 # Autoregressive scenario
 
-This scenario is the same as above, but the correlation structure is AR(1). Model formula:
+This scenario is the same as above, but the correlation structure is autoregressive with order 2. Model formula:
 
 ```{r, echo = FALSE}
 autoregressive()$formula
@@ -284,7 +284,7 @@ Correlation parameter ranks:
 
 ```{r}
 ranks_autoregressive |>
-  filter(parameter == "ar[1]") |>
+  filter(parameter %in% c("ar[1]", "ar[2]")) |>
   plot_ranks()
 ```
 
