@@ -1,7 +1,7 @@
 ---
 title: "Subgroup analysis"
-bibliography: '`r system.file("bibliography.bib", package = "brms.mmrm")`'
-csl: '`r system.file("asa.csl", package = "brms.mmrm")`'
+bibliography: '/Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/library/brms.mmrm/bibliography.bib'
+csl: '/Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/library/brms.mmrm/asa.csl'
 output:
   rmarkdown::html_vignette:
     toc: true
@@ -117,10 +117,10 @@ str(data)
 #>  - attr(*, "brm_reference_subgroup")= chr "subgroup_1"
 #>  - attr(*, "brm_reference_time")= chr "time_1"
 #>  - attr(*, "brm_levels_group")= chr [1:3] "group_1" "group_2" "group_3"
-#>  - attr(*, "brm_levels_subgroup")= chr [1:2] "subgroup_1" "subgroup_2"
-#>  - attr(*, "brm_levels_time")= chr [1:3] "time_1" "time_2" "time_3"
 #>  - attr(*, "brm_labels_group")= chr [1:3] "group_1" "group_2" "group_3"
+#>  - attr(*, "brm_levels_subgroup")= chr [1:2] "subgroup_1" "subgroup_2"
 #>  - attr(*, "brm_labels_subgroup")= chr [1:2] "subgroup_1" "subgroup_2"
+#>  - attr(*, "brm_levels_time")= chr [1:3] "time_1" "time_2" "time_3"
 #>  - attr(*, "brm_labels_time")= chr [1:3] "time_1" "time_2" "time_3"
 ```
 
@@ -186,14 +186,19 @@ model_reduced <- brm_model(
 
 # Marginals
 
-`brm_marginal_draws()` automatically produces subgroup-specific marginal means if `brm_formula()` declared subgroup-specific fixed effects.
+`brm_marginal_draws()` automatically produces subgroup-specific marginal means if `brm_formula()` declared subgroup-specific fixed effects.^[See the subgroup analysis section of <https://openpharma.github.io/brms.mmrm/articles/inference.html> for an explanation of `average_within_subgroup` in `brm_transform_marginal()`]
 
 
 ```r
 draws_subgroup <- brm_marginal_draws(
   data = data,
   formula = formula_subgroup,
-  model = model_subgroup
+  model = model_subgroup,
+  transform = brm_transform_marginal(
+    data = data,
+    formula = formula_subgroup,
+    average_within_subgroup = FALSE
+  )
 )
 ```
 
@@ -202,7 +207,12 @@ draws_subgroup <- brm_marginal_draws(
 draws_reduced <- brm_marginal_draws(
   data = data,
   formula = formula_reduced,
-  model = model_reduced
+  model = model_reduced,
+  transform = brm_transform_marginal(
+    data = data,
+    formula = formula_reduced,
+    average_within_subgroup = FALSE
+  )
 )
 ```
 
@@ -377,7 +387,7 @@ Metrics from `brms` can compare the full subgroup and reduced non-subgroup model
 ```r
 brms::waic(model_subgroup)
 #> 
-#> Computed from 4000 by 900 log-likelihood matrix
+#> Computed from 4000 by 900 log-likelihood matrix.
 #> 
 #>           Estimate   SE
 #> elpd_waic  -1275.8 19.9
@@ -389,7 +399,7 @@ brms::waic(model_subgroup)
 ```r
 brms::waic(model_reduced)
 #> 
-#> Computed from 4000 by 900 log-likelihood matrix
+#> Computed from 4000 by 900 log-likelihood matrix.
 #> 
 #>           Estimate   SE
 #> elpd_waic  -1273.9 20.0
@@ -409,16 +419,17 @@ loo_reduced <- brms::loo(model_reduced)
 ```r
 loo_subgroup
 #> 
-#> Computed from 4000 by 900 log-likelihood matrix
+#> Computed from 4000 by 900 log-likelihood matrix.
 #> 
 #>          Estimate   SE
 #> elpd_loo  -1275.8 19.9
 #> p_loo        20.1  1.0
 #> looic      2551.6 39.9
 #> ------
-#> Monte Carlo SE of elpd_loo is 0.1.
+#> MCSE of elpd_loo is 0.1.
+#> MCSE and ESS estimates assume MCMC draws (r_eff in [0.4, 1.6]).
 #> 
-#> All Pareto k estimates are good (k < 0.5).
+#> All Pareto k estimates are good (k < 0.7).
 #> See help('pareto-k-diagnostic') for details.
 ```
 
@@ -426,16 +437,17 @@ loo_subgroup
 ```r
 loo_reduced
 #> 
-#> Computed from 4000 by 900 log-likelihood matrix
+#> Computed from 4000 by 900 log-likelihood matrix.
 #> 
 #>          Estimate   SE
 #> elpd_loo  -1274.0 20.0
 #> p_loo        17.2  0.9
 #> looic      2547.9 40.0
 #> ------
-#> Monte Carlo SE of elpd_loo is 0.1.
+#> MCSE of elpd_loo is 0.1.
+#> MCSE and ESS estimates assume MCMC draws (r_eff in [0.4, 1.8]).
 #> 
-#> All Pareto k estimates are good (k < 0.5).
+#> All Pareto k estimates are good (k < 0.7).
 #> See help('pareto-k-diagnostic') for details.
 ```
 
@@ -456,7 +468,7 @@ loo::loo_compare(loo_subgroup, loo_reduced)
 brm_plot_draws(draws_subgroup$difference_group)
 ```
 
-![](subgroup/draws-1.png)
+![plot of chunk draws](subgroup/draws-1.png)
 
 You can adjust visual aesthetics to compare subgroup levels side by side if subgroup level is the primary comparison of interest.
 
@@ -469,7 +481,7 @@ brm_plot_draws(
 )
 ```
 
-![](subgroup/drawscustom-1.png)
+![plot of chunk drawscustom](subgroup/drawscustom-1.png)
 
 The following function call compares the subgroup model results against the subgroup data.
 
@@ -482,7 +494,7 @@ brm_plot_compare(
 )
 ```
 
-![](subgroup/subgroup-vs-data-1.png)
+![plot of chunk subgroup-vs-data](subgroup/subgroup-vs-data-1.png)
 
 You can adjust plot aesthetics to view subgroup levels side by side as the primary comparison of interest.
 
@@ -498,7 +510,7 @@ brm_plot_compare(
 )
 ```
 
-![](subgroup/subgroup-vs-data-levels-1.png)
+![plot of chunk subgroup-vs-data-levels](subgroup/subgroup-vs-data-levels-1.png)
 
 We can also visually compare the treatment effects of a subgroup level against the marginal treatment effects of the reduced model.
 
@@ -511,7 +523,7 @@ brm_plot_compare(
 )
 ```
 
-![](subgroup/reduced-model-comparison-1.png)
+![plot of chunk reduced-model-comparison](subgroup/reduced-model-comparison-1.png)
 
 Please remember to filter on a single subgroup level. Otherwise, `brm_plot_compare()` throws an informative error to prevent overplotting.
 

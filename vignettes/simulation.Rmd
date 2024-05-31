@@ -168,18 +168,18 @@ data <- data |>
 
 data
 #> # A tibble: 800 × 9
-#>    response missing group   time   patient     biomarker1 biomarker2 status1 status2
-#>       <dbl> <lgl>   <chr>   <chr>  <chr>            <dbl>      <dbl> <chr>   <chr>  
-#>  1       NA FALSE   group_1 time_1 patient_001      0.328     -0.655 present absent 
-#>  2       NA TRUE    group_1 time_2 patient_001      0.328     -0.655 present absent 
-#>  3       NA TRUE    group_1 time_3 patient_001      0.328     -0.655 present absent 
-#>  4       NA TRUE    group_1 time_4 patient_001      0.328     -0.655 present absent 
-#>  5       NA FALSE   group_1 time_1 patient_002      1.04      -0.779 absent  absent 
-#>  6       NA FALSE   group_1 time_2 patient_002      1.04      -0.779 absent  absent 
-#>  7       NA TRUE    group_1 time_3 patient_002      1.04      -0.779 absent  absent 
-#>  8       NA TRUE    group_1 time_4 patient_002      1.04      -0.779 absent  absent 
-#>  9       NA FALSE   group_1 time_1 patient_003      0.717     -0.954 present absent 
-#> 10       NA FALSE   group_1 time_2 patient_003      0.717     -0.954 present absent 
+#>    response missing group   time   patient biomarker1 biomarker2 status1 status2
+#>       <dbl> <lgl>   <chr>   <chr>  <chr>        <dbl>      <dbl> <chr>   <chr>  
+#>  1       NA FALSE   group_1 time_1 patien…      0.328     -0.655 present absent 
+#>  2       NA TRUE    group_1 time_2 patien…      0.328     -0.655 present absent 
+#>  3       NA TRUE    group_1 time_3 patien…      0.328     -0.655 present absent 
+#>  4       NA TRUE    group_1 time_4 patien…      0.328     -0.655 present absent 
+#>  5       NA FALSE   group_1 time_1 patien…      1.04      -0.779 absent  absent 
+#>  6       NA FALSE   group_1 time_2 patien…      1.04      -0.779 absent  absent 
+#>  7       NA TRUE    group_1 time_3 patien…      1.04      -0.779 absent  absent 
+#>  8       NA TRUE    group_1 time_4 patien…      1.04      -0.779 absent  absent 
+#>  9       NA FALSE   group_1 time_1 patien…      0.717     -0.954 present absent 
+#> 10       NA FALSE   group_1 time_2 patien…      0.717     -0.954 present absent 
 #> # ℹ 790 more rows
 ```
 
@@ -189,8 +189,10 @@ As described in the next section, `brms.mmrm` has a convenient function `brm_sim
 ```r
 library(brms)
 formula <- brm_formula(data = data)
+#> Warning: Rows containing NAs were excluded from the model.
+#> Error: All observations in the data were removed presumably because of NA values.
 formula
-#> response ~ group + group:time + time + biomarker1 + biomarker2 + status1 + status2 + unstr(time = time, gr = patient) 
+#> response ~ group + group:time + time + unstr(time = time, gr = patient) 
 #> sigma ~ 0 + time
 
 stan_data <- make_standata(
@@ -199,20 +201,20 @@ stan_data <- make_standata(
 )
 model_matrix <- stan_data$X
 head(model_matrix)
-#>   Intercept groupgroup_2 timetime_2 timetime_3 timetime_4 biomarker1 biomarker2 status1present
-#> 1         1            0          0          0          0  0.3283275 -0.6547971              1
-#> 2         1            0          1          0          0  0.3283275 -0.6547971              1
-#> 3         1            0          0          1          0  0.3283275 -0.6547971              1
-#> 4         1            0          0          0          1  0.3283275 -0.6547971              1
-#> 5         1            0          0          0          0  1.0385746 -0.7793828              0
-#> 6         1            0          1          0          0  1.0385746 -0.7793828              0
-#>   status2present groupgroup_2:timetime_2 groupgroup_2:timetime_3 groupgroup_2:timetime_4
-#> 1              0                       0                       0                       0
-#> 2              0                       0                       0                       0
-#> 3              0                       0                       0                       0
-#> 4              0                       0                       0                       0
-#> 5              0                       0                       0                       0
-#> 6              0                       0                       0                       0
+#>   Intercept groupgroup_2 timetime_2 timetime_3 timetime_4
+#> 1         1            0          0          0          0
+#> 2         1            0          1          0          0
+#> 3         1            0          0          1          0
+#> 4         1            0          0          0          1
+#> 5         1            0          0          0          0
+#> 6         1            0          1          0          0
+#>   groupgroup_2:timetime_2 groupgroup_2:timetime_3 groupgroup_2:timetime_4
+#> 1                       0                       0                       0
+#> 2                       0                       0                       0
+#> 3                       0                       0                       0
+#> 4                       0                       0                       0
+#> 5                       0                       0                       0
+#> 6                       0                       0                       0
 ```
 
 # Prior
@@ -222,6 +224,7 @@ Function `brm_simulate_prior()` simulates from the prior predictive distribution
 
 ```r
 formula <- brm_formula(data = data)
+#> Error: All observations in the data were removed presumably because of NA values.
 
 library(brms)
 prior <- set_prior("student_t(3, 0, 1.3)", class = "Intercept") +
@@ -258,18 +261,18 @@ In addition, `sim$data` has a copy of the original dataset, but with the outcome
 ```r
 sim$data
 #> # A tibble: 800 × 9
-#>    response missing group   time   patient     biomarker1 biomarker2 status1 status2
-#>       <dbl> <lgl>   <chr>   <chr>  <chr>            <dbl>      <dbl> <chr>   <chr>  
-#>  1    3.90  FALSE   group_1 time_1 patient_001      0.328     -0.655 present absent 
-#>  2   NA     TRUE    group_1 time_2 patient_001      0.328     -0.655 present absent 
-#>  3   NA     TRUE    group_1 time_3 patient_001      0.328     -0.655 present absent 
-#>  4   NA     TRUE    group_1 time_4 patient_001      0.328     -0.655 present absent 
-#>  5    3.46  FALSE   group_1 time_1 patient_002      1.04      -0.779 absent  absent 
-#>  6    2.66  FALSE   group_1 time_2 patient_002      1.04      -0.779 absent  absent 
-#>  7   NA     TRUE    group_1 time_3 patient_002      1.04      -0.779 absent  absent 
-#>  8   NA     TRUE    group_1 time_4 patient_002      1.04      -0.779 absent  absent 
-#>  9    5.28  FALSE   group_1 time_1 patient_003      0.717     -0.954 present absent 
-#> 10    0.120 FALSE   group_1 time_2 patient_003      0.717     -0.954 present absent 
+#>    response missing group   time   patient biomarker1 biomarker2 status1 status2
+#>       <dbl> <lgl>   <chr>   <chr>  <chr>        <dbl>      <dbl> <chr>   <chr>  
+#>  1  -0.0490 FALSE   group_1 time_1 patien…      0.328     -0.655 present absent 
+#>  2  NA      TRUE    group_1 time_2 patien…      0.328     -0.655 present absent 
+#>  3  NA      TRUE    group_1 time_3 patien…      0.328     -0.655 present absent 
+#>  4  NA      TRUE    group_1 time_4 patien…      0.328     -0.655 present absent 
+#>  5   7.19   FALSE   group_1 time_1 patien…      1.04      -0.779 absent  absent 
+#>  6   3.18   FALSE   group_1 time_2 patien…      1.04      -0.779 absent  absent 
+#>  7  NA      TRUE    group_1 time_3 patien…      1.04      -0.779 absent  absent 
+#>  8  NA      TRUE    group_1 time_4 patien…      1.04      -0.779 absent  absent 
+#>  9  15.6    FALSE   group_1 time_1 patien…      0.717     -0.954 present absent 
+#> 10   0.203  FALSE   group_1 time_2 patien…      0.717     -0.954 present absent 
 #> # ℹ 790 more rows
 ```
 
@@ -290,7 +293,7 @@ The returned `outcome_draws` object is a numeric array of posterior predictive d
 
 ```r
 str(outcome_draws)
-#>  num [1:4000, 1:659] 4.69 3.71 3.88 3.07 3.33 ...
+#>  num [1:4000, 1:659] 11.742 0.536 0.686 -8.36 -6.803 ...
 
 dim(data)
 #> [1] 800   9

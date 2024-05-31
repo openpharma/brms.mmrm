@@ -126,7 +126,7 @@ brm_transform_marginal <- function(
     )
   )
   data[[attr(data, "brm_outcome")]] <- seq_len(nrow(data))
-  grid <- transform_marginal_grid(data = data)
+  grid <- transform_marginal_grid(data = data, formula = formula)
   grid <- transform_marginal_continuous(
     data = data,
     grid = grid,
@@ -151,9 +151,13 @@ brm_transform_marginal <- function(
   transform
 }
 
-transform_marginal_grid <- function(data) {
+transform_marginal_grid <- function(data, formula) {
+  attributes <- c("brm_group", "brm_time", "brm_archetype_interest")
+  if (brm_has_subgroup(data = data, formula = formula)) {
+    attributes <- c(attributes, "brm_subgroup")
+  }
   args <- lapply(
-    c("brm_group", "brm_subgroup", "brm_time", "brm_archetype_interest"),
+    attributes,
     attr,
     x = data
   )
@@ -262,7 +266,7 @@ transform_marginal_names_discrete.brms_mmrm_archetype <- function(data) {
 }
 
 brm_transform_marginal_names_rows <- function(data, formula, grid) {
-  has_subgroup <- brm_has_subgroup(data, formula = formula)
+  has_subgroup <- brm_has_subgroup(data = data, formula = formula)
   group <- grid[[attr(data, "brm_group")]]
   subgroup <- if_any(has_subgroup, grid[[attr(data, "brm_subgroup")]], NULL)
   time <- grid[[attr(data, "brm_time")]]
