@@ -121,7 +121,7 @@ simulate_ma2 <- function(data, formula, prior) {
 
 simulate_ar1 <- function(data, formula, prior) {
   beta <- simulate_beta(data = data, formula = formula, prior = prior)
-  x_beta <- derive_x_beta(
+  mu <- derive_x_beta(
     data = data,
     formula = formula,
     prior = prior,
@@ -134,26 +134,21 @@ simulate_ar1 <- function(data, formula, prior) {
     prior = prior,
     b_sigma = b_sigma
   )
-  n_time <- length(unique(data[[attr(data, "brm_time")]]))
-  n_patient <- nrow(data) / n_time
   ar <- eval(parse(text = prior[prior$class == "ar", "r"]))
   stopifnot(length(ar) == 1L)
-  exponent <- abs(
-    matrix(
-      seq_len(n_time),
-      nrow = n_time,
-      ncol = n_time,
-      byrow = TRUE
-    ) - seq_len(n_time)
-  )
-  correlation <- ar ^ exponent
-  diag(correlation) <- 1
+  residuals <- rnorm(n = length(sigma), mean = 0, sd = sigma)
+  n_time <- length(unique(data[[attr(data, "brm_time")]]))
+  n_patient <- nrow(data) / n_time
+  y <- rep(NA_real_, nrow(data))
   for (patient in seq_len(n_patient)) {
     rows <- seq_len(n_time) + n_time * (patient - 1L)
-    covariance <- (1 / (1 - ar ^ 2)) *
-      diag(sigma[rows]) %*% correlation %*% diag(sigma[rows])
-    response <- MASS::mvrnorm(mu = x_beta[rows], Sigma = covariance)
-    data[[attr(data, "brm_outcome")]][rows] <- response
+    e <- residuals[rows]
+    x <- rep(NA_real_, n_time)
+    x[1] <- e[1]
+    for (i in seq(2, n_time)) {
+      x[i] <- e[i] + ar * x[i - 1]
+    }
+    data[[attr(data, "brm_outcome")]][rows] <- mu[rows] + x
   }
   data$response[data$missing] <- NA_real_
   names(beta) <- paste0("b_", names(beta))
