@@ -255,18 +255,18 @@ unique value.</p>
 <span></span>
 <span><span class="va">data</span></span>
 <span><span class="co">#&gt; # A tibble: 800 × 9</span></span>
-<span><span class="co">#&gt;    response missing group   time   patient     biomarker1 biomarker2 status1 status2</span></span>
-<span><span class="co">#&gt;       &lt;dbl&gt; &lt;lgl&gt;   &lt;chr&gt;   &lt;chr&gt;  &lt;chr&gt;            &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;  </span></span>
-<span><span class="co">#&gt;  1       NA FALSE   group_1 time_1 patient_001      0.328     -0.655 present absent </span></span>
-<span><span class="co">#&gt;  2       NA TRUE    group_1 time_2 patient_001      0.328     -0.655 present absent </span></span>
-<span><span class="co">#&gt;  3       NA TRUE    group_1 time_3 patient_001      0.328     -0.655 present absent </span></span>
-<span><span class="co">#&gt;  4       NA TRUE    group_1 time_4 patient_001      0.328     -0.655 present absent </span></span>
-<span><span class="co">#&gt;  5       NA FALSE   group_1 time_1 patient_002      1.04      -0.779 absent  absent </span></span>
-<span><span class="co">#&gt;  6       NA FALSE   group_1 time_2 patient_002      1.04      -0.779 absent  absent </span></span>
-<span><span class="co">#&gt;  7       NA TRUE    group_1 time_3 patient_002      1.04      -0.779 absent  absent </span></span>
-<span><span class="co">#&gt;  8       NA TRUE    group_1 time_4 patient_002      1.04      -0.779 absent  absent </span></span>
-<span><span class="co">#&gt;  9       NA FALSE   group_1 time_1 patient_003      0.717     -0.954 present absent </span></span>
-<span><span class="co">#&gt; 10       NA FALSE   group_1 time_2 patient_003      0.717     -0.954 present absent </span></span>
+<span><span class="co">#&gt;    response missing group   time   patient biomarker1 biomarker2 status1 status2</span></span>
+<span><span class="co">#&gt;       &lt;dbl&gt; &lt;lgl&gt;   &lt;chr&gt;   &lt;chr&gt;  &lt;chr&gt;        &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;  </span></span>
+<span><span class="co">#&gt;  1       NA FALSE   group_1 time_1 patien…      0.328     -0.655 present absent </span></span>
+<span><span class="co">#&gt;  2       NA TRUE    group_1 time_2 patien…      0.328     -0.655 present absent </span></span>
+<span><span class="co">#&gt;  3       NA TRUE    group_1 time_3 patien…      0.328     -0.655 present absent </span></span>
+<span><span class="co">#&gt;  4       NA TRUE    group_1 time_4 patien…      0.328     -0.655 present absent </span></span>
+<span><span class="co">#&gt;  5       NA FALSE   group_1 time_1 patien…      1.04      -0.779 absent  absent </span></span>
+<span><span class="co">#&gt;  6       NA FALSE   group_1 time_2 patien…      1.04      -0.779 absent  absent </span></span>
+<span><span class="co">#&gt;  7       NA TRUE    group_1 time_3 patien…      1.04      -0.779 absent  absent </span></span>
+<span><span class="co">#&gt;  8       NA TRUE    group_1 time_4 patien…      1.04      -0.779 absent  absent </span></span>
+<span><span class="co">#&gt;  9       NA FALSE   group_1 time_1 patien…      0.717     -0.954 present absent </span></span>
+<span><span class="co">#&gt; 10       NA FALSE   group_1 time_2 patien…      0.717     -0.954 present absent </span></span>
 <span><span class="co">#&gt; # ℹ 790 more rows</span></span></code></pre></div>
 <p>As described in the next section, <code>brms.mmrm</code> has a
 convenient function <code><a href="../reference/brm_simulate_prior.html">brm_simulate_prior()</a></code> to simulate the
@@ -280,8 +280,10 @@ something non-missing, and you may wish to specify a custom prior.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/paul-buerkner/brms" class="external-link">brms</a></span><span class="op">)</span></span>
 <span><span class="va">formula</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/brm_formula.html">brm_formula</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">data</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: Rows containing NAs were excluded from the model.</span></span>
+<span><span class="co">#&gt; Error: All observations in the data were removed presumably because of NA values.</span></span>
 <span><span class="va">formula</span></span>
-<span><span class="co">#&gt; response ~ group + group:time + time + biomarker1 + biomarker2 + status1 + status2 + unstr(time = time, gr = patient) </span></span>
+<span><span class="co">#&gt; response ~ group + group:time + time + unstr(time = time, gr = patient) </span></span>
 <span><span class="co">#&gt; sigma ~ 0 + time</span></span>
 <span></span>
 <span><span class="va">stan_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://paul-buerkner.github.io/brms/reference/standata.html" class="external-link">make_standata</a></span><span class="op">(</span></span>
@@ -290,20 +292,20 @@ something non-missing, and you may wish to specify a custom prior.</p>
 <span><span class="op">)</span></span>
 <span><span class="va">model_matrix</span> <span class="op">&lt;-</span> <span class="va">stan_data</span><span class="op">$</span><span class="va">X</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">model_matrix</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   Intercept groupgroup_2 timetime_2 timetime_3 timetime_4 biomarker1 biomarker2 status1present</span></span>
-<span><span class="co">#&gt; 1         1            0          0          0          0  0.3283275 -0.6547971              1</span></span>
-<span><span class="co">#&gt; 2         1            0          1          0          0  0.3283275 -0.6547971              1</span></span>
-<span><span class="co">#&gt; 3         1            0          0          1          0  0.3283275 -0.6547971              1</span></span>
-<span><span class="co">#&gt; 4         1            0          0          0          1  0.3283275 -0.6547971              1</span></span>
-<span><span class="co">#&gt; 5         1            0          0          0          0  1.0385746 -0.7793828              0</span></span>
-<span><span class="co">#&gt; 6         1            0          1          0          0  1.0385746 -0.7793828              0</span></span>
-<span><span class="co">#&gt;   status2present groupgroup_2:timetime_2 groupgroup_2:timetime_3 groupgroup_2:timetime_4</span></span>
-<span><span class="co">#&gt; 1              0                       0                       0                       0</span></span>
-<span><span class="co">#&gt; 2              0                       0                       0                       0</span></span>
-<span><span class="co">#&gt; 3              0                       0                       0                       0</span></span>
-<span><span class="co">#&gt; 4              0                       0                       0                       0</span></span>
-<span><span class="co">#&gt; 5              0                       0                       0                       0</span></span>
-<span><span class="co">#&gt; 6              0                       0                       0                       0</span></span></code></pre></div>
+<span><span class="co">#&gt;   Intercept groupgroup_2 timetime_2 timetime_3 timetime_4</span></span>
+<span><span class="co">#&gt; 1         1            0          0          0          0</span></span>
+<span><span class="co">#&gt; 2         1            0          1          0          0</span></span>
+<span><span class="co">#&gt; 3         1            0          0          1          0</span></span>
+<span><span class="co">#&gt; 4         1            0          0          0          1</span></span>
+<span><span class="co">#&gt; 5         1            0          0          0          0</span></span>
+<span><span class="co">#&gt; 6         1            0          1          0          0</span></span>
+<span><span class="co">#&gt;   groupgroup_2:timetime_2 groupgroup_2:timetime_3 groupgroup_2:timetime_4</span></span>
+<span><span class="co">#&gt; 1                       0                       0                       0</span></span>
+<span><span class="co">#&gt; 2                       0                       0                       0</span></span>
+<span><span class="co">#&gt; 3                       0                       0                       0</span></span>
+<span><span class="co">#&gt; 4                       0                       0                       0</span></span>
+<span><span class="co">#&gt; 5                       0                       0                       0</span></span>
+<span><span class="co">#&gt; 6                       0                       0                       0</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="prior">Prior<a class="anchor" aria-label="anchor" href="#prior"></a>
@@ -314,6 +316,7 @@ accepts a custom prior constructed with
 <code><a href="https://paul-buerkner.github.io/brms/reference/set_prior.html" class="external-link">brms::set_prior()</a></code>.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">formula</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/brm_formula.html">brm_formula</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">data</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Error: All observations in the data were removed presumably because of NA values.</span></span>
 <span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/paul-buerkner/brms" class="external-link">brms</a></span><span class="op">)</span></span>
 <span><span class="va">prior</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://paul-buerkner.github.io/brms/reference/set_prior.html" class="external-link">set_prior</a></span><span class="op">(</span><span class="st">"student_t(3, 0, 1.3)"</span>, class <span class="op">=</span> <span class="st">"Intercept"</span><span class="op">)</span> <span class="op">+</span></span>
@@ -353,18 +356,18 @@ is automatically applied so that <code>sim$data$response</code> is
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span><span class="op">$</span><span class="va">data</span></span>
 <span><span class="co">#&gt; # A tibble: 800 × 9</span></span>
-<span><span class="co">#&gt;    response missing group   time   patient     biomarker1 biomarker2 status1 status2</span></span>
-<span><span class="co">#&gt;       &lt;dbl&gt; &lt;lgl&gt;   &lt;chr&gt;   &lt;chr&gt;  &lt;chr&gt;            &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;  </span></span>
-<span><span class="co">#&gt;  1    3.90  FALSE   group_1 time_1 patient_001      0.328     -0.655 present absent </span></span>
-<span><span class="co">#&gt;  2   NA     TRUE    group_1 time_2 patient_001      0.328     -0.655 present absent </span></span>
-<span><span class="co">#&gt;  3   NA     TRUE    group_1 time_3 patient_001      0.328     -0.655 present absent </span></span>
-<span><span class="co">#&gt;  4   NA     TRUE    group_1 time_4 patient_001      0.328     -0.655 present absent </span></span>
-<span><span class="co">#&gt;  5    3.46  FALSE   group_1 time_1 patient_002      1.04      -0.779 absent  absent </span></span>
-<span><span class="co">#&gt;  6    2.66  FALSE   group_1 time_2 patient_002      1.04      -0.779 absent  absent </span></span>
-<span><span class="co">#&gt;  7   NA     TRUE    group_1 time_3 patient_002      1.04      -0.779 absent  absent </span></span>
-<span><span class="co">#&gt;  8   NA     TRUE    group_1 time_4 patient_002      1.04      -0.779 absent  absent </span></span>
-<span><span class="co">#&gt;  9    5.28  FALSE   group_1 time_1 patient_003      0.717     -0.954 present absent </span></span>
-<span><span class="co">#&gt; 10    0.120 FALSE   group_1 time_2 patient_003      0.717     -0.954 present absent </span></span>
+<span><span class="co">#&gt;    response missing group   time   patient biomarker1 biomarker2 status1 status2</span></span>
+<span><span class="co">#&gt;       &lt;dbl&gt; &lt;lgl&gt;   &lt;chr&gt;   &lt;chr&gt;  &lt;chr&gt;        &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;  </span></span>
+<span><span class="co">#&gt;  1  -0.0490 FALSE   group_1 time_1 patien…      0.328     -0.655 present absent </span></span>
+<span><span class="co">#&gt;  2  NA      TRUE    group_1 time_2 patien…      0.328     -0.655 present absent </span></span>
+<span><span class="co">#&gt;  3  NA      TRUE    group_1 time_3 patien…      0.328     -0.655 present absent </span></span>
+<span><span class="co">#&gt;  4  NA      TRUE    group_1 time_4 patien…      0.328     -0.655 present absent </span></span>
+<span><span class="co">#&gt;  5   7.19   FALSE   group_1 time_1 patien…      1.04      -0.779 absent  absent </span></span>
+<span><span class="co">#&gt;  6   3.18   FALSE   group_1 time_2 patien…      1.04      -0.779 absent  absent </span></span>
+<span><span class="co">#&gt;  7  NA      TRUE    group_1 time_3 patien…      1.04      -0.779 absent  absent </span></span>
+<span><span class="co">#&gt;  8  NA      TRUE    group_1 time_4 patien…      1.04      -0.779 absent  absent </span></span>
+<span><span class="co">#&gt;  9  15.6    FALSE   group_1 time_1 patien…      0.717     -0.954 present absent </span></span>
+<span><span class="co">#&gt; 10   0.203  FALSE   group_1 time_2 patien…      0.717     -0.954 present absent </span></span>
 <span><span class="co">#&gt; # ℹ 790 more rows</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -385,7 +388,7 @@ posterior predictive draws, with one row per draw and one column per
 non-missing observation (row) in the original data.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">outcome_draws</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:4000, 1:659] 4.69 3.71 3.88 3.07 3.33 ...</span></span>
+<span><span class="co">#&gt;  num [1:4000, 1:659] 11.742 0.536 0.686 -8.36 -6.803 ...</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 800   9</span></span>
