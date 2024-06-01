@@ -4,7 +4,9 @@
 .Ruserdata
 _targets
 *~
+*.log
 *out
+logs
 run.R
 job.sh
 .Renviron
