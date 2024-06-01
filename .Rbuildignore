@@ -10,4 +10,4 @@
 ^docs$
 ^pkgdown$
 ^inst/hex_sticker$
-^sbc$
+^vignettes/sbc/_targets$
