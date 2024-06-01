@@ -10,9 +10,10 @@ tar_option_set(
   workspace_on_error = TRUE,
   error = "null",
   controller = crew.cluster::crew_controller_sge(
-    workers = 250L,
-    sge_cores = 3L,
+    workers = 50L,
     seconds_idle = 120,
+    sge_cores = 3L,
+    sge_memory_gigabytes_required = 32,
     sge_log_output = "logs/",
     script_lines = file.path("module load R", getRversion())
   )

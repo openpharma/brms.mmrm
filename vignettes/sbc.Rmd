@@ -37,7 +37,7 @@ From the results below, the SBC rank statistics are approximately uniformly dist
 
 # Setup
 
-We load code from the SBC checking study, and we use custom functions to read and plot rank statistics:
+To show the SBC checking results in this vignette, we first load code from the SBC checking study, and we use custom functions to read and plot rank statistics:
 
 ```{r}
 library(dplyr)
@@ -69,7 +69,7 @@ plot_ranks <- function(ranks) {
 }
 ```
 
-Each section below is its own SBC checking study based on a given modeling scenario.
+Each section below is its own SBC checking study based on a given modeling scenario. Each scenario shows results from 1000 independent simulations from the prior.
 
 # Subgroup scenario
 
