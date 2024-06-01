@@ -1,4 +1,4 @@
-# brms.mmrm 0.1.0.9005 (development)
+# brms.mmrm 1.0.0
 
 ## New features
 
