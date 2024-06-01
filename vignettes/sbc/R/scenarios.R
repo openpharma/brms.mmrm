@@ -67,8 +67,8 @@ unstructured <- function() {
 
 autoregressive_moving_average <- function() {
   n_group <- 2L
-  n_patient <- 50L
-  n_time <- 4L
+  n_patient <- 100L
+  n_time <- 3L
   data <- brms.mmrm::brm_simulate_outline(
     n_group = n_group,
     n_patient = n_patient,
@@ -95,8 +95,8 @@ autoregressive_moving_average <- function() {
 
 autoregressive <- function() {
   n_group <- 2L
-  n_patient <- 50L
-  n_time <- 4L
+  n_patient <- 100L
+  n_time <- 3L
   data <- brms.mmrm::brm_simulate_outline(
     n_group = n_group,
     n_patient = n_patient,
@@ -122,8 +122,8 @@ autoregressive <- function() {
 
 moving_average <- function() {
   n_group <- 2L
-  n_patient <- 50L
-  n_time <- 4L
+  n_patient <- 100L
+  n_time <- 3L
   data <- brms.mmrm::brm_simulate_outline(
     n_group = n_group,
     n_patient = n_patient,
@@ -149,8 +149,8 @@ moving_average <- function() {
 
 compound_symmetry <- function() {
   n_group <- 2L
-  n_patient <- 50L
-  n_time <- 4L
+  n_patient <- 100L
+  n_time <- 3L
   data <- brms.mmrm::brm_simulate_outline(
     n_group = n_group,
     n_patient = n_patient,
@@ -175,7 +175,7 @@ compound_symmetry <- function() {
 
 diagonal <- function() {
   n_group <- 2L
-  n_patient <- 50L
+  n_patient <- 100L
   n_time <- 3L
   data <- brms.mmrm::brm_simulate_outline(
     n_group = n_group,

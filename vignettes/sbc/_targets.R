@@ -8,9 +8,8 @@ tar_option_set(
   format = "qs",
   garbage_collection = TRUE,
   workspace_on_error = TRUE,
-  error = "null",
   controller = crew.cluster::crew_controller_sge(
-    workers = 50L,
+    workers = 250L,
     seconds_idle = 120,
     sge_cores = 3L,
     sge_memory_gigabytes_required = 32,
