@@ -522,6 +522,19 @@ test_that("brm_formula() with individual terms", {
   }
 })
 
+test_that("brm_formula() check_rank still works if all outcomes missing", {
+  set.seed(0L)
+  data <- brm_simulate_outline(
+    n_group = 2,
+    n_patient = 100,
+    n_time = 4,
+    rate_dropout = 0,
+    rate_lapse = 0
+  )
+  out <- brm_formula(data = data, check_rank = TRUE)
+  expect_s3_class(out, "brms_mmrm_formula")
+})
+
 test_that("brm_formula() archetype non-subgroup", {
   set.seed(0L)
   data <- brm_simulate_outline(
