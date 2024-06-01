@@ -97,7 +97,7 @@ setup_prior(subgroup) |>
   as.data.frame()
 ```
 
-The following histograms show the SBC rank statistics which compare the prior parameter draws draws to the posterior draws. If the data simulation code and modeling code are both correct and consistent, then the rank statistics should be uniformly distributed.
+The following histograms show the SBC rank statistics which compare the prior parameter draws draws to the posterior draws. If the data simulation code and modeling code are both correct and consistent, then the rank statistics should be approximately uniformly distributed.
 
 ```{r}
 ranks_subgroup <- read_ranks("sbc/results/subgroup.fst")
@@ -190,8 +190,8 @@ This scenario uses an autoregressive moving average (ARMA) model with autoregres
 
 * 2 treatment groups
 * No subgroup
-* 4 time points
-* 50 patients per treatment group
+* 3 time points
+* 100 patients per treatment group
 * No covariate adjustment
 * No missing responses
 
