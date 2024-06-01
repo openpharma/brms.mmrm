@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">brms.mmrm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9005</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,14 +62,14 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.1.0.9005" id="brmsmmrm-0109005-development">brms.mmrm 0.1.0.9005 (development)<a class="anchor" aria-label="anchor" href="#brmsmmrm-0109005-development"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.0.0" id="brmsmmrm-100">brms.mmrm 1.0.0<a class="anchor" aria-label="anchor" href="#brmsmmrm-100"></a></h2>
 <div class="section level3">
-<h3 id="new-features-0-1-0-9005">New features<a class="anchor" aria-label="anchor" href="#new-features-0-1-0-9005"></a></h3>
+<h3 id="new-features-1-0-0">New features<a class="anchor" aria-label="anchor" href="#new-features-1-0-0"></a></h3>
 <ul><li>Add informative prior archetypes (<a href="https://github.com/openpharma/brms.mmrm/issues/96" class="external-link">#96</a>, <a href="https://github.com/openpharma/brms.mmrm/issues/101" class="external-link">#101</a>).</li>
 <li>Add [brm_formula_sigma()] to allow more flexibility for modeling standard deviations as distributional parameters (<a href="https://github.com/openpharma/brms.mmrm/issues/102" class="external-link">#102</a>). Due to the complexities of computing marginal means of standard deviations in rare scenarios, [brm_marginal_draws()] does not return effect size if [brm_formula_sigma()] uses baseline or covariates.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="guardrails-to-ensure-the-appropriateness-of-marginal-mean-estimation-0-1-0-9005">Guardrails to ensure the appropriateness of marginal mean estimation<a class="anchor" aria-label="anchor" href="#guardrails-to-ensure-the-appropriateness-of-marginal-mean-estimation-0-1-0-9005"></a></h3>
+<h3 id="guardrails-to-ensure-the-appropriateness-of-marginal-mean-estimation-1-0-0">Guardrails to ensure the appropriateness of marginal mean estimation<a class="anchor" aria-label="anchor" href="#guardrails-to-ensure-the-appropriateness-of-marginal-mean-estimation-1-0-0"></a></h3>
 <ul><li>Require a new <code>formula</code> argument in <code><a href="../reference/brm_marginal_draws.html">brm_marginal_draws()</a></code>.</li>
 <li>Change class name <code>"brm_data"</code> to <code>"brms_mmrm_data"</code> to align with other class names.</li>
 <li>Create a special <code>"brms_mmrm_formula"</code> class to wrap around the model formula. The class ensures that formulas passed to the model were created by <code>brms_formula()</code>, and the attributes store the user’s choice of fixed effects.</li>
@@ -79,14 +79,14 @@
 <li>Update the subgroup vignette to reflect all the changes above.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="custom-estimation-of-marginal-means-0-1-0-9005">Custom estimation of marginal means<a class="anchor" aria-label="anchor" href="#custom-estimation-of-marginal-means-0-1-0-9005"></a></h3>
+<h3 id="custom-estimation-of-marginal-means-1-0-0">Custom estimation of marginal means<a class="anchor" aria-label="anchor" href="#custom-estimation-of-marginal-means-1-0-0"></a></h3>
 <ul><li>Implement a new <code><a href="../reference/brm_transform_marginal.html">brm_transform_marginal()</a></code> to transform model parameters to marginal means (<a href="https://github.com/openpharma/brms.mmrm/issues/53" class="external-link">#53</a>).</li>
 <li>Use <code><a href="../reference/brm_transform_marginal.html">brm_transform_marginal()</a></code> instead of <code>emmeans</code> in <code><a href="../reference/brm_marginal_draws.html">brm_marginal_draws()</a></code> to derive posterior draws of marginal means based on posterior draws of model parameters (<a href="https://github.com/openpharma/brms.mmrm/issues/53" class="external-link">#53</a>).</li>
 <li>Explain the custom marginal mean calculation in a new <code>inference.Rmd</code> vignette.</li>
 <li>Rename <code>methods.Rmd</code> to <code>model.Rmd</code> since <code>inference.Rmd</code> also discusses methods.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="other-improvements-0-1-0-9005">Other improvements<a class="anchor" aria-label="anchor" href="#other-improvements-0-1-0-9005"></a></h3>
+<h3 id="other-improvements-1-0-0">Other improvements<a class="anchor" aria-label="anchor" href="#other-improvements-1-0-0"></a></h3>
 <ul><li>Extend <code><a href="../reference/brm_formula.html">brm_formula()</a></code> and <code><a href="../reference/brm_marginal_draws.html">brm_marginal_draws()</a></code> to optionally model homogeneous variances, as well as ARMA, AR, MA, and compound symmetry correlation structures.</li>
 <li>Restrict <code><a href="../reference/brm_model.html">brm_model()</a></code> to continuous families with identity links.</li>
 <li>In <code><a href="../reference/brm_prior_simple.html">brm_prior_simple()</a></code>, deprecate the <code>correlation</code> argument in favor of individual correlation-specific arguments such as <code>unstructured</code> and <code>compound_symmetry</code>.</li>
