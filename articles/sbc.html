@@ -232,7 +232,7 @@ analysis:</p>
 <p>The following histograms show the SBC rank statistics which compare
 the prior parameter draws draws to the posterior draws. If the data
 simulation code and modeling code are both correct and consistent, then
-the rank statistics should be uniformly distributed.</p>
+the rank statistics should be approximately uniformly distributed.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ranks_subgroup</span> <span class="op">&lt;-</span> <span class="fu">read_ranks</span><span class="op">(</span><span class="st">"sbc/results/subgroup.fst"</span><span class="op">)</span></span></code></pre></div>
 <p>Fixed effect parameter ranks:</p>
@@ -320,8 +320,8 @@ autoregressive order 1 and moving average order 1. Assumptions:</p>
 <ul>
 <li>2 treatment groups</li>
 <li>No subgroup</li>
-<li>4 time points</li>
-<li>50 patients per treatment group</li>
+<li>3 time points</li>
+<li>100 patients per treatment group</li>
 <li>No covariate adjustment</li>
 <li>No missing responses</li>
 </ul>
