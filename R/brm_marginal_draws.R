@@ -293,6 +293,7 @@ get_draws_sigma <- function(
 ) {
   draws <- tibble::as_tibble(posterior::as_draws_df(model))
   draws <- draws[, grep("^b_sigma_", colnames(draws), value = TRUE)]
+  data[[attr(data, "brm_outcome")]] <- seq_len(nrow(data))
   x <- brms::make_standata(formula = formula, data = data)$X_sigma
   colnames(x) <- paste0("b_", colnames(x))
   x <- as.data.frame(x)

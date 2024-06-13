@@ -1,6 +1,6 @@
-# brms.mmrm 1.0.0.9000 (development)
+# brms.mmrm 1.0.0.9001 (development)
 
-
+* Handle outcome `NA`s in `get_draws_sigma()`.
 
 # brms.mmrm 1.0.0
 
