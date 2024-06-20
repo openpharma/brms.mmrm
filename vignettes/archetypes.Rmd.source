@@ -124,10 +124,10 @@ prior <- c(
 prior
 ```
 
-The model still has many parameters where we did not set priors, and `brms` sets automatic defaults. You can see these defaults with `brms::default_prior()`.
+The model still has many parameters where we did not set priors, and `brms` sets automatic defaults. You can see these defaults with `brms::get_prior()`.
 
 ```{r}
-brms::default_prior(object = formula, data = archetype)
+brms::get_prior(formula = formula, data = archetype)
 ```
 
 <https://paul-buerkner.github.io/brms/reference/set_prior.html> documents many of the default priors set by `brms`. In particular, `"(flat)"` denotes an improper uniform prior over all the real numbers.
