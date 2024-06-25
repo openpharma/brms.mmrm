@@ -14,7 +14,9 @@ of each parameter.}
 
 \item{code}{Character of length 1, Stan code for the prior. Could be
 a string like \code{"normal(1, 2.2)"}. The full set of priors is given
-in the Stan Reference Manual, available from \url{https://mc-stan.org/}.
+in the Stan Function Reference at
+\url{https://mc-stan.org/docs/functions-reference/} in the
+"Unbounded Continuous Distributions" section.
 See the documentation \code{\link[brms:set_prior]{brms::set_prior()}} for more details.}
 
 \item{group}{Value of length 1, level of the treatment group column
@@ -92,6 +94,7 @@ label
 \seealso{
 Other priors: 
 \code{\link{brm_prior_archetype}()},
-\code{\link{brm_prior_simple}()}
+\code{\link{brm_prior_simple}()},
+\code{\link{brm_prior_template}()}
 }
 \concept{priors}

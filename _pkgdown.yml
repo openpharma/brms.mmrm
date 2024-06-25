@@ -50,6 +50,7 @@ reference:
   - 'brm_prior_archetype'
   - 'brm_prior_label'
   - 'brm_prior_simple'
+  - 'brm_prior_template'
 - title: Models
   contents:
   - 'brm_formula'

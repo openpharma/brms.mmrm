@@ -90,7 +90,9 @@ summary(archetype)
 
 Let's assume you want to assign informative priors to the fixed effect parameters of interest declared in the archetype, such as `x_group_1_time_2` and `x_group_2_time_3`. Your priors may come from expert elicitation, historical data, or some other method, and you might consider [distributional families recommended by the Stan team](https://github.com/stan-dev/stan/wiki/prior-choice-recommendations). However you construct these priors, `brms.mmrm` helps you assign them to the model without having to guess at the automatically-generated names of model coefficients in R.
 
-In the printed output from `summary(archetype)`, parameters of interest such as `x_group_1_time_2` and `x_group_2_time_3` are always labeled using treatment groups and time points in the data (and subgroup levels, if applicable). Even though different archetypes have different parameterizations and thus different ways of expressing marginal means, this labeling scheme remains consistent across all archetypes. This is how `brms.mmrm` helps you assign priors. First, match your priors to levels in the data.
+In the printed output from `summary(archetype)`, parameters of interest such as `x_group_1_time_2` and `x_group_2_time_3` are always labeled using treatment groups and time points in the data (and subgroup levels, if applicable), regardless of the choice of archetype. This labeling scheme remains consistent across all archetypes, and it is the mechanism that `brms.mmrm` uses to help you assign priors. 
+
+`brm_prior_label()` is one way to create a labeling scheme. Each call to `brm_prior_label()` below assigns a univariate prior to a fixed effect parameter. Each univariate prior is a Stan code string. Possible choices are documented in the Stan function reference at <https://mc-stan.org/docs/functions-reference/unbounded_continuous_distributions.html>.
 
 ```{r}
 label <- NULL |>
@@ -105,7 +107,31 @@ label <- NULL |>
 label
 ```
 
-The `group` and `time` arguments map your priors to the corresponding `x_*` parameters using levels in the data. The `code` argument is custom Stan code for a univariate prior. Possible choices are documented in the Stan function reference at <https://mc-stan.org/docs/functions-reference/unbounded_continuous_distributions.html>. `brm_prior_archetype()` accepts a collection of labeled priors and returns a `brms` prior object as documented in <https://paul-buerkner.github.io/brms/reference/set_prior.html>.
+As an alternative to `brm_prior_label()`, you can start with a template and manually fill in the Stan code. 
+
+```{r}
+template <- brm_prior_template()
+template
+```
+
+```{r}
+label <- template |>
+  mutate(
+    code = c(
+      "student_t(4, -7.57, 4.96)",
+      "student_t(4,  3.14, 7.86)",
+      "student_t(4,  8.78, 8.18)",
+      "student_t(4,  3.36, 8.10)",
+      "student_t(4, -2.96, 4.78)",
+      "student_t(4,  3.13, 7.64)",
+      "student_t(4,  7.65, 8.24)",
+      "student_t(4,  4.64, 8.21)"
+    )
+  )
+label
+```
+
+After you have a labeling scheme, `brm_prior_archetype()` can create a `brms` prior for the important fixed effects.^[`brms` priors are documented in <https://paul-buerkner.github.io/brms/reference/set_prior.html>.]
 
 ```{r}
 prior <- brm_prior_archetype(label = label, archetype = archetype)

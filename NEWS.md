@@ -1,8 +1,9 @@
-# brms.mmrm 1.0.0.9001 (development)
+# brms.mmrm 1.0.1
 
 * Handle outcome `NA`s in `get_draws_sigma()`.
 * Improve `summary()` messages for informative prior archetypes.
 * Rewrite the `archetypes.Rmd` vignette using the FEV dataset from the `mmrm` package.
+* Add `brm_prior_template()`.
 
 # brms.mmrm 1.0.0
 
