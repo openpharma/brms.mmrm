@@ -293,9 +293,12 @@ archetype-specific functions such as <code><a href="brm_archetype_successive_cel
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   nuisance_baseline.timetime_3 &lt;dbl&gt;, patient &lt;chr&gt;, time &lt;chr&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   change &lt;dbl&gt;, missing &lt;lgl&gt;, baseline &lt;dbl&gt;, group &lt;chr&gt;, …</span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">archetype</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> # This object is an informative prior archetype in brms.mmrm.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> # The fixed effect parameters of interest express the</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> # marginal means as follows:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # This is the "cells" informative prior archetype in brms.mmrm.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # The following equations show the relationships between the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # marginal means (left-hand side) and fixed effect parameters</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # (right-hand side). You can create informative priors for the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # fixed effect parameters using historical borrowing,</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # expert elicitation, or other methods.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> # </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> #    group_1:time_2 = x_group_1_time_2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> #    group_1:time_3 = x_group_1_time_3</span>

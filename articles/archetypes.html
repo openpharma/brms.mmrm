@@ -106,44 +106,45 @@ problems, and rank deficiency.</p>
 <h2 id="constructing-an-archetype">Constructing an archetype<a class="anchor" aria-label="anchor" href="#constructing-an-archetype"></a>
 </h2>
 <p>We begin with a simulated dataset.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">library</span>(brms.mmrm)</span>
-<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">set.seed</span>(<span class="dv">0</span><span class="dt">L</span>)</span>
-<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="sc">&gt;</span> data <span class="ot">&lt;-</span> <span class="fu">brm_simulate_outline</span>(</span>
-<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="sc">+</span>   <span class="at">n_group =</span> <span class="dv">2</span>,</span>
-<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="sc">+</span>   <span class="at">n_patient =</span> <span class="dv">100</span>,</span>
-<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="sc">+</span>   <span class="at">n_time =</span> <span class="dv">4</span>,</span>
-<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="sc">+</span>   <span class="at">rate_dropout =</span> <span class="dv">0</span>,</span>
-<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="sc">+</span>   <span class="at">rate_lapse =</span> <span class="dv">0</span></span>
-<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a><span class="sc">+</span> ) <span class="sc">|&gt;</span></span>
-<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="sc">+</span>   dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">response =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> dplyr<span class="sc">::</span><span class="fu">n</span>())) <span class="sc">|&gt;</span></span>
-<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a><span class="sc">+</span>   <span class="fu">brm_data_change</span>() <span class="sc">|&gt;</span></span>
-<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a><span class="sc">+</span>   <span class="fu">brm_simulate_continuous</span>(<span class="at">names =</span> <span class="fu">c</span>(<span class="st">"biomarker1"</span>, <span class="st">"biomarker2"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a><span class="sc">+</span>   <span class="fu">brm_simulate_categorical</span>(</span>
-<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a><span class="sc">+</span>     <span class="at">names =</span> <span class="fu">c</span>(<span class="st">"status1"</span>, <span class="st">"status2"</span>),</span>
-<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a><span class="sc">+</span>     <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"present"</span>, <span class="st">"absent"</span>)</span>
-<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a><span class="sc">+</span>   )</span>
-<span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a><span class="sc">&gt;</span> dplyr<span class="sc">::</span><span class="fu">select</span>(</span>
-<span id="cb1-18"><a href="#cb1-18" tabindex="-1"></a><span class="sc">+</span>   data,</span>
-<span id="cb1-19"><a href="#cb1-19" tabindex="-1"></a><span class="sc">+</span>   group,</span>
-<span id="cb1-20"><a href="#cb1-20" tabindex="-1"></a><span class="sc">+</span>   time,</span>
-<span id="cb1-21"><a href="#cb1-21" tabindex="-1"></a><span class="sc">+</span>   patient,</span>
-<span id="cb1-22"><a href="#cb1-22" tabindex="-1"></a><span class="sc">+</span>   <span class="fu">starts_with</span>(<span class="st">"biomarker"</span>),</span>
-<span id="cb1-23"><a href="#cb1-23" tabindex="-1"></a><span class="sc">+</span>   <span class="fu">starts_with</span>(<span class="st">"status"</span>)</span>
-<span id="cb1-24"><a href="#cb1-24" tabindex="-1"></a><span class="sc">+</span> )</span>
-<span id="cb1-25"><a href="#cb1-25" tabindex="-1"></a><span class="co">#&gt; # A tibble: 600 × 7</span></span>
-<span id="cb1-26"><a href="#cb1-26" tabindex="-1"></a><span class="co">#&gt;    group   time   patient     biomarker1 biomarker2 status1 status2</span></span>
-<span id="cb1-27"><a href="#cb1-27" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt;   &lt;chr&gt;  &lt;chr&gt;            &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;  </span></span>
-<span id="cb1-28"><a href="#cb1-28" tabindex="-1"></a><span class="co">#&gt;  1 group_1 time_2 patient_001     -1.42      -0.287 absent  present</span></span>
-<span id="cb1-29"><a href="#cb1-29" tabindex="-1"></a><span class="co">#&gt;  2 group_1 time_3 patient_001     -1.42      -0.287 absent  present</span></span>
-<span id="cb1-30"><a href="#cb1-30" tabindex="-1"></a><span class="co">#&gt;  3 group_1 time_4 patient_001     -1.42      -0.287 absent  present</span></span>
-<span id="cb1-31"><a href="#cb1-31" tabindex="-1"></a><span class="co">#&gt;  4 group_1 time_2 patient_002     -1.67       1.84  absent  present</span></span>
-<span id="cb1-32"><a href="#cb1-32" tabindex="-1"></a><span class="co">#&gt;  5 group_1 time_3 patient_002     -1.67       1.84  absent  present</span></span>
-<span id="cb1-33"><a href="#cb1-33" tabindex="-1"></a><span class="co">#&gt;  6 group_1 time_4 patient_002     -1.67       1.84  absent  present</span></span>
-<span id="cb1-34"><a href="#cb1-34" tabindex="-1"></a><span class="co">#&gt;  7 group_1 time_2 patient_003      1.38      -0.157 absent  absent </span></span>
-<span id="cb1-35"><a href="#cb1-35" tabindex="-1"></a><span class="co">#&gt;  8 group_1 time_3 patient_003      1.38      -0.157 absent  absent </span></span>
-<span id="cb1-36"><a href="#cb1-36" tabindex="-1"></a><span class="co">#&gt;  9 group_1 time_4 patient_003      1.38      -0.157 absent  absent </span></span>
-<span id="cb1-37"><a href="#cb1-37" tabindex="-1"></a><span class="co">#&gt; 10 group_1 time_2 patient_004     -0.920     -1.39  present present</span></span>
-<span id="cb1-38"><a href="#cb1-38" tabindex="-1"></a><span class="co">#&gt; # ℹ 590 more rows</span></span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://openpharma.github.io/brms.mmrm/" class="external-link">brms.mmrm</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">0L</span><span class="op">)</span></span>
+<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/brm_simulate_outline.html">brm_simulate_outline</a></span><span class="op">(</span></span>
+<span>  n_group <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>  n_patient <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>  n_time <span class="op">=</span> <span class="fl">4</span>,</span>
+<span>  rate_dropout <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  rate_lapse <span class="op">=</span> <span class="fl">0</span></span>
+<span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>response <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/brm_data_change.html">brm_data_change</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/brm_simulate_continuous.html">brm_simulate_continuous</a></span><span class="op">(</span>names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"biomarker1"</span>, <span class="st">"biomarker2"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/brm_simulate_categorical.html">brm_simulate_categorical</a></span><span class="op">(</span></span>
+<span>    names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"status1"</span>, <span class="st">"status2"</span><span class="op">)</span>,</span>
+<span>    levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"present"</span>, <span class="st">"absent"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  <span class="va">group</span>,</span>
+<span>  <span class="va">time</span>,</span>
+<span>  <span class="va">patient</span>,</span>
+<span>  <span class="fu">starts_with</span><span class="op">(</span><span class="st">"biomarker"</span><span class="op">)</span>,</span>
+<span>  <span class="fu">starts_with</span><span class="op">(</span><span class="st">"status"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 600 × 7</span></span>
+<span><span class="co">#&gt;    group   time   patient     biomarker1 biomarker2 status1 status2</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;   &lt;chr&gt;  &lt;chr&gt;            &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;  </span></span>
+<span><span class="co">#&gt;  1 group_1 time_2 patient_001     -1.42      -0.287 absent  present</span></span>
+<span><span class="co">#&gt;  2 group_1 time_3 patient_001     -1.42      -0.287 absent  present</span></span>
+<span><span class="co">#&gt;  3 group_1 time_4 patient_001     -1.42      -0.287 absent  present</span></span>
+<span><span class="co">#&gt;  4 group_1 time_2 patient_002     -1.67       1.84  absent  present</span></span>
+<span><span class="co">#&gt;  5 group_1 time_3 patient_002     -1.67       1.84  absent  present</span></span>
+<span><span class="co">#&gt;  6 group_1 time_4 patient_002     -1.67       1.84  absent  present</span></span>
+<span><span class="co">#&gt;  7 group_1 time_2 patient_003      1.38      -0.157 absent  absent </span></span>
+<span><span class="co">#&gt;  8 group_1 time_3 patient_003      1.38      -0.157 absent  absent </span></span>
+<span><span class="co">#&gt;  9 group_1 time_4 patient_003      1.38      -0.157 absent  absent </span></span>
+<span><span class="co">#&gt; 10 group_1 time_2 patient_004     -0.920     -1.39  present present</span></span>
+<span><span class="co">#&gt; # ℹ 590 more rows</span></span></code></pre></div>
 <p>The functions listed at <a href="https://openpharma.github.io/brms.mmrm/reference/index.html#informative-prior-archetypes" class="external-link uri">https://openpharma.github.io/brms.mmrm/reference/index.html#informative-prior-archetypes</a>
 can create different kinds of informative prior archetypes from a
 dataset like the one above. For example, suppose we want to place
@@ -152,35 +153,39 @@ points. This approach is appropriate and desirable in many situations
 because the structure naturally captures the prior correlations among
 adjacent visits of a clinical trial. To do this, we create an instance
 of the “successive cells” archetype.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="sc">&gt;</span> archetype <span class="ot">&lt;-</span> <span class="fu">brm_archetype_successive_cells</span>(data, <span class="at">baseline =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">archetype</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/brm_archetype_successive_cells.html">brm_archetype_successive_cells</a></span><span class="op">(</span><span class="va">data</span>, baseline <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p>The instance of the archetype is an ordinary tibble, but it adds new
 columns.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="sc">&gt;</span> archetype</span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="co">#&gt; # A tibble: 600 × 23</span></span>
-<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="co">#&gt;    x_group_1_time_2 x_group_1_time_3 x_group_1_time_4 x_group_2_time_2 x_group_2_time_3</span></span>
-<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co">#&gt;  *            &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;</span></span>
-<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co">#&gt;  1                1                0                0                0                0</span></span>
-<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co">#&gt;  2                1                1                0                0                0</span></span>
-<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co">#&gt;  3                1                1                1                0                0</span></span>
-<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="co">#&gt;  4                1                0                0                0                0</span></span>
-<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="co">#&gt;  5                1                1                0                0                0</span></span>
-<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="co">#&gt;  6                1                1                1                0                0</span></span>
-<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a><span class="co">#&gt;  7                1                0                0                0                0</span></span>
-<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a><span class="co">#&gt;  8                1                1                0                0                0</span></span>
-<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a><span class="co">#&gt;  9                1                1                1                0                0</span></span>
-<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a><span class="co">#&gt; 10                1                0                0                0                0</span></span>
-<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a><span class="co">#&gt; # ℹ 590 more rows</span></span>
-<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a><span class="co">#&gt; # ℹ 18 more variables: x_group_2_time_4 &lt;dbl&gt;, nuisance_biomarker1 &lt;dbl&gt;, nuisance_biomarker2 &lt;dbl&gt;,</span></span>
-<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a><span class="co">#&gt; #   nuisance_status1_absent &lt;dbl&gt;, nuisance_status2_present &lt;dbl&gt;, nuisance_baseline.timetime_2 &lt;dbl&gt;,</span></span>
-<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a><span class="co">#&gt; #   nuisance_baseline.timetime_3 &lt;dbl&gt;, nuisance_baseline.timetime_4 &lt;dbl&gt;, patient &lt;chr&gt;, time &lt;chr&gt;,</span></span>
-<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a><span class="co">#&gt; #   change &lt;dbl&gt;, missing &lt;lgl&gt;, baseline &lt;dbl&gt;, group &lt;chr&gt;, biomarker1 &lt;dbl&gt;, biomarker2 &lt;dbl&gt;,</span></span>
-<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a><span class="co">#&gt; #   status1 &lt;chr&gt;, status2 &lt;chr&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">archetype</span></span>
+<span><span class="co">#&gt; # A tibble: 600 × 23</span></span>
+<span><span class="co">#&gt;    x_group_1_time_2 x_group_1_time_3 x_group_1_time_4 x_group_2_time_2</span></span>
+<span><span class="co">#&gt;  *            &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1                1                0                0                0</span></span>
+<span><span class="co">#&gt;  2                1                1                0                0</span></span>
+<span><span class="co">#&gt;  3                1                1                1                0</span></span>
+<span><span class="co">#&gt;  4                1                0                0                0</span></span>
+<span><span class="co">#&gt;  5                1                1                0                0</span></span>
+<span><span class="co">#&gt;  6                1                1                1                0</span></span>
+<span><span class="co">#&gt;  7                1                0                0                0</span></span>
+<span><span class="co">#&gt;  8                1                1                0                0</span></span>
+<span><span class="co">#&gt;  9                1                1                1                0</span></span>
+<span><span class="co">#&gt; 10                1                0                0                0</span></span>
+<span><span class="co">#&gt; # ℹ 590 more rows</span></span>
+<span><span class="co">#&gt; # ℹ 19 more variables: x_group_2_time_3 &lt;dbl&gt;, x_group_2_time_4 &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   nuisance_biomarker1 &lt;dbl&gt;, nuisance_biomarker2 &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   nuisance_status1_absent &lt;dbl&gt;, nuisance_status2_present &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   nuisance_baseline.timetime_2 &lt;dbl&gt;, nuisance_baseline.timetime_3 &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   nuisance_baseline.timetime_4 &lt;dbl&gt;, patient &lt;chr&gt;, time &lt;chr&gt;,</span></span>
+<span><span class="co">#&gt; #   change &lt;dbl&gt;, missing &lt;lgl&gt;, baseline &lt;dbl&gt;, group &lt;chr&gt;, …</span></span></code></pre></div>
 <p>Those new columns constitute a custom model matrix to describe the
 desired parameterization. We have effects of interest to express
 successive differences,</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">attr</span>(archetype, <span class="st">"brm_archetype_interest"</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="co">#&gt; [1] "x_group_1_time_2" "x_group_1_time_3" "x_group_1_time_4" "x_group_2_time_2" "x_group_2_time_3"</span></span>
-<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co">#&gt; [6] "x_group_2_time_4"</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">archetype</span>, <span class="st">"brm_archetype_interest"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "x_group_1_time_2" "x_group_1_time_3" "x_group_1_time_4" "x_group_2_time_2"</span></span>
+<span><span class="co">#&gt; [5] "x_group_2_time_3" "x_group_2_time_4"</span></span></code></pre></div>
 <p>and we have nuisance variables. Some nuisance variables are
 continuous covariates, while others are levels of one-hot-encoded
 concomitant factors or interactions of those concomitant factors with
@@ -192,25 +197,31 @@ nuisance variables are automatically dropped in order to ensure the
 model matrix is full-rank. This is critically important to preserve the
 interpretation of the columns of interest and make sure the informative
 priors behave as expected.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">attr</span>(archetype, <span class="st">"brm_archetype_nuisance"</span>)</span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="co">#&gt; [1] "nuisance_biomarker1"          "nuisance_biomarker2"          "nuisance_status1_absent"     </span></span>
-<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="co">#&gt; [4] "nuisance_status2_present"     "nuisance_baseline.timetime_2" "nuisance_baseline.timetime_3"</span></span>
-<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="co">#&gt; [7] "nuisance_baseline.timetime_4"</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">archetype</span>, <span class="st">"brm_archetype_nuisance"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "nuisance_biomarker1"          "nuisance_biomarker2"         </span></span>
+<span><span class="co">#&gt; [3] "nuisance_status1_absent"      "nuisance_status2_present"    </span></span>
+<span><span class="co">#&gt; [5] "nuisance_baseline.timetime_2" "nuisance_baseline.timetime_3"</span></span>
+<span><span class="co">#&gt; [7] "nuisance_baseline.timetime_4"</span></span></code></pre></div>
 <p>The factors of interest linearly map to marginal means. To see the
 mapping, call <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> on the archetype. The printed
 output helps build intuition on how the archetype is parameterized and
 what those parameters are doing.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">summary</span>(archetype)</span>
-<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="co">#&gt; # This object is an informative prior archetype in brms.mmrm.</span></span>
-<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="co">#&gt; # The fixed effect parameters of interest express the</span></span>
-<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="co">#&gt; # marginal means as follows:</span></span>
-<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="co">#&gt; # </span></span>
-<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="co">#&gt; #    group_1:time_2 = x_group_1_time_2</span></span>
-<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a><span class="co">#&gt; #    group_1:time_3 = x_group_1_time_2 + x_group_1_time_3</span></span>
-<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a><span class="co">#&gt; #    group_1:time_4 = x_group_1_time_2 + x_group_1_time_3 + x_group_1_time_4</span></span>
-<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a><span class="co">#&gt; #    group_2:time_2 = x_group_2_time_2</span></span>
-<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a><span class="co">#&gt; #    group_2:time_3 = x_group_2_time_2 + x_group_2_time_3</span></span>
-<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a><span class="co">#&gt; #    group_2:time_4 = x_group_2_time_2 + x_group_2_time_3 + x_group_2_time_4</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">archetype</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # This is the "successive cells" informative prior archetype in brms.mmrm.</span></span>
+<span><span class="co">#&gt; # The following equations show the relationships between the</span></span>
+<span><span class="co">#&gt; # marginal means (left-hand side) and fixed effect parameters</span></span>
+<span><span class="co">#&gt; # (right-hand side). You can create informative priors for the</span></span>
+<span><span class="co">#&gt; # fixed effect parameters using historical borrowing,</span></span>
+<span><span class="co">#&gt; # expert elicitation, or other methods.</span></span>
+<span><span class="co">#&gt; # </span></span>
+<span><span class="co">#&gt; #    group_1:time_2 = x_group_1_time_2</span></span>
+<span><span class="co">#&gt; #    group_1:time_3 = x_group_1_time_2 + x_group_1_time_3</span></span>
+<span><span class="co">#&gt; #    group_1:time_4 = x_group_1_time_2 + x_group_1_time_3 + x_group_1_time_4</span></span>
+<span><span class="co">#&gt; #    group_2:time_2 = x_group_2_time_2</span></span>
+<span><span class="co">#&gt; #    group_2:time_3 = x_group_2_time_2 + x_group_2_time_3</span></span>
+<span><span class="co">#&gt; #    group_2:time_4 = x_group_2_time_2 + x_group_2_time_3 + x_group_2_time_4</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="informative-priors">Informative priors<a class="anchor" aria-label="anchor" href="#informative-priors"></a>
@@ -233,36 +244,45 @@ different ways of expressing marginal means, this labeling scheme
 remains consistent across all archetypes. This is how
 <code>brms.mmrm</code> helps you assign priors. First, match your priors
 to levels in the data.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="sc">&gt;</span> label <span class="ot">&lt;-</span> <span class="cn">NULL</span> <span class="sc">|&gt;</span></span>
-<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="sc">+</span>   <span class="fu">brm_prior_label</span>(<span class="st">"student_t(4, 0.98, 2.37)"</span>, <span class="at">group =</span> <span class="st">"group_1"</span>, <span class="at">time =</span> <span class="st">"time_2"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="sc">+</span>   <span class="fu">brm_prior_label</span>(<span class="st">"student_t(4, 1.82, 3.32)"</span>, <span class="at">group =</span> <span class="st">"group_1"</span>, <span class="at">time =</span> <span class="st">"time_3"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="sc">+</span>   <span class="fu">brm_prior_label</span>(<span class="st">"student_t(4, 2.35, 4.41)"</span>, <span class="at">group =</span> <span class="st">"group_1"</span>, <span class="at">time =</span> <span class="st">"time_4"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="sc">+</span>   <span class="fu">brm_prior_label</span>(<span class="st">"student_t(4, 0.31, 2.22)"</span>, <span class="at">group =</span> <span class="st">"group_2"</span>, <span class="at">time =</span> <span class="st">"time_2"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a><span class="sc">+</span>   <span class="fu">brm_prior_label</span>(<span class="st">"student_t(4, 1.94, 2.85)"</span>, <span class="at">group =</span> <span class="st">"group_2"</span>, <span class="at">time =</span> <span class="st">"time_3"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a><span class="sc">+</span>   <span class="fu">brm_prior_label</span>(<span class="st">"student_t(4, 2.33, 3.41)"</span>, <span class="at">group =</span> <span class="st">"group_2"</span>, <span class="at">time =</span> <span class="st">"time_4"</span>)</span>
-<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a><span class="sc">&gt;</span> label</span>
-<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 3</span></span>
-<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a><span class="co">#&gt;   code                     group   time  </span></span>
-<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;                    &lt;chr&gt;   &lt;chr&gt; </span></span>
-<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a><span class="co">#&gt; 1 student_t(4, 0.98, 2.37) group_1 time_2</span></span>
-<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a><span class="co">#&gt; 2 student_t(4, 1.82, 3.32) group_1 time_3</span></span>
-<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a><span class="co">#&gt; 3 student_t(4, 2.35, 4.41) group_1 time_4</span></span>
-<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a><span class="co">#&gt; 4 student_t(4, 0.31, 2.22) group_2 time_2</span></span>
-<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a><span class="co">#&gt; 5 student_t(4, 1.94, 2.85) group_2 time_3</span></span>
-<span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a><span class="co">#&gt; 6 student_t(4, 2.33, 3.41) group_2 time_4</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">label</span> <span class="op">&lt;-</span> <span class="cn">NULL</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/brm_prior_label.html">brm_prior_label</a></span><span class="op">(</span><span class="st">"student_t(4, 0.98, 2.37)"</span>, group <span class="op">=</span> <span class="st">"group_1"</span>, time <span class="op">=</span> <span class="st">"time_2"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/brm_prior_label.html">brm_prior_label</a></span><span class="op">(</span><span class="st">"student_t(4, 1.82, 3.32)"</span>, group <span class="op">=</span> <span class="st">"group_1"</span>, time <span class="op">=</span> <span class="st">"time_3"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/brm_prior_label.html">brm_prior_label</a></span><span class="op">(</span><span class="st">"student_t(4, 2.35, 4.41)"</span>, group <span class="op">=</span> <span class="st">"group_1"</span>, time <span class="op">=</span> <span class="st">"time_4"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/brm_prior_label.html">brm_prior_label</a></span><span class="op">(</span><span class="st">"student_t(4, 0.31, 2.22)"</span>, group <span class="op">=</span> <span class="st">"group_2"</span>, time <span class="op">=</span> <span class="st">"time_2"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/brm_prior_label.html">brm_prior_label</a></span><span class="op">(</span><span class="st">"student_t(4, 1.94, 2.85)"</span>, group <span class="op">=</span> <span class="st">"group_2"</span>, time <span class="op">=</span> <span class="st">"time_3"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/brm_prior_label.html">brm_prior_label</a></span><span class="op">(</span><span class="st">"student_t(4, 2.33, 3.41)"</span>, group <span class="op">=</span> <span class="st">"group_2"</span>, time <span class="op">=</span> <span class="st">"time_4"</span><span class="op">)</span></span>
+<span><span class="va">label</span></span>
+<span><span class="co">#&gt; # A tibble: 6 × 3</span></span>
+<span><span class="co">#&gt;   code                     group   time  </span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;                    &lt;chr&gt;   &lt;chr&gt; </span></span>
+<span><span class="co">#&gt; 1 student_t(4, 0.98, 2.37) group_1 time_2</span></span>
+<span><span class="co">#&gt; 2 student_t(4, 1.82, 3.32) group_1 time_3</span></span>
+<span><span class="co">#&gt; 3 student_t(4, 2.35, 4.41) group_1 time_4</span></span>
+<span><span class="co">#&gt; 4 student_t(4, 0.31, 2.22) group_2 time_2</span></span>
+<span><span class="co">#&gt; 5 student_t(4, 1.94, 2.85) group_2 time_3</span></span>
+<span><span class="co">#&gt; 6 student_t(4, 2.33, 3.41) group_2 time_4</span></span></code></pre></div>
 <p>Those <code>group</code> and <code>time</code> labels map your priors
 to the corresponding <code>x_*</code> parameters.
 <code><a href="../reference/brm_prior_archetype.html">brm_prior_archetype()</a></code> accepts a collection of labeled
 priors and returns a <code>brms</code> prior object as documented in <a href="https://paul-buerkner.github.io/brms/reference/set_prior.html" class="external-link uri">https://paul-buerkner.github.io/brms/reference/set_prior.html</a>.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="sc">&gt;</span> prior <span class="ot">&lt;-</span> <span class="fu">brm_prior_archetype</span>(<span class="at">label =</span> label, <span class="at">archetype =</span> archetype)</span>
-<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="sc">&gt;</span> prior</span>
-<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="co">#&gt;                     prior class             coef group resp dpar nlpar   lb   ub source</span></span>
-<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="co">#&gt;  student_t(4, 0.98, 2.37)     b x_group_1_time_2                       &lt;NA&gt; &lt;NA&gt;   user</span></span>
-<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="co">#&gt;  student_t(4, 1.82, 3.32)     b x_group_1_time_3                       &lt;NA&gt; &lt;NA&gt;   user</span></span>
-<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="co">#&gt;  student_t(4, 2.35, 4.41)     b x_group_1_time_4                       &lt;NA&gt; &lt;NA&gt;   user</span></span>
-<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a><span class="co">#&gt;  student_t(4, 0.31, 2.22)     b x_group_2_time_2                       &lt;NA&gt; &lt;NA&gt;   user</span></span>
-<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a><span class="co">#&gt;  student_t(4, 1.94, 2.85)     b x_group_2_time_3                       &lt;NA&gt; &lt;NA&gt;   user</span></span>
-<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a><span class="co">#&gt;  student_t(4, 2.33, 3.41)     b x_group_2_time_4                       &lt;NA&gt; &lt;NA&gt;   user</span></span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">prior</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/brm_prior_archetype.html">brm_prior_archetype</a></span><span class="op">(</span>label <span class="op">=</span> <span class="va">label</span>, archetype <span class="op">=</span> <span class="va">archetype</span><span class="op">)</span></span>
+<span><span class="va">prior</span></span>
+<span><span class="co">#&gt;                     prior class             coef group resp dpar nlpar   lb</span></span>
+<span><span class="co">#&gt;  student_t(4, 0.98, 2.37)     b x_group_1_time_2                       &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;  student_t(4, 1.82, 3.32)     b x_group_1_time_3                       &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;  student_t(4, 2.35, 4.41)     b x_group_1_time_4                       &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;  student_t(4, 0.31, 2.22)     b x_group_2_time_2                       &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;  student_t(4, 1.94, 2.85)     b x_group_2_time_3                       &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;  student_t(4, 2.33, 3.41)     b x_group_2_time_4                       &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;    ub source</span></span>
+<span><span class="co">#&gt;  &lt;NA&gt;   user</span></span>
+<span><span class="co">#&gt;  &lt;NA&gt;   user</span></span>
+<span><span class="co">#&gt;  &lt;NA&gt;   user</span></span>
+<span><span class="co">#&gt;  &lt;NA&gt;   user</span></span>
+<span><span class="co">#&gt;  &lt;NA&gt;   user</span></span>
+<span><span class="co">#&gt;  &lt;NA&gt;   user</span></span></code></pre></div>
 <p>In less common situations, you may wish to assign priors to nuisance
 parameters. For example, our model accounts for interactions between
 baseline and discrete time, and it may be reasonable to assign priors to
@@ -271,9 +291,10 @@ thorough understanding of the fixed effect structure of the model, but
 it can be done directly through <code>brms</code>. First, check the
 formula for the included nuisance parameters. <code><a href="../reference/brm_formula.html">brm_formula()</a></code>
 automatically understands archetypes.</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">brm_formula</span>(archetype)</span>
-<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="co">#&gt; change ~ 0 + x_group_1_time_2 + x_group_1_time_3 + x_group_1_time_4 + x_group_2_time_2 + x_group_2_time_3 + x_group_2_time_4 + nuisance_biomarker1 + nuisance_biomarker2 + nuisance_status1_absent + nuisance_status2_present + nuisance_baseline.timetime_2 + nuisance_baseline.timetime_3 + nuisance_baseline.timetime_4 + unstr(time = time, gr = patient) </span></span>
-<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a><span class="co">#&gt; sigma ~ 0 + time</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/brm_formula.html">brm_formula</a></span><span class="op">(</span><span class="va">archetype</span><span class="op">)</span></span>
+<span><span class="co">#&gt; change ~ 0 + x_group_1_time_2 + x_group_1_time_3 + x_group_1_time_4 + x_group_2_time_2 + x_group_2_time_3 + x_group_2_time_4 + nuisance_biomarker1 + nuisance_biomarker2 + nuisance_status1_absent + nuisance_status2_present + nuisance_baseline.timetime_2 + nuisance_baseline.timetime_3 + nuisance_baseline.timetime_4 + unstr(time = time, gr = patient) </span></span>
+<span><span class="co">#&gt; sigma ~ 0 + time</span></span></code></pre></div>
 <p>The <code>"nuisance_*"</code> terms are the nuisance variables, and
 the ones involving baseline are
 <code>nuisance_baseline.timetime_2</code>,
@@ -287,47 +308,41 @@ informative priors <code>student_t(4, 2.1, 4.8)</code>,
 <code>student_t(4, 2.5, 5.7)</code>, respectively. Use
 <code><a href="https://paul-buerkner.github.io/brms/reference/set_prior.html" class="external-link">brms::set_prior()</a></code> and <code><a href="https://rdrr.io/r/base/c.html" class="external-link">c()</a></code> to append these
 priors to our existing <code>prior</code> object:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="sc">&gt;</span> prior <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="sc">+</span>   prior,</span>
-<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a><span class="sc">+</span>   <span class="fu">set_prior</span>(<span class="st">"student_t(4, 2.17, 4.86)"</span>, <span class="at">coef =</span> <span class="st">"nuisance_baseline.timetime_2"</span>),</span>
-<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a><span class="sc">+</span>   <span class="fu">set_prior</span>(<span class="st">"student_t(4, 3.22, 5.25)"</span>, <span class="at">coef =</span> <span class="st">"nuisance_baseline.timetime_3"</span>),</span>
-<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a><span class="sc">+</span>   <span class="fu">set_prior</span>(<span class="st">"student_t(4, 2.53, 5.75)"</span>, <span class="at">coef =</span> <span class="st">"nuisance_baseline.timetime_4"</span>)</span>
-<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a><span class="sc">+</span> )</span>
-<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a><span class="sc">&gt;</span> prior</span>
-<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a><span class="co">#&gt;                     prior class                         coef group resp dpar nlpar   lb   ub source</span></span>
-<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a><span class="co">#&gt;  student_t(4, 0.98, 2.37)     b             x_group_1_time_2                       &lt;NA&gt; &lt;NA&gt;   user</span></span>
-<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a><span class="co">#&gt;  student_t(4, 1.82, 3.32)     b             x_group_1_time_3                       &lt;NA&gt; &lt;NA&gt;   user</span></span>
-<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a><span class="co">#&gt;  student_t(4, 2.35, 4.41)     b             x_group_1_time_4                       &lt;NA&gt; &lt;NA&gt;   user</span></span>
-<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a><span class="co">#&gt;  student_t(4, 0.31, 2.22)     b             x_group_2_time_2                       &lt;NA&gt; &lt;NA&gt;   user</span></span>
-<span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a><span class="co">#&gt;  student_t(4, 1.94, 2.85)     b             x_group_2_time_3                       &lt;NA&gt; &lt;NA&gt;   user</span></span>
-<span id="cb10-14"><a href="#cb10-14" tabindex="-1"></a><span class="co">#&gt;  student_t(4, 2.33, 3.41)     b             x_group_2_time_4                       &lt;NA&gt; &lt;NA&gt;   user</span></span>
-<span id="cb10-15"><a href="#cb10-15" tabindex="-1"></a><span class="co">#&gt;  student_t(4, 2.17, 4.86)     b nuisance_baseline.timetime_2                       &lt;NA&gt; &lt;NA&gt;   user</span></span>
-<span id="cb10-16"><a href="#cb10-16" tabindex="-1"></a><span class="co">#&gt;  student_t(4, 3.22, 5.25)     b nuisance_baseline.timetime_3                       &lt;NA&gt; &lt;NA&gt;   user</span></span>
-<span id="cb10-17"><a href="#cb10-17" tabindex="-1"></a><span class="co">#&gt;  student_t(4, 2.53, 5.75)     b nuisance_baseline.timetime_4                       &lt;NA&gt; &lt;NA&gt;   user</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">prior</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>  <span class="va">prior</span>,</span>
+<span>  <span class="fu">set_prior</span><span class="op">(</span><span class="st">"student_t(4, 2.17, 4.86)"</span>, coef <span class="op">=</span> <span class="st">"nuisance_baseline.timetime_2"</span><span class="op">)</span>,</span>
+<span>  <span class="fu">set_prior</span><span class="op">(</span><span class="st">"student_t(4, 3.22, 5.25)"</span>, coef <span class="op">=</span> <span class="st">"nuisance_baseline.timetime_3"</span><span class="op">)</span>,</span>
+<span>  <span class="fu">set_prior</span><span class="op">(</span><span class="st">"student_t(4, 2.53, 5.75)"</span>, coef <span class="op">=</span> <span class="st">"nuisance_baseline.timetime_4"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">prior</span></span>
+<span><span class="co">#&gt;                     prior class                         coef group resp dpar</span></span>
+<span><span class="co">#&gt;  student_t(4, 0.98, 2.37)     b             x_group_1_time_2                </span></span>
+<span><span class="co">#&gt;  student_t(4, 1.82, 3.32)     b             x_group_1_time_3                </span></span>
+<span><span class="co">#&gt;  student_t(4, 2.35, 4.41)     b             x_group_1_time_4                </span></span>
+<span><span class="co">#&gt;  student_t(4, 0.31, 2.22)     b             x_group_2_time_2                </span></span>
+<span><span class="co">#&gt;  student_t(4, 1.94, 2.85)     b             x_group_2_time_3                </span></span>
+<span><span class="co">#&gt;  student_t(4, 2.33, 3.41)     b             x_group_2_time_4                </span></span>
+<span><span class="co">#&gt;  student_t(4, 2.17, 4.86)     b nuisance_baseline.timetime_2                </span></span>
+<span><span class="co">#&gt;  student_t(4, 3.22, 5.25)     b nuisance_baseline.timetime_3                </span></span>
+<span><span class="co">#&gt;  student_t(4, 2.53, 5.75)     b nuisance_baseline.timetime_4                </span></span>
+<span><span class="co">#&gt;  nlpar   lb   ub source</span></span>
+<span><span class="co">#&gt;        &lt;NA&gt; &lt;NA&gt;   user</span></span>
+<span><span class="co">#&gt;        &lt;NA&gt; &lt;NA&gt;   user</span></span>
+<span><span class="co">#&gt;        &lt;NA&gt; &lt;NA&gt;   user</span></span>
+<span><span class="co">#&gt;        &lt;NA&gt; &lt;NA&gt;   user</span></span>
+<span><span class="co">#&gt;        &lt;NA&gt; &lt;NA&gt;   user</span></span>
+<span><span class="co">#&gt;        &lt;NA&gt; &lt;NA&gt;   user</span></span>
+<span><span class="co">#&gt;        &lt;NA&gt; &lt;NA&gt;   user</span></span>
+<span><span class="co">#&gt;        &lt;NA&gt; &lt;NA&gt;   user</span></span>
+<span><span class="co">#&gt;        &lt;NA&gt; &lt;NA&gt;   user</span></span></code></pre></div>
 <p>The model still has many parameters where we did not set priors, and
 <code>brms</code> sets automatic defaults. You can see these defaults
 with <code><a href="https://paul-buerkner.github.io/brms/reference/default_prior.html" class="external-link">brms::get_prior()</a></code>.</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="sc">&gt;</span> brms<span class="sc">::</span><span class="fu">get_prior</span>(<span class="at">formula =</span> formula, <span class="at">data =</span> archetype)</span>
-<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="co">#&gt;   prior   class                         coef group resp  dpar nlpar lb ub       source</span></span>
-<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a><span class="co">#&gt;  (flat)       b                                                                default</span></span>
-<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a><span class="co">#&gt;  (flat)       b nuisance_baseline.timetime_2                              (vectorized)</span></span>
-<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a><span class="co">#&gt;  (flat)       b nuisance_baseline.timetime_3                              (vectorized)</span></span>
-<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a><span class="co">#&gt;  (flat)       b nuisance_baseline.timetime_4                              (vectorized)</span></span>
-<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a><span class="co">#&gt;  (flat)       b          nuisance_biomarker1                              (vectorized)</span></span>
-<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a><span class="co">#&gt;  (flat)       b          nuisance_biomarker2                              (vectorized)</span></span>
-<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a><span class="co">#&gt;  (flat)       b      nuisance_status1_absent                              (vectorized)</span></span>
-<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a><span class="co">#&gt;  (flat)       b     nuisance_status2_present                              (vectorized)</span></span>
-<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a><span class="co">#&gt;  (flat)       b             x_group_1_time_2                              (vectorized)</span></span>
-<span id="cb11-12"><a href="#cb11-12" tabindex="-1"></a><span class="co">#&gt;  (flat)       b             x_group_1_time_3                              (vectorized)</span></span>
-<span id="cb11-13"><a href="#cb11-13" tabindex="-1"></a><span class="co">#&gt;  (flat)       b             x_group_1_time_4                              (vectorized)</span></span>
-<span id="cb11-14"><a href="#cb11-14" tabindex="-1"></a><span class="co">#&gt;  (flat)       b             x_group_2_time_2                              (vectorized)</span></span>
-<span id="cb11-15"><a href="#cb11-15" tabindex="-1"></a><span class="co">#&gt;  (flat)       b             x_group_2_time_3                              (vectorized)</span></span>
-<span id="cb11-16"><a href="#cb11-16" tabindex="-1"></a><span class="co">#&gt;  (flat)       b             x_group_2_time_4                              (vectorized)</span></span>
-<span id="cb11-17"><a href="#cb11-17" tabindex="-1"></a><span class="co">#&gt;  lkj(1) cortime                                                                default</span></span>
-<span id="cb11-18"><a href="#cb11-18" tabindex="-1"></a><span class="co">#&gt;  (flat)       b                                         sigma                  default</span></span>
-<span id="cb11-19"><a href="#cb11-19" tabindex="-1"></a><span class="co">#&gt;  (flat)       b                   timetime_2            sigma             (vectorized)</span></span>
-<span id="cb11-20"><a href="#cb11-20" tabindex="-1"></a><span class="co">#&gt;  (flat)       b                   timetime_3            sigma             (vectorized)</span></span>
-<span id="cb11-21"><a href="#cb11-21" tabindex="-1"></a><span class="co">#&gt;  (flat)       b                   timetime_4            sigma             (vectorized)</span></span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">brms</span><span class="fu">::</span><span class="fu"><a href="https://paul-buerkner.github.io/brms/reference/default_prior.html" class="external-link">get_prior</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="va">formula</span>, data <span class="op">=</span> <span class="va">archetype</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Error: The following variables can neither be found in 'data' nor in 'data2':</span></span>
+<span><span class="co">#&gt; 'nuisance_baseline'</span></span></code></pre></div>
 <p><a href="https://paul-buerkner.github.io/brms/reference/set_prior.html" class="external-link uri">https://paul-buerkner.github.io/brms/reference/set_prior.html</a>
 documents many of the default priors set by <code>brms</code>. In
 particular, <code>"(flat)"</code> denotes an improper uniform prior over
@@ -340,74 +355,77 @@ all the real numbers.</p>
 understand how to work with informative prior archetypes. Notably, the
 formula uses custom interest and nuisance variables instead of the
 original variables in the data.</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="sc">&gt;</span> formula <span class="ot">&lt;-</span> <span class="fu">brm_formula</span>(archetype)</span>
-<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a><span class="sc">&gt;</span> formula</span>
-<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a><span class="co">#&gt; change ~ 0 + x_group_1_time_2 + x_group_1_time_3 + x_group_1_time_4 + x_group_2_time_2 + x_group_2_time_3 + x_group_2_time_4 + nuisance_biomarker1 + nuisance_biomarker2 + nuisance_status1_absent + nuisance_status2_present + nuisance_baseline.timetime_2 + nuisance_baseline.timetime_3 + nuisance_baseline.timetime_4 + unstr(time = time, gr = patient) </span></span>
-<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a><span class="co">#&gt; sigma ~ 0 + time</span></span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">formula</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/brm_formula.html">brm_formula</a></span><span class="op">(</span><span class="va">archetype</span><span class="op">)</span></span>
+<span><span class="va">formula</span></span>
+<span><span class="co">#&gt; change ~ 0 + x_group_1_time_2 + x_group_1_time_3 + x_group_1_time_4 + x_group_2_time_2 + x_group_2_time_3 + x_group_2_time_4 + nuisance_biomarker1 + nuisance_biomarker2 + nuisance_status1_absent + nuisance_status2_present + nuisance_baseline.timetime_2 + nuisance_baseline.timetime_3 + nuisance_baseline.timetime_4 + unstr(time = time, gr = patient) </span></span>
+<span><span class="co">#&gt; sigma ~ 0 + time</span></span></code></pre></div>
 <p>The model can accept the archetype, formula, and prior. Usage is the
 same as in non-archetype workflows.</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="sc">&gt;</span> model <span class="ot">&lt;-</span> <span class="fu">brm_model</span>(</span>
-<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a><span class="sc">+</span>   <span class="at">data =</span> archetype,</span>
-<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a><span class="sc">+</span>   <span class="at">formula =</span> formula,</span>
-<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a><span class="sc">+</span>   <span class="at">prior =</span> prior,</span>
-<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a><span class="sc">+</span>   <span class="at">refresh =</span> <span class="dv">0</span></span>
-<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a><span class="sc">+</span> )</span>
-<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a><span class="sc">&gt;</span> brms<span class="sc">::</span><span class="fu">prior_summary</span>(model)</span>
-<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a><span class="co">#&gt;                     prior    class                         coef group resp  dpar nlpar lb ub</span></span>
-<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a><span class="co">#&gt;                    (flat)        b                                                          </span></span>
-<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a><span class="co">#&gt;  student_t(4, 2.17, 4.86)        b nuisance_baseline.timetime_2                             </span></span>
-<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a><span class="co">#&gt;  student_t(4, 3.22, 5.25)        b nuisance_baseline.timetime_3                             </span></span>
-<span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a><span class="co">#&gt;  student_t(4, 2.53, 5.75)        b nuisance_baseline.timetime_4                             </span></span>
-<span id="cb13-13"><a href="#cb13-13" tabindex="-1"></a><span class="co">#&gt;                    (flat)        b          nuisance_biomarker1                             </span></span>
-<span id="cb13-14"><a href="#cb13-14" tabindex="-1"></a><span class="co">#&gt;                    (flat)        b          nuisance_biomarker2                             </span></span>
-<span id="cb13-15"><a href="#cb13-15" tabindex="-1"></a><span class="co">#&gt;                    (flat)        b      nuisance_status1_absent                             </span></span>
-<span id="cb13-16"><a href="#cb13-16" tabindex="-1"></a><span class="co">#&gt;                    (flat)        b     nuisance_status2_present                             </span></span>
-<span id="cb13-17"><a href="#cb13-17" tabindex="-1"></a><span class="co">#&gt;  student_t(4, 0.98, 2.37)        b             x_group_1_time_2                             </span></span>
-<span id="cb13-18"><a href="#cb13-18" tabindex="-1"></a><span class="co">#&gt;  student_t(4, 1.82, 3.32)        b             x_group_1_time_3                             </span></span>
-<span id="cb13-19"><a href="#cb13-19" tabindex="-1"></a><span class="co">#&gt;  student_t(4, 2.35, 4.41)        b             x_group_1_time_4                             </span></span>
-<span id="cb13-20"><a href="#cb13-20" tabindex="-1"></a><span class="co">#&gt;  student_t(4, 0.31, 2.22)        b             x_group_2_time_2                             </span></span>
-<span id="cb13-21"><a href="#cb13-21" tabindex="-1"></a><span class="co">#&gt;  student_t(4, 1.94, 2.85)        b             x_group_2_time_3                             </span></span>
-<span id="cb13-22"><a href="#cb13-22" tabindex="-1"></a><span class="co">#&gt;  student_t(4, 2.33, 3.41)        b             x_group_2_time_4                             </span></span>
-<span id="cb13-23"><a href="#cb13-23" tabindex="-1"></a><span class="co">#&gt;                    (flat)        b                                         sigma            </span></span>
-<span id="cb13-24"><a href="#cb13-24" tabindex="-1"></a><span class="co">#&gt;                    (flat)        b                   timetime_2            sigma            </span></span>
-<span id="cb13-25"><a href="#cb13-25" tabindex="-1"></a><span class="co">#&gt;                    (flat)        b                   timetime_3            sigma            </span></span>
-<span id="cb13-26"><a href="#cb13-26" tabindex="-1"></a><span class="co">#&gt;                    (flat)        b                   timetime_4            sigma            </span></span>
-<span id="cb13-27"><a href="#cb13-27" tabindex="-1"></a><span class="co">#&gt;      lkj_corr_cholesky(1) Lcortime                                                          </span></span>
-<span id="cb13-28"><a href="#cb13-28" tabindex="-1"></a><span class="co">#&gt;        source</span></span>
-<span id="cb13-29"><a href="#cb13-29" tabindex="-1"></a><span class="co">#&gt;       default</span></span>
-<span id="cb13-30"><a href="#cb13-30" tabindex="-1"></a><span class="co">#&gt;          user</span></span>
-<span id="cb13-31"><a href="#cb13-31" tabindex="-1"></a><span class="co">#&gt;          user</span></span>
-<span id="cb13-32"><a href="#cb13-32" tabindex="-1"></a><span class="co">#&gt;          user</span></span>
-<span id="cb13-33"><a href="#cb13-33" tabindex="-1"></a><span class="co">#&gt;  (vectorized)</span></span>
-<span id="cb13-34"><a href="#cb13-34" tabindex="-1"></a><span class="co">#&gt;  (vectorized)</span></span>
-<span id="cb13-35"><a href="#cb13-35" tabindex="-1"></a><span class="co">#&gt;  (vectorized)</span></span>
-<span id="cb13-36"><a href="#cb13-36" tabindex="-1"></a><span class="co">#&gt;  (vectorized)</span></span>
-<span id="cb13-37"><a href="#cb13-37" tabindex="-1"></a><span class="co">#&gt;          user</span></span>
-<span id="cb13-38"><a href="#cb13-38" tabindex="-1"></a><span class="co">#&gt;          user</span></span>
-<span id="cb13-39"><a href="#cb13-39" tabindex="-1"></a><span class="co">#&gt;          user</span></span>
-<span id="cb13-40"><a href="#cb13-40" tabindex="-1"></a><span class="co">#&gt;          user</span></span>
-<span id="cb13-41"><a href="#cb13-41" tabindex="-1"></a><span class="co">#&gt;          user</span></span>
-<span id="cb13-42"><a href="#cb13-42" tabindex="-1"></a><span class="co">#&gt;          user</span></span>
-<span id="cb13-43"><a href="#cb13-43" tabindex="-1"></a><span class="co">#&gt;       default</span></span>
-<span id="cb13-44"><a href="#cb13-44" tabindex="-1"></a><span class="co">#&gt;  (vectorized)</span></span>
-<span id="cb13-45"><a href="#cb13-45" tabindex="-1"></a><span class="co">#&gt;  (vectorized)</span></span>
-<span id="cb13-46"><a href="#cb13-46" tabindex="-1"></a><span class="co">#&gt;  (vectorized)</span></span>
-<span id="cb13-47"><a href="#cb13-47" tabindex="-1"></a><span class="co">#&gt;       default</span></span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/brm_model.html">brm_model</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">archetype</span>,</span>
+<span>  formula <span class="op">=</span> <span class="va">formula</span>,</span>
+<span>  prior <span class="op">=</span> <span class="va">prior</span>,</span>
+<span>  refresh <span class="op">=</span> <span class="fl">0</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; Compiling Stan program...</span></span>
+<span><span class="co">#&gt; Start sampling</span></span>
+<span><span class="fu">brms</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/rstantools/reference/prior_summary.html" class="external-link">prior_summary</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span>
+<span><span class="co">#&gt;                     prior    class                         coef group resp</span></span>
+<span><span class="co">#&gt;                    (flat)        b                                        </span></span>
+<span><span class="co">#&gt;  student_t(4, 2.17, 4.86)        b nuisance_baseline.timetime_2           </span></span>
+<span><span class="co">#&gt;  student_t(4, 3.22, 5.25)        b nuisance_baseline.timetime_3           </span></span>
+<span><span class="co">#&gt;  student_t(4, 2.53, 5.75)        b nuisance_baseline.timetime_4           </span></span>
+<span><span class="co">#&gt;                    (flat)        b          nuisance_biomarker1           </span></span>
+<span><span class="co">#&gt;                    (flat)        b          nuisance_biomarker2           </span></span>
+<span><span class="co">#&gt;                    (flat)        b      nuisance_status1_absent           </span></span>
+<span><span class="co">#&gt;                    (flat)        b     nuisance_status2_present           </span></span>
+<span><span class="co">#&gt;  student_t(4, 0.98, 2.37)        b             x_group_1_time_2           </span></span>
+<span><span class="co">#&gt;  student_t(4, 1.82, 3.32)        b             x_group_1_time_3           </span></span>
+<span><span class="co">#&gt;  student_t(4, 2.35, 4.41)        b             x_group_1_time_4           </span></span>
+<span><span class="co">#&gt;  student_t(4, 0.31, 2.22)        b             x_group_2_time_2           </span></span>
+<span><span class="co">#&gt;  student_t(4, 1.94, 2.85)        b             x_group_2_time_3           </span></span>
+<span><span class="co">#&gt;  student_t(4, 2.33, 3.41)        b             x_group_2_time_4           </span></span>
+<span><span class="co">#&gt;                    (flat)        b                                        </span></span>
+<span><span class="co">#&gt;                    (flat)        b                   timetime_2           </span></span>
+<span><span class="co">#&gt;                    (flat)        b                   timetime_3           </span></span>
+<span><span class="co">#&gt;                    (flat)        b                   timetime_4           </span></span>
+<span><span class="co">#&gt;      lkj_corr_cholesky(1) Lcortime                                        </span></span>
+<span><span class="co">#&gt;   dpar nlpar lb ub       source</span></span>
+<span><span class="co">#&gt;                         default</span></span>
+<span><span class="co">#&gt;                            user</span></span>
+<span><span class="co">#&gt;                            user</span></span>
+<span><span class="co">#&gt;                            user</span></span>
+<span><span class="co">#&gt;                    (vectorized)</span></span>
+<span><span class="co">#&gt;                    (vectorized)</span></span>
+<span><span class="co">#&gt;                    (vectorized)</span></span>
+<span><span class="co">#&gt;                    (vectorized)</span></span>
+<span><span class="co">#&gt;                            user</span></span>
+<span><span class="co">#&gt;                            user</span></span>
+<span><span class="co">#&gt;                            user</span></span>
+<span><span class="co">#&gt;                            user</span></span>
+<span><span class="co">#&gt;                            user</span></span>
+<span><span class="co">#&gt;                            user</span></span>
+<span><span class="co">#&gt;  sigma                  default</span></span>
+<span><span class="co">#&gt;  sigma             (vectorized)</span></span>
+<span><span class="co">#&gt;  sigma             (vectorized)</span></span>
+<span><span class="co">#&gt;  sigma             (vectorized)</span></span>
+<span><span class="co">#&gt;                         default</span></span></code></pre></div>
 <p>Marginal mean estimation, post-processing, and visualization
 automatically understand the archetype without any user
 intervention.</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="sc">&gt;</span> draws <span class="ot">&lt;-</span> <span class="fu">brm_marginal_draws</span>(</span>
-<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a><span class="sc">+</span>   <span class="at">data =</span> archetype,</span>
-<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a><span class="sc">+</span>   <span class="at">formula =</span> formula,</span>
-<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a><span class="sc">+</span>   <span class="at">model =</span> model</span>
-<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a><span class="sc">+</span> )</span>
-<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a><span class="sc">&gt;</span> summaries_model <span class="ot">&lt;-</span> <span class="fu">brm_marginal_summaries</span>(draws)</span>
-<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a><span class="sc">&gt;</span> summaries_data <span class="ot">&lt;-</span> <span class="fu">brm_marginal_data</span>(data)</span>
-<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">brm_plot_compare</span>(<span class="at">model =</span> summaries_model, <span class="at">data =</span> summaries_data)</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">draws</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/brm_marginal_draws.html">brm_marginal_draws</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">archetype</span>,</span>
+<span>  formula <span class="op">=</span> <span class="va">formula</span>,</span>
+<span>  model <span class="op">=</span> <span class="va">model</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">summaries_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/brm_marginal_summaries.html">brm_marginal_summaries</a></span><span class="op">(</span><span class="va">draws</span><span class="op">)</span></span>
+<span><span class="va">summaries_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/brm_marginal_data.html">brm_marginal_data</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/brm_plot_compare.html">brm_plot_compare</a></span><span class="op">(</span>model <span class="op">=</span> <span class="va">summaries_model</span>, data <span class="op">=</span> <span class="va">summaries_data</span><span class="op">)</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
-<img src="archetypes_figures/archetype_compare_data-1.png" alt="plot of chunk archetype_compare_data"><p class="caption">
-plot of chunk archetype_compare_data
-</p>
+<p><img src="archetypes_figures/archetype_compare_data-1.png" alt="plot of chunk archetype_compare_data"></p>
 </div>
 </div>
 <div class="section level2">
@@ -416,71 +434,91 @@ plot of chunk archetype_compare_data
 <p>Other informative prior archetypes use different fixed effects. For
 example, <code>brms.mmrm</code> supports simple cell mean and treatment
 effect parameterizations.</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">summary</span>(<span class="fu">brm_archetype_cells</span>(data))</span>
-<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a><span class="co">#&gt; # This object is an informative prior archetype in brms.mmrm.</span></span>
-<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a><span class="co">#&gt; # The fixed effect parameters of interest express the</span></span>
-<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a><span class="co">#&gt; # marginal means as follows:</span></span>
-<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a><span class="co">#&gt; # </span></span>
-<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a><span class="co">#&gt; #    group_1:time_2 = x_group_1_time_2</span></span>
-<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a><span class="co">#&gt; #    group_1:time_3 = x_group_1_time_3</span></span>
-<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a><span class="co">#&gt; #    group_1:time_4 = x_group_1_time_4</span></span>
-<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a><span class="co">#&gt; #    group_2:time_2 = x_group_2_time_2</span></span>
-<span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a><span class="co">#&gt; #    group_2:time_3 = x_group_2_time_3</span></span>
-<span id="cb15-11"><a href="#cb15-11" tabindex="-1"></a><span class="co">#&gt; #    group_2:time_4 = x_group_2_time_4</span></span></code></pre></div>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">summary</span>(<span class="fu">brm_archetype_effects</span>(data))</span>
-<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a><span class="co">#&gt; # This object is an informative prior archetype in brms.mmrm.</span></span>
-<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a><span class="co">#&gt; # The fixed effect parameters of interest express the</span></span>
-<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a><span class="co">#&gt; # marginal means as follows:</span></span>
-<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a><span class="co">#&gt; # </span></span>
-<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a><span class="co">#&gt; #    group_1:time_2 = x_group_1_time_2</span></span>
-<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a><span class="co">#&gt; #    group_1:time_3 = x_group_1_time_3</span></span>
-<span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a><span class="co">#&gt; #    group_1:time_4 = x_group_1_time_4</span></span>
-<span id="cb16-9"><a href="#cb16-9" tabindex="-1"></a><span class="co">#&gt; #    group_2:time_2 = x_group_1_time_2 + x_group_2_time_2</span></span>
-<span id="cb16-10"><a href="#cb16-10" tabindex="-1"></a><span class="co">#&gt; #    group_2:time_3 = x_group_1_time_3 + x_group_2_time_3</span></span>
-<span id="cb16-11"><a href="#cb16-11" tabindex="-1"></a><span class="co">#&gt; #    group_2:time_4 = x_group_1_time_4 + x_group_2_time_4</span></span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="fu"><a href="../reference/brm_archetype_cells.html">brm_archetype_cells</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # This is the "cells" informative prior archetype in brms.mmrm.</span></span>
+<span><span class="co">#&gt; # The following equations show the relationships between the</span></span>
+<span><span class="co">#&gt; # marginal means (left-hand side) and fixed effect parameters</span></span>
+<span><span class="co">#&gt; # (right-hand side). You can create informative priors for the</span></span>
+<span><span class="co">#&gt; # fixed effect parameters using historical borrowing,</span></span>
+<span><span class="co">#&gt; # expert elicitation, or other methods.</span></span>
+<span><span class="co">#&gt; # </span></span>
+<span><span class="co">#&gt; #    group_1:time_2 = x_group_1_time_2</span></span>
+<span><span class="co">#&gt; #    group_1:time_3 = x_group_1_time_3</span></span>
+<span><span class="co">#&gt; #    group_1:time_4 = x_group_1_time_4</span></span>
+<span><span class="co">#&gt; #    group_2:time_2 = x_group_2_time_2</span></span>
+<span><span class="co">#&gt; #    group_2:time_3 = x_group_2_time_3</span></span>
+<span><span class="co">#&gt; #    group_2:time_4 = x_group_2_time_4</span></span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="fu"><a href="../reference/brm_archetype_effects.html">brm_archetype_effects</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # This is the "effects" informative prior archetype in brms.mmrm.</span></span>
+<span><span class="co">#&gt; # The following equations show the relationships between the</span></span>
+<span><span class="co">#&gt; # marginal means (left-hand side) and fixed effect parameters</span></span>
+<span><span class="co">#&gt; # (right-hand side). You can create informative priors for the</span></span>
+<span><span class="co">#&gt; # fixed effect parameters using historical borrowing,</span></span>
+<span><span class="co">#&gt; # expert elicitation, or other methods.</span></span>
+<span><span class="co">#&gt; # </span></span>
+<span><span class="co">#&gt; #    group_1:time_2 = x_group_1_time_2</span></span>
+<span><span class="co">#&gt; #    group_1:time_3 = x_group_1_time_3</span></span>
+<span><span class="co">#&gt; #    group_1:time_4 = x_group_1_time_4</span></span>
+<span><span class="co">#&gt; #    group_2:time_2 = x_group_1_time_2 + x_group_2_time_2</span></span>
+<span><span class="co">#&gt; #    group_2:time_3 = x_group_1_time_3 + x_group_2_time_3</span></span>
+<span><span class="co">#&gt; #    group_2:time_4 = x_group_1_time_4 + x_group_2_time_4</span></span></code></pre></div>
 <p>There are archetypes to parameterize the average across all time
 points in the data. Below, <code>x_group_1_time_2</code> is the average
 across time points for group 1 because it is the algebraic result of
 simplifying
 <code>(group_1:time_2 + group_1:time_3 + group_1:time_3) / 3</code>.</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">summary</span>(<span class="fu">brm_archetype_average_cells</span>(data))</span>
-<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a><span class="co">#&gt; # This object is an informative prior archetype in brms.mmrm.</span></span>
-<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a><span class="co">#&gt; # The fixed effect parameters of interest express the</span></span>
-<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a><span class="co">#&gt; # marginal means as follows:</span></span>
-<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a><span class="co">#&gt; # </span></span>
-<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a><span class="co">#&gt; #    group_1:time_2 = 3*x_group_1_time_2 - x_group_1_time_3 - x_group_1_time_4</span></span>
-<span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a><span class="co">#&gt; #    group_1:time_3 = x_group_1_time_3</span></span>
-<span id="cb17-8"><a href="#cb17-8" tabindex="-1"></a><span class="co">#&gt; #    group_1:time_4 = x_group_1_time_4</span></span>
-<span id="cb17-9"><a href="#cb17-9" tabindex="-1"></a><span class="co">#&gt; #    group_2:time_2 = 3*x_group_2_time_2 - x_group_2_time_3 - x_group_2_time_4</span></span>
-<span id="cb17-10"><a href="#cb17-10" tabindex="-1"></a><span class="co">#&gt; #    group_2:time_3 = x_group_2_time_3</span></span>
-<span id="cb17-11"><a href="#cb17-11" tabindex="-1"></a><span class="co">#&gt; #    group_2:time_4 = x_group_2_time_4</span></span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="fu"><a href="../reference/brm_archetype_average_cells.html">brm_archetype_average_cells</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # This is the "average cells" informative prior archetype in brms.mmrm.</span></span>
+<span><span class="co">#&gt; # The following equations show the relationships between the</span></span>
+<span><span class="co">#&gt; # marginal means (left-hand side) and fixed effect parameters</span></span>
+<span><span class="co">#&gt; # (right-hand side). You can create informative priors for the</span></span>
+<span><span class="co">#&gt; # fixed effect parameters using historical borrowing,</span></span>
+<span><span class="co">#&gt; # expert elicitation, or other methods.</span></span>
+<span><span class="co">#&gt; # </span></span>
+<span><span class="co">#&gt; #    group_1:time_2 = 3*x_group_1_time_2 - x_group_1_time_3 - x_group_1_time_4</span></span>
+<span><span class="co">#&gt; #    group_1:time_3 = x_group_1_time_3</span></span>
+<span><span class="co">#&gt; #    group_1:time_4 = x_group_1_time_4</span></span>
+<span><span class="co">#&gt; #    group_2:time_2 = 3*x_group_2_time_2 - x_group_2_time_3 - x_group_2_time_4</span></span>
+<span><span class="co">#&gt; #    group_2:time_3 = x_group_2_time_3</span></span>
+<span><span class="co">#&gt; #    group_2:time_4 = x_group_2_time_4</span></span></code></pre></div>
 <p>There is also a treatment effect version where
 <code>x_group_2_time_2</code> becomes the time-averaged treatment effect
 of group 2 relative to group 1.</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">summary</span>(<span class="fu">brm_archetype_average_effects</span>(data))</span>
-<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a><span class="co">#&gt; # This object is an informative prior archetype in brms.mmrm.</span></span>
-<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a><span class="co">#&gt; # The fixed effect parameters of interest express the</span></span>
-<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a><span class="co">#&gt; # marginal means as follows:</span></span>
-<span id="cb18-5"><a href="#cb18-5" tabindex="-1"></a><span class="co">#&gt; # </span></span>
-<span id="cb18-6"><a href="#cb18-6" tabindex="-1"></a><span class="co">#&gt; #    group_1:time_2 = 3*x_group_1_time_2 - x_group_1_time_3 - x_group_1_time_4</span></span>
-<span id="cb18-7"><a href="#cb18-7" tabindex="-1"></a><span class="co">#&gt; #    group_1:time_3 = x_group_1_time_3</span></span>
-<span id="cb18-8"><a href="#cb18-8" tabindex="-1"></a><span class="co">#&gt; #    group_1:time_4 = x_group_1_time_4</span></span>
-<span id="cb18-9"><a href="#cb18-9" tabindex="-1"></a><span class="co">#&gt; #    group_2:time_2 = 3*x_group_1_time_2 - x_group_1_time_3 - x_group_1_time_4 + 3*x_group_2_time_2 - x_group_2_time_3 - x_group_2_time_4</span></span>
-<span id="cb18-10"><a href="#cb18-10" tabindex="-1"></a><span class="co">#&gt; #    group_2:time_3 = x_group_1_time_3 + x_group_2_time_3</span></span>
-<span id="cb18-11"><a href="#cb18-11" tabindex="-1"></a><span class="co">#&gt; #    group_2:time_4 = x_group_1_time_4 + x_group_2_time_4</span></span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="fu"><a href="../reference/brm_archetype_average_effects.html">brm_archetype_average_effects</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # This is the "average effects" informative prior archetype in brms.mmrm.</span></span>
+<span><span class="co">#&gt; # The following equations show the relationships between the</span></span>
+<span><span class="co">#&gt; # marginal means (left-hand side) and fixed effect parameters</span></span>
+<span><span class="co">#&gt; # (right-hand side). You can create informative priors for the</span></span>
+<span><span class="co">#&gt; # fixed effect parameters using historical borrowing,</span></span>
+<span><span class="co">#&gt; # expert elicitation, or other methods.</span></span>
+<span><span class="co">#&gt; # </span></span>
+<span><span class="co">#&gt; #    group_1:time_2 = 3*x_group_1_time_2 - x_group_1_time_3 - x_group_1_time_4</span></span>
+<span><span class="co">#&gt; #    group_1:time_3 = x_group_1_time_3</span></span>
+<span><span class="co">#&gt; #    group_1:time_4 = x_group_1_time_4</span></span>
+<span><span class="co">#&gt; #    group_2:time_2 = 3*x_group_1_time_2 - x_group_1_time_3 - x_group_1_time_4 + 3*x_group_2_time_2 - x_group_2_time_3 - x_group_2_time_4</span></span>
+<span><span class="co">#&gt; #    group_2:time_3 = x_group_1_time_3 + x_group_2_time_3</span></span>
+<span><span class="co">#&gt; #    group_2:time_4 = x_group_1_time_4 + x_group_2_time_4</span></span></code></pre></div>
 <p>In addition, there is a treatment effect version of the successive
 differences archetype from earlier in the vignette.</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">summary</span>(<span class="fu">brm_archetype_successive_effects</span>(data))</span>
-<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a><span class="co">#&gt; # This object is an informative prior archetype in brms.mmrm.</span></span>
-<span id="cb19-3"><a href="#cb19-3" tabindex="-1"></a><span class="co">#&gt; # The fixed effect parameters of interest express the</span></span>
-<span id="cb19-4"><a href="#cb19-4" tabindex="-1"></a><span class="co">#&gt; # marginal means as follows:</span></span>
-<span id="cb19-5"><a href="#cb19-5" tabindex="-1"></a><span class="co">#&gt; # </span></span>
-<span id="cb19-6"><a href="#cb19-6" tabindex="-1"></a><span class="co">#&gt; #    group_1:time_2 = x_group_1_time_2</span></span>
-<span id="cb19-7"><a href="#cb19-7" tabindex="-1"></a><span class="co">#&gt; #    group_1:time_3 = x_group_1_time_2 + x_group_1_time_3</span></span>
-<span id="cb19-8"><a href="#cb19-8" tabindex="-1"></a><span class="co">#&gt; #    group_1:time_4 = x_group_1_time_2 + x_group_1_time_3 + x_group_1_time_4</span></span>
-<span id="cb19-9"><a href="#cb19-9" tabindex="-1"></a><span class="co">#&gt; #    group_2:time_2 = x_group_1_time_2 + x_group_2_time_2</span></span>
-<span id="cb19-10"><a href="#cb19-10" tabindex="-1"></a><span class="co">#&gt; #    group_2:time_3 = x_group_1_time_2 + x_group_1_time_3 + x_group_2_time_2 + x_group_2_time_3</span></span>
-<span id="cb19-11"><a href="#cb19-11" tabindex="-1"></a><span class="co">#&gt; #    group_2:time_4 = x_group_1_time_2 + x_group_1_time_3 + x_group_1_time_4 + x_group_2_time_2 + x_group_2_time_3 + x_group_2_time_4</span></span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="fu"><a href="../reference/brm_archetype_successive_effects.html">brm_archetype_successive_effects</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # This is the "successive effects" informative prior archetype in brms.mmrm.</span></span>
+<span><span class="co">#&gt; # The following equations show the relationships between the</span></span>
+<span><span class="co">#&gt; # marginal means (left-hand side) and fixed effect parameters</span></span>
+<span><span class="co">#&gt; # (right-hand side). You can create informative priors for the</span></span>
+<span><span class="co">#&gt; # fixed effect parameters using historical borrowing,</span></span>
+<span><span class="co">#&gt; # expert elicitation, or other methods.</span></span>
+<span><span class="co">#&gt; # </span></span>
+<span><span class="co">#&gt; #    group_1:time_2 = x_group_1_time_2</span></span>
+<span><span class="co">#&gt; #    group_1:time_3 = x_group_1_time_2 + x_group_1_time_3</span></span>
+<span><span class="co">#&gt; #    group_1:time_4 = x_group_1_time_2 + x_group_1_time_3 + x_group_1_time_4</span></span>
+<span><span class="co">#&gt; #    group_2:time_2 = x_group_1_time_2 + x_group_2_time_2</span></span>
+<span><span class="co">#&gt; #    group_2:time_3 = x_group_1_time_2 + x_group_1_time_3 + x_group_2_time_2 + x_group_2_time_3</span></span>
+<span><span class="co">#&gt; #    group_2:time_4 = x_group_1_time_2 + x_group_1_time_3 + x_group_1_time_4 + x_group_2_time_2 + x_group_2_time_3 + x_group_2_time_4</span></span></code></pre></div>
 </div>
 
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
