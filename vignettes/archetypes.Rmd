@@ -26,7 +26,7 @@ The dataset is a tibble with 800 rows and 7 variables:
 * `FEV1` (FEV1 at study visits),
 * `WEIGHT` (weighting variable).
 
-We will define `FEV1_CHG = FEV1 - FEV1_BL` and analyze `FEV1_CHG` as the outcome variable.
+We will derive `FEV1_CHG = FEV1 - FEV1_BL` and analyze `FEV1_CHG` as the outcome variable.
 
 
 ```r
@@ -74,43 +74,41 @@ The instance of the archetype is an ordinary tibble, but it adds new columns.
 ```r
 archetype
 #> # A tibble: 800 × 21
-#>    x_PBO_VIS1 x_PBO_VIS2 x_PBO_VIS3 x_PBO_VIS4 x_TRT_VIS1 x_TRT_VIS2 x_TRT_VIS3
-#>  *      <dbl>      <dbl>      <dbl>      <dbl>      <dbl>      <dbl>      <dbl>
-#>  1          1          0          0          0          0          0          0
-#>  2          1          1          0          0          0          0          0
-#>  3          1          1          1          0          0          0          0
-#>  4          1          1          1          1          0          0          0
-#>  5          1          0          0          0          0          0          0
-#>  6          1          1          0          0          0          0          0
-#>  7          1          1          1          0          0          0          0
-#>  8          1          1          1          1          0          0          0
-#>  9          1          0          0          0          0          0          0
-#> 10          1          1          0          0          0          0          0
+#>    x_PBO_VIS1 x_PBO_VIS2 x_PBO_VIS3 x_PBO_VIS4 x_TRT_VIS1 x_TRT_VIS2 x_TRT_VIS3 x_TRT_VIS4
+#>  *      <dbl>      <dbl>      <dbl>      <dbl>      <dbl>      <dbl>      <dbl>      <dbl>
+#>  1          1          0          0          0          0          0          0          0
+#>  2          1          1          0          0          0          0          0          0
+#>  3          1          1          1          0          0          0          0          0
+#>  4          1          1          1          1          0          0          0          0
+#>  5          1          0          0          0          0          0          0          0
+#>  6          1          1          0          0          0          0          0          0
+#>  7          1          1          1          0          0          0          0          0
+#>  8          1          1          1          1          0          0          0          0
+#>  9          1          0          0          0          0          0          0          0
+#> 10          1          1          0          0          0          0          0          0
 #> # ℹ 790 more rows
-#> # ℹ 14 more variables: x_TRT_VIS4 <dbl>, nuisance_WEIGHT <dbl>,
-#> #   nuisance_SEX_Male <dbl>, nuisance_FEV1_BL.AVISITVIS1 <dbl>,
-#> #   nuisance_FEV1_BL.AVISITVIS2 <dbl>, nuisance_FEV1_BL.AVISITVIS3 <dbl>,
-#> #   nuisance_FEV1_BL.AVISITVIS4 <dbl>, USUBJID <fct>, AVISIT <chr>,
-#> #   FEV1_CHG <dbl>, FEV1_BL <dbl>, ARMCD <chr>, WEIGHT <dbl>, SEX <fct>
+#> # ℹ 13 more variables: nuisance_WEIGHT <dbl>, nuisance_SEX_Male <dbl>,
+#> #   nuisance_FEV1_BL.AVISITVIS1 <dbl>, nuisance_FEV1_BL.AVISITVIS2 <dbl>,
+#> #   nuisance_FEV1_BL.AVISITVIS3 <dbl>, nuisance_FEV1_BL.AVISITVIS4 <dbl>, USUBJID <fct>,
+#> #   AVISIT <chr>, FEV1_CHG <dbl>, FEV1_BL <dbl>, ARMCD <chr>, WEIGHT <dbl>, SEX <fct>
 ```
 
-Those new columns constitute a custom model matrix to describe the desired parameterization. We have effects of interest to express successive differences,
+Those new columns constitute a custom model matrix to describe the desired parameterization. We have effects of interest to express successive differences:
 
 
 ```r
 attr(archetype, "brm_archetype_interest")
-#> [1] "x_PBO_VIS1" "x_PBO_VIS2" "x_PBO_VIS3" "x_PBO_VIS4" "x_TRT_VIS1"
-#> [6] "x_TRT_VIS2" "x_TRT_VIS3" "x_TRT_VIS4"
+#> [1] "x_PBO_VIS1" "x_PBO_VIS2" "x_PBO_VIS3" "x_PBO_VIS4" "x_TRT_VIS1" "x_TRT_VIS2" "x_TRT_VIS3"
+#> [8] "x_TRT_VIS4"
 ```
 
-and we have nuisance variables. Some nuisance variables are continuous covariates, while others are levels of one-hot-encoded concomitant factors or interactions of those concomitant factors with baseline and/or subgroup. All nuisance variables are centered at their means so the reference level of the model is at the "center" of the data and not implicitly conditional on a subset of the data.^[`brm_recenter_nuisance()` can retroactively recenter a nuisance column to a fixed value other than its mean.] In addition, some nuisance variables are automatically dropped in order to ensure the model matrix is full-rank. This is critically important to preserve the interpretation of the columns of interest and make sure the informative priors behave as expected.
+In addition, we have nuisance variables. Some nuisance variables are continuous covariates, while others are levels of one-hot-encoded concomitant factors or interactions of those concomitant factors with baseline and/or subgroup. All nuisance variables are centered at their means so the reference level of the model is at the "center" of the data and not implicitly conditional on a subset of the data.^[`brm_recenter_nuisance()` can retroactively recenter a nuisance column to a fixed value other than its mean.] In addition, some nuisance variables are automatically dropped in order to ensure the model matrix is full-rank. This is critically important to preserve the interpretation of the columns of interest and make sure the informative priors behave as expected.
 
 
 ```r
 attr(archetype, "brm_archetype_nuisance")
-#> [1] "nuisance_WEIGHT"             "nuisance_SEX_Male"          
-#> [3] "nuisance_FEV1_BL.AVISITVIS1" "nuisance_FEV1_BL.AVISITVIS2"
-#> [5] "nuisance_FEV1_BL.AVISITVIS3" "nuisance_FEV1_BL.AVISITVIS4"
+#> [1] "nuisance_WEIGHT"             "nuisance_SEX_Male"           "nuisance_FEV1_BL.AVISITVIS1"
+#> [4] "nuisance_FEV1_BL.AVISITVIS2" "nuisance_FEV1_BL.AVISITVIS3" "nuisance_FEV1_BL.AVISITVIS4"
 ```
 
 The factors of interest linearly map to marginal means. To see the mapping, call `summary()` on the archetype. The printed output helps build intuition on how the archetype is parameterized and what those parameters are doing.
@@ -139,7 +137,9 @@ summary(archetype)
 
 Let's assume you want to assign informative priors to the fixed effect parameters of interest declared in the archetype, such as `x_group_1_time_2` and `x_group_2_time_3`. Your priors may come from expert elicitation, historical data, or some other method, and you might consider [distributional families recommended by the Stan team](https://github.com/stan-dev/stan/wiki/prior-choice-recommendations). However you construct these priors, `brms.mmrm` helps you assign them to the model without having to guess at the automatically-generated names of model coefficients in R.
 
-In the printed output from `summary(archetype)`, parameters of interest such as `x_group_1_time_2` and `x_group_2_time_3` are always labeled using treatment groups and time points in the data (and subgroup levels, if applicable). Even though different archetypes have different parameterizations and thus different ways of expressing marginal means, this labeling scheme remains consistent across all archetypes. This is how `brms.mmrm` helps you assign priors. First, match your priors to levels in the data.
+In the printed output from `summary(archetype)`, parameters of interest such as `x_group_1_time_2` and `x_group_2_time_3` are always labeled using treatment groups and time points in the data (and subgroup levels, if applicable). This labeling mechanism is the same regardless of which archetype you choose, and it the way `brms.mmrm` helps you assign priors.
+
+`brm_prior_label()` is one way to create a labeling scheme. Each call to `brm_prior_label()` below assigns a univariate prior to a fixed effect parameter. Each univariate prior is a Stan code string. Possible choices are documented in the Stan function reference at <https://mc-stan.org/docs/functions-reference/unbounded_continuous_distributions.html>.
 
 
 ```r
@@ -166,30 +166,69 @@ label
 #> 8 student_t(4,  4.64, 8.21) TRT   VIS4
 ```
 
-The `group` and `time` arguments map your priors to the corresponding `x_*` parameters using levels in the data. The `code` argument is custom Stan code for a univariate prior. Possible choices are documented in the Stan function reference at <https://mc-stan.org/docs/functions-reference/unbounded_continuous_distributions.html>. `brm_prior_archetype()` accepts a collection of labeled priors and returns a `brms` prior object as documented in <https://paul-buerkner.github.io/brms/reference/set_prior.html>.
+As an alternative to `brm_prior_label()`, you can start with a template and manually fill in the Stan code. 
+
+
+```r
+template <- brm_prior_template(archetype)
+template
+#> # A tibble: 8 × 3
+#>   code  group time 
+#>   <chr> <chr> <chr>
+#> 1 <NA>  PBO   VIS1 
+#> 2 <NA>  PBO   VIS2 
+#> 3 <NA>  PBO   VIS3 
+#> 4 <NA>  PBO   VIS4 
+#> 5 <NA>  TRT   VIS1 
+#> 6 <NA>  TRT   VIS2 
+#> 7 <NA>  TRT   VIS3 
+#> 8 <NA>  TRT   VIS4
+```
+
+
+```r
+label <- template |>
+  mutate(
+    code = c(
+      "student_t(4, -7.57, 4.96)",
+      "student_t(4,  3.14, 7.86)",
+      "student_t(4,  8.78, 8.18)",
+      "student_t(4,  3.36, 8.10)",
+      "student_t(4, -2.96, 4.78)",
+      "student_t(4,  3.13, 7.64)",
+      "student_t(4,  7.65, 8.24)",
+      "student_t(4,  4.64, 8.21)"
+    )
+  )
+label
+#> # A tibble: 8 × 3
+#>   code                      group time 
+#>   <chr>                     <chr> <chr>
+#> 1 student_t(4, -7.57, 4.96) PBO   VIS1 
+#> 2 student_t(4,  3.14, 7.86) PBO   VIS2 
+#> 3 student_t(4,  8.78, 8.18) PBO   VIS3 
+#> 4 student_t(4,  3.36, 8.10) PBO   VIS4 
+#> 5 student_t(4, -2.96, 4.78) TRT   VIS1 
+#> 6 student_t(4,  3.13, 7.64) TRT   VIS2 
+#> 7 student_t(4,  7.65, 8.24) TRT   VIS3 
+#> 8 student_t(4,  4.64, 8.21) TRT   VIS4
+```
+
+After you have a labeling scheme, `brm_prior_archetype()` can create a `brms` prior for the important fixed effects.^[`brms` priors are documented in <https://paul-buerkner.github.io/brms/reference/set_prior.html>.]
 
 
 ```r
 prior <- brm_prior_archetype(label = label, archetype = archetype)
 prior
-#>                      prior class       coef group resp dpar nlpar   lb   ub
-#>  student_t(4, -7.57, 4.96)     b x_PBO_VIS1                       <NA> <NA>
-#>  student_t(4,  3.14, 7.86)     b x_PBO_VIS2                       <NA> <NA>
-#>  student_t(4,  8.78, 8.18)     b x_PBO_VIS3                       <NA> <NA>
-#>  student_t(4,  3.36, 8.10)     b x_PBO_VIS4                       <NA> <NA>
-#>  student_t(4, -2.96, 4.78)     b x_TRT_VIS1                       <NA> <NA>
-#>  student_t(4,  3.13, 7.64)     b x_TRT_VIS2                       <NA> <NA>
-#>  student_t(4,  7.65, 8.24)     b x_TRT_VIS3                       <NA> <NA>
-#>  student_t(4,  4.64, 8.21)     b x_TRT_VIS4                       <NA> <NA>
-#>  source
-#>    user
-#>    user
-#>    user
-#>    user
-#>    user
-#>    user
-#>    user
-#>    user
+#>                      prior class       coef group resp dpar nlpar   lb   ub source
+#>  student_t(4, -7.57, 4.96)     b x_PBO_VIS1                       <NA> <NA>   user
+#>  student_t(4,  3.14, 7.86)     b x_PBO_VIS2                       <NA> <NA>   user
+#>  student_t(4,  8.78, 8.18)     b x_PBO_VIS3                       <NA> <NA>   user
+#>  student_t(4,  3.36, 8.10)     b x_PBO_VIS4                       <NA> <NA>   user
+#>  student_t(4, -2.96, 4.78)     b x_TRT_VIS1                       <NA> <NA>   user
+#>  student_t(4,  3.13, 7.64)     b x_TRT_VIS2                       <NA> <NA>   user
+#>  student_t(4,  7.65, 8.24)     b x_TRT_VIS3                       <NA> <NA>   user
+#>  student_t(4,  4.64, 8.21)     b x_TRT_VIS4                       <NA> <NA>   user
 ```
 
 In less common situations, you may wish to assign priors to nuisance parameters. For example, our model accounts for interactions between baseline and discrete time, and it may be reasonable to assign priors to these slopes based on high-quality historical data. This requires a thorough understanding of the fixed effect structure of the model, but it can be done directly through `brms`. First, check the formula for the included nuisance parameters. `brm_formula()` automatically understands archetypes.
@@ -213,32 +252,32 @@ prior <- c(
   set_prior("student_t(4, -0.82, 1)", coef = "nuisance_FEV1_BL.AVISITVIS4")
 )
 prior
-#>                      prior class                        coef group resp dpar
-#>  student_t(4, -7.57, 4.96)     b                  x_PBO_VIS1                
-#>  student_t(4,  3.14, 7.86)     b                  x_PBO_VIS2                
-#>  student_t(4,  8.78, 8.18)     b                  x_PBO_VIS3                
-#>  student_t(4,  3.36, 8.10)     b                  x_PBO_VIS4                
-#>  student_t(4, -2.96, 4.78)     b                  x_TRT_VIS1                
-#>  student_t(4,  3.13, 7.64)     b                  x_TRT_VIS2                
-#>  student_t(4,  7.65, 8.24)     b                  x_TRT_VIS3                
-#>  student_t(4,  4.64, 8.21)     b                  x_TRT_VIS4                
-#>     student_t(4, -0.83, 1)     b nuisance_FEV1_BL.AVISITVIS1                
-#>     student_t(4, -0.78, 1)     b nuisance_FEV1_BL.AVISITVIS2                
-#>     student_t(4, -0.86, 1)     b nuisance_FEV1_BL.AVISITVIS3                
-#>     student_t(4, -0.82, 1)     b nuisance_FEV1_BL.AVISITVIS4                
-#>  nlpar   lb   ub source
-#>        <NA> <NA>   user
-#>        <NA> <NA>   user
-#>        <NA> <NA>   user
-#>        <NA> <NA>   user
-#>        <NA> <NA>   user
-#>        <NA> <NA>   user
-#>        <NA> <NA>   user
-#>        <NA> <NA>   user
-#>        <NA> <NA>   user
-#>        <NA> <NA>   user
-#>        <NA> <NA>   user
-#>        <NA> <NA>   user
+#>                      prior class                        coef group resp dpar nlpar   lb   ub
+#>  student_t(4, -7.57, 4.96)     b                  x_PBO_VIS1                       <NA> <NA>
+#>  student_t(4,  3.14, 7.86)     b                  x_PBO_VIS2                       <NA> <NA>
+#>  student_t(4,  8.78, 8.18)     b                  x_PBO_VIS3                       <NA> <NA>
+#>  student_t(4,  3.36, 8.10)     b                  x_PBO_VIS4                       <NA> <NA>
+#>  student_t(4, -2.96, 4.78)     b                  x_TRT_VIS1                       <NA> <NA>
+#>  student_t(4,  3.13, 7.64)     b                  x_TRT_VIS2                       <NA> <NA>
+#>  student_t(4,  7.65, 8.24)     b                  x_TRT_VIS3                       <NA> <NA>
+#>  student_t(4,  4.64, 8.21)     b                  x_TRT_VIS4                       <NA> <NA>
+#>     student_t(4, -0.83, 1)     b nuisance_FEV1_BL.AVISITVIS1                       <NA> <NA>
+#>     student_t(4, -0.78, 1)     b nuisance_FEV1_BL.AVISITVIS2                       <NA> <NA>
+#>     student_t(4, -0.86, 1)     b nuisance_FEV1_BL.AVISITVIS3                       <NA> <NA>
+#>     student_t(4, -0.82, 1)     b nuisance_FEV1_BL.AVISITVIS4                       <NA> <NA>
+#>  source
+#>    user
+#>    user
+#>    user
+#>    user
+#>    user
+#>    user
+#>    user
+#>    user
+#>    user
+#>    user
+#>    user
+#>    user
 ```
 
 The model still has many parameters where we did not set priors, and `brms` sets automatic defaults. You can see these defaults with `brms::get_prior()`.
@@ -246,7 +285,29 @@ The model still has many parameters where we did not set priors, and `brms` sets
 
 ```r
 brms::get_prior(formula = formula, data = archetype)
-#> Error in x$formula: object of type 'closure' is not subsettable
+#> Warning: Rows containing NAs were excluded from the model.
+#>   prior   class                        coef group resp  dpar nlpar lb ub       source
+#>  (flat)       b                                                               default
+#>  (flat)       b nuisance_FEV1_BL.AVISITVIS1                              (vectorized)
+#>  (flat)       b nuisance_FEV1_BL.AVISITVIS2                              (vectorized)
+#>  (flat)       b nuisance_FEV1_BL.AVISITVIS3                              (vectorized)
+#>  (flat)       b nuisance_FEV1_BL.AVISITVIS4                              (vectorized)
+#>  (flat)       b           nuisance_SEX_Male                              (vectorized)
+#>  (flat)       b             nuisance_WEIGHT                              (vectorized)
+#>  (flat)       b                  x_PBO_VIS1                              (vectorized)
+#>  (flat)       b                  x_PBO_VIS2                              (vectorized)
+#>  (flat)       b                  x_PBO_VIS3                              (vectorized)
+#>  (flat)       b                  x_PBO_VIS4                              (vectorized)
+#>  (flat)       b                  x_TRT_VIS1                              (vectorized)
+#>  (flat)       b                  x_TRT_VIS2                              (vectorized)
+#>  (flat)       b                  x_TRT_VIS3                              (vectorized)
+#>  (flat)       b                  x_TRT_VIS4                              (vectorized)
+#>  lkj(1) cortime                                                               default
+#>  (flat)       b                                        sigma                  default
+#>  (flat)       b                  AVISITVIS1            sigma             (vectorized)
+#>  (flat)       b                  AVISITVIS2            sigma             (vectorized)
+#>  (flat)       b                  AVISITVIS3            sigma             (vectorized)
+#>  (flat)       b                  AVISITVIS4            sigma             (vectorized)
 ```
 
 <https://paul-buerkner.github.io/brms/reference/set_prior.html> documents many of the default priors set by `brms`. In particular, `"(flat)"` denotes an improper uniform prior over all the real numbers.
@@ -276,50 +337,50 @@ model <- brm_model(
 #> Compiling Stan program...
 #> Start sampling
 brms::prior_summary(model)
-#>                      prior    class                        coef group resp
-#>                     (flat)        b                                       
-#>     student_t(4, -0.83, 1)        b nuisance_FEV1_BL.AVISITVIS1           
-#>     student_t(4, -0.78, 1)        b nuisance_FEV1_BL.AVISITVIS2           
-#>     student_t(4, -0.86, 1)        b nuisance_FEV1_BL.AVISITVIS3           
-#>     student_t(4, -0.82, 1)        b nuisance_FEV1_BL.AVISITVIS4           
-#>                     (flat)        b           nuisance_SEX_Male           
-#>                     (flat)        b             nuisance_WEIGHT           
-#>  student_t(4, -7.57, 4.96)        b                  x_PBO_VIS1           
-#>  student_t(4,  3.14, 7.86)        b                  x_PBO_VIS2           
-#>  student_t(4,  8.78, 8.18)        b                  x_PBO_VIS3           
-#>  student_t(4,  3.36, 8.10)        b                  x_PBO_VIS4           
-#>  student_t(4, -2.96, 4.78)        b                  x_TRT_VIS1           
-#>  student_t(4,  3.13, 7.64)        b                  x_TRT_VIS2           
-#>  student_t(4,  7.65, 8.24)        b                  x_TRT_VIS3           
-#>  student_t(4,  4.64, 8.21)        b                  x_TRT_VIS4           
-#>                     (flat)        b                                       
-#>                     (flat)        b                  AVISITVIS1           
-#>                     (flat)        b                  AVISITVIS2           
-#>                     (flat)        b                  AVISITVIS3           
-#>                     (flat)        b                  AVISITVIS4           
-#>       lkj_corr_cholesky(1) Lcortime                                       
-#>   dpar nlpar lb ub       source
-#>                         default
-#>                            user
-#>                            user
-#>                            user
-#>                            user
-#>                    (vectorized)
-#>                    (vectorized)
-#>                            user
-#>                            user
-#>                            user
-#>                            user
-#>                            user
-#>                            user
-#>                            user
-#>                            user
-#>  sigma                  default
-#>  sigma             (vectorized)
-#>  sigma             (vectorized)
-#>  sigma             (vectorized)
-#>  sigma             (vectorized)
-#>                         default
+#>                      prior    class                        coef group resp  dpar nlpar lb ub
+#>                     (flat)        b                                                         
+#>     student_t(4, -0.83, 1)        b nuisance_FEV1_BL.AVISITVIS1                             
+#>     student_t(4, -0.78, 1)        b nuisance_FEV1_BL.AVISITVIS2                             
+#>     student_t(4, -0.86, 1)        b nuisance_FEV1_BL.AVISITVIS3                             
+#>     student_t(4, -0.82, 1)        b nuisance_FEV1_BL.AVISITVIS4                             
+#>                     (flat)        b           nuisance_SEX_Male                             
+#>                     (flat)        b             nuisance_WEIGHT                             
+#>  student_t(4, -7.57, 4.96)        b                  x_PBO_VIS1                             
+#>  student_t(4,  3.14, 7.86)        b                  x_PBO_VIS2                             
+#>  student_t(4,  8.78, 8.18)        b                  x_PBO_VIS3                             
+#>  student_t(4,  3.36, 8.10)        b                  x_PBO_VIS4                             
+#>  student_t(4, -2.96, 4.78)        b                  x_TRT_VIS1                             
+#>  student_t(4,  3.13, 7.64)        b                  x_TRT_VIS2                             
+#>  student_t(4,  7.65, 8.24)        b                  x_TRT_VIS3                             
+#>  student_t(4,  4.64, 8.21)        b                  x_TRT_VIS4                             
+#>                     (flat)        b                                        sigma            
+#>                     (flat)        b                  AVISITVIS1            sigma            
+#>                     (flat)        b                  AVISITVIS2            sigma            
+#>                     (flat)        b                  AVISITVIS3            sigma            
+#>                     (flat)        b                  AVISITVIS4            sigma            
+#>       lkj_corr_cholesky(1) Lcortime                                                         
+#>        source
+#>       default
+#>          user
+#>          user
+#>          user
+#>          user
+#>  (vectorized)
+#>  (vectorized)
+#>          user
+#>          user
+#>          user
+#>          user
+#>          user
+#>          user
+#>          user
+#>          user
+#>       default
+#>  (vectorized)
+#>  (vectorized)
+#>  (vectorized)
+#>  (vectorized)
+#>       default
 ```
 
 Marginal mean estimation, post-processing, and visualization automatically understand the archetype without any user intervention.
