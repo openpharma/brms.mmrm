@@ -14,7 +14,9 @@
 #'   of each parameter.
 #' @param code Character of length 1, Stan code for the prior. Could be
 #'   a string like `"normal(1, 2.2)"`. The full set of priors is given
-#'   in the Stan Reference Manual, available from <https://mc-stan.org/>.
+#'   in the Stan Function Reference at
+#'   <https://mc-stan.org/docs/functions-reference/> in the
+#'   "Unbounded Continuous Distributions" section.
 #'   See the documentation [brms::set_prior()] for more details.
 #' @param group Value of length 1, level of the treatment group column
 #'   in the data to label the prior. The treatment group column
