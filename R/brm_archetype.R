@@ -168,13 +168,19 @@ summary.brms_mmrm_archetype <- function(object, ...) {
   formula <- brm_formula(object)
   transform <- brm_transform_marginal(object, formula, prefix = "")
   transform <- transform[, attr(object, "brm_archetype_interest")]
-  marginals <- gsub("|", ":", rownames(transform), fixed = TRUE)
+  marginals <- gsub(brm_sep(), ":", rownames(transform), fixed = TRUE)
   lines <- c(
-    "This object is an informative prior archetype in brms.mmrm.",
-    "The fixed effect parameters of interest express the",
-    "marginal means as follows:",
+    "This is the \"%s\" informative prior archetype in brms.mmrm.",
+    "The following equations show the relationships between the",
+    "marginal means (left-hand side) and fixed effect parameters",
+    "(right-hand side). You can create informative priors for the",
+    "fixed effect parameters using historical borrowing,",
+    "expert elicitation, or other methods.",
     ""
   )
+  name <- gsub("^brms_mmrm_", "", class(object)[1L])
+  name <- gsub("_", " ", name)
+  lines <- sprintf(lines, name)
   for (index in seq_along(marginals)) {
     coef <- transform[index, ]
     terms <- colnames(transform)[coef != 0]
