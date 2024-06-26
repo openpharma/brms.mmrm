@@ -74,13 +74,12 @@ model matrix that \code{brms} derives from the formula from \code{brm_formula()}
 
 \item{reference_time}{Character of length 1 or \code{NULL},
 level of the \code{time} column to indicate the baseline time point.
-This value should not be present in the data if the outcome
-variable is change from baseline, but it must be in the data
-if the outcome variable is the raw response so that \code{brms.mmrm}
-can produce model-based marginal estimates of change from baseline.
-In other words, set \code{reference_time} to \code{NULL} if \code{role} is \code{"change"},
-and set \code{reference_time} to a non-null value in \code{data[[time]]}
-if \code{role} is \code{"response"}.
+This value must be \code{NULL} if the outcome
+variable is already change from baseline. If the outcome
+is raw response, then \code{reference_time} may or may not be \code{NULL}.
+\code{\link[=brm_marginal_draws]{brm_marginal_draws()}} and downstream functions calculate posterior
+inference on change from baseline if and only if
+\code{reference_time} is not \code{NULL}.
 
 Note: \code{reference_time} only applies to the post-processing that happens
 in functions like \code{\link[=brm_marginal_draws]{brm_marginal_draws()}} downstream of the model.

@@ -61,13 +61,12 @@
 #'   model matrix that `brms` derives from the formula from `brm_formula()`.
 #' @param reference_time Character of length 1 or `NULL`,
 #'   level of the `time` column to indicate the baseline time point.
-#'   This value should not be present in the data if the outcome
-#'   variable is change from baseline, but it must be in the data
-#'   if the outcome variable is the raw response so that `brms.mmrm`
-#'   can produce model-based marginal estimates of change from baseline.
-#'   In other words, set `reference_time` to `NULL` if `role` is `"change"`,
-#'   and set `reference_time` to a non-null value in `data[[time]]`
-#'   if `role` is `"response"`.
+#'   This value must be `NULL` if the outcome
+#'   variable is already change from baseline. If the outcome
+#'   is raw response, then `reference_time` may or may not be `NULL`.
+#'   [brm_marginal_draws()] and downstream functions calculate posterior
+#'   inference on change from baseline if and only if
+#'   `reference_time` is not `NULL`.
 #'
 #'   Note: `reference_time` only applies to the post-processing that happens
 #'   in functions like [brm_marginal_draws()] downstream of the model.
@@ -350,15 +349,10 @@ brm_data_validate.default <- function(data) {
       )
     )
   }
-  if (role == "response") {
-    assert(
-      !is.null(reference_time),
-      message = "reference_time is needed if role is \"response\"."
-    )
-  } else if (role == "change") {
+  if (role == "change") {
     assert(
       is.null(reference_time),
-      message = "reference_time should be NULL if role is \"change\"."
+      message = "reference_time must be NULL if role is \"change\"."
     )
   }
 }

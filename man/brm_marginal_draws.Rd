@@ -67,13 +67,14 @@ list are described below:
 \item \code{difference_time}: change from baseline: the
 \code{response} at a particular time minus the \code{response} at baseline
 (\code{reference_time}).
-Only returned if the \code{role} argument of \code{\link[=brm_data]{brm_data()}} was
-\code{"response"}. (If \code{role} is \code{"change"}, then \code{response} already
-represents change from baseline.)
-\item \code{difference_group}: treatment effect: the
+Only returned if the \code{reference_time} argument of \code{\link[=brm_data]{brm_data()}} was
+not \code{NULL} (i.e. if a baseline value for the time variable
+was identified).
+\item \code{difference_group}: treatment effect:
 the \code{difference_time} at each active group minus the \code{difference_time}
 at the control group (\code{reference_group}).
-If \code{role} is \code{"change"}, then treatment group
+If \code{reference_time} was \code{NULL} in \code{\link[=brm_data]{brm_data()}} (i.e. no baseline
+time point), then treatment group
 is instead the difference between \code{response} at each active group minus
 the \code{response} at the control group.
 \item \code{difference_subgroup}: subgroup differences: the \code{difference_group}
