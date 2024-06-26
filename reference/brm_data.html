@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">brms.mmrm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1.9002</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -167,13 +167,12 @@ model matrix that <code>brms</code> derives from the formula from <code><a href=
 <dt>reference_time</dt>
 <dd><p>Character of length 1 or <code>NULL</code>,
 level of the <code>time</code> column to indicate the baseline time point.
-This value should not be present in the data if the outcome
-variable is change from baseline, but it must be in the data
-if the outcome variable is the raw response so that <code>brms.mmrm</code>
-can produce model-based marginal estimates of change from baseline.
-In other words, set <code>reference_time</code> to <code>NULL</code> if <code>role</code> is <code>"change"</code>,
-and set <code>reference_time</code> to a non-null value in <code>data[[time]]</code>
-if <code>role</code> is <code>"response"</code>.</p>
+This value must be <code>NULL</code> if the outcome
+variable is already change from baseline. If the outcome
+is raw response, then <code>reference_time</code> may or may not be <code>NULL</code>.
+<code><a href="brm_marginal_draws.html">brm_marginal_draws()</a></code> and downstream functions calculate posterior
+inference on change from baseline if and only if
+<code>reference_time</code> is not <code>NULL</code>.</p>
 <p>Note: <code>reference_time</code> only applies to the post-processing that happens
 in functions like <code><a href="brm_marginal_draws.html">brm_marginal_draws()</a></code> downstream of the model.
 It does not control the fixed effect mapping in the

@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">brms.mmrm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1.9002</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -150,13 +150,14 @@ list are described below:</p><ul><li><p><code>response</code>: on the scale of t
 <li><p><code>difference_time</code>: change from baseline: the
 <code>response</code> at a particular time minus the <code>response</code> at baseline
 (<code>reference_time</code>).
-Only returned if the <code>role</code> argument of <code><a href="brm_data.html">brm_data()</a></code> was
-<code>"response"</code>. (If <code>role</code> is <code>"change"</code>, then <code>response</code> already
-represents change from baseline.)</p></li>
-<li><p><code>difference_group</code>: treatment effect: the
+Only returned if the <code>reference_time</code> argument of <code><a href="brm_data.html">brm_data()</a></code> was
+not <code>NULL</code> (i.e. if a baseline value for the time variable
+was identified).</p></li>
+<li><p><code>difference_group</code>: treatment effect:
 the <code>difference_time</code> at each active group minus the <code>difference_time</code>
 at the control group (<code>reference_group</code>).
-If <code>role</code> is <code>"change"</code>, then treatment group
+If <code>reference_time</code> was <code>NULL</code> in <code><a href="brm_data.html">brm_data()</a></code> (i.e. no baseline
+time point), then treatment group
 is instead the difference between <code>response</code> at each active group minus
 the <code>response</code> at the control group.</p></li>
 <li><p><code>difference_subgroup</code>: subgroup differences: the <code>difference_group</code>
