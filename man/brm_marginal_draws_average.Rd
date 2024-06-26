@@ -109,6 +109,7 @@ brm_marginal_draws_average(
 Other marginals: 
 \code{\link{brm_marginal_data}()},
 \code{\link{brm_marginal_draws}()},
+\code{\link{brm_marginal_grid}()},
 \code{\link{brm_marginal_probabilities}()},
 \code{\link{brm_marginal_summaries}()}
 }

@@ -173,9 +173,7 @@ summary.brms_mmrm_archetype <- function(object, ...) {
     "This is the \"%s\" informative prior archetype in brms.mmrm.",
     "The following equations show the relationships between the",
     "marginal means (left-hand side) and fixed effect parameters",
-    "(right-hand side). You can create informative priors for the",
-    "fixed effect parameters using historical borrowing,",
-    "expert elicitation, or other methods.",
+    "(right-hand side).",
     ""
   )
   name <- gsub("^brms_mmrm_", "", class(object)[1L])

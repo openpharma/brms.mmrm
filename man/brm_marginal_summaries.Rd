@@ -84,6 +84,7 @@ Other marginals:
 \code{\link{brm_marginal_data}()},
 \code{\link{brm_marginal_draws}()},
 \code{\link{brm_marginal_draws_average}()},
+\code{\link{brm_marginal_grid}()},
 \code{\link{brm_marginal_probabilities}()}
 }
 \concept{marginals}

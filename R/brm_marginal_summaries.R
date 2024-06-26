@@ -74,26 +74,11 @@ brm_marginal_summaries <- function(
   )
   assert_num(level, "level arg must be a length-1 numeric between 0 and 1")
   assert(level, . >= 0, . <= 1, message = "level arg must be between 0 and 1")
-  table_response <- summarize_marginals(draws$response, level)
-  table_difference_time <- if_any(
-    "difference_time" %in% names(draws),
-    summarize_marginals(draws$difference_time, level),
-    NULL
-  )
-  table_difference_group <- summarize_marginals(draws$difference_group, level)
-  table_effect <- summarize_marginals(draws$effect, level)
-  args <- list(
-    response = table_response,
-    difference_time = table_difference_time,
-    difference_group = table_difference_group,
-    difference_subgroup = if_any(
-      is.null(draws$difference_subgroup),
-      NULL,
-      summarize_marginals(draws$difference_subgroup, level)
-    ),
-    effect = table_effect,
-    .id = "marginal"
-  )
+  args <- list()
+  for (marginal in names(draws)) {
+    args[[marginal]] <- summarize_marginals(draws[[marginal]], level)
+  }
+  args$.id <- "marginal"
   out <- do.call(what = dplyr::bind_rows, args = args)
   columns <- c(
     "marginal",

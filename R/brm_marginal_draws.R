@@ -31,6 +31,10 @@
 #'     divided by the residual standard deviation. Omitted if
 #'     the `effect_size` argument is `FALSE` or if the
 #'     [brm_formula_sigma()] includes baseline or covariates.
+#'   * `sigma`: posterior draws of linear-scale marginal standard deviations
+#'     of residuals. Omitted if
+#'     the `effect_size` argument is `FALSE` or if the
+#'     [brm_formula_sigma()] includes baseline or covariates.
 #' @inheritParams brm_model
 #' @param model A fitted model object from [brm_model()].
 #' @param transform Matrix with one row per marginal mean and one column
@@ -278,6 +282,7 @@ brm_marginal_draws <- function(
   }
   if (effect_size) {
     out$effect <- draws_effect
+    out$sigma <- draws_sigma
   }
   out
 }

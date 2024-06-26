@@ -83,6 +83,10 @@ reference level (\code{reference_subgroup}).
 divided by the residual standard deviation. Omitted if
 the \code{effect_size} argument is \code{FALSE} or if the
 \code{\link[=brm_formula_sigma]{brm_formula_sigma()}} includes baseline or covariates.
+\item \code{sigma}: posterior draws of linear-scale marginal standard deviations
+of residuals. Omitted if
+the \code{effect_size} argument is \code{FALSE} or if the
+\code{\link[=brm_formula_sigma]{brm_formula_sigma()}} includes baseline or covariates.
 }
 }
 \description{
@@ -136,6 +140,7 @@ brm_marginal_draws(data = data, formula = formula, model = model)
 Other marginals: 
 \code{\link{brm_marginal_data}()},
 \code{\link{brm_marginal_draws_average}()},
+\code{\link{brm_marginal_grid}()},
 \code{\link{brm_marginal_probabilities}()},
 \code{\link{brm_marginal_summaries}()}
 }
