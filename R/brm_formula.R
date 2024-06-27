@@ -575,7 +575,12 @@ formula_check_rank <- function(data, formula) {
       rank,
       " (with missing outcomes removed if the outcome column is valid). ",
       "Please consider a different parameterization to make the ",
-      "model matrix full-rank. Otherwise, fixed effects may not be ",
+      "model matrix full-rank. ",
+      "This may require you to choose different ",
+      "terms in the model formula, choose a different informative prior ",
+      "archetype, regress on fewer covariates, and/or or pool ",
+      "levels of one or more factors in the data. ",
+      "Otherwise, fixed effects may not be ",
       "identifiable and MCMC sampling may not converge. ",
       "Set check_rank = FALSE in brm_formula() to suppress this error."
     )

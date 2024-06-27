@@ -227,7 +227,12 @@ formula_sigma_check_rank <- function(data, formula) {
       " columns but rank ",
       rank,
       ". Please consider a different parameterization to make the ",
-      "model matrix full-rank. Otherwise, the sigma parameters may not be ",
+      "model matrix full-rank. ",
+      "This may require you to choose different ",
+      "terms in the model formula, choose a different informative prior ",
+      "archetype, regress on fewer covariates, and/or or pool ",
+      "levels of one or more factors in the data. ",
+      "Otherwise, the sigma parameters may not be ",
       "identifiable and MCMC sampling may not converge. ",
       "Set check_rank = FALSE in brm_formula_sigma() to suppress this error."
     )
