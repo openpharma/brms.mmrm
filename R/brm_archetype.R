@@ -166,7 +166,12 @@ brm_archetype_attributes <- function(data) {
 #' @export
 summary.brms_mmrm_archetype <- function(object, ...) {
   formula <- brm_formula(object)
-  transform <- brm_transform_marginal(object, formula, prefix = "")
+  transform <- brm_transform_marginal(
+    object,
+    formula,
+    average_within_subgroup = FALSE,
+    prefix = ""
+  )
   transform <- transform[, attr(object, "brm_archetype_interest")]
   marginals <- gsub(brm_sep(), ":", rownames(transform), fixed = TRUE)
   lines <- c(
