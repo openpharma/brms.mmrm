@@ -509,7 +509,10 @@ brm_data_fill.brms_mmrm_data <- function(data) {
     attr(out, name) <- attributes[[name]]
   }
   assert(
-    out[[time]] == rep(levels_time, times = nrow(data) / length(levels_time)),
+    as.character(out[[time]]) ==
+      as.character(
+        rep(levels_time, times = nrow(data) / length(levels_time))
+      ),
     message = paste(
       "data could not be filled. Please submit a bug report to",
       "https://github.com/openpharma/brms.mmrm/issues",
