@@ -33,12 +33,12 @@
 #'   Only relevant if the response variable is change from baseline.
 #'   Supply `NULL` to ignore or omit.
 #' @param group Character of length 1, name of the treatment group variable.
-#'   For most analyses, we recommend that the `group` variable is
-#'   a character vector or unordered factor.
+#'   The `group` column in the data should be a
+#'   character vector or unordered factor.
 #' @param subgroup Character of length 1, optional name of the a
 #'   discrete subgroup variable. Set to `NULL` to omit the subgroup (default).
-#'   For most subgroup, we recommend that the `subgroup` variable is
-#'   a character vector or unordered factor.
+#'   If present, the `subgroup` column in the data should be a
+#'   character vector or unordered factor.
 #' @param time Character of length 1, name of the discrete time variable.
 #'   For most analyses, please use an ordered factor for the `time` column
 #'   in the data. This ensures the time points sort in chronological order,

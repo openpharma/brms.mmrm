@@ -37,13 +37,13 @@ Only relevant if the response variable is change from baseline.
 Supply \code{NULL} to ignore or omit.}
 
 \item{group}{Character of length 1, name of the treatment group variable.
-For most analyses, we recommend that the \code{group} variable is
-a character vector or unordered factor.}
+The \code{group} column in the data should be a
+character vector or unordered factor.}
 
 \item{subgroup}{Character of length 1, optional name of the a
 discrete subgroup variable. Set to \code{NULL} to omit the subgroup (default).
-For most subgroup, we recommend that the \code{subgroup} variable is
-a character vector or unordered factor.}
+If present, the \code{subgroup} column in the data should be a
+character vector or unordered factor.}
 
 \item{time}{Character of length 1, name of the discrete time variable.
 For most analyses, please use an ordered factor for the \code{time} column
