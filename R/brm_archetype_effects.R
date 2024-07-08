@@ -188,7 +188,6 @@ archetype_effects <- function(data, prefix) {
   names_group <- rep(levels_group, each = length(levels_time))
   names_time <- rep(levels_time, times = length(levels_group))
   names <- paste0(prefix, paste(names_group, names_time, sep = "_"))
-  names <- brm_levels(names)
   colnames(matrix) <- names
   interest <- tibble::as_tibble(as.data.frame(matrix))
   mapping <- tibble::tibble(
@@ -233,7 +232,6 @@ archetype_effects_subgroup <- function(data, prefix) {
     prefix,
     paste(names_group, names_subgroup, names_time, sep = "_")
   )
-  names <- brm_levels(names)
   colnames(matrix) <- names
   interest <- tibble::as_tibble(as.data.frame(matrix))
   mapping <- tibble::tibble(

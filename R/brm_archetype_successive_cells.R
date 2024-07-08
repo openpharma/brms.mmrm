@@ -192,7 +192,7 @@ archetype_successive_cells <- function(data, prefix) {
   levels_group <- brm_levels(data[[group]])
   levels_time <- brm_levels(data[[time]])
   n_time <- length(levels_time)
-  data_first <- data[data[[time]] == data[[time]][1L], ]
+  data_first <- data[data[[time]] == levels_time[1L], ]
   matrix_group <- NULL
   for (name in levels_group) {
     matrix_group <- cbind(
@@ -205,7 +205,6 @@ archetype_successive_cells <- function(data, prefix) {
   names_group <- rep(levels_group, each = n_time)
   names_time <- rep(levels_time, times = length(levels_group))
   names <- paste0(prefix, paste(names_group, names_time, sep = "_"))
-  names <- brm_levels(names)
   colnames(matrix) <- names
   interest <- tibble::as_tibble(as.data.frame(matrix))
   mapping <- tibble::tibble(
@@ -244,7 +243,6 @@ archetype_successive_cells_subgroup <- function(data, prefix) {
     prefix,
     paste(names_group, names_subgroup, names_time, sep = "_")
   )
-  names <- brm_levels(names)
   colnames(matrix) <- names
   interest <- tibble::as_tibble(as.data.frame(matrix))
   mapping <- tibble::tibble(

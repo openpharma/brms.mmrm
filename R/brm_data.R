@@ -340,9 +340,13 @@ brm_data_validate.default <- function(data) {
   for (column in c(group, subgroup, time)) {
     assert(
       is.atomic(data[[column]]) || is.factor(data[[column]]),
+      !is.factor(data[[column]]) || !anyNA(levels(data[[column]])),
       message = paste(
         column,
-        "column in the data must be an atomic or factor type."
+        paste(
+          "column in the data must be an atomic or factor type,",
+          "and all factor levels must be non-missing."
+        )
       )
     )
   }
@@ -393,6 +397,7 @@ brm_data_fill.brms_mmrm_data <- function(data) {
   missing <- attr(data, "brm_missing")
   interest <- attr(data, "brm_archetype_interest")
   nuisance <- attr(data, "brm_archetype_nuisance")
+  data <- droplevels(data)
   args <- list(data = data, as.symbol(patient), as.symbol(time))
   data <- do.call(what = tidyr::complete, args = args)
   args <- list(.data = data, as.symbol(patient), as.symbol(time))
@@ -452,7 +457,7 @@ brm_time_contrasts <- function(data) {
 }
 
 brm_levels <- function(x) {
-  if_any(is.factor(x), levels(x), sort(unique(x)))
+  if_any(is.factor(x), intersect(levels(x), unique(x)), sort(unique(x)))
 }
 
 brm_data_fill_column <- function(x, index) {

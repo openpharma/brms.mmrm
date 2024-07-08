@@ -339,6 +339,10 @@ test_that("brm_levels()", {
   expect_equal(brm_levels(c(3L, 2L, 1L, 2L, 3L)), c(1L, 2L, 3L))
   x <- ordered(rep(c("a", "c", "b"), times = 2), levels = c("c", "b", "a"))
   expect_equal(brm_levels(x), c("c", "b", "a"))
+  expect_equal(
+    brm_levels(ordered(c("x", "y"), levels = c("z", "y", "x"))),
+    c("y", "x")
+  )
 })
 
 test_that("brm_data() deprecate level_control", {
