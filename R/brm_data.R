@@ -44,7 +44,7 @@
 #'   in the data. This ensures the time points sort in chronological order,
 #'   which ensures the correctness of informative prior archetypes and
 #'   autoregressive / moving average correlation structures.
-#'   
+#'
 #'   Ordinarily, ordered factors automatically use polynomial contrasts from
 #'   [contr.poly()]. This is undesirable for MMRMs, so if the time variable
 #'   is an ordered factor, then [brm_data()]
