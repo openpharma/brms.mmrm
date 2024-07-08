@@ -378,3 +378,24 @@ test_that("brm_data() deprecate level_baseline", {
 test_that("brm_data() on bad object", {
   expect_error(brm_data_fill("Swiss cheese"), class = "brm_error")
 })
+
+test_that("brm_data() ordered factor contrasts", {
+  set.seed(0)
+  sim <- brm_simulate_simple()
+  data <- tibble::as_tibble(sim$data)
+  data$time <- ordered(data$time)
+  out <- brm_data(
+    data = data,
+    outcome = "response",
+    role = "response",
+    group = "group",
+    time = "time",
+    patient = "patient",
+    reference_group = "group_1",
+    reference_time = "time_1"
+  )
+  expect_equal(
+    sort(colnames(model.matrix(~ time, data = out))),
+    sort(c("(Intercept)", "time2", "time3", "time4"))
+  )
+})

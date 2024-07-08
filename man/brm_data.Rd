@@ -46,12 +46,18 @@ For most subgroup, we recommend that the \code{subgroup} variable is
 a character vector or unordered factor.}
 
 \item{time}{Character of length 1, name of the discrete time variable.
-For most analyses, we recommend that the \code{time} variable is
-an ordered factor. Character vectors may not sort in chronological order.
-For example, if \code{time} is
-\code{as.character(data$AVISIT)}, then the sorted unique values may be
-\code{c("VISIT_1", "VISIT_10", "VISIT_2")}. This could interfere with
-autocorrelation structures and informative prior archetypes.}
+For most analyses, please use an ordered factor for the \code{time} column
+in the data. This ensures the time points sort in chronological order,
+which ensures the correctness of informative prior archetypes and
+autoregressive / moving average correlation structures.
+
+Ordinarily, ordered factors automatically use polynomial contrasts from
+\code{\link[=contr.poly]{contr.poly()}}. This is undesirable for MMRMs, so if the time variable
+is an ordered factor, then \code{\link[=brm_data]{brm_data()}}
+manually sets \code{contrasts(data[[time]])} to a set of treatment contrasts
+using \code{\link[=contr.treatment]{contr.treatment()}}. If you prefer different contrasts, please
+manually set \code{contrasts(data[[time]])} to something else after
+calling \code{\link[=brm_data]{brm_data()}}.}
 
 \item{patient}{Character of length 1, name of the patient ID variable.}
 

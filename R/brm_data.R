@@ -40,12 +40,18 @@
 #'   For most subgroup, we recommend that the `subgroup` variable is
 #'   a character vector or unordered factor.
 #' @param time Character of length 1, name of the discrete time variable.
-#'   For most analyses, we recommend that the `time` variable is
-#'   an ordered factor. Character vectors may not sort in chronological order.
-#'   For example, if `time` is
-#'   `as.character(data$AVISIT)`, then the sorted unique values may be
-#'   `c("VISIT_1", "VISIT_10", "VISIT_2")`. This could interfere with
-#'   autocorrelation structures and informative prior archetypes. 
+#'   For most analyses, please use an ordered factor for the `time` column
+#'   in the data. This ensures the time points sort in chronological order,
+#'   which ensures the correctness of informative prior archetypes and
+#'   autoregressive / moving average correlation structures.
+#'   
+#'   Ordinarily, ordered factors automatically use polynomial contrasts from
+#'   [contr.poly()]. This is undesirable for MMRMs, so if the time variable
+#'   is an ordered factor, then [brm_data()]
+#'   manually sets `contrasts(data[[time]])` to a set of treatment contrasts
+#'   using [contr.treatment()]. If you prefer different contrasts, please
+#'   manually set `contrasts(data[[time]])` to something else after
+#'   calling [brm_data()].
 #' @param patient Character of length 1, name of the patient ID variable.
 #' @param covariates Character vector of names of other covariates.
 #' @param missing Character of length 1, name of an optional variable
@@ -184,6 +190,7 @@ brm_data_new <- function(
 brm_data_preprocess <- function(out) {
   out <- brm_data_fill(out)
   out <- brm_data_select(out)
+  out <- brm_time_contrasts(out)
   out
 }
 
@@ -433,6 +440,15 @@ brm_data_fill.brms_mmrm_data <- function(data) {
     )
   )
   out
+}
+
+brm_time_contrasts <- function(data) {
+  time <- attr(data, "brm_time")
+  if (is.ordered(data[[time]])) {
+    n <- length(unique(data[[time]]))
+    contrasts(data[[time]]) <- stats::contr.treatment(n = n)
+  }
+  data
 }
 
 brm_levels <- function(x) {
