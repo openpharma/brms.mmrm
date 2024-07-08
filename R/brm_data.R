@@ -28,18 +28,24 @@
 #' @param role Character of length 1. Either `"response"` if `outcome`
 #'   is the raw response variable (e.g. AVAL) or `"change"` if `outcome`
 #'   is change from baseline (e.g. CHG).
-#' @param group Character of length 1, name of the treatment group variable.
-#'   Must point to a character vector in the data. Factors are converted
-#'   to characters.
-#' @param subgroup Character of length 1, optional name of the a
-#'   discrete subgroup variable. Set to `NULL` to omit the subgroup (default).
 #' @param baseline Character of length 1,
 #'   name of the baseline response variable.
 #'   Only relevant if the response variable is change from baseline.
 #'   Supply `NULL` to ignore or omit.
+#' @param group Character of length 1, name of the treatment group variable.
+#'   For most analyses, we recommend that the `group` variable is
+#'   a character vector or unordered factor.
+#' @param subgroup Character of length 1, optional name of the a
+#'   discrete subgroup variable. Set to `NULL` to omit the subgroup (default).
+#'   For most subgroup, we recommend that the `subgroup` variable is
+#'   a character vector or unordered factor.
 #' @param time Character of length 1, name of the discrete time variable.
-#'   Must point to a character vector in the data. Factors are converted
-#'   to characters.
+#'   For most analyses, we recommend that the `time` variable is
+#'   an ordered factor. Character vectors may not sort in chronological order.
+#'   For example, if `time` is
+#'   `as.character(data$AVISIT)`, then the sorted unique values may be
+#'   `c("VISIT_1", "VISIT_10", "VISIT_2")`. This could interfere with
+#'   autocorrelation structures and informative prior archetypes. 
 #' @param patient Character of length 1, name of the patient ID variable.
 #' @param covariates Character vector of names of other covariates.
 #' @param missing Character of length 1, name of an optional variable
