@@ -36,7 +36,7 @@
 #'   mcse_sd
 #' @importFrom purrr map_dbl map_df map2_df
 #' @importFrom rlang is_formula warn
-#' @importFrom stats as.formula contr.treatment median model.matrix
+#' @importFrom stats as.formula contrasts contr.treatment median model.matrix
 #'   rbinom rnorm runif sd
 #' @importFrom tibble as_tibble tibble
 #' @importFrom tidyr expand_grid pivot_longer pivot_wider

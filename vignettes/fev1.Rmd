@@ -1,6 +1,6 @@
 ---
 title: FEV1 data comparison between Bayesian and frequentist MMRMs
-date: "2024-31-05"
+date: "2024-08-07"
 output:
   rmarkdown::html_document:
     theme: spacelab
@@ -106,8 +106,7 @@ The rest of the pre-processing steps create factors for the study arm and visit 
 +   baseline = "FEV1_BL",
 +   reference_group = "PBO",
 +   covariates = c("RACE", "SEX")
-+ ) |>
-+   mutate(ARMCD = factor(ARMCD), AVISIT = factor(AVISIT))
++ )
 ```
 
 The following table shows the first rows of the dataset.
@@ -1726,6 +1725,7 @@ We fit the model using `brms.mmrm::brm_model()`. To ensure a good basis of compa
 +   warmup = 2000,
 +   chains = 4,
 +   cores = 1 + (detectCores() > 1),
++   seed = 1,
 +   refresh = 0
 + )
 ```
@@ -1745,48 +1745,31 @@ Here is a posterior summary of model parameters, including fixed effects and pai
 #> 
 #> Correlation Structures:
 #>                    Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-#> cortime(VIS1,VIS2)     0.36      0.08     0.19     0.51 1.00    59681    25267
-#> cortime(VIS1,VIS3)     0.14      0.10    -0.06     0.33 1.00    60878    24816
-#> cortime(VIS2,VIS3)     0.04      0.10    -0.16     0.23 1.00    59208    23789
-#> cortime(VIS1,VIS4)     0.17      0.11    -0.06     0.38 1.00    57295    25702
-#> cortime(VIS2,VIS4)     0.11      0.09    -0.06     0.28 1.00    58914    25513
-#> cortime(VIS3,VIS4)     0.01      0.10    -0.19     0.21 1.00    52906    23211
+#> cortime(VIS1,VIS2)     0.36      0.08     0.18     0.52 1.00    48758    26086
+#> cortime(VIS1,VIS3)     0.14      0.10    -0.05     0.33 1.00    49018    26172
+#> cortime(VIS2,VIS3)     0.04      0.10    -0.16     0.23 1.00    49178    25472
+#> cortime(VIS1,VIS4)     0.17      0.11    -0.06     0.38 1.00    49528    25555
+#> cortime(VIS2,VIS4)     0.11      0.09    -0.07     0.28 1.00    49509    24007
+#> cortime(VIS3,VIS4)     0.01      0.10    -0.18     0.21 1.00    45294    24353
 #> 
 #> Regression Coefficients:
-#>                            Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS
-#> Intercept                     24.35      1.42    21.58    27.14 1.00    49544
-#> FEV1_BL                       -0.84      0.03    -0.90    -0.79 1.00    66114
-#> AVISITVIS2                     4.79      0.82     3.18     6.39 1.00    35068
-#> AVISITVIS3                    10.37      0.83     8.75    12.00 1.00    31977
-#> AVISITVIS4                    15.20      1.34    12.59    17.83 1.00    35841
-#> RACEBlackorAfricanAmerican     1.41      0.58     0.26     2.56 1.00    51999
-#> RACEWhite                      5.45      0.62     4.23     6.68 1.00    53854
-#> SEXFemale                      0.34      0.51    -0.66     1.34 1.00    60991
-#> AVISITVIS1:ARMCDTRT            3.99      1.07     1.89     6.09 1.00    32773
-#> AVISITVIS2:ARMCDTRT            3.93      0.83     2.29     5.56 1.00    54328
-#> AVISITVIS3:ARMCDTRT            2.98      0.68     1.64     4.32 1.00    60635
-#> AVISITVIS4:ARMCDTRT            4.39      1.68     1.06     7.68 1.00    47093
-#> sigma_AVISITVIS1               1.83      0.06     1.71     1.95 1.00    59887
-#> sigma_AVISITVIS2               1.59      0.06     1.47     1.71 1.00    56189
-#> sigma_AVISITVIS3               1.33      0.06     1.21     1.46 1.00    64405
-#> sigma_AVISITVIS4               2.28      0.06     2.16     2.41 1.00    64076
-#>                            Tail_ESS
-#> Intercept                     25214
-#> FEV1_BL                       22810
-#> AVISITVIS2                    26636
-#> AVISITVIS3                    24889
-#> AVISITVIS4                    25332
-#> RACEBlackorAfricanAmerican    25640
-#> RACEWhite                     27046
-#> SEXFemale                     24915
-#> AVISITVIS1:ARMCDTRT           26664
-#> AVISITVIS2:ARMCDTRT           23415
-#> AVISITVIS3:ARMCDTRT           22427
-#> AVISITVIS4:ARMCDTRT           25813
-#> sigma_AVISITVIS1              25393
-#> sigma_AVISITVIS2              24131
-#> sigma_AVISITVIS3              24263
-#> sigma_AVISITVIS4              23997
+#>                            Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+#> Intercept                     24.34      1.41    21.60    27.09 1.00    43678    25394
+#> FEV1_BL                       -0.84      0.03    -0.89    -0.78 1.00    56286    24494
+#> AVISITVIS2                     4.80      0.82     3.20     6.40 1.00    31792    24396
+#> AVISITVIS3                    10.37      0.83     8.73    12.01 1.00    29808    24188
+#> AVISITVIS4                    15.20      1.33    12.60    17.83 1.00    35293    24810
+#> RACEBlackorAfricanAmerican     1.41      0.59     0.27     2.55 1.00    46945    25405
+#> RACEWhite                      5.46      0.63     4.23     6.69 1.00    47801    23816
+#> SEXFemale                      0.35      0.51    -0.64     1.36 1.00    49193    24919
+#> AVISITVIS1:ARMCDTRT            3.98      1.07     1.89     6.06 1.00    31646    26255
+#> AVISITVIS2:ARMCDTRT            3.93      0.83     2.31     5.55 1.00    46665    23809
+#> AVISITVIS3:ARMCDTRT            2.98      0.68     1.65     4.31 1.00    52457    24705
+#> AVISITVIS4:ARMCDTRT            4.41      1.68     1.06     7.71 1.00    45307    25026
+#> sigma_AVISITVIS1               1.83      0.06     1.71     1.95 1.00    50344    26156
+#> sigma_AVISITVIS2               1.59      0.06     1.47     1.71 1.00    48248    24526
+#> sigma_AVISITVIS3               1.33      0.06     1.21     1.46 1.00    48058    24328
+#> sigma_AVISITVIS4               2.28      0.06     2.16     2.41 1.00    51078    23975
 #> 
 #> Draws were sampled using sampling(NUTS). For each parameter, Bulk_ESS
 #> and Tail_ESS are effective sample size measures, and Rhat is the potential
@@ -1813,8 +1796,7 @@ The parameter summaries of the frequentist model are below.
 > summary(f_mmrm_fit)
 #> mmrm fit
 #> 
-#> Formula:     
-#> FEV1_CHG ~ FEV1_BL + ARMCD:AVISIT + AVISIT + RACE + SEX + us(AVISIT |  
+#> Formula:     FEV1_CHG ~ FEV1_BL + ARMCD:AVISIT + AVISIT + RACE + SEX + us(AVISIT |  
 #>     USUBJID)
 #> Data:        fev_data (used 537 observations from 197 subjects with maximum 4 
 #> timepoints)
@@ -1828,32 +1810,19 @@ The parameter summaries of the frequentist model are below.
 #>   3381.4   3414.2  -1680.7   3361.4 
 #> 
 #> Coefficients: 
-#>                                Estimate Std. Error        df t value Pr(>|t|)
-#> (Intercept)                    24.35372    1.40754 257.97000  17.302  < 2e-16
-#> FEV1_BL                        -0.84022    0.02777 190.27000 -30.251  < 2e-16
-#> AVISITVIS2                      4.79036    0.79848 144.82000   5.999 1.51e-08
-#> AVISITVIS3                     10.36601    0.81318 157.08000  12.748  < 2e-16
-#> AVISITVIS4                     15.19231    1.30857 139.25000  11.610  < 2e-16
-#> RACEBlack or African American   1.41921    0.57874 169.56000   2.452 0.015211
-#> RACEWhite                       5.45679    0.61626 157.54000   8.855 1.65e-15
-#> SEXFemale                       0.33812    0.49273 166.43000   0.686 0.493529
-#> AVISITVIS1:ARMCDTRT             3.98329    1.04540 142.32000   3.810 0.000206
-#> AVISITVIS2:ARMCDTRT             3.93076    0.81351 142.26000   4.832 3.46e-06
-#> AVISITVIS3:ARMCDTRT             2.98372    0.66567 129.61000   4.482 1.61e-05
-#> AVISITVIS4:ARMCDTRT             4.40400    1.66049 132.88000   2.652 0.008970
-#>                                  
-#> (Intercept)                   ***
-#> FEV1_BL                       ***
-#> AVISITVIS2                    ***
-#> AVISITVIS3                    ***
-#> AVISITVIS4                    ***
-#> RACEBlack or African American *  
-#> RACEWhite                     ***
-#> SEXFemale                        
-#> AVISITVIS1:ARMCDTRT           ***
-#> AVISITVIS2:ARMCDTRT           ***
-#> AVISITVIS3:ARMCDTRT           ***
-#> AVISITVIS4:ARMCDTRT           ** 
+#>                                Estimate Std. Error        df t value Pr(>|t|)    
+#> (Intercept)                    24.35372    1.40754 257.97000  17.302  < 2e-16 ***
+#> FEV1_BL                        -0.84022    0.02777 190.27000 -30.251  < 2e-16 ***
+#> AVISITVIS2                      4.79036    0.79848 144.82000   5.999 1.51e-08 ***
+#> AVISITVIS3                     10.36601    0.81318 157.08000  12.748  < 2e-16 ***
+#> AVISITVIS4                     15.19231    1.30857 139.25000  11.610  < 2e-16 ***
+#> RACEBlack or African American   1.41921    0.57874 169.56000   2.452 0.015211 *  
+#> RACEWhite                       5.45679    0.61626 157.54000   8.855 1.65e-15 ***
+#> SEXFemale                       0.33812    0.49273 166.43000   0.686 0.493529    
+#> AVISITVIS1:ARMCDTRT             3.98329    1.04540 142.32000   3.810 0.000206 ***
+#> AVISITVIS2:ARMCDTRT             3.93076    0.81351 142.26000   4.832 3.46e-06 ***
+#> AVISITVIS3:ARMCDTRT             2.98372    0.66567 129.61000   4.482 1.61e-05 ***
+#> AVISITVIS4:ARMCDTRT             4.40400    1.66049 132.88000   2.652 0.008970 ** 
 #> ---
 #> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 #> 
@@ -2000,23 +1969,23 @@ Because of the different statistical paradigms and estimation procedures, especi
 +   )
 ```
 
-<!--html_preserve--><div id="wvzouehsjr" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#wvzouehsjr table {
+<!--html_preserve--><div id="hplyncngcw" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#hplyncngcw table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#wvzouehsjr thead, #wvzouehsjr tbody, #wvzouehsjr tfoot, #wvzouehsjr tr, #wvzouehsjr td, #wvzouehsjr th {
+#hplyncngcw thead, #hplyncngcw tbody, #hplyncngcw tfoot, #hplyncngcw tr, #hplyncngcw td, #hplyncngcw th {
   border-style: none;
 }
 
-#wvzouehsjr p {
+#hplyncngcw p {
   margin: 0;
   padding: 0;
 }
 
-#wvzouehsjr .gt_table {
+#hplyncngcw .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -2042,12 +2011,12 @@ Because of the different statistical paradigms and estimation procedures, especi
   border-left-color: #D3D3D3;
 }
 
-#wvzouehsjr .gt_caption {
+#hplyncngcw .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#wvzouehsjr .gt_title {
+#hplyncngcw .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -2059,7 +2028,7 @@ Because of the different statistical paradigms and estimation procedures, especi
   border-bottom-width: 0;
 }
 
-#wvzouehsjr .gt_subtitle {
+#hplyncngcw .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -2071,7 +2040,7 @@ Because of the different statistical paradigms and estimation procedures, especi
   border-top-width: 0;
 }
 
-#wvzouehsjr .gt_heading {
+#hplyncngcw .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -2083,13 +2052,13 @@ Because of the different statistical paradigms and estimation procedures, especi
   border-right-color: #D3D3D3;
 }
 
-#wvzouehsjr .gt_bottom_border {
+#hplyncngcw .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#wvzouehsjr .gt_col_headings {
+#hplyncngcw .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2104,7 +2073,7 @@ Because of the different statistical paradigms and estimation procedures, especi
   border-right-color: #D3D3D3;
 }
 
-#wvzouehsjr .gt_col_heading {
+#hplyncngcw .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2124,7 +2093,7 @@ Because of the different statistical paradigms and estimation procedures, especi
   overflow-x: hidden;
 }
 
-#wvzouehsjr .gt_column_spanner_outer {
+#hplyncngcw .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2136,15 +2105,15 @@ Because of the different statistical paradigms and estimation procedures, especi
   padding-right: 4px;
 }
 
-#wvzouehsjr .gt_column_spanner_outer:first-child {
+#hplyncngcw .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#wvzouehsjr .gt_column_spanner_outer:last-child {
+#hplyncngcw .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#wvzouehsjr .gt_column_spanner {
+#hplyncngcw .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -2156,11 +2125,11 @@ Because of the different statistical paradigms and estimation procedures, especi
   width: 100%;
 }
 
-#wvzouehsjr .gt_spanner_row {
+#hplyncngcw .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#wvzouehsjr .gt_group_heading {
+#hplyncngcw .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2186,7 +2155,7 @@ Because of the different statistical paradigms and estimation procedures, especi
   text-align: left;
 }
 
-#wvzouehsjr .gt_empty_group_heading {
+#hplyncngcw .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -2201,15 +2170,15 @@ Because of the different statistical paradigms and estimation procedures, especi
   vertical-align: middle;
 }
 
-#wvzouehsjr .gt_from_md > :first-child {
+#hplyncngcw .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#wvzouehsjr .gt_from_md > :last-child {
+#hplyncngcw .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#wvzouehsjr .gt_row {
+#hplyncngcw .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2228,7 +2197,7 @@ Because of the different statistical paradigms and estimation procedures, especi
   overflow-x: hidden;
 }
 
-#wvzouehsjr .gt_stub {
+#hplyncngcw .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2241,7 +2210,7 @@ Because of the different statistical paradigms and estimation procedures, especi
   padding-right: 5px;
 }
 
-#wvzouehsjr .gt_stub_row_group {
+#hplyncngcw .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2255,15 +2224,15 @@ Because of the different statistical paradigms and estimation procedures, especi
   vertical-align: top;
 }
 
-#wvzouehsjr .gt_row_group_first td {
+#hplyncngcw .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#wvzouehsjr .gt_row_group_first th {
+#hplyncngcw .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#wvzouehsjr .gt_summary_row {
+#hplyncngcw .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2273,16 +2242,16 @@ Because of the different statistical paradigms and estimation procedures, especi
   padding-right: 5px;
 }
 
-#wvzouehsjr .gt_first_summary_row {
+#hplyncngcw .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#wvzouehsjr .gt_first_summary_row.thick {
+#hplyncngcw .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#wvzouehsjr .gt_last_summary_row {
+#hplyncngcw .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2292,7 +2261,7 @@ Because of the different statistical paradigms and estimation procedures, especi
   border-bottom-color: #D3D3D3;
 }
 
-#wvzouehsjr .gt_grand_summary_row {
+#hplyncngcw .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2302,7 +2271,7 @@ Because of the different statistical paradigms and estimation procedures, especi
   padding-right: 5px;
 }
 
-#wvzouehsjr .gt_first_grand_summary_row {
+#hplyncngcw .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2312,7 +2281,7 @@ Because of the different statistical paradigms and estimation procedures, especi
   border-top-color: #D3D3D3;
 }
 
-#wvzouehsjr .gt_last_grand_summary_row_top {
+#hplyncngcw .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2322,11 +2291,11 @@ Because of the different statistical paradigms and estimation procedures, especi
   border-bottom-color: #D3D3D3;
 }
 
-#wvzouehsjr .gt_striped {
+#hplyncngcw .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#wvzouehsjr .gt_table_body {
+#hplyncngcw .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2335,7 +2304,7 @@ Because of the different statistical paradigms and estimation procedures, especi
   border-bottom-color: #D3D3D3;
 }
 
-#wvzouehsjr .gt_footnotes {
+#hplyncngcw .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2349,7 +2318,7 @@ Because of the different statistical paradigms and estimation procedures, especi
   border-right-color: #D3D3D3;
 }
 
-#wvzouehsjr .gt_footnote {
+#hplyncngcw .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -2358,7 +2327,7 @@ Because of the different statistical paradigms and estimation procedures, especi
   padding-right: 5px;
 }
 
-#wvzouehsjr .gt_sourcenotes {
+#hplyncngcw .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2372,7 +2341,7 @@ Because of the different statistical paradigms and estimation procedures, especi
   border-right-color: #D3D3D3;
 }
 
-#wvzouehsjr .gt_sourcenote {
+#hplyncngcw .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -2380,63 +2349,63 @@ Because of the different statistical paradigms and estimation procedures, especi
   padding-right: 5px;
 }
 
-#wvzouehsjr .gt_left {
+#hplyncngcw .gt_left {
   text-align: left;
 }
 
-#wvzouehsjr .gt_center {
+#hplyncngcw .gt_center {
   text-align: center;
 }
 
-#wvzouehsjr .gt_right {
+#hplyncngcw .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#wvzouehsjr .gt_font_normal {
+#hplyncngcw .gt_font_normal {
   font-weight: normal;
 }
 
-#wvzouehsjr .gt_font_bold {
+#hplyncngcw .gt_font_bold {
   font-weight: bold;
 }
 
-#wvzouehsjr .gt_font_italic {
+#hplyncngcw .gt_font_italic {
   font-style: italic;
 }
 
-#wvzouehsjr .gt_super {
+#hplyncngcw .gt_super {
   font-size: 65%;
 }
 
-#wvzouehsjr .gt_footnote_marks {
+#hplyncngcw .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#wvzouehsjr .gt_asterisk {
+#hplyncngcw .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#wvzouehsjr .gt_indent_1 {
+#hplyncngcw .gt_indent_1 {
   text-indent: 5px;
 }
 
-#wvzouehsjr .gt_indent_2 {
+#hplyncngcw .gt_indent_2 {
   text-indent: 10px;
 }
 
-#wvzouehsjr .gt_indent_3 {
+#hplyncngcw .gt_indent_3 {
   text-indent: 15px;
 }
 
-#wvzouehsjr .gt_indent_4 {
+#hplyncngcw .gt_indent_4 {
   text-indent: 20px;
 }
 
-#wvzouehsjr .gt_indent_5 {
+#hplyncngcw .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -2453,115 +2422,115 @@ Because of the different statistical paradigms and estimation procedures, especi
   </thead>
   <tbody class="gt_table_body">
     <tr><td headers="variable" class="gt_row gt_left">intercept</td>
-<td headers="bayes_estimate" class="gt_row gt_right">24.3549</td>
+<td headers="bayes_estimate" class="gt_row gt_right">24.3351</td>
 <td headers="freq_estimate" class="gt_row gt_right">24.3537</td>
-<td headers="diff_estimate" class="gt_row gt_right">0.0011</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">0.0000</td></tr>
-    <tr><td headers="variable" class="gt_row gt_left">fev1_bl</td>
-<td headers="bayes_estimate" class="gt_row gt_right">−0.8402</td>
-<td headers="freq_estimate" class="gt_row gt_right">−0.8402</td>
-<td headers="diff_estimate" class="gt_row gt_right">0.0000</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">0.0000</td></tr>
-    <tr><td headers="variable" class="gt_row gt_left">avisitvis2</td>
-<td headers="bayes_estimate" class="gt_row gt_right">4.7902</td>
-<td headers="freq_estimate" class="gt_row gt_right">4.7904</td>
-<td headers="diff_estimate" class="gt_row gt_right">−0.0002</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">0.0000</td></tr>
-    <tr><td headers="variable" class="gt_row gt_left">avisitvis3</td>
-<td headers="bayes_estimate" class="gt_row gt_right">10.3674</td>
-<td headers="freq_estimate" class="gt_row gt_right">10.3660</td>
-<td headers="diff_estimate" class="gt_row gt_right">0.0014</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">0.0001</td></tr>
-    <tr><td headers="variable" class="gt_row gt_left">avisitvis4</td>
-<td headers="bayes_estimate" class="gt_row gt_right">15.1971</td>
-<td headers="freq_estimate" class="gt_row gt_right">15.1923</td>
-<td headers="diff_estimate" class="gt_row gt_right">0.0048</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">0.0003</td></tr>
-    <tr><td headers="variable" class="gt_row gt_left">raceblackorafricanamerican</td>
-<td headers="bayes_estimate" class="gt_row gt_right">1.4139</td>
-<td headers="freq_estimate" class="gt_row gt_right">1.4192</td>
-<td headers="diff_estimate" class="gt_row gt_right">−0.0054</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0038</td></tr>
-    <tr><td headers="variable" class="gt_row gt_left">racewhite</td>
-<td headers="bayes_estimate" class="gt_row gt_right">5.4527</td>
-<td headers="freq_estimate" class="gt_row gt_right">5.4568</td>
-<td headers="diff_estimate" class="gt_row gt_right">−0.0041</td>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0186</td>
 <td headers="diff_relative_estimate" class="gt_row gt_right">−0.0008</td></tr>
+    <tr><td headers="variable" class="gt_row gt_left">fev1_bl</td>
+<td headers="bayes_estimate" class="gt_row gt_right">−0.8399</td>
+<td headers="freq_estimate" class="gt_row gt_right">−0.8402</td>
+<td headers="diff_estimate" class="gt_row gt_right">0.0003</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0004</td></tr>
+    <tr><td headers="variable" class="gt_row gt_left">avisitvis2</td>
+<td headers="bayes_estimate" class="gt_row gt_right">4.7996</td>
+<td headers="freq_estimate" class="gt_row gt_right">4.7904</td>
+<td headers="diff_estimate" class="gt_row gt_right">0.0093</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">0.0019</td></tr>
+    <tr><td headers="variable" class="gt_row gt_left">avisitvis3</td>
+<td headers="bayes_estimate" class="gt_row gt_right">10.3730</td>
+<td headers="freq_estimate" class="gt_row gt_right">10.3660</td>
+<td headers="diff_estimate" class="gt_row gt_right">0.0070</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">0.0007</td></tr>
+    <tr><td headers="variable" class="gt_row gt_left">avisitvis4</td>
+<td headers="bayes_estimate" class="gt_row gt_right">15.1989</td>
+<td headers="freq_estimate" class="gt_row gt_right">15.1923</td>
+<td headers="diff_estimate" class="gt_row gt_right">0.0066</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">0.0004</td></tr>
+    <tr><td headers="variable" class="gt_row gt_left">raceblackorafricanamerican</td>
+<td headers="bayes_estimate" class="gt_row gt_right">1.4131</td>
+<td headers="freq_estimate" class="gt_row gt_right">1.4192</td>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0061</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0043</td></tr>
+    <tr><td headers="variable" class="gt_row gt_left">racewhite</td>
+<td headers="bayes_estimate" class="gt_row gt_right">5.4556</td>
+<td headers="freq_estimate" class="gt_row gt_right">5.4568</td>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0012</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0002</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">sexfemale</td>
-<td headers="bayes_estimate" class="gt_row gt_right">0.3441</td>
+<td headers="bayes_estimate" class="gt_row gt_right">0.3456</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.3381</td>
-<td headers="diff_estimate" class="gt_row gt_right">0.0060</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">0.0178</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">0.0075</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">0.0221</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">avisitvis1:armcdtrt</td>
-<td headers="bayes_estimate" class="gt_row gt_right">3.9865</td>
+<td headers="bayes_estimate" class="gt_row gt_right">3.9842</td>
 <td headers="freq_estimate" class="gt_row gt_right">3.9833</td>
-<td headers="diff_estimate" class="gt_row gt_right">0.0033</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">0.0008</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">0.0009</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">0.0002</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">avisitvis2:armcdtrt</td>
-<td headers="bayes_estimate" class="gt_row gt_right">3.9341</td>
+<td headers="bayes_estimate" class="gt_row gt_right">3.9330</td>
 <td headers="freq_estimate" class="gt_row gt_right">3.9308</td>
-<td headers="diff_estimate" class="gt_row gt_right">0.0033</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">0.0008</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">0.0023</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">0.0006</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">avisitvis3:armcdtrt</td>
-<td headers="bayes_estimate" class="gt_row gt_right">2.9802</td>
+<td headers="bayes_estimate" class="gt_row gt_right">2.9795</td>
 <td headers="freq_estimate" class="gt_row gt_right">2.9837</td>
-<td headers="diff_estimate" class="gt_row gt_right">−0.0035</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0012</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0042</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0014</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">avisitvis4:armcdtrt</td>
-<td headers="bayes_estimate" class="gt_row gt_right">4.3916</td>
+<td headers="bayes_estimate" class="gt_row gt_right">4.4066</td>
 <td headers="freq_estimate" class="gt_row gt_right">4.4040</td>
-<td headers="diff_estimate" class="gt_row gt_right">−0.0124</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0028</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">0.0026</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">0.0006</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">sigma_avisitvis1</td>
-<td headers="bayes_estimate" class="gt_row gt_right">6.2348</td>
+<td headers="bayes_estimate" class="gt_row gt_right">6.2317</td>
 <td headers="freq_estimate" class="gt_row gt_right">6.1506</td>
-<td headers="diff_estimate" class="gt_row gt_right">0.0842</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">0.0137</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">0.0811</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">0.0132</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">sigma_avisitvis2</td>
-<td headers="bayes_estimate" class="gt_row gt_right">4.9138</td>
+<td headers="bayes_estimate" class="gt_row gt_right">4.9146</td>
 <td headers="freq_estimate" class="gt_row gt_right">4.8526</td>
-<td headers="diff_estimate" class="gt_row gt_right">0.0613</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">0.0126</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">0.0620</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">0.0128</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">sigma_avisitvis3</td>
-<td headers="bayes_estimate" class="gt_row gt_right">3.7760</td>
+<td headers="bayes_estimate" class="gt_row gt_right">3.7775</td>
 <td headers="freq_estimate" class="gt_row gt_right">3.7153</td>
-<td headers="diff_estimate" class="gt_row gt_right">0.0607</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">0.0163</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">0.0622</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">0.0167</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">sigma_avisitvis4</td>
-<td headers="bayes_estimate" class="gt_row gt_right">9.7958</td>
+<td headers="bayes_estimate" class="gt_row gt_right">9.7953</td>
 <td headers="freq_estimate" class="gt_row gt_right">9.6417</td>
-<td headers="diff_estimate" class="gt_row gt_right">0.1541</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">0.0160</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">0.1536</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">0.0159</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">correlation_vis1_vis2</td>
-<td headers="bayes_estimate" class="gt_row gt_right">0.3609</td>
+<td headers="bayes_estimate" class="gt_row gt_right">0.3607</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.3795</td>
-<td headers="diff_estimate" class="gt_row gt_right">−0.0185</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0488</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0187</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0493</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">correlation_vis1_vis3</td>
-<td headers="bayes_estimate" class="gt_row gt_right">0.1410</td>
+<td headers="bayes_estimate" class="gt_row gt_right">0.1419</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.1523</td>
-<td headers="diff_estimate" class="gt_row gt_right">−0.0112</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0737</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0104</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0683</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">correlation_vis2_vis3</td>
-<td headers="bayes_estimate" class="gt_row gt_right">0.0384</td>
+<td headers="bayes_estimate" class="gt_row gt_right">0.0396</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.0430</td>
-<td headers="diff_estimate" class="gt_row gt_right">−0.0047</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−0.1081</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0034</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0791</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">correlation_vis1_vis4</td>
-<td headers="bayes_estimate" class="gt_row gt_right">0.1678</td>
+<td headers="bayes_estimate" class="gt_row gt_right">0.1680</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.1802</td>
-<td headers="diff_estimate" class="gt_row gt_right">−0.0124</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0687</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0121</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0674</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">correlation_vis2_vis4</td>
-<td headers="bayes_estimate" class="gt_row gt_right">0.1109</td>
+<td headers="bayes_estimate" class="gt_row gt_right">0.1110</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.1178</td>
-<td headers="diff_estimate" class="gt_row gt_right">−0.0069</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0584</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0067</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0571</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">correlation_vis3_vis4</td>
-<td headers="bayes_estimate" class="gt_row gt_right">0.0130</td>
+<td headers="bayes_estimate" class="gt_row gt_right">0.0144</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.0159</td>
-<td headers="diff_estimate" class="gt_row gt_right">−0.0029</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−0.1809</td></tr>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0015</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0929</td></tr>
   </tbody>
   
   
@@ -2592,23 +2561,23 @@ Because of the different statistical paradigms and estimation procedures, especi
 +   )
 ```
 
-<!--html_preserve--><div id="nvchnsoxqw" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#nvchnsoxqw table {
+<!--html_preserve--><div id="sjrjlbjvlt" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#sjrjlbjvlt table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#nvchnsoxqw thead, #nvchnsoxqw tbody, #nvchnsoxqw tfoot, #nvchnsoxqw tr, #nvchnsoxqw td, #nvchnsoxqw th {
+#sjrjlbjvlt thead, #sjrjlbjvlt tbody, #sjrjlbjvlt tfoot, #sjrjlbjvlt tr, #sjrjlbjvlt td, #sjrjlbjvlt th {
   border-style: none;
 }
 
-#nvchnsoxqw p {
+#sjrjlbjvlt p {
   margin: 0;
   padding: 0;
 }
 
-#nvchnsoxqw .gt_table {
+#sjrjlbjvlt .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -2634,12 +2603,12 @@ Because of the different statistical paradigms and estimation procedures, especi
   border-left-color: #D3D3D3;
 }
 
-#nvchnsoxqw .gt_caption {
+#sjrjlbjvlt .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#nvchnsoxqw .gt_title {
+#sjrjlbjvlt .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -2651,7 +2620,7 @@ Because of the different statistical paradigms and estimation procedures, especi
   border-bottom-width: 0;
 }
 
-#nvchnsoxqw .gt_subtitle {
+#sjrjlbjvlt .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -2663,7 +2632,7 @@ Because of the different statistical paradigms and estimation procedures, especi
   border-top-width: 0;
 }
 
-#nvchnsoxqw .gt_heading {
+#sjrjlbjvlt .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -2675,13 +2644,13 @@ Because of the different statistical paradigms and estimation procedures, especi
   border-right-color: #D3D3D3;
 }
 
-#nvchnsoxqw .gt_bottom_border {
+#sjrjlbjvlt .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#nvchnsoxqw .gt_col_headings {
+#sjrjlbjvlt .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2696,7 +2665,7 @@ Because of the different statistical paradigms and estimation procedures, especi
   border-right-color: #D3D3D3;
 }
 
-#nvchnsoxqw .gt_col_heading {
+#sjrjlbjvlt .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2716,7 +2685,7 @@ Because of the different statistical paradigms and estimation procedures, especi
   overflow-x: hidden;
 }
 
-#nvchnsoxqw .gt_column_spanner_outer {
+#sjrjlbjvlt .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2728,15 +2697,15 @@ Because of the different statistical paradigms and estimation procedures, especi
   padding-right: 4px;
 }
 
-#nvchnsoxqw .gt_column_spanner_outer:first-child {
+#sjrjlbjvlt .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#nvchnsoxqw .gt_column_spanner_outer:last-child {
+#sjrjlbjvlt .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#nvchnsoxqw .gt_column_spanner {
+#sjrjlbjvlt .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -2748,11 +2717,11 @@ Because of the different statistical paradigms and estimation procedures, especi
   width: 100%;
 }
 
-#nvchnsoxqw .gt_spanner_row {
+#sjrjlbjvlt .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#nvchnsoxqw .gt_group_heading {
+#sjrjlbjvlt .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2778,7 +2747,7 @@ Because of the different statistical paradigms and estimation procedures, especi
   text-align: left;
 }
 
-#nvchnsoxqw .gt_empty_group_heading {
+#sjrjlbjvlt .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -2793,15 +2762,15 @@ Because of the different statistical paradigms and estimation procedures, especi
   vertical-align: middle;
 }
 
-#nvchnsoxqw .gt_from_md > :first-child {
+#sjrjlbjvlt .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#nvchnsoxqw .gt_from_md > :last-child {
+#sjrjlbjvlt .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#nvchnsoxqw .gt_row {
+#sjrjlbjvlt .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2820,7 +2789,7 @@ Because of the different statistical paradigms and estimation procedures, especi
   overflow-x: hidden;
 }
 
-#nvchnsoxqw .gt_stub {
+#sjrjlbjvlt .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2833,7 +2802,7 @@ Because of the different statistical paradigms and estimation procedures, especi
   padding-right: 5px;
 }
 
-#nvchnsoxqw .gt_stub_row_group {
+#sjrjlbjvlt .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2847,15 +2816,15 @@ Because of the different statistical paradigms and estimation procedures, especi
   vertical-align: top;
 }
 
-#nvchnsoxqw .gt_row_group_first td {
+#sjrjlbjvlt .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#nvchnsoxqw .gt_row_group_first th {
+#sjrjlbjvlt .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#nvchnsoxqw .gt_summary_row {
+#sjrjlbjvlt .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2865,16 +2834,16 @@ Because of the different statistical paradigms and estimation procedures, especi
   padding-right: 5px;
 }
 
-#nvchnsoxqw .gt_first_summary_row {
+#sjrjlbjvlt .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#nvchnsoxqw .gt_first_summary_row.thick {
+#sjrjlbjvlt .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#nvchnsoxqw .gt_last_summary_row {
+#sjrjlbjvlt .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2884,7 +2853,7 @@ Because of the different statistical paradigms and estimation procedures, especi
   border-bottom-color: #D3D3D3;
 }
 
-#nvchnsoxqw .gt_grand_summary_row {
+#sjrjlbjvlt .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2894,7 +2863,7 @@ Because of the different statistical paradigms and estimation procedures, especi
   padding-right: 5px;
 }
 
-#nvchnsoxqw .gt_first_grand_summary_row {
+#sjrjlbjvlt .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2904,7 +2873,7 @@ Because of the different statistical paradigms and estimation procedures, especi
   border-top-color: #D3D3D3;
 }
 
-#nvchnsoxqw .gt_last_grand_summary_row_top {
+#sjrjlbjvlt .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2914,11 +2883,11 @@ Because of the different statistical paradigms and estimation procedures, especi
   border-bottom-color: #D3D3D3;
 }
 
-#nvchnsoxqw .gt_striped {
+#sjrjlbjvlt .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#nvchnsoxqw .gt_table_body {
+#sjrjlbjvlt .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2927,7 +2896,7 @@ Because of the different statistical paradigms and estimation procedures, especi
   border-bottom-color: #D3D3D3;
 }
 
-#nvchnsoxqw .gt_footnotes {
+#sjrjlbjvlt .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2941,7 +2910,7 @@ Because of the different statistical paradigms and estimation procedures, especi
   border-right-color: #D3D3D3;
 }
 
-#nvchnsoxqw .gt_footnote {
+#sjrjlbjvlt .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -2950,7 +2919,7 @@ Because of the different statistical paradigms and estimation procedures, especi
   padding-right: 5px;
 }
 
-#nvchnsoxqw .gt_sourcenotes {
+#sjrjlbjvlt .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2964,7 +2933,7 @@ Because of the different statistical paradigms and estimation procedures, especi
   border-right-color: #D3D3D3;
 }
 
-#nvchnsoxqw .gt_sourcenote {
+#sjrjlbjvlt .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -2972,63 +2941,63 @@ Because of the different statistical paradigms and estimation procedures, especi
   padding-right: 5px;
 }
 
-#nvchnsoxqw .gt_left {
+#sjrjlbjvlt .gt_left {
   text-align: left;
 }
 
-#nvchnsoxqw .gt_center {
+#sjrjlbjvlt .gt_center {
   text-align: center;
 }
 
-#nvchnsoxqw .gt_right {
+#sjrjlbjvlt .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#nvchnsoxqw .gt_font_normal {
+#sjrjlbjvlt .gt_font_normal {
   font-weight: normal;
 }
 
-#nvchnsoxqw .gt_font_bold {
+#sjrjlbjvlt .gt_font_bold {
   font-weight: bold;
 }
 
-#nvchnsoxqw .gt_font_italic {
+#sjrjlbjvlt .gt_font_italic {
   font-style: italic;
 }
 
-#nvchnsoxqw .gt_super {
+#sjrjlbjvlt .gt_super {
   font-size: 65%;
 }
 
-#nvchnsoxqw .gt_footnote_marks {
+#sjrjlbjvlt .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#nvchnsoxqw .gt_asterisk {
+#sjrjlbjvlt .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#nvchnsoxqw .gt_indent_1 {
+#sjrjlbjvlt .gt_indent_1 {
   text-indent: 5px;
 }
 
-#nvchnsoxqw .gt_indent_2 {
+#sjrjlbjvlt .gt_indent_2 {
   text-indent: 10px;
 }
 
-#nvchnsoxqw .gt_indent_3 {
+#sjrjlbjvlt .gt_indent_3 {
   text-indent: 15px;
 }
 
-#nvchnsoxqw .gt_indent_4 {
+#sjrjlbjvlt .gt_indent_4 {
   text-indent: 20px;
 }
 
-#nvchnsoxqw .gt_indent_5 {
+#sjrjlbjvlt .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -3045,65 +3014,65 @@ Because of the different statistical paradigms and estimation procedures, especi
   </thead>
   <tbody class="gt_table_body">
     <tr><td headers="variable" class="gt_row gt_left">intercept</td>
-<td headers="bayes_se" class="gt_row gt_right">1.4222</td>
+<td headers="bayes_se" class="gt_row gt_right">1.4125</td>
 <td headers="freq_se" class="gt_row gt_right">1.4075</td>
-<td headers="diff_se" class="gt_row gt_right">0.0147</td>
-<td headers="diff_relative_se" class="gt_row gt_right">0.0104</td></tr>
+<td headers="diff_se" class="gt_row gt_right">0.0050</td>
+<td headers="diff_relative_se" class="gt_row gt_right">0.0035</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">fev1_bl</td>
-<td headers="bayes_se" class="gt_row gt_right">0.0280</td>
+<td headers="bayes_se" class="gt_row gt_right">0.0279</td>
 <td headers="freq_se" class="gt_row gt_right">0.0278</td>
-<td headers="diff_se" class="gt_row gt_right">0.0002</td>
-<td headers="diff_relative_se" class="gt_row gt_right">0.0088</td></tr>
+<td headers="diff_se" class="gt_row gt_right">0.0001</td>
+<td headers="diff_relative_se" class="gt_row gt_right">0.0046</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">avisitvis2</td>
-<td headers="bayes_se" class="gt_row gt_right">0.8184</td>
+<td headers="bayes_se" class="gt_row gt_right">0.8176</td>
 <td headers="freq_se" class="gt_row gt_right">0.7985</td>
-<td headers="diff_se" class="gt_row gt_right">0.0199</td>
-<td headers="diff_relative_se" class="gt_row gt_right">0.0250</td></tr>
+<td headers="diff_se" class="gt_row gt_right">0.0191</td>
+<td headers="diff_relative_se" class="gt_row gt_right">0.0239</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">avisitvis3</td>
-<td headers="bayes_se" class="gt_row gt_right">0.8306</td>
+<td headers="bayes_se" class="gt_row gt_right">0.8335</td>
 <td headers="freq_se" class="gt_row gt_right">0.8132</td>
-<td headers="diff_se" class="gt_row gt_right">0.0175</td>
-<td headers="diff_relative_se" class="gt_row gt_right">0.0215</td></tr>
+<td headers="diff_se" class="gt_row gt_right">0.0203</td>
+<td headers="diff_relative_se" class="gt_row gt_right">0.0250</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">avisitvis4</td>
-<td headers="bayes_se" class="gt_row gt_right">1.3366</td>
+<td headers="bayes_se" class="gt_row gt_right">1.3283</td>
 <td headers="freq_se" class="gt_row gt_right">1.3086</td>
-<td headers="diff_se" class="gt_row gt_right">0.0281</td>
-<td headers="diff_relative_se" class="gt_row gt_right">0.0215</td></tr>
+<td headers="diff_se" class="gt_row gt_right">0.0198</td>
+<td headers="diff_relative_se" class="gt_row gt_right">0.0151</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">raceblackorafricanamerican</td>
-<td headers="bayes_se" class="gt_row gt_right">0.5835</td>
+<td headers="bayes_se" class="gt_row gt_right">0.5857</td>
 <td headers="freq_se" class="gt_row gt_right">0.5787</td>
-<td headers="diff_se" class="gt_row gt_right">0.0048</td>
-<td headers="diff_relative_se" class="gt_row gt_right">0.0082</td></tr>
+<td headers="diff_se" class="gt_row gt_right">0.0070</td>
+<td headers="diff_relative_se" class="gt_row gt_right">0.0120</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">racewhite</td>
-<td headers="bayes_se" class="gt_row gt_right">0.6216</td>
+<td headers="bayes_se" class="gt_row gt_right">0.6252</td>
 <td headers="freq_se" class="gt_row gt_right">0.6163</td>
-<td headers="diff_se" class="gt_row gt_right">0.0053</td>
-<td headers="diff_relative_se" class="gt_row gt_right">0.0086</td></tr>
+<td headers="diff_se" class="gt_row gt_right">0.0089</td>
+<td headers="diff_relative_se" class="gt_row gt_right">0.0144</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">sexfemale</td>
-<td headers="bayes_se" class="gt_row gt_right">0.5079</td>
+<td headers="bayes_se" class="gt_row gt_right">0.5119</td>
 <td headers="freq_se" class="gt_row gt_right">0.4927</td>
-<td headers="diff_se" class="gt_row gt_right">0.0152</td>
-<td headers="diff_relative_se" class="gt_row gt_right">0.0308</td></tr>
+<td headers="diff_se" class="gt_row gt_right">0.0192</td>
+<td headers="diff_relative_se" class="gt_row gt_right">0.0390</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">avisitvis1:armcdtrt</td>
-<td headers="bayes_se" class="gt_row gt_right">1.0737</td>
+<td headers="bayes_se" class="gt_row gt_right">1.0651</td>
 <td headers="freq_se" class="gt_row gt_right">1.0454</td>
-<td headers="diff_se" class="gt_row gt_right">0.0283</td>
-<td headers="diff_relative_se" class="gt_row gt_right">0.0271</td></tr>
+<td headers="diff_se" class="gt_row gt_right">0.0197</td>
+<td headers="diff_relative_se" class="gt_row gt_right">0.0188</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">avisitvis2:armcdtrt</td>
-<td headers="bayes_se" class="gt_row gt_right">0.8312</td>
+<td headers="bayes_se" class="gt_row gt_right">0.8260</td>
 <td headers="freq_se" class="gt_row gt_right">0.8135</td>
-<td headers="diff_se" class="gt_row gt_right">0.0177</td>
-<td headers="diff_relative_se" class="gt_row gt_right">0.0218</td></tr>
+<td headers="diff_se" class="gt_row gt_right">0.0125</td>
+<td headers="diff_relative_se" class="gt_row gt_right">0.0154</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">avisitvis3:armcdtrt</td>
-<td headers="bayes_se" class="gt_row gt_right">0.6811</td>
+<td headers="bayes_se" class="gt_row gt_right">0.6771</td>
 <td headers="freq_se" class="gt_row gt_right">0.6657</td>
-<td headers="diff_se" class="gt_row gt_right">0.0154</td>
-<td headers="diff_relative_se" class="gt_row gt_right">0.0232</td></tr>
+<td headers="diff_se" class="gt_row gt_right">0.0114</td>
+<td headers="diff_relative_se" class="gt_row gt_right">0.0171</td></tr>
     <tr><td headers="variable" class="gt_row gt_left">avisitvis4:armcdtrt</td>
-<td headers="bayes_se" class="gt_row gt_right">1.6799</td>
+<td headers="bayes_se" class="gt_row gt_right">1.6805</td>
 <td headers="freq_se" class="gt_row gt_right">1.6605</td>
-<td headers="diff_se" class="gt_row gt_right">0.0194</td>
-<td headers="diff_relative_se" class="gt_row gt_right">0.0117</td></tr>
+<td headers="diff_se" class="gt_row gt_right">0.0200</td>
+<td headers="diff_relative_se" class="gt_row gt_right">0.0120</td></tr>
   </tbody>
   
   
@@ -3120,7 +3089,7 @@ Because of the different statistical paradigms and estimation procedures, especi
 #> Running under: macOS Sonoma 14.5
 #> 
 #> Matrix products: default
-#> BLAS:   /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/lib/libRblas.0.dylib 
+#> BLAS:   /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib 
 #> LAPACK: /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.0
 #> 
 #> locale:
@@ -3130,46 +3099,46 @@ Because of the different statistical paradigms and estimation procedures, especi
 #> tzcode source: internal
 #> 
 #> attached base packages:
-#> [1] parallel  stats     graphics  grDevices utils     datasets  methods  
-#> [8] base     
+#> [1] parallel  stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#>  [1] posterior_1.5.0      mmrm_0.3.11          brms.mmrm_0.1.0.9005
-#>  [4] purrr_1.0.2          gtsummary_1.7.2      gt_0.10.1           
-#>  [7] ggplot2_3.5.1        tidyr_1.3.1          dplyr_1.1.4         
-#> [10] knitr_1.46          
+#>  [1] posterior_1.5.0      mmrm_0.3.11          brms.mmrm_1.0.1.9002 purrr_1.0.2         
+#>  [5] gtsummary_1.7.2      gt_0.10.1            ggplot2_3.5.1        tidyr_1.3.1         
+#>  [9] dplyr_1.1.4          knitr_1.46          
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] tidyselect_1.2.1     svUnit_1.0.6         farver_2.1.2        
-#>  [4] loo_2.7.0            tidybayes_3.0.6      fastmap_1.1.1       
-#>  [7] TH.data_1.1-2        tensorA_0.36.2.1     broom.helpers_1.15.0
-#> [10] digest_0.6.35        estimability_1.5     lifecycle_1.0.4     
-#> [13] StanHeaders_2.32.8   processx_3.8.4       survival_3.5-8      
-#> [16] magrittr_2.0.3       compiler_4.4.0       rlang_1.1.3         
-#> [19] sass_0.4.9           tools_4.4.0          utf8_1.2.4          
-#> [22] labeling_0.4.3       bridgesampling_1.1-2 pkgbuild_1.4.4      
-#> [25] curl_5.2.1           plyr_1.8.9           xml2_1.3.6          
-#> [28] abind_1.4-5          multcomp_1.4-25      withr_3.0.0         
-#> [31] grid_4.4.0           stats4_4.4.0         fansi_1.0.6         
-#> [34] xtable_1.8-4         colorspace_2.1-0     inline_0.3.19       
-#> [37] emmeans_1.10.1       scales_1.3.0         gtools_3.9.5        
-#> [40] MASS_7.3-60.2        ggridges_0.5.6       cli_3.6.2           
-#> [43] mvtnorm_1.2-4        generics_0.1.3       RcppParallel_5.1.7  
-#> [46] binom_1.1-1.1        reshape2_1.4.4       commonmark_1.9.1    
-#> [49] rstan_2.32.6         stringr_1.5.1        splines_4.4.0       
-#> [52] bayesplot_1.11.1     matrixStats_1.3.0    brms_2.21.0         
-#> [55] vctrs_0.6.5          V8_4.4.2             Matrix_1.7-0        
-#> [58] sandwich_3.1-0       jsonlite_1.8.8       callr_3.7.6         
-#> [61] arrayhelpers_1.1-0   ggdist_3.3.2         glue_1.7.0          
-#> [64] ps_1.7.6             codetools_0.2-20     distributional_0.4.0
-#> [67] stringi_1.8.4        gtable_0.3.5         QuickJSR_1.1.3      
-#> [70] munsell_0.5.1        tibble_3.2.1         pillar_1.9.0        
-#> [73] htmltools_0.5.8.1    Brobdingnag_1.2-9    TMB_1.9.11          
-#> [76] R6_2.5.1             Rdpack_2.6           evaluate_0.23       
-#> [79] lattice_0.22-6       highr_0.10           markdown_1.12       
-#> [82] rbibutils_2.2.16     backports_1.4.1      trialr_0.1.6        
-#> [85] rstantools_2.4.0     Rcpp_1.0.12          coda_0.19-4.1       
-#> [88] gridExtra_2.3        nlme_3.1-164         checkmate_2.3.1     
-#> [91] xfun_0.43            forcats_1.0.0        zoo_1.8-12          
-#> [94] pkgconfig_2.0.3
+#>   [1] Rdpack_2.6           gridExtra_2.3        inline_0.3.19       
+#>   [4] sandwich_3.1-0       rlang_1.1.4          magrittr_2.0.3      
+#>   [7] multcomp_1.4-25      matrixStats_1.3.0    ggridges_0.5.6      
+#>  [10] compiler_4.4.0       loo_2.7.0            callr_3.7.6         
+#>  [13] vctrs_0.6.5          reshape2_1.4.4       stringr_1.5.1       
+#>  [16] crayon_1.5.2         pkgconfig_2.0.3      arrayhelpers_1.1-0  
+#>  [19] fastmap_1.2.0        backports_1.4.1      labeling_0.4.3      
+#>  [22] utf8_1.2.4           rmarkdown_2.26       markdown_1.12       
+#>  [25] ps_1.7.6             xfun_0.43            jsonlite_1.8.8      
+#>  [28] highr_0.10           tidybayes_3.0.6      trialr_0.1.6        
+#>  [31] R6_2.5.1             stringi_1.8.4        StanHeaders_2.32.8  
+#>  [34] estimability_1.5     Rcpp_1.0.12          rstan_2.32.6        
+#>  [37] zoo_1.8-12           usethis_2.2.3        bayesplot_1.11.1    
+#>  [40] Matrix_1.7-0         splines_4.4.0        tidyselect_1.2.1    
+#>  [43] rstudioapi_0.16.0    abind_1.4-5          yaml_2.3.8          
+#>  [46] TMB_1.9.11           codetools_0.2-20     curl_5.2.1          
+#>  [49] processx_3.8.4       pkgbuild_1.4.4       lattice_0.22-6      
+#>  [52] tibble_3.2.1         plyr_1.8.9           withr_3.0.0         
+#>  [55] bridgesampling_1.1-2 coda_0.19-4.1        evaluate_0.23       
+#>  [58] survival_3.5-8       RcppParallel_5.1.7   ggdist_3.3.2        
+#>  [61] xml2_1.3.6           pillar_1.9.0         rsconnect_1.2.2     
+#>  [64] tensorA_0.36.2.1     checkmate_2.3.1      stats4_4.4.0        
+#>  [67] distributional_0.4.0 generics_0.1.3       rprojroot_2.0.4     
+#>  [70] rstantools_2.4.0     munsell_0.5.1        commonmark_1.9.1    
+#>  [73] scales_1.3.0         gtools_3.9.5         xtable_1.8-4        
+#>  [76] glue_1.7.0           emmeans_1.10.1       tools_4.4.0         
+#>  [79] forcats_1.0.0        fs_1.6.4             mvtnorm_1.2-4       
+#>  [82] grid_4.4.0           rbibutils_2.2.16     QuickJSR_1.1.3      
+#>  [85] colorspace_2.1-0     nlme_3.1-164         cli_3.6.2           
+#>  [88] fansi_1.0.6          svUnit_1.0.6         binom_1.1-1.1       
+#>  [91] broom.helpers_1.15.0 Brobdingnag_1.2-9    V8_4.4.2            
+#>  [94] gtable_0.3.5         sass_0.4.9           digest_0.6.35       
+#>  [97] TH.data_1.1-2        brms_2.21.0          farver_2.1.2        
+#> [100] htmltools_0.5.8.1    lifecycle_1.0.4      MASS_7.3-60.2
 ```

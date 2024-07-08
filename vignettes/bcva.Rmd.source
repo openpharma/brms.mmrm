@@ -106,8 +106,7 @@ bcva_data <- brm_data(
   baseline = "BCVA_BL",
   reference_group = "CTL",
   covariates = "RACE"
-) |>
-  mutate(ARMCD = factor(ARMCD), AVISIT = factor(AVISIT))
+)
 ```
 
 The following table shows the first rows of the dataset.
@@ -211,6 +210,7 @@ b_mmrm_fit <- brm_model(
   warmup = 2000,
   chains = 4,
   cores = 4,
+  seed = 1,
   refresh = 0
 )
 ```
