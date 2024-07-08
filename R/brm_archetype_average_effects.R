@@ -178,8 +178,8 @@ brm_archetype_average_effects <- function(
 archetype_average_effects <- function(data, prefix) {
   group <- attr(data, "brm_group")
   time <- attr(data, "brm_time")
-  levels_group <- attr(data, "brm_levels_group")
-  levels_time <- attr(data, "brm_levels_time")
+  levels_group <- brm_levels(data[[group]])
+  levels_time <- brm_levels(data[[time]])
   reference <- attr(data, "brm_reference_group")
   n_time <- length(levels_time)
   matrix <- NULL
@@ -218,9 +218,9 @@ archetype_average_effects_subgroup <- function(data, prefix) {
   group <- attr(data, "brm_group")
   subgroup <- attr(data, "brm_subgroup")
   time <- attr(data, "brm_time")
-  levels_group <- attr(data, "brm_levels_group")
-  levels_subgroup <- attr(data, "brm_levels_subgroup")
-  levels_time <- attr(data, "brm_levels_time")
+  levels_group <- brm_levels(data[[group]])
+  levels_subgroup <- brm_levels(data[[subgroup]])
+  levels_time <- brm_levels(data[[time]])
   reference <- attr(data, "brm_reference_group")
   n_group <- length(levels_group)
   n_subgroup <- length(levels_subgroup)

@@ -146,8 +146,8 @@ brm_archetype_cells <- function(
 archetype_cells <- function(data, prefix) {
   group <- attr(data, "brm_group")
   time <- attr(data, "brm_time")
-  levels_group <- attr(data, "brm_levels_group")
-  levels_time <- attr(data, "brm_levels_time")
+  levels_group <- brm_levels(data[[group]])
+  levels_time <- brm_levels(data[[time]])
   matrix <- NULL
   for (name_group in levels_group) {
     for (name_time in levels_time) {
@@ -173,9 +173,9 @@ archetype_cells_subgroup <- function(data, prefix) {
   group <- attr(data, "brm_group")
   subgroup <- attr(data, "brm_subgroup")
   time <- attr(data, "brm_time")
-  levels_group <- attr(data, "brm_levels_group")
-  levels_subgroup <- attr(data, "brm_levels_subgroup")
-  levels_time <- attr(data, "brm_levels_time")
+  levels_group <- brm_levels(data[[group]])
+  levels_subgroup <- brm_levels(data[[subgroup]])
+  levels_time <- brm_levels(data[[time]])
   n_group <- length(levels_group)
   n_subgroup <- length(levels_subgroup)
   n_time <- length(levels_time)

@@ -42,7 +42,8 @@ archetype_nuisance <- function(
     out <- dplyr::bind_cols(out, nuisance_baseline_time(data))
   }
   if (!is.null(out) && ncol(out)) {
-    colnames(out) <- brm_levels(paste0(prefix, colnames(out)))
+    colnames(out) <- paste0(prefix, colnames(out))
+    colnames(out) <- make.names(colnames(out), unique = FALSE, allow_ = TRUE)
     out <- nuisance_full_rank(
       data = data,
       interest = interest,
