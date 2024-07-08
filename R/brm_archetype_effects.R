@@ -171,8 +171,8 @@ brm_archetype_effects <- function(
 archetype_effects <- function(data, prefix) {
   group <- attr(data, "brm_group")
   time <- attr(data, "brm_time")
-  levels_group <- attr(data, "brm_levels_group")
-  levels_time <- attr(data, "brm_levels_time")
+  levels_group <- brm_levels(data[[group]])
+  levels_time <- brm_levels(data[[time]])
   reference <- attr(data, "brm_reference_group")
   matrix <- NULL
   for (name_group in levels_group) {
@@ -188,7 +188,6 @@ archetype_effects <- function(data, prefix) {
   names_group <- rep(levels_group, each = length(levels_time))
   names_time <- rep(levels_time, times = length(levels_group))
   names <- paste0(prefix, paste(names_group, names_time, sep = "_"))
-  names <- brm_levels(names)
   colnames(matrix) <- names
   interest <- tibble::as_tibble(as.data.frame(matrix))
   mapping <- tibble::tibble(
@@ -203,9 +202,9 @@ archetype_effects_subgroup <- function(data, prefix) {
   group <- attr(data, "brm_group")
   subgroup <- attr(data, "brm_subgroup")
   time <- attr(data, "brm_time")
-  levels_group <- attr(data, "brm_levels_group")
-  levels_subgroup <- attr(data, "brm_levels_subgroup")
-  levels_time <- attr(data, "brm_levels_time")
+  levels_group <- brm_levels(data[[group]])
+  levels_subgroup <- brm_levels(data[[subgroup]])
+  levels_time <- brm_levels(data[[time]])
   reference <- attr(data, "brm_reference_group")
   n_group <- length(levels_group)
   n_subgroup <- length(levels_subgroup)
@@ -233,7 +232,6 @@ archetype_effects_subgroup <- function(data, prefix) {
     prefix,
     paste(names_group, names_subgroup, names_time, sep = "_")
   )
-  names <- brm_levels(names)
   colnames(matrix) <- names
   interest <- tibble::as_tibble(as.data.frame(matrix))
   mapping <- tibble::tibble(

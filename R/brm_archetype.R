@@ -113,9 +113,13 @@ brm_data_validate.brms_mmrm_archetype <- function(data) {
     !anyDuplicated(mapping$variable),
     message = "mapping$variable must have all unique values"
   )
-  groups <- attr(data, "brm_levels_group")
-  subgroups <- attr(data, "brm_levels_subgroup")
-  times <- attr(data, "brm_levels_time")
+  groups <- brm_levels(data[[attr(data, "brm_group")]])
+  subgroups <- if_any(
+    is.null(attr(data, "brm_subgroup")),
+    character(0L),
+    brm_levels(data[[attr(data, "brm_subgroup")]])
+  )
+  times <-  brm_levels(data[[attr(data, "brm_time")]])
   n_group <- length(groups)
   n_subgroup <- length(subgroups)
   n_time <- length(times)

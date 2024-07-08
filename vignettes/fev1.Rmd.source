@@ -117,8 +117,7 @@ fev_data <- brm_data(
   baseline = "FEV1_BL",
   reference_group = "PBO",
   covariates = c("RACE", "SEX")
-) |>
-  mutate(ARMCD = factor(ARMCD), AVISIT = factor(AVISIT))
+)
 ```
 
 The following table shows the first rows of the dataset.
@@ -222,6 +221,7 @@ b_mmrm_fit <- brm_model(
   warmup = 2000,
   chains = 4,
   cores = 1 + (detectCores() > 1),
+  seed = 1,
   refresh = 0
 )
 ```

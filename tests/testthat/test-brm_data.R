@@ -47,11 +47,11 @@ test_that("brm_data() response", {
   )
   expect_equal(
     out$col_group,
-    rep(paste0("group.", c(1L, 2L)), each = 400L)
+    as.factor(rep(paste("group", c(1L, 2L)), each = 400L))
   )
   expect_equal(
     out$col_time,
-    rep(paste0("time.", seq_len(4L)), times = 200L)
+    rep(paste("time", seq_len(4L)), times = 200L)
   )
   expect_equal(
     sort(out$col_response[- c(2L, 3L)]),
@@ -66,23 +66,9 @@ test_that("brm_data() response", {
   expect_equal(attr(out, "brm_time"), "col_time")
   expect_equal(attr(out, "brm_patient"), "col_patient")
   expect_equal(attr(out, "brm_covariates"), c("col_factor2", "col_factor3"))
-  expect_equal(
-    sort(attr(out, "brm_levels_group")), c("group.1", "group.2")
-  )
-  expect_null(attr(out, "brm_levels_subgroup"))
-  expect_equal(
-    sort(attr(out, "brm_levels_time")), paste0("time.", seq_len(4L))
-  )
-  expect_equal(
-    sort(attr(out, "brm_labels_group")), c("group 1", "group 2")
-  )
-  expect_null(attr(out, "brm_labels_subgroup"))
-  expect_equal(
-    sort(attr(out, "brm_labels_time")), paste("time", seq_len(4L))
-  )
   expect_equal(attr(out, "brm_missing"), "col_missing")
-  expect_equal(attr(out, "brm_reference_group"), "group.1")
-  expect_equal(attr(out, "brm_reference_time"), "time.1")
+  expect_equal(attr(out, "brm_reference_group"), "group 1")
+  expect_equal(attr(out, "brm_reference_time"), "time 1")
   expect_false(brm_data_has_subgroup(out))
 })
 
@@ -183,15 +169,15 @@ test_that("brm_data() response with subgroup", {
   )
   expect_equal(
     out$col_group,
-    rep(paste0("group.", c(1L, 2L)), each = 800L)
+    as.factor(rep(paste("group", c(1L, 2L)), each = 800L))
   )
   expect_equal(
     out$col_subgroup,
-    rep(paste0("subgroup.", c(1L, 2L, 1L, 2L)), each = 400L)
+    rep(paste("subgroup", c(1L, 2L, 1L, 2L)), each = 400L)
   )
   expect_equal(
     out$col_time,
-    rep(paste0("time.", seq_len(4L)), times = 400L)
+    rep(paste("time", seq_len(4L)), times = 400L)
   )
   expect_equal(out$col_patient, out$col_factor2)
   expect_equal(out$col_patient, out$col_factor3)
@@ -202,28 +188,10 @@ test_that("brm_data() response with subgroup", {
   expect_equal(attr(out, "brm_time"), "col_time")
   expect_equal(attr(out, "brm_patient"), "col_patient")
   expect_equal(attr(out, "brm_covariates"), c("col_factor2", "col_factor3"))
-  expect_equal(
-    sort(attr(out, "brm_levels_group")), c("group.1", "group.2")
-  )
-  expect_equal(
-    sort(attr(out, "brm_levels_subgroup")), c("subgroup.1", "subgroup.2")
-  )
-  expect_equal(
-    sort(attr(out, "brm_levels_time")), paste0("time.", seq_len(4L))
-  )
-  expect_equal(
-    sort(attr(out, "brm_labels_group")), c("group 1", "group 2")
-  )
-  expect_equal(
-    sort(attr(out, "brm_labels_subgroup")), c("subgroup 1", "subgroup 2")
-  )
-  expect_equal(
-    sort(attr(out, "brm_labels_time")), paste("time", seq_len(4L))
-  )
   expect_equal(attr(out, "brm_missing"), "col_missing")
-  expect_equal(attr(out, "brm_reference_group"), "group.1")
-  expect_equal(attr(out, "brm_reference_subgroup"), "subgroup.1")
-  expect_equal(attr(out, "brm_reference_time"), "time.1")
+  expect_equal(attr(out, "brm_reference_group"), "group 1")
+  expect_equal(attr(out, "brm_reference_subgroup"), "subgroup 1")
+  expect_equal(attr(out, "brm_reference_time"), "time 1")
   expect_true(brm_data_has_subgroup(out))
 })
 
@@ -270,11 +238,11 @@ test_that("brm_data() change", {
   )
   expect_equal(
     out$col_group,
-    rep(paste0("group.", c(1L, 2L)), each = 400L)
+    as.factor(rep(paste("group", c(1L, 2L)), each = 400L))
   )
   expect_equal(
     out$col_time,
-    rep(paste0("time.", seq_len(4L)), times = 200L)
+    rep(paste("time", seq_len(4L)), times = 200L)
   )
   expect_equal(
     sort(out$col_response[- c(2L, 3L)]),
@@ -286,20 +254,8 @@ test_that("brm_data() change", {
   expect_equal(attr(out, "brm_time"), "col_time")
   expect_equal(attr(out, "brm_patient"), "col_patient")
   expect_equal(attr(out, "brm_covariates"), character(0L))
-  expect_equal(
-    sort(attr(out, "brm_levels_group")), c("group.1", "group.2")
-  )
-  expect_equal(
-    sort(attr(out, "brm_levels_time")), paste0("time.", seq_len(4L))
-  )
-  expect_equal(
-    sort(attr(out, "brm_labels_group")), c("group 1", "group 2")
-  )
-  expect_equal(
-    sort(attr(out, "brm_labels_time")), paste("time", seq_len(4L))
-  )
   expect_null(attr(out, "brm_missing"))
-  expect_equal(attr(out, "brm_reference_group"), "group.1")
+  expect_equal(attr(out, "brm_reference_group"), "group 1")
   expect_null(attr(out, "brm_reference_time"))
 })
 
@@ -355,7 +311,7 @@ test_that("brm_data() bad group", {
   )
 })
 
-test_that("brm_data() levels ", {
+test_that("brm_data() levels", {
   set.seed(0)
   sim <- brm_simulate_simple()
   data <- tibble::as_tibble(sim$data)
@@ -380,8 +336,13 @@ test_that("brm_data() levels ", {
 })
 
 test_that("brm_levels()", {
-  expect_equal(brm_levels(c("a 1", "a 1", "b 2")), c("a.1", "a.1", "b.2"))
-  expect_error(brm_levels(c("a 1", "a.1")), class = "brm_error")
+  expect_equal(brm_levels(c(3L, 2L, 1L, 2L, 3L)), c(1L, 2L, 3L))
+  x <- ordered(rep(c("a", "c", "b"), times = 2), levels = c("c", "b", "a"))
+  expect_equal(brm_levels(x), c("c", "b", "a"))
+  expect_equal(
+    brm_levels(ordered(c("x", "y"), levels = c("z", "y", "x"))),
+    c("y", "x")
+  )
 })
 
 test_that("brm_data() deprecate level_control", {
@@ -420,4 +381,25 @@ test_that("brm_data() deprecate level_baseline", {
 
 test_that("brm_data() on bad object", {
   expect_error(brm_data_fill("Swiss cheese"), class = "brm_error")
+})
+
+test_that("brm_data() ordered factor contrasts", {
+  set.seed(0)
+  sim <- brm_simulate_simple()
+  data <- tibble::as_tibble(sim$data)
+  data$time <- ordered(data$time)
+  out <- brm_data(
+    data = data,
+    outcome = "response",
+    role = "response",
+    group = "group",
+    time = "time",
+    patient = "patient",
+    reference_group = "group_1",
+    reference_time = "time_1"
+  )
+  expect_equal(
+    sort(colnames(model.matrix(~ time, data = out))),
+    sort(c("(Intercept)", "time2", "time3", "time4"))
+  )
 })

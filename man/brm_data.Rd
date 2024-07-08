@@ -16,10 +16,10 @@ brm_data(
   covariates = character(0L),
   missing = NULL,
   reference_group = "Placebo",
-  level_control = NULL,
   reference_subgroup = NULL,
   reference_time = NULL,
-  level_baseline = NULL
+  level_baseline = NULL,
+  level_control = NULL
 )
 }
 \arguments{
@@ -37,15 +37,27 @@ Only relevant if the response variable is change from baseline.
 Supply \code{NULL} to ignore or omit.}
 
 \item{group}{Character of length 1, name of the treatment group variable.
-Must point to a character vector in the data. Factors are converted
-to characters.}
+The \code{group} column in the data should be a
+character vector or unordered factor.}
 
 \item{subgroup}{Character of length 1, optional name of the a
-discrete subgroup variable. Set to \code{NULL} to omit the subgroup (default).}
+discrete subgroup variable. Set to \code{NULL} to omit the subgroup (default).
+If present, the \code{subgroup} column in the data should be a
+character vector or unordered factor.}
 
 \item{time}{Character of length 1, name of the discrete time variable.
-Must point to a character vector in the data. Factors are converted
-to characters.}
+For most analyses, please use an ordered factor for the \code{time} column
+in the data. This ensures the time points sort in chronological order,
+which ensures the correctness of informative prior archetypes and
+autoregressive / moving average correlation structures.
+
+Ordinarily, ordered factors automatically use polynomial contrasts from
+\code{\link[=contr.poly]{contr.poly()}}. This is undesirable for MMRMs, so if the time variable
+is an ordered factor, then \code{\link[=brm_data]{brm_data()}}
+manually sets \code{contrasts(data[[time]])} to a set of treatment contrasts
+using \code{\link[=contr.treatment]{contr.treatment()}}. If you prefer different contrasts, please
+manually set \code{contrasts(data[[time]])} to something else after
+calling \code{\link[=brm_data]{brm_data()}}.}
 
 \item{patient}{Character of length 1, name of the patient ID variable.}
 
@@ -55,24 +67,21 @@ to characters.}
 in a simulated dataset to indicate which outcome values should be missing.
 Set to \code{NULL} to omit.}
 
-\item{reference_group}{Character of length 1, Level of the \code{group} column
-to indicate the control group.
+\item{reference_group}{Atomic value of length 1, Level of the \code{group}
+column to indicate the control group.
 \code{reference_group} only applies to the post-processing that happens
 in functions like \code{\link[=brm_marginal_draws]{brm_marginal_draws()}} downstream of the model.
 It does not control the fixed effect mapping in the
 model matrix that \code{brms} derives from the formula from \code{brm_formula()}.}
 
-\item{level_control}{Deprecated on 2024-01-11 (version 0.2.0.9002).
-Use \code{reference_group} instead.}
-
-\item{reference_subgroup}{Character of length 1,
+\item{reference_subgroup}{Atomic value of length 1,
 level of the \code{subgroup} column
 to use as a reference for pairwise differences in when computing
 marginal means downstream of the model.
 It does not control the fixed effect mapping in the
 model matrix that \code{brms} derives from the formula from \code{brm_formula()}.}
 
-\item{reference_time}{Character of length 1 or \code{NULL},
+\item{reference_time}{Atomic value of length 1 or \code{NULL},
 level of the \code{time} column to indicate the baseline time point.
 This value must be \code{NULL} if the outcome
 variable is already change from baseline. If the outcome
@@ -88,6 +97,9 @@ model matrix that \code{brms} derives from the formula from \code{brm_formula()}
 
 \item{level_baseline}{Deprecated on 2024-01-11 (version 0.2.0.9002).
 Use \code{reference_time} instead.}
+
+\item{level_control}{Deprecated on 2024-01-11 (version 0.2.0.9002).
+Use \code{reference_group} instead.}
 }
 \value{
 A classed tibble with attributes which denote features of

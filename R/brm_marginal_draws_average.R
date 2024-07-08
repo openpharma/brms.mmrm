@@ -89,17 +89,20 @@ brm_marginal_draws_average <- function(
     message = "marginals arg must be a named list from brm_marginal_draws()"
   )
   brm_data_validate(data)
-  levels_group <-  attr(data, "brm_levels_group")
-  levels_subgroup <-  attr(data, "brm_levels_subgroup")
-  levels_time <- brm_levels(unique(times %|||% attr(data, "brm_levels_time")))
+  levels_group <-  brm_levels(data[[attr(data, "brm_group")]])
+  levels_subgroup <- if_any(
+    is.null(attr(data, "brm_subgroup")),
+    character(0L),
+    brm_levels(data[[attr(data, "brm_subgroup")]])
+  )
+  all_times <- brm_levels(data[[attr(data, "brm_time")]])
+  levels_time <- unique(times %|||% all_times)
   assert(
     levels_time,
-    is.character(.),
     !anyDuplicated(.),
     !anyNA(.),
-    nzchar(.),
     length(.) > 0L,
-    all(. %in% attr(data, "brm_levels_time")),
+    all(. %in% all_times),
     message = "times argument must be valid discrete time points from the data"
   )
   label <- brm_levels(label)
@@ -109,7 +112,7 @@ brm_marginal_draws_average <- function(
     !anyNA(.),
     nzchar(.),
     length(.) == 1L,
-    !any(. %in% attr(data, "brm_levels_time")),
+    !any(. %in% all_times),
     message = paste(
       "label must be a string and must not conflict",
       "with existing time point labels."

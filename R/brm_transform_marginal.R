@@ -115,7 +115,7 @@ brm_transform_marginal <- function(
     average_within_subgroup <- FALSE
   }
   time <- attr(data, "brm_time")
-  levels_time <- attr(data, "brm_levels_time")
+  levels_time <- brm_levels(data[[time]])
   assert(
     data[[time]] == rep(levels_time, times = nrow(data) / length(levels_time)),
     message = paste(

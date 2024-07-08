@@ -29,8 +29,14 @@ test_that("brm_marginal_grid() non-subgroup", {
       "TRT|VIS4"
     )
   )
-  expect_equal(out$group, rep(c("PBO", "TRT"), each = 4L))
-  expect_equal(out$time, rep(paste0("VIS", seq_len(4L)), times = 2L))
+  expect_equal(
+    out$group,
+    as.factor(rep(c("PBO", "TRT"), each = 4L))
+  )
+  expect_equal(
+    out$time,
+    as.factor(rep(paste0("VIS", seq_len(4L)), times = 2L))
+  )
 })
 
 test_that("brm_marginal_grid() subgroup", {
@@ -56,28 +62,34 @@ test_that("brm_marginal_grid() subgroup", {
   expect_equal(
     out$name,
     c(
-      "PBO|Female|VIS1",
-      "PBO|Female|VIS2",
-      "PBO|Female|VIS3",
-      "PBO|Female|VIS4",
       "PBO|Male|VIS1",
       "PBO|Male|VIS2",
       "PBO|Male|VIS3",
       "PBO|Male|VIS4",
-      "TRT|Female|VIS1",
-      "TRT|Female|VIS2",
-      "TRT|Female|VIS3",
-      "TRT|Female|VIS4",
+      "PBO|Female|VIS1",
+      "PBO|Female|VIS2",
+      "PBO|Female|VIS3",
+      "PBO|Female|VIS4",
       "TRT|Male|VIS1",
       "TRT|Male|VIS2",
       "TRT|Male|VIS3",
-      "TRT|Male|VIS4"
+      "TRT|Male|VIS4",
+      "TRT|Female|VIS1",
+      "TRT|Female|VIS2",
+      "TRT|Female|VIS3",
+      "TRT|Female|VIS4"
     )
   )
-  expect_equal(out$group, rep(c("PBO", "TRT"), each = 8L))
+  expect_equal(out$group, as.factor(rep(c("PBO", "TRT"), each = 8L)))
   expect_equal(
     out$subgroup,
-    rep(rep(c("Female", "Male"), times = 2L), each = 4L)
+    factor(
+      rep(rep(c("Male", "Female"), times = 2L), each = 4L),
+      levels = c("Male", "Female")
+    )
   )
-  expect_equal(out$time, rep(paste0("VIS", seq_len(4L)), times = 4L))
+  expect_equal(
+    out$time,
+    as.factor(rep(paste0("VIS", seq_len(4L)), times = 4L))
+  )
 })

@@ -73,8 +73,6 @@ brm_prior_archetype <- function(label, archetype) {
     )
   )
   for (field in fields) {
-    map[[field]] <- brm_levels(map[[field]])
-    label[[field]] <- brm_levels(label[[field]])
     assert(
       label[[field]] %in% unique(map[[field]]),
       message = paste(

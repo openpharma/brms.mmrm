@@ -1,8 +1,9 @@
-# brms.mmrm 1.0.1.9002 (development)
+# brms.mmrm 1.0.1.9003 (development)
 
 * Add `brm_marginal_grid()`.
 * Show posterior samples of `sigma` in `brm_marginal_draws()` and `brm_marginal_summaries()`.
 * Allow `outcome = "response"` with `reference_time = NULL`. Sometimes raw response is analyzed but the data has no baseline time point.
+* Preserve factors in `brm_data()` and encourage ordered factors for the time variable (#113). 
 
 # brms.mmrm 1.0.1
 

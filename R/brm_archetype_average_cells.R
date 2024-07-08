@@ -174,8 +174,8 @@ brm_archetype_average_cells <- function(
 archetype_average_cells <- function(data, prefix) {
   group <- attr(data, "brm_group")
   time <- attr(data, "brm_time")
-  levels_group <- attr(data, "brm_levels_group")
-  levels_time <- attr(data, "brm_levels_time")
+  levels_group <- brm_levels(data[[attr(data, "brm_group")]])
+  levels_time <- brm_levels(data[[attr(data, "brm_time")]])
   n_time <- length(levels_time)
   matrix <- NULL
   for (name_group in levels_group) {
@@ -194,7 +194,6 @@ archetype_average_cells <- function(data, prefix) {
   names_group <- rep(levels_group, each = n_time)
   names_time <- rep(levels_time, times = length(levels_group))
   names <- paste0(prefix, paste(names_group, names_time, sep = "_"))
-  names <- brm_levels(names)
   colnames(matrix) <- names
   interest <- tibble::as_tibble(as.data.frame(matrix))
   mapping <- tibble::tibble(
@@ -209,9 +208,9 @@ archetype_average_cells_subgroup <- function(data, prefix) {
   group <- attr(data, "brm_group")
   subgroup <- attr(data, "brm_subgroup")
   time <- attr(data, "brm_time")
-  levels_group <- attr(data, "brm_levels_group")
-  levels_subgroup <- attr(data, "brm_levels_subgroup")
-  levels_time <- attr(data, "brm_levels_time")
+  levels_group <- brm_levels(data[[group]])
+  levels_subgroup <- brm_levels(data[[subgroup]])
+  levels_time <- brm_levels(data[[time]])
   n_group <- length(levels_group)
   n_subgroup <- length(levels_subgroup)
   n_time <- length(levels_time)
@@ -243,7 +242,6 @@ archetype_average_cells_subgroup <- function(data, prefix) {
     prefix,
     paste(names_group, names_subgroup, names_time, sep = "_")
   )
-  names <- brm_levels(names)
   colnames(matrix) <- names
   interest <- tibble::as_tibble(as.data.frame(matrix))
   mapping <- tibble::tibble(

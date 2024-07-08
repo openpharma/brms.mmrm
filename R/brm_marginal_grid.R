@@ -31,7 +31,6 @@ brm_marginal_grid <- function(data, formula) {
       subgroup = subgroup,
       time = time
     )
-    grid <- dplyr::arrange(grid, group, subgroup, time)
   } else {
     grid <- tibble::tibble(
       name = name_marginal(
@@ -41,7 +40,11 @@ brm_marginal_grid <- function(data, formula) {
       group = group,
       time = time
     )
-    grid <- dplyr::arrange(grid, group, time)
   }
-  dplyr::distinct(grid)
+  grid <- dplyr::distinct(grid)
+  if_any(
+    brm_has_subgroup(data = data, formula = formula),
+    dplyr::arrange(grid, group, subgroup, time),
+    dplyr::arrange(grid, group, time)
+  )
 }

@@ -139,9 +139,13 @@ brm_marginal_draws <- function(
   time <- attr(data, "brm_time")
   patient <- attr(data, "brm_patient")
   covariates <- attr(data, "brm_covariates")
-  levels_group <- attr(data, "brm_levels_group")
-  levels_subgroup <- attr(data, "brm_levels_subgroup")
-  levels_time <- attr(data, "brm_levels_time")
+  levels_group <- brm_levels(data[[group]])
+  levels_subgroup <- if_any(
+    is.null(subgroup),
+    character(0L),
+    brm_levels(data[[subgroup]])
+  )
+  levels_time <- brm_levels(data[[time]])
   reference_group <- attr(data, "brm_reference_group")
   reference_subgroup <- attr(data, "brm_reference_subgroup")
   reference_time <- attr(data, "brm_reference_time")
