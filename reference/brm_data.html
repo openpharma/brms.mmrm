@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">brms.mmrm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1.9003</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1.9004</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -114,7 +114,11 @@ character vector or unordered factor.</p></dd>
 <dt id="arg-time">time<a class="anchor" aria-label="anchor" href="#arg-time"></a></dt>
 <dd><p>Character of length 1, name of the discrete time variable.
 For most analyses, please use an ordered factor for the <code>time</code> column
-in the data. This ensures the time points sort in chronological order,
+in the data. You can easily turn
+the time variable into an ordered factor using
+<code><a href="brm_data_chronologize.html">brm_data_chronologize()</a></code>, either before or immediately after
+<code>brm_data()</code> (but before any <code>brm_archetype_*()</code> functions).
+This ensures the time points sort in chronological order,
 which ensures the correctness of informative prior archetypes and
 autoregressive / moving average correlation structures.</p>
 <p>Ordinarily, ordered factors automatically use polynomial contrasts from
@@ -217,7 +221,8 @@ this string. To set a custom string yourself, use
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p>Other data:
-<code><a href="brm_data_change.html">brm_data_change</a>()</code></p></div>
+<code><a href="brm_data_change.html">brm_data_change</a>()</code>,
+<code><a href="brm_data_chronologize.html">brm_data_chronologize</a>()</code></p></div>
     </div>
 
     <div class="section level2">
