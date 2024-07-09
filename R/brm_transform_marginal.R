@@ -117,7 +117,7 @@ brm_transform_marginal <- function(
   time <- attr(data, "brm_time")
   levels_time <- brm_levels(data[[time]])
   assert(
-    data[[time]] == rep(levels_time, times = nrow(data) / length(levels_time)),
+    length(unique(table(data[[time]]))) == 1L,
     message = paste(
       "data in brm_transform_marginal() must be filled. If needed,",
       "please rerun your data through brm_data() and convert to an",
