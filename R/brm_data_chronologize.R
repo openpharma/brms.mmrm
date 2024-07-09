@@ -90,7 +90,7 @@ brm_data_chronologize <- function(
     (order %|||% time) %in% colnames(data),
     message = "order must be NULL or a column name in the data"
   )
-  assert_chr_vec(levels %|||% data[[time]][1L])
+  assert_chr_vec(levels %|||% as.character(data[[time]][1L]))
   assert(
     (levels %|||% data[[time]][1L]) %in% data[[time]],
     message = "all elements of levels must be in data[[time]]"

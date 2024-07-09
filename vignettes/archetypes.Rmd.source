@@ -51,7 +51,8 @@ data <- fev_data |>
     reference_time = "VIS1",
     reference_group = "PBO",
     covariates = c("WEIGHT", "SEX")
-  )
+  ) |>
+  brm_data_chronologize(order = "VISITN")
 data
 ```
 

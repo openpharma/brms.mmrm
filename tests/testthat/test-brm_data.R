@@ -39,6 +39,7 @@ test_that("brm_data() response", {
         "col_time",
         "col_response",
         "col_group",
+        "col_factor1",
         "col_factor2",
         "col_factor3",
         "col_missing"
@@ -161,6 +162,7 @@ test_that("brm_data() response with subgroup", {
         "col_response",
         "col_group",
         "col_subgroup",
+        "col_factor1",
         "col_factor2",
         "col_factor3",
         "col_missing"
@@ -232,7 +234,10 @@ test_that("brm_data() change", {
         "col_patient",
         "col_time",
         "col_response",
-        "col_group"
+        "col_group",
+        "col_factor1",
+        "col_factor2",
+        "col_factor3"
       )
     )
   )

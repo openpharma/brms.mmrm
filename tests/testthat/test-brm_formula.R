@@ -353,6 +353,47 @@ test_that("brm_formula() with all user-supplied columns, all non-sub terms", {
   )
 })
 
+test_that("brm_formula() with one user-supplied column, all non-sub terms", {
+  data <- brm_data(
+    data = tibble::tibble(
+      y = c(1, 2),
+      t = c("x", "y"),
+      b = c(2, 3),
+      g = c("x", "y"),
+      p = c("x", "y"),
+      a = c(1, 2)
+    ),
+    outcome = "y",
+    role = "change",
+    group = "g",
+    time = "t",
+    baseline = "b",
+    patient = "p",
+    covariates = "b",
+    reference_group = "x"
+  )
+  out <- brm_formula(
+    data = data,
+    intercept = TRUE,
+    baseline = TRUE,
+    baseline_time = TRUE,
+    group = TRUE,
+    group_time = TRUE,
+    time = TRUE,
+    check_rank = FALSE
+  )
+  expect_equal(
+    deparse(out[[1L]], width.cutoff = 500L),
+    "y ~ b + b:t + g + g:t + t + b + unstr(time = t, gr = p)"
+  )
+  expect_equal(
+    deparse(out[[2L]][[1L]], width.cutoff = 500L),
+    paste(
+      "sigma ~ 0 + t"
+    )
+  )
+})
+
 test_that("brm_formula() omitting covariates", {
   data <- brm_data(
     data = tibble::tibble(

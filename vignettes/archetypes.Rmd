@@ -42,21 +42,22 @@ data <- fev_data |>
     reference_time = "VIS1",
     reference_group = "PBO",
     covariates = c("WEIGHT", "SEX")
-  )
+  ) |>
+  brm_data_chronologize(order = "VISITN")
 data
-#> # A tibble: 800 × 6
-#>     FEV1 ARMCD AVISIT USUBJID WEIGHT SEX   
-#>    <dbl> <chr> <chr>  <fct>    <dbl> <fct> 
-#>  1  NA   PBO   VIS1   PT2      0.465 Male  
-#>  2  31.5 PBO   VIS2   PT2      0.233 Male  
-#>  3  36.9 PBO   VIS3   PT2      0.360 Male  
-#>  4  48.8 PBO   VIS4   PT2      0.507 Male  
-#>  5  NA   PBO   VIS1   PT3      0.682 Female
-#>  6  36.0 PBO   VIS2   PT3      0.892 Female
-#>  7  NA   PBO   VIS3   PT3      0.128 Female
-#>  8  37.2 PBO   VIS4   PT3      0.222 Female
-#>  9  32.3 PBO   VIS1   PT5      0.411 Male  
-#> 10  NA   PBO   VIS2   PT5      0.422 Male  
+#> # A tibble: 800 × 10
+#>    USUBJID AVISIT ARMCD RACE                      SEX    FEV1_BL  FEV1 WEIGHT VISITN VISITN2
+#>    <fct>   <ord>  <fct> <fct>                     <fct>    <dbl> <dbl>  <dbl>  <int>   <dbl>
+#>  1 PT2     VIS1   PBO   Asian                     Male      45.0  NA    0.465      1  0.330 
+#>  2 PT2     VIS2   PBO   Asian                     Male      45.0  31.5  0.233      2 -0.820 
+#>  3 PT2     VIS3   PBO   Asian                     Male      45.0  36.9  0.360      3  0.487 
+#>  4 PT2     VIS4   PBO   Asian                     Male      45.0  48.8  0.507      4  0.738 
+#>  5 PT3     VIS1   PBO   Black or African American Female    43.5  NA    0.682      1  0.576 
+#>  6 PT3     VIS2   PBO   Black or African American Female    43.5  36.0  0.892      2 -0.305 
+#>  7 PT3     VIS3   PBO   Black or African American Female    43.5  NA    0.128      3  1.51  
+#>  8 PT3     VIS4   PBO   Black or African American Female    43.5  37.2  0.222      4  0.390 
+#>  9 PT5     VIS1   PBO   Black or African American Male      43.6  32.3  0.411      1 -0.0162
+#> 10 PT5     VIS2   PBO   Black or African American Male      43.6  NA    0.422      2  0.944 
 #> # ℹ 790 more rows
 ```
 
@@ -72,7 +73,7 @@ The instance of the archetype is an ordinary tibble, but it adds new columns.
 
 ```r
 archetype
-#> # A tibble: 800 × 16
+#> # A tibble: 800 × 20
 #>    x_PBO_VIS1 x_PBO_VIS2 x_PBO_VIS3 x_PBO_VIS4 x_TRT_VIS1 x_TRT_VIS2 x_TRT_VIS3 x_TRT_VIS4
 #>  *      <dbl>      <dbl>      <dbl>      <dbl>      <dbl>      <dbl>      <dbl>      <dbl>
 #>  1          1          0          0          0          0          0          0          0
@@ -86,8 +87,9 @@ archetype
 #>  9          1          0          0          0          0          0          0          0
 #> 10          1          1          0          0          0          0          0          0
 #> # ℹ 790 more rows
-#> # ℹ 8 more variables: nuisance_WEIGHT <dbl>, nuisance_SEX_Male <dbl>, USUBJID <fct>,
-#> #   AVISIT <chr>, FEV1 <dbl>, ARMCD <chr>, WEIGHT <dbl>, SEX <fct>
+#> # ℹ 12 more variables: nuisance_WEIGHT <dbl>, nuisance_SEX_Male <dbl>, USUBJID <fct>,
+#> #   AVISIT <ord>, ARMCD <fct>, RACE <fct>, SEX <fct>, FEV1_BL <dbl>, FEV1 <dbl>, WEIGHT <dbl>,
+#> #   VISITN <int>, VISITN2 <dbl>
 ```
 
 Those new columns constitute a custom model matrix to describe the desired parameterization. We have effects of interest to express successive differences:
@@ -95,8 +97,8 @@ Those new columns constitute a custom model matrix to describe the desired param
 
 ```r
 attr(archetype, "brm_archetype_interest")
-#> [1] "x_PBO_VIS1" "x_PBO_VIS2" "x_PBO_VIS3" "x_PBO_VIS4" "x_TRT_VIS1" "x_TRT_VIS2"
-#> [7] "x_TRT_VIS3" "x_TRT_VIS4"
+#> [1] "x_PBO_VIS1" "x_PBO_VIS2" "x_PBO_VIS3" "x_PBO_VIS4" "x_TRT_VIS1" "x_TRT_VIS2" "x_TRT_VIS3"
+#> [8] "x_TRT_VIS4"
 ```
 
 In addition, we have nuisance variables. Some nuisance variables are continuous covariates, while others are levels of one-hot-encoded concomitant factors or interactions of those concomitant factors with baseline and/or subgroup. All nuisance variables are centered at their means so the reference level of the model is at the "center" of the data and not implicitly conditional on a subset of the data.^[`brm_recenter_nuisance()` can retroactively recenter a nuisance column to a fixed value other than its mean.] In addition, some nuisance variables are automatically dropped in order to ensure the model matrix is full-rank. This is critically important to preserve the interpretation of the columns of interest and make sure the informative priors behave as expected.
@@ -268,42 +270,24 @@ model <- brm_model(
 #> Compiling Stan program...
 #> Start sampling
 brms::prior_summary(model)
-#>                      prior    class              coef group resp  dpar nlpar lb ub
-#>                     (flat)        b                                               
-#>                     (flat)        b nuisance_SEX_Male                             
-#>                     (flat)        b   nuisance_WEIGHT                             
-#>  student_t(4, -7.57, 4.96)        b        x_PBO_VIS1                             
-#>  student_t(4,  3.14, 7.86)        b        x_PBO_VIS2                             
-#>  student_t(4,  8.78, 8.18)        b        x_PBO_VIS3                             
-#>  student_t(4,  3.36, 8.10)        b        x_PBO_VIS4                             
-#>  student_t(4, -2.96, 4.78)        b        x_TRT_VIS1                             
-#>  student_t(4,  3.13, 7.64)        b        x_TRT_VIS2                             
-#>  student_t(4,  7.65, 8.24)        b        x_TRT_VIS3                             
-#>  student_t(4,  4.64, 8.21)        b        x_TRT_VIS4                             
-#>                     (flat)        b                              sigma            
-#>                     (flat)        b        AVISITVIS1            sigma            
-#>                     (flat)        b        AVISITVIS2            sigma            
-#>                     (flat)        b        AVISITVIS3            sigma            
-#>                     (flat)        b        AVISITVIS4            sigma            
-#>       lkj_corr_cholesky(1) Lcortime                                               
-#>        source
-#>       default
-#>  (vectorized)
-#>  (vectorized)
-#>          user
-#>          user
-#>          user
-#>          user
-#>          user
-#>          user
-#>          user
-#>          user
-#>       default
-#>  (vectorized)
-#>  (vectorized)
-#>  (vectorized)
-#>  (vectorized)
-#>       default
+#>                      prior    class              coef group resp  dpar nlpar lb ub       source
+#>                     (flat)        b                                                     default
+#>                     (flat)        b nuisance_SEX_Male                              (vectorized)
+#>                     (flat)        b   nuisance_WEIGHT                              (vectorized)
+#>  student_t(4, -7.57, 4.96)        b        x_PBO_VIS1                                      user
+#>  student_t(4,  3.14, 7.86)        b        x_PBO_VIS2                                      user
+#>  student_t(4,  8.78, 8.18)        b        x_PBO_VIS3                                      user
+#>  student_t(4,  3.36, 8.10)        b        x_PBO_VIS4                                      user
+#>  student_t(4, -2.96, 4.78)        b        x_TRT_VIS1                                      user
+#>  student_t(4,  3.13, 7.64)        b        x_TRT_VIS2                                      user
+#>  student_t(4,  7.65, 8.24)        b        x_TRT_VIS3                                      user
+#>  student_t(4,  4.64, 8.21)        b        x_TRT_VIS4                                      user
+#>                     (flat)        b                              sigma                  default
+#>                     (flat)        b        AVISITVIS1            sigma             (vectorized)
+#>                     (flat)        b        AVISITVIS2            sigma             (vectorized)
+#>                     (flat)        b        AVISITVIS3            sigma             (vectorized)
+#>                     (flat)        b        AVISITVIS4            sigma             (vectorized)
+#>       lkj_corr_cholesky(1) Lcortime                                                     default
 ```
 
 Marginal mean estimation, post-processing, and visualization automatically understand the archetype without any user intervention.

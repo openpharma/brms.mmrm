@@ -193,7 +193,6 @@ brm_data_new <- function(
 
 brm_data_preprocess <- function(out) {
   out <- brm_data_fill(out)
-  out <- brm_data_select(out)
   out <- brm_time_contrasts(out)
   out
 }
@@ -360,20 +359,6 @@ brm_data_validate.default <- function(data) {
       message = "reference_time must be NULL if role is \"change\"."
     )
   }
-}
-
-brm_data_select <- function(data) {
-  columns <- c(
-    attr(data, "brm_outcome"),
-    attr(data, "brm_missing"),
-    attr(data, "brm_baseline"),
-    attr(data, "brm_group"),
-    attr(data, "brm_subgroup"),
-    attr(data, "brm_time"),
-    attr(data, "brm_patient"),
-    attr(data, "brm_covariates")
-  )
-  data[, as.character(unique(columns)), drop = FALSE]
 }
 
 brm_data_fill <- function(data) {
