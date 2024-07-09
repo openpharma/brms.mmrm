@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">brms.mmrm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1.9004</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1.9005</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -48,12 +48,13 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.0.1.9004" id="brmsmmrm-1019004-development">brms.mmrm 1.0.1.9004 (development)<a class="anchor" aria-label="anchor" href="#brmsmmrm-1019004-development"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.0.1.9005" id="brmsmmrm-1019005-development">brms.mmrm 1.0.1.9005 (development)<a class="anchor" aria-label="anchor" href="#brmsmmrm-1019005-development"></a></h2>
 <ul><li>Add <code><a href="../reference/brm_marginal_grid.html">brm_marginal_grid()</a></code>.</li>
 <li>Show posterior samples of <code>sigma</code> in <code><a href="../reference/brm_marginal_draws.html">brm_marginal_draws()</a></code> and <code><a href="../reference/brm_marginal_summaries.html">brm_marginal_summaries()</a></code>.</li>
 <li>Allow <code>outcome = "response"</code> with <code>reference_time = NULL</code>. Sometimes raw response is analyzed but the data has no baseline time point.</li>
 <li>Preserve factors in <code><a href="../reference/brm_data.html">brm_data()</a></code> and encourage ordered factors for the time variable (<a href="https://github.com/openpharma/brms.mmrm/issues/113" class="external-link">#113</a>).</li>
 <li>Add <code><a href="../reference/brm_data_chronologize.html">brm_data_chronologize()</a></code> to ensure the correctness of the time variable.</li>
+<li>Do not drop columns in <code><a href="../reference/brm_data.html">brm_data()</a></code>. This helps <code><a href="../reference/brm_data_chronologize.html">brm_data_chronologize()</a></code> operate correctly after calls to `brm_data()</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.0.1" id="brmsmmrm-101">brms.mmrm 1.0.1<a class="anchor" aria-label="anchor" href="#brmsmmrm-101"></a></h2><p class="text-muted">CRAN release: 2024-06-25</p>

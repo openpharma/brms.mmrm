@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">brms.mmrm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1.9004</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1.9005</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,7 +75,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>FEV1 data comparison between Bayesian and frequentist MMRMs</h1>
             
-            <h4 data-toc-skip class="date">2024-08-07</h4>
+            <h4 data-toc-skip class="date">2024-09-07</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/openpharma/brms.mmrm/blob/main/vignettes/fev1.Rmd" class="external-link"><code>vignettes/fev1.Rmd</code></a></small>
       <div class="d-none name"><code>fev1.Rmd</code></div>
@@ -127,26 +127,28 @@ investigating the effect of an active treatment on <code>FEV1</code>
 <code>FEV1</code> is a measure of how quickly the lungs can be emptied
 and low levels may indicate chronic obstructive pulmonary disease
 (COPD).</p>
-<p>The dataset is a <code>tibble</code> with 800 rows and 7
-variables:</p>
+<p>The dataset is a <code>tibble</code> with 800 rows and the following
+notable variables:</p>
 <ul>
 <li>
-<code>USUBJID</code> (subject ID),</li>
+<code>USUBJID</code> (subject ID)</li>
 <li>
-<code>AVISIT</code> (visit number),</li>
+<code>AVISIT</code> (visit number, factor)</li>
+<li>
+<code>VISITN</code> (visit number, numeric)</li>
 <li>
 <code>ARMCD</code> (treatment, <code>TRT</code> or
-<code>PBO</code>),</li>
+<code>PBO</code>)</li>
 <li>
-<code>RACE</code> (3-category race),</li>
+<code>RACE</code> (3-category race)</li>
 <li>
-<code>SEX</code> (sex),</li>
+<code>SEX</code> (female or male)</li>
 <li>
-<code>FEV1_BL</code> (FEV1 at baseline, %),</li>
+<code>FEV1_BL</code> (FEV1 at baseline, %)</li>
 <li>
-<code>FEV1</code> (FEV1 at study visits),</li>
+<code>FEV1</code> (FEV1 at study visits)</li>
 <li>
-<code>WEIGHT</code> (weighting variable).</li>
+<code>WEIGHT</code> (weighting variable)</li>
 </ul>
 <p>The primary endpoint for the analysis is change from baseline in
 <code>FEV1</code>, which we derive below and denote
@@ -166,7 +168,8 @@ and visit and apply the usual checking and standardization steps of
 <span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a><span class="sc">+</span>   <span class="at">baseline =</span> <span class="st">"FEV1_BL"</span>,</span>
 <span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="sc">+</span>   <span class="at">reference_group =</span> <span class="st">"PBO"</span>,</span>
 <span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a><span class="sc">+</span>   <span class="at">covariates =</span> <span class="fu">c</span>(<span class="st">"RACE"</span>, <span class="st">"SEX"</span>)</span>
-<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a><span class="sc">+</span> )</span></code></pre></div>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a><span class="sc">+</span> ) <span class="sc">|&gt;</span></span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a><span class="sc">+</span>   <span class="fu">brm_data_chronologize</span>(<span class="at">order =</span> <span class="st">"VISITN"</span>)</span></code></pre></div>
 <p>The following table shows the first rows of the dataset.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">head</span>(fev_data) <span class="sc">|&gt;</span></span>
 <span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="sc">+</span>   <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
@@ -617,68 +620,96 @@ Table 1. First rows of the pre-processed <code>fev_dat</code> dataset.
 </caption>
 
   <thead><tr class="gt_col_headings">
-<th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="FEV1_CHG">FEV1_CHG</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="FEV1_BL">FEV1_BL</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="ARMCD">ARMCD</th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="USUBJID">USUBJID</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="AVISIT">AVISIT</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="USUBJID">USUBJID</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="ARMCD">ARMCD</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="RACE">RACE</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="SEX">SEX</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="FEV1_BL">FEV1_BL</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="FEV1">FEV1</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="WEIGHT">WEIGHT</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="VISITN">VISITN</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="VISITN2">VISITN2</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="FEV1_CHG">FEV1_CHG</th>
     </tr></thead>
 <tbody class="gt_table_body">
 <tr>
-<td headers="FEV1_CHG" class="gt_row gt_right">NA</td>
-<td headers="FEV1_BL" class="gt_row gt_right">45.02477</td>
-<td headers="ARMCD" class="gt_row gt_center">PBO</td>
-<td headers="AVISIT" class="gt_row gt_center">VIS1</td>
 <td headers="USUBJID" class="gt_row gt_center">PT2</td>
+<td headers="AVISIT" class="gt_row gt_center">VIS1</td>
+<td headers="ARMCD" class="gt_row gt_center">PBO</td>
 <td headers="RACE" class="gt_row gt_center">Asian</td>
 <td headers="SEX" class="gt_row gt_center">Male</td>
+<td headers="FEV1_BL" class="gt_row gt_right">45.02477</td>
+<td headers="FEV1" class="gt_row gt_right">NA</td>
+<td headers="WEIGHT" class="gt_row gt_right">0.4651848</td>
+<td headers="VISITN" class="gt_row gt_right">1</td>
+<td headers="VISITN2" class="gt_row gt_right">0.3295078</td>
+<td headers="FEV1_CHG" class="gt_row gt_right">NA</td>
 </tr>
 <tr>
+<td headers="USUBJID" class="gt_row gt_center">PT2</td>
+<td headers="AVISIT" class="gt_row gt_center">VIS2</td>
+<td headers="ARMCD" class="gt_row gt_center">PBO</td>
+<td headers="RACE" class="gt_row gt_center">Asian</td>
+<td headers="SEX" class="gt_row gt_center">Male</td>
+<td headers="FEV1_BL" class="gt_row gt_right">45.02477</td>
+<td headers="FEV1" class="gt_row gt_right">31.45522</td>
+<td headers="WEIGHT" class="gt_row gt_right">0.2330974</td>
+<td headers="VISITN" class="gt_row gt_right">2</td>
+<td headers="VISITN2" class="gt_row gt_right">-0.8204684</td>
 <td headers="FEV1_CHG" class="gt_row gt_right">-13.569552</td>
-<td headers="FEV1_BL" class="gt_row gt_right">45.02477</td>
-<td headers="ARMCD" class="gt_row gt_center">PBO</td>
-<td headers="AVISIT" class="gt_row gt_center">VIS2</td>
-<td headers="USUBJID" class="gt_row gt_center">PT2</td>
-<td headers="RACE" class="gt_row gt_center">Asian</td>
-<td headers="SEX" class="gt_row gt_center">Male</td>
 </tr>
 <tr>
-<td headers="FEV1_CHG" class="gt_row gt_right">-8.145878</td>
-<td headers="FEV1_BL" class="gt_row gt_right">45.02477</td>
-<td headers="ARMCD" class="gt_row gt_center">PBO</td>
+<td headers="USUBJID" class="gt_row gt_center">PT2</td>
 <td headers="AVISIT" class="gt_row gt_center">VIS3</td>
-<td headers="USUBJID" class="gt_row gt_center">PT2</td>
+<td headers="ARMCD" class="gt_row gt_center">PBO</td>
 <td headers="RACE" class="gt_row gt_center">Asian</td>
 <td headers="SEX" class="gt_row gt_center">Male</td>
-</tr>
-<tr>
-<td headers="FEV1_CHG" class="gt_row gt_right">3.783324</td>
 <td headers="FEV1_BL" class="gt_row gt_right">45.02477</td>
-<td headers="ARMCD" class="gt_row gt_center">PBO</td>
-<td headers="AVISIT" class="gt_row gt_center">VIS4</td>
+<td headers="FEV1" class="gt_row gt_right">36.87889</td>
+<td headers="WEIGHT" class="gt_row gt_right">0.3600763</td>
+<td headers="VISITN" class="gt_row gt_right">3</td>
+<td headers="VISITN2" class="gt_row gt_right">0.4874291</td>
+<td headers="FEV1_CHG" class="gt_row gt_right">-8.145878</td>
+</tr>
+<tr>
 <td headers="USUBJID" class="gt_row gt_center">PT2</td>
+<td headers="AVISIT" class="gt_row gt_center">VIS4</td>
+<td headers="ARMCD" class="gt_row gt_center">PBO</td>
 <td headers="RACE" class="gt_row gt_center">Asian</td>
 <td headers="SEX" class="gt_row gt_center">Male</td>
+<td headers="FEV1_BL" class="gt_row gt_right">45.02477</td>
+<td headers="FEV1" class="gt_row gt_right">48.80809</td>
+<td headers="WEIGHT" class="gt_row gt_right">0.5073795</td>
+<td headers="VISITN" class="gt_row gt_right">4</td>
+<td headers="VISITN2" class="gt_row gt_right">0.7383247</td>
+<td headers="FEV1_CHG" class="gt_row gt_right">3.783324</td>
 </tr>
 <tr>
-<td headers="FEV1_CHG" class="gt_row gt_right">NA</td>
-<td headers="FEV1_BL" class="gt_row gt_right">43.50070</td>
-<td headers="ARMCD" class="gt_row gt_center">PBO</td>
+<td headers="USUBJID" class="gt_row gt_center">PT3</td>
 <td headers="AVISIT" class="gt_row gt_center">VIS1</td>
-<td headers="USUBJID" class="gt_row gt_center">PT3</td>
+<td headers="ARMCD" class="gt_row gt_center">PBO</td>
 <td headers="RACE" class="gt_row gt_center">Black or African American</td>
 <td headers="SEX" class="gt_row gt_center">Female</td>
+<td headers="FEV1_BL" class="gt_row gt_right">43.50070</td>
+<td headers="FEV1" class="gt_row gt_right">NA</td>
+<td headers="WEIGHT" class="gt_row gt_right">0.6821642</td>
+<td headers="VISITN" class="gt_row gt_right">1</td>
+<td headers="VISITN2" class="gt_row gt_right">0.5757814</td>
+<td headers="FEV1_CHG" class="gt_row gt_right">NA</td>
 </tr>
 <tr>
-<td headers="FEV1_CHG" class="gt_row gt_right">-7.513705</td>
-<td headers="FEV1_BL" class="gt_row gt_right">43.50070</td>
-<td headers="ARMCD" class="gt_row gt_center">PBO</td>
-<td headers="AVISIT" class="gt_row gt_center">VIS2</td>
 <td headers="USUBJID" class="gt_row gt_center">PT3</td>
+<td headers="AVISIT" class="gt_row gt_center">VIS2</td>
+<td headers="ARMCD" class="gt_row gt_center">PBO</td>
 <td headers="RACE" class="gt_row gt_center">Black or African American</td>
 <td headers="SEX" class="gt_row gt_center">Female</td>
+<td headers="FEV1_BL" class="gt_row gt_right">43.50070</td>
+<td headers="FEV1" class="gt_row gt_right">35.98699</td>
+<td headers="WEIGHT" class="gt_row gt_right">0.8917896</td>
+<td headers="VISITN" class="gt_row gt_right">2</td>
+<td headers="VISITN2" class="gt_row gt_right">-0.3053884</td>
+<td headers="FEV1_CHG" class="gt_row gt_right">-7.513705</td>
 </tr>
 </tbody>
 </table>
@@ -1147,11 +1178,15 @@ Table 2. Baseline characteristics.
 
   <thead><tr class="gt_col_headings">
 <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="&lt;strong&gt;Characteristic&lt;/strong&gt;"><strong>Characteristic</strong></th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id='&lt;strong&gt;PBO&lt;/strong&gt;, N = 105&lt;span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/span&gt;'>
-<strong>PBO</strong>, N = 105<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id='&lt;strong&gt;PBO&lt;/strong&gt;&lt;br /&gt;
+N = 105&lt;span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/span&gt;'>
+<strong>PBO</strong><br>
+N = 105<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span>
 </th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id='&lt;strong&gt;TRT&lt;/strong&gt;, N = 95&lt;span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/span&gt;'>
-<strong>TRT</strong>, N = 95<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id='&lt;strong&gt;TRT&lt;/strong&gt;&lt;br /&gt;
+N = 95&lt;span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/span&gt;'>
+<strong>TRT</strong><br>
+N = 95<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span>
 </th>
     </tr></thead>
 <tbody class="gt_table_body">
@@ -1671,10 +1706,14 @@ Table 3. Change from baseline.
 
   <thead><tr class="gt_col_headings">
 <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="&lt;strong&gt;Characteristic&lt;/strong&gt;"><strong>Characteristic</strong></th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="&lt;strong&gt;PBO&lt;/strong&gt;, N = 105">
-<strong>PBO</strong>, N = 105</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="&lt;strong&gt;TRT&lt;/strong&gt;, N = 95">
-<strong>TRT</strong>, N = 95</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="&lt;strong&gt;PBO&lt;/strong&gt;&lt;br /&gt;
+N = 105">
+<strong>PBO</strong><br>
+N = 105</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="&lt;strong&gt;TRT&lt;/strong&gt;&lt;br /&gt;
+N = 95">
+<strong>TRT</strong><br>
+N = 95</th>
     </tr></thead>
 <tbody class="gt_table_body">
 <tr>
@@ -1688,12 +1727,12 @@ Table 3. Change from baseline.
 <td headers="stat_2" class="gt_row gt_center">-2 (10)</td>
 </tr>
 <tr>
-<td headers="label" class="gt_row gt_left">    Median (IQR)</td>
+<td headers="label" class="gt_row gt_left">    Median (Q1, Q3)</td>
 <td headers="stat_1" class="gt_row gt_center">-9 (-16, 0)</td>
 <td headers="stat_2" class="gt_row gt_center">-4 (-9, 7)</td>
 </tr>
 <tr>
-<td headers="label" class="gt_row gt_left">    Range</td>
+<td headers="label" class="gt_row gt_left">    Min, Max</td>
 <td headers="stat_1" class="gt_row gt_center">-26, 12</td>
 <td headers="stat_2" class="gt_row gt_center">-24, 20</td>
 </tr>
@@ -1713,12 +1752,12 @@ Table 3. Change from baseline.
 <td headers="stat_2" class="gt_row gt_center">2 (9)</td>
 </tr>
 <tr>
-<td headers="label" class="gt_row gt_left">    Median (IQR)</td>
+<td headers="label" class="gt_row gt_left">    Median (Q1, Q3)</td>
 <td headers="stat_1" class="gt_row gt_center">-3 (-10, 1)</td>
-<td headers="stat_2" class="gt_row gt_center">2 (-3, 8)</td>
+<td headers="stat_2" class="gt_row gt_center">2 (-4, 8)</td>
 </tr>
 <tr>
-<td headers="label" class="gt_row gt_left">    Range</td>
+<td headers="label" class="gt_row gt_left">    Min, Max</td>
 <td headers="stat_1" class="gt_row gt_center">-20, 15</td>
 <td headers="stat_2" class="gt_row gt_center">-22, 23</td>
 </tr>
@@ -1738,12 +1777,12 @@ Table 3. Change from baseline.
 <td headers="stat_2" class="gt_row gt_center">5 (9)</td>
 </tr>
 <tr>
-<td headers="label" class="gt_row gt_left">    Median (IQR)</td>
+<td headers="label" class="gt_row gt_left">    Median (Q1, Q3)</td>
 <td headers="stat_1" class="gt_row gt_center">2 (-2, 8)</td>
 <td headers="stat_2" class="gt_row gt_center">6 (0, 11)</td>
 </tr>
 <tr>
-<td headers="label" class="gt_row gt_left">    Range</td>
+<td headers="label" class="gt_row gt_left">    Min, Max</td>
 <td headers="stat_1" class="gt_row gt_center">-15, 20</td>
 <td headers="stat_2" class="gt_row gt_center">-19, 30</td>
 </tr>
@@ -1763,12 +1802,12 @@ Table 3. Change from baseline.
 <td headers="stat_2" class="gt_row gt_center">13 (13)</td>
 </tr>
 <tr>
-<td headers="label" class="gt_row gt_left">    Median (IQR)</td>
-<td headers="stat_1" class="gt_row gt_center">6 (1, 18)</td>
-<td headers="stat_2" class="gt_row gt_center">12 (5, 22)</td>
+<td headers="label" class="gt_row gt_left">    Median (Q1, Q3)</td>
+<td headers="stat_1" class="gt_row gt_center">6 (1, 20)</td>
+<td headers="stat_2" class="gt_row gt_center">12 (5, 23)</td>
 </tr>
 <tr>
-<td headers="label" class="gt_row gt_left">    Range</td>
+<td headers="label" class="gt_row gt_left">    Min, Max</td>
 <td headers="stat_1" class="gt_row gt_center">-20, 39</td>
 <td headers="stat_2" class="gt_row gt_center">-14, 47</td>
 </tr>
@@ -1834,7 +1873,7 @@ diffuse flexible priors by default.</p>
 <span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a><span class="sc">+</span>   <span class="at">iter =</span> <span class="dv">10000</span>,</span>
 <span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a><span class="sc">+</span>   <span class="at">warmup =</span> <span class="dv">2000</span>,</span>
 <span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a><span class="sc">+</span>   <span class="at">chains =</span> <span class="dv">4</span>,</span>
-<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a><span class="sc">+</span>   <span class="at">cores =</span> <span class="dv">1</span> <span class="sc">+</span> (<span class="fu">detectCores</span>() <span class="sc">&gt;</span> <span class="dv">1</span>),</span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a><span class="sc">+</span>   <span class="at">cores =</span> <span class="dv">4</span>,</span>
 <span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a><span class="sc">+</span>   <span class="at">seed =</span> <span class="dv">1</span>,</span>
 <span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a><span class="sc">+</span>   <span class="at">refresh =</span> <span class="dv">0</span></span>
 <span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a><span class="sc">+</span> )</span></code></pre></div>
@@ -1859,27 +1898,44 @@ effects and pairwise correlation among visits within patients.</p>
 <span id="cb12-17"><a href="#cb12-17" tabindex="-1"></a><span class="co">#&gt; cortime(VIS3,VIS4)     0.01      0.10    -0.18     0.21 1.00    45294    24353</span></span>
 <span id="cb12-18"><a href="#cb12-18" tabindex="-1"></a><span class="co">#&gt; </span></span>
 <span id="cb12-19"><a href="#cb12-19" tabindex="-1"></a><span class="co">#&gt; Regression Coefficients:</span></span>
-<span id="cb12-20"><a href="#cb12-20" tabindex="-1"></a><span class="co">#&gt;                            Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS</span></span>
-<span id="cb12-21"><a href="#cb12-21" tabindex="-1"></a><span class="co">#&gt; Intercept                     24.34      1.41    21.60    27.09 1.00    43678    25394</span></span>
-<span id="cb12-22"><a href="#cb12-22" tabindex="-1"></a><span class="co">#&gt; FEV1_BL                       -0.84      0.03    -0.89    -0.78 1.00    56286    24494</span></span>
-<span id="cb12-23"><a href="#cb12-23" tabindex="-1"></a><span class="co">#&gt; AVISITVIS2                     4.80      0.82     3.20     6.40 1.00    31792    24396</span></span>
-<span id="cb12-24"><a href="#cb12-24" tabindex="-1"></a><span class="co">#&gt; AVISITVIS3                    10.37      0.83     8.73    12.01 1.00    29808    24188</span></span>
-<span id="cb12-25"><a href="#cb12-25" tabindex="-1"></a><span class="co">#&gt; AVISITVIS4                    15.20      1.33    12.60    17.83 1.00    35293    24810</span></span>
-<span id="cb12-26"><a href="#cb12-26" tabindex="-1"></a><span class="co">#&gt; RACEBlackorAfricanAmerican     1.41      0.59     0.27     2.55 1.00    46945    25405</span></span>
-<span id="cb12-27"><a href="#cb12-27" tabindex="-1"></a><span class="co">#&gt; RACEWhite                      5.46      0.63     4.23     6.69 1.00    47801    23816</span></span>
-<span id="cb12-28"><a href="#cb12-28" tabindex="-1"></a><span class="co">#&gt; SEXFemale                      0.35      0.51    -0.64     1.36 1.00    49193    24919</span></span>
-<span id="cb12-29"><a href="#cb12-29" tabindex="-1"></a><span class="co">#&gt; AVISITVIS1:ARMCDTRT            3.98      1.07     1.89     6.06 1.00    31646    26255</span></span>
-<span id="cb12-30"><a href="#cb12-30" tabindex="-1"></a><span class="co">#&gt; AVISITVIS2:ARMCDTRT            3.93      0.83     2.31     5.55 1.00    46665    23809</span></span>
-<span id="cb12-31"><a href="#cb12-31" tabindex="-1"></a><span class="co">#&gt; AVISITVIS3:ARMCDTRT            2.98      0.68     1.65     4.31 1.00    52457    24705</span></span>
-<span id="cb12-32"><a href="#cb12-32" tabindex="-1"></a><span class="co">#&gt; AVISITVIS4:ARMCDTRT            4.41      1.68     1.06     7.71 1.00    45307    25026</span></span>
-<span id="cb12-33"><a href="#cb12-33" tabindex="-1"></a><span class="co">#&gt; sigma_AVISITVIS1               1.83      0.06     1.71     1.95 1.00    50344    26156</span></span>
-<span id="cb12-34"><a href="#cb12-34" tabindex="-1"></a><span class="co">#&gt; sigma_AVISITVIS2               1.59      0.06     1.47     1.71 1.00    48248    24526</span></span>
-<span id="cb12-35"><a href="#cb12-35" tabindex="-1"></a><span class="co">#&gt; sigma_AVISITVIS3               1.33      0.06     1.21     1.46 1.00    48058    24328</span></span>
-<span id="cb12-36"><a href="#cb12-36" tabindex="-1"></a><span class="co">#&gt; sigma_AVISITVIS4               2.28      0.06     2.16     2.41 1.00    51078    23975</span></span>
-<span id="cb12-37"><a href="#cb12-37" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb12-38"><a href="#cb12-38" tabindex="-1"></a><span class="co">#&gt; Draws were sampled using sampling(NUTS). For each parameter, Bulk_ESS</span></span>
-<span id="cb12-39"><a href="#cb12-39" tabindex="-1"></a><span class="co">#&gt; and Tail_ESS are effective sample size measures, and Rhat is the potential</span></span>
-<span id="cb12-40"><a href="#cb12-40" tabindex="-1"></a><span class="co">#&gt; scale reduction factor on split chains (at convergence, Rhat = 1).</span></span></code></pre></div>
+<span id="cb12-20"><a href="#cb12-20" tabindex="-1"></a><span class="co">#&gt;                            Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS</span></span>
+<span id="cb12-21"><a href="#cb12-21" tabindex="-1"></a><span class="co">#&gt; Intercept                     24.34      1.41    21.60    27.09 1.00    43678</span></span>
+<span id="cb12-22"><a href="#cb12-22" tabindex="-1"></a><span class="co">#&gt; FEV1_BL                       -0.84      0.03    -0.89    -0.78 1.00    56286</span></span>
+<span id="cb12-23"><a href="#cb12-23" tabindex="-1"></a><span class="co">#&gt; AVISIT2                        4.80      0.82     3.20     6.40 1.00    31792</span></span>
+<span id="cb12-24"><a href="#cb12-24" tabindex="-1"></a><span class="co">#&gt; AVISIT3                       10.37      0.83     8.73    12.01 1.00    29808</span></span>
+<span id="cb12-25"><a href="#cb12-25" tabindex="-1"></a><span class="co">#&gt; AVISIT4                       15.20      1.33    12.60    17.83 1.00    35293</span></span>
+<span id="cb12-26"><a href="#cb12-26" tabindex="-1"></a><span class="co">#&gt; RACEBlackorAfricanAmerican     1.41      0.59     0.27     2.55 1.00    46945</span></span>
+<span id="cb12-27"><a href="#cb12-27" tabindex="-1"></a><span class="co">#&gt; RACEWhite                      5.46      0.63     4.23     6.69 1.00    47801</span></span>
+<span id="cb12-28"><a href="#cb12-28" tabindex="-1"></a><span class="co">#&gt; SEXFemale                      0.35      0.51    -0.64     1.36 1.00    49193</span></span>
+<span id="cb12-29"><a href="#cb12-29" tabindex="-1"></a><span class="co">#&gt; AVISITVIS1:ARMCDTRT            3.98      1.07     1.89     6.06 1.00    31646</span></span>
+<span id="cb12-30"><a href="#cb12-30" tabindex="-1"></a><span class="co">#&gt; AVISITVIS2:ARMCDTRT            3.93      0.83     2.31     5.55 1.00    46665</span></span>
+<span id="cb12-31"><a href="#cb12-31" tabindex="-1"></a><span class="co">#&gt; AVISITVIS3:ARMCDTRT            2.98      0.68     1.65     4.31 1.00    52457</span></span>
+<span id="cb12-32"><a href="#cb12-32" tabindex="-1"></a><span class="co">#&gt; AVISITVIS4:ARMCDTRT            4.41      1.68     1.06     7.71 1.00    45307</span></span>
+<span id="cb12-33"><a href="#cb12-33" tabindex="-1"></a><span class="co">#&gt; sigma_AVISITVIS1               1.83      0.06     1.71     1.95 1.00    50344</span></span>
+<span id="cb12-34"><a href="#cb12-34" tabindex="-1"></a><span class="co">#&gt; sigma_AVISITVIS2               1.59      0.06     1.47     1.71 1.00    48248</span></span>
+<span id="cb12-35"><a href="#cb12-35" tabindex="-1"></a><span class="co">#&gt; sigma_AVISITVIS3               1.33      0.06     1.21     1.46 1.00    48058</span></span>
+<span id="cb12-36"><a href="#cb12-36" tabindex="-1"></a><span class="co">#&gt; sigma_AVISITVIS4               2.28      0.06     2.16     2.41 1.00    51078</span></span>
+<span id="cb12-37"><a href="#cb12-37" tabindex="-1"></a><span class="co">#&gt;                            Tail_ESS</span></span>
+<span id="cb12-38"><a href="#cb12-38" tabindex="-1"></a><span class="co">#&gt; Intercept                     25394</span></span>
+<span id="cb12-39"><a href="#cb12-39" tabindex="-1"></a><span class="co">#&gt; FEV1_BL                       24494</span></span>
+<span id="cb12-40"><a href="#cb12-40" tabindex="-1"></a><span class="co">#&gt; AVISIT2                       24396</span></span>
+<span id="cb12-41"><a href="#cb12-41" tabindex="-1"></a><span class="co">#&gt; AVISIT3                       24188</span></span>
+<span id="cb12-42"><a href="#cb12-42" tabindex="-1"></a><span class="co">#&gt; AVISIT4                       24810</span></span>
+<span id="cb12-43"><a href="#cb12-43" tabindex="-1"></a><span class="co">#&gt; RACEBlackorAfricanAmerican    25405</span></span>
+<span id="cb12-44"><a href="#cb12-44" tabindex="-1"></a><span class="co">#&gt; RACEWhite                     23816</span></span>
+<span id="cb12-45"><a href="#cb12-45" tabindex="-1"></a><span class="co">#&gt; SEXFemale                     24919</span></span>
+<span id="cb12-46"><a href="#cb12-46" tabindex="-1"></a><span class="co">#&gt; AVISITVIS1:ARMCDTRT           26255</span></span>
+<span id="cb12-47"><a href="#cb12-47" tabindex="-1"></a><span class="co">#&gt; AVISITVIS2:ARMCDTRT           23809</span></span>
+<span id="cb12-48"><a href="#cb12-48" tabindex="-1"></a><span class="co">#&gt; AVISITVIS3:ARMCDTRT           24705</span></span>
+<span id="cb12-49"><a href="#cb12-49" tabindex="-1"></a><span class="co">#&gt; AVISITVIS4:ARMCDTRT           25026</span></span>
+<span id="cb12-50"><a href="#cb12-50" tabindex="-1"></a><span class="co">#&gt; sigma_AVISITVIS1              26156</span></span>
+<span id="cb12-51"><a href="#cb12-51" tabindex="-1"></a><span class="co">#&gt; sigma_AVISITVIS2              24526</span></span>
+<span id="cb12-52"><a href="#cb12-52" tabindex="-1"></a><span class="co">#&gt; sigma_AVISITVIS3              24328</span></span>
+<span id="cb12-53"><a href="#cb12-53" tabindex="-1"></a><span class="co">#&gt; sigma_AVISITVIS4              23975</span></span>
+<span id="cb12-54"><a href="#cb12-54" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb12-55"><a href="#cb12-55" tabindex="-1"></a><span class="co">#&gt; Draws were sampled using sampling(NUTS). For each parameter, Bulk_ESS</span></span>
+<span id="cb12-56"><a href="#cb12-56" tabindex="-1"></a><span class="co">#&gt; and Tail_ESS are effective sample size measures, and Rhat is the potential</span></span>
+<span id="cb12-57"><a href="#cb12-57" tabindex="-1"></a><span class="co">#&gt; scale reduction factor on split chains (at convergence, Rhat = 1).</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="frequentist-model">Frequentist model<a class="anchor" aria-label="anchor" href="#frequentist-model"></a>
@@ -1890,48 +1946,66 @@ fit the model below.</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r fold-hide"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="sc">&gt;</span> f_mmrm_fit <span class="ot">&lt;-</span> mmrm<span class="sc">::</span><span class="fu">mmrm</span>(</span>
 <span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a><span class="sc">+</span>   <span class="at">formula =</span> FEV1_CHG <span class="sc">~</span> FEV1_BL <span class="sc">+</span> ARMCD<span class="sc">:</span>AVISIT <span class="sc">+</span> AVISIT <span class="sc">+</span> RACE <span class="sc">+</span> SEX <span class="sc">+</span></span>
 <span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a><span class="sc">+</span>     <span class="fu">us</span>(AVISIT <span class="sc">|</span> USUBJID),</span>
-<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a><span class="sc">+</span>   <span class="at">data =</span> fev_data</span>
-<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a><span class="sc">+</span> )</span></code></pre></div>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a><span class="sc">+</span>   <span class="at">data =</span> <span class="fu">mutate</span>(</span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a><span class="sc">+</span>     fev_data,</span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a><span class="sc">+</span>     <span class="at">AVISIT =</span> <span class="fu">factor</span>(<span class="fu">as.character</span>(AVISIT), <span class="at">ordered =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a><span class="sc">+</span>   )</span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a><span class="sc">+</span> )</span></code></pre></div>
 <p>The parameter summaries of the frequentist model are below.</p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r fold-hide"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">summary</span>(f_mmrm_fit)</span>
 <span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a><span class="co">#&gt; mmrm fit</span></span>
 <span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a><span class="co">#&gt; Formula:     FEV1_CHG ~ FEV1_BL + ARMCD:AVISIT + AVISIT + RACE + SEX + us(AVISIT |  </span></span>
-<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a><span class="co">#&gt;     USUBJID)</span></span>
-<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a><span class="co">#&gt; Data:        fev_data (used 537 observations from 197 subjects with maximum 4 </span></span>
-<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a><span class="co">#&gt; timepoints)</span></span>
-<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a><span class="co">#&gt; Covariance:  unstructured (10 variance parameters)</span></span>
-<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a><span class="co">#&gt; Method:      Satterthwaite</span></span>
-<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a><span class="co">#&gt; Vcov Method: Asymptotic</span></span>
-<span id="cb14-11"><a href="#cb14-11" tabindex="-1"></a><span class="co">#&gt; Inference:   REML</span></span>
-<span id="cb14-12"><a href="#cb14-12" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb14-13"><a href="#cb14-13" tabindex="-1"></a><span class="co">#&gt; Model selection criteria:</span></span>
-<span id="cb14-14"><a href="#cb14-14" tabindex="-1"></a><span class="co">#&gt;      AIC      BIC   logLik deviance </span></span>
-<span id="cb14-15"><a href="#cb14-15" tabindex="-1"></a><span class="co">#&gt;   3381.4   3414.2  -1680.7   3361.4 </span></span>
-<span id="cb14-16"><a href="#cb14-16" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb14-17"><a href="#cb14-17" tabindex="-1"></a><span class="co">#&gt; Coefficients: </span></span>
-<span id="cb14-18"><a href="#cb14-18" tabindex="-1"></a><span class="co">#&gt;                                Estimate Std. Error        df t value Pr(&gt;|t|)    </span></span>
-<span id="cb14-19"><a href="#cb14-19" tabindex="-1"></a><span class="co">#&gt; (Intercept)                    24.35372    1.40754 257.97000  17.302  &lt; 2e-16 ***</span></span>
-<span id="cb14-20"><a href="#cb14-20" tabindex="-1"></a><span class="co">#&gt; FEV1_BL                        -0.84022    0.02777 190.27000 -30.251  &lt; 2e-16 ***</span></span>
-<span id="cb14-21"><a href="#cb14-21" tabindex="-1"></a><span class="co">#&gt; AVISITVIS2                      4.79036    0.79848 144.82000   5.999 1.51e-08 ***</span></span>
-<span id="cb14-22"><a href="#cb14-22" tabindex="-1"></a><span class="co">#&gt; AVISITVIS3                     10.36601    0.81318 157.08000  12.748  &lt; 2e-16 ***</span></span>
-<span id="cb14-23"><a href="#cb14-23" tabindex="-1"></a><span class="co">#&gt; AVISITVIS4                     15.19231    1.30857 139.25000  11.610  &lt; 2e-16 ***</span></span>
-<span id="cb14-24"><a href="#cb14-24" tabindex="-1"></a><span class="co">#&gt; RACEBlack or African American   1.41921    0.57874 169.56000   2.452 0.015211 *  </span></span>
-<span id="cb14-25"><a href="#cb14-25" tabindex="-1"></a><span class="co">#&gt; RACEWhite                       5.45679    0.61626 157.54000   8.855 1.65e-15 ***</span></span>
-<span id="cb14-26"><a href="#cb14-26" tabindex="-1"></a><span class="co">#&gt; SEXFemale                       0.33812    0.49273 166.43000   0.686 0.493529    </span></span>
-<span id="cb14-27"><a href="#cb14-27" tabindex="-1"></a><span class="co">#&gt; AVISITVIS1:ARMCDTRT             3.98329    1.04540 142.32000   3.810 0.000206 ***</span></span>
-<span id="cb14-28"><a href="#cb14-28" tabindex="-1"></a><span class="co">#&gt; AVISITVIS2:ARMCDTRT             3.93076    0.81351 142.26000   4.832 3.46e-06 ***</span></span>
-<span id="cb14-29"><a href="#cb14-29" tabindex="-1"></a><span class="co">#&gt; AVISITVIS3:ARMCDTRT             2.98372    0.66567 129.61000   4.482 1.61e-05 ***</span></span>
-<span id="cb14-30"><a href="#cb14-30" tabindex="-1"></a><span class="co">#&gt; AVISITVIS4:ARMCDTRT             4.40400    1.66049 132.88000   2.652 0.008970 ** </span></span>
-<span id="cb14-31"><a href="#cb14-31" tabindex="-1"></a><span class="co">#&gt; ---</span></span>
-<span id="cb14-32"><a href="#cb14-32" tabindex="-1"></a><span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
-<span id="cb14-33"><a href="#cb14-33" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb14-34"><a href="#cb14-34" tabindex="-1"></a><span class="co">#&gt; Covariance estimate:</span></span>
-<span id="cb14-35"><a href="#cb14-35" tabindex="-1"></a><span class="co">#&gt;         VIS1    VIS2    VIS3    VIS4</span></span>
-<span id="cb14-36"><a href="#cb14-36" tabindex="-1"></a><span class="co">#&gt; VIS1 37.8301 11.3255  3.4796 10.6844</span></span>
-<span id="cb14-37"><a href="#cb14-37" tabindex="-1"></a><span class="co">#&gt; VIS2 11.3255 23.5476  0.7760  5.5103</span></span>
-<span id="cb14-38"><a href="#cb14-38" tabindex="-1"></a><span class="co">#&gt; VIS3  3.4796  0.7760 13.8037  0.5683</span></span>
-<span id="cb14-39"><a href="#cb14-39" tabindex="-1"></a><span class="co">#&gt; VIS4 10.6844  5.5103  0.5683 92.9625</span></span></code></pre></div>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a><span class="co">#&gt; Formula:     </span></span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a><span class="co">#&gt; FEV1_CHG ~ FEV1_BL + ARMCD:AVISIT + AVISIT + RACE + SEX + us(AVISIT |  </span></span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a><span class="co">#&gt;     USUBJID)</span></span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a><span class="co">#&gt; Data:        </span></span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a><span class="co">#&gt; mutate(fev_data, AVISIT = factor(as.character(AVISIT), ordered = FALSE)) (used </span></span>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a><span class="co">#&gt; 537 observations from 197 subjects with maximum 4 timepoints)</span></span>
+<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a><span class="co">#&gt; Covariance:  unstructured (10 variance parameters)</span></span>
+<span id="cb14-11"><a href="#cb14-11" tabindex="-1"></a><span class="co">#&gt; Method:      Satterthwaite</span></span>
+<span id="cb14-12"><a href="#cb14-12" tabindex="-1"></a><span class="co">#&gt; Vcov Method: Asymptotic</span></span>
+<span id="cb14-13"><a href="#cb14-13" tabindex="-1"></a><span class="co">#&gt; Inference:   REML</span></span>
+<span id="cb14-14"><a href="#cb14-14" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb14-15"><a href="#cb14-15" tabindex="-1"></a><span class="co">#&gt; Model selection criteria:</span></span>
+<span id="cb14-16"><a href="#cb14-16" tabindex="-1"></a><span class="co">#&gt;      AIC      BIC   logLik deviance </span></span>
+<span id="cb14-17"><a href="#cb14-17" tabindex="-1"></a><span class="co">#&gt;   3381.4   3414.2  -1680.7   3361.4 </span></span>
+<span id="cb14-18"><a href="#cb14-18" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb14-19"><a href="#cb14-19" tabindex="-1"></a><span class="co">#&gt; Coefficients: </span></span>
+<span id="cb14-20"><a href="#cb14-20" tabindex="-1"></a><span class="co">#&gt;                                Estimate Std. Error        df t value Pr(&gt;|t|)</span></span>
+<span id="cb14-21"><a href="#cb14-21" tabindex="-1"></a><span class="co">#&gt; (Intercept)                    24.35372    1.40754 257.97000  17.302  &lt; 2e-16</span></span>
+<span id="cb14-22"><a href="#cb14-22" tabindex="-1"></a><span class="co">#&gt; FEV1_BL                        -0.84022    0.02777 190.27000 -30.251  &lt; 2e-16</span></span>
+<span id="cb14-23"><a href="#cb14-23" tabindex="-1"></a><span class="co">#&gt; AVISITVIS2                      4.79036    0.79848 144.82000   5.999 1.51e-08</span></span>
+<span id="cb14-24"><a href="#cb14-24" tabindex="-1"></a><span class="co">#&gt; AVISITVIS3                     10.36601    0.81318 157.08000  12.748  &lt; 2e-16</span></span>
+<span id="cb14-25"><a href="#cb14-25" tabindex="-1"></a><span class="co">#&gt; AVISITVIS4                     15.19231    1.30857 139.25000  11.610  &lt; 2e-16</span></span>
+<span id="cb14-26"><a href="#cb14-26" tabindex="-1"></a><span class="co">#&gt; RACEBlack or African American   1.41921    0.57874 169.56000   2.452 0.015211</span></span>
+<span id="cb14-27"><a href="#cb14-27" tabindex="-1"></a><span class="co">#&gt; RACEWhite                       5.45679    0.61626 157.54000   8.855 1.65e-15</span></span>
+<span id="cb14-28"><a href="#cb14-28" tabindex="-1"></a><span class="co">#&gt; SEXFemale                       0.33812    0.49273 166.43000   0.686 0.493529</span></span>
+<span id="cb14-29"><a href="#cb14-29" tabindex="-1"></a><span class="co">#&gt; AVISITVIS1:ARMCDTRT             3.98329    1.04540 142.32000   3.810 0.000206</span></span>
+<span id="cb14-30"><a href="#cb14-30" tabindex="-1"></a><span class="co">#&gt; AVISITVIS2:ARMCDTRT             3.93076    0.81351 142.26000   4.832 3.46e-06</span></span>
+<span id="cb14-31"><a href="#cb14-31" tabindex="-1"></a><span class="co">#&gt; AVISITVIS3:ARMCDTRT             2.98372    0.66567 129.61000   4.482 1.61e-05</span></span>
+<span id="cb14-32"><a href="#cb14-32" tabindex="-1"></a><span class="co">#&gt; AVISITVIS4:ARMCDTRT             4.40400    1.66049 132.88000   2.652 0.008970</span></span>
+<span id="cb14-33"><a href="#cb14-33" tabindex="-1"></a><span class="co">#&gt;                                  </span></span>
+<span id="cb14-34"><a href="#cb14-34" tabindex="-1"></a><span class="co">#&gt; (Intercept)                   ***</span></span>
+<span id="cb14-35"><a href="#cb14-35" tabindex="-1"></a><span class="co">#&gt; FEV1_BL                       ***</span></span>
+<span id="cb14-36"><a href="#cb14-36" tabindex="-1"></a><span class="co">#&gt; AVISITVIS2                    ***</span></span>
+<span id="cb14-37"><a href="#cb14-37" tabindex="-1"></a><span class="co">#&gt; AVISITVIS3                    ***</span></span>
+<span id="cb14-38"><a href="#cb14-38" tabindex="-1"></a><span class="co">#&gt; AVISITVIS4                    ***</span></span>
+<span id="cb14-39"><a href="#cb14-39" tabindex="-1"></a><span class="co">#&gt; RACEBlack or African American *  </span></span>
+<span id="cb14-40"><a href="#cb14-40" tabindex="-1"></a><span class="co">#&gt; RACEWhite                     ***</span></span>
+<span id="cb14-41"><a href="#cb14-41" tabindex="-1"></a><span class="co">#&gt; SEXFemale                        </span></span>
+<span id="cb14-42"><a href="#cb14-42" tabindex="-1"></a><span class="co">#&gt; AVISITVIS1:ARMCDTRT           ***</span></span>
+<span id="cb14-43"><a href="#cb14-43" tabindex="-1"></a><span class="co">#&gt; AVISITVIS2:ARMCDTRT           ***</span></span>
+<span id="cb14-44"><a href="#cb14-44" tabindex="-1"></a><span class="co">#&gt; AVISITVIS3:ARMCDTRT           ***</span></span>
+<span id="cb14-45"><a href="#cb14-45" tabindex="-1"></a><span class="co">#&gt; AVISITVIS4:ARMCDTRT           ** </span></span>
+<span id="cb14-46"><a href="#cb14-46" tabindex="-1"></a><span class="co">#&gt; ---</span></span>
+<span id="cb14-47"><a href="#cb14-47" tabindex="-1"></a><span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
+<span id="cb14-48"><a href="#cb14-48" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb14-49"><a href="#cb14-49" tabindex="-1"></a><span class="co">#&gt; Covariance estimate:</span></span>
+<span id="cb14-50"><a href="#cb14-50" tabindex="-1"></a><span class="co">#&gt;         VIS1    VIS2    VIS3    VIS4</span></span>
+<span id="cb14-51"><a href="#cb14-51" tabindex="-1"></a><span class="co">#&gt; VIS1 37.8301 11.3255  3.4796 10.6844</span></span>
+<span id="cb14-52"><a href="#cb14-52" tabindex="-1"></a><span class="co">#&gt; VIS2 11.3255 23.5476  0.7760  5.5103</span></span>
+<span id="cb14-53"><a href="#cb14-53" tabindex="-1"></a><span class="co">#&gt; VIS3  3.4796  0.7760 13.8037  0.5683</span></span>
+<span id="cb14-54"><a href="#cb14-54" tabindex="-1"></a><span class="co">#&gt; VIS4 10.6844  5.5103  0.5683 92.9625</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -1962,8 +2036,9 @@ fit the model below.</p>
 <span id="cb15-16"><a href="#cb15-16" tabindex="-1"></a><span class="sc">+</span>       <span class="fu">gsub</span>(<span class="at">pattern =</span> <span class="st">"b_"</span>, <span class="at">replacement =</span> <span class="st">""</span>) <span class="sc">|&gt;</span></span>
 <span id="cb15-17"><a href="#cb15-17" tabindex="-1"></a><span class="sc">+</span>       <span class="fu">gsub</span>(<span class="at">pattern =</span> <span class="st">"b_sigma_AVISIT"</span>, <span class="at">replacement =</span> <span class="st">"sigma_"</span>) <span class="sc">|&gt;</span></span>
 <span id="cb15-18"><a href="#cb15-18" tabindex="-1"></a><span class="sc">+</span>       <span class="fu">gsub</span>(<span class="at">pattern =</span> <span class="st">"cortime"</span>, <span class="at">replacement =</span> <span class="st">"correlation"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb15-19"><a href="#cb15-19" tabindex="-1"></a><span class="sc">+</span>       <span class="fu">gsub</span>(<span class="at">pattern =</span> <span class="st">"__"</span>, <span class="at">replacement =</span> <span class="st">"_"</span>)</span>
-<span id="cb15-20"><a href="#cb15-20" tabindex="-1"></a><span class="sc">+</span>   )</span></code></pre></div>
+<span id="cb15-19"><a href="#cb15-19" tabindex="-1"></a><span class="sc">+</span>       <span class="fu">gsub</span>(<span class="at">pattern =</span> <span class="st">"__"</span>, <span class="at">replacement =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb15-20"><a href="#cb15-20" tabindex="-1"></a><span class="sc">+</span>       <span class="fu">gsub</span>(<span class="at">pattern =</span> <span class="st">"avisitvis"</span>, <span class="at">replacement =</span> <span class="st">"avisit"</span>)</span>
+<span id="cb15-21"><a href="#cb15-21" tabindex="-1"></a><span class="sc">+</span>   )</span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="extract-estimates-from-frequentist-model">Extract estimates from frequentist model<a class="anchor" aria-label="anchor" href="#extract-estimates-from-frequentist-model"></a>
@@ -1974,12 +2049,15 @@ fit the model below.</p>
 <span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a><span class="sc">+</span>   <span class="fu">mutate</span>(<span class="at">variable =</span> <span class="fu">tolower</span>(variable)) <span class="sc">|&gt;</span></span>
 <span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a><span class="sc">+</span>   <span class="fu">mutate</span>(<span class="at">variable =</span> <span class="fu">gsub</span>(<span class="st">"("</span>, <span class="st">""</span>, variable, <span class="at">fixed =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span></span>
 <span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a><span class="sc">+</span>   <span class="fu">mutate</span>(<span class="at">variable =</span> <span class="fu">gsub</span>(<span class="st">")"</span>, <span class="st">""</span>, variable, <span class="at">fixed =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a><span class="sc">+</span>   <span class="fu">rename</span>(<span class="at">freq_estimate =</span> Estimate, <span class="at">freq_se =</span> <span class="st">`</span><span class="at">Std. Error</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
-<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a><span class="sc">+</span>   <span class="fu">select</span>(variable, freq_estimate, freq_se)</span></code></pre></div>
+<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a><span class="sc">+</span>   <span class="fu">mutate</span>(<span class="at">variable =</span> <span class="fu">gsub</span>(<span class="st">"avisitvis"</span>, <span class="st">"avisit"</span>, variable)) <span class="sc">|&gt;</span></span>
+<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a><span class="sc">+</span>   <span class="fu">rename</span>(<span class="at">freq_estimate =</span> Estimate, <span class="at">freq_se =</span> <span class="st">`</span><span class="at">Std. Error</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
+<span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a><span class="sc">+</span>   <span class="fu">select</span>(variable, freq_estimate, freq_se)</span></code></pre></div>
 <div class="sourceCode" id="cb17"><pre class="sourceCode r fold-hide"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="sc">&gt;</span> f_mmrm_variance <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
-<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a><span class="sc">+</span>   <span class="at">variable =</span> <span class="fu">paste0</span>(<span class="st">"sigma_AVISIT"</span>, visit_levels) <span class="sc">|&gt;</span> <span class="fu">tolower</span>(),</span>
-<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a><span class="sc">+</span>   <span class="at">freq_estimate =</span> <span class="fu">sqrt</span>(<span class="fu">diag</span>(f_mmrm_fit<span class="sc">$</span>cov))</span>
-<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a><span class="sc">+</span> )</span></code></pre></div>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a><span class="sc">+</span>   <span class="at">variable =</span> <span class="fu">paste0</span>(<span class="st">"sigma_AVISIT"</span>, visit_levels) <span class="sc">|&gt;</span></span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a><span class="sc">+</span>     <span class="fu">tolower</span>() <span class="sc">|&gt;</span></span>
+<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a><span class="sc">+</span>     <span class="fu">gsub</span>(<span class="at">pattern =</span> <span class="st">"avisitvis"</span>, <span class="at">replacement =</span> <span class="st">"avisit"</span>),</span>
+<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a><span class="sc">+</span>   <span class="at">freq_estimate =</span> <span class="fu">sqrt</span>(<span class="fu">diag</span>(f_mmrm_fit<span class="sc">$</span>cov))</span>
+<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a><span class="sc">+</span> )</span></code></pre></div>
 <div class="sourceCode" id="cb18"><pre class="sourceCode r fold-hide"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="sc">&gt;</span> f_diagonal_factor <span class="ot">&lt;-</span> <span class="fu">diag</span>(<span class="dv">1</span> <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">diag</span>(f_mmrm_fit<span class="sc">$</span>cov)))</span>
 <span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a><span class="sc">&gt;</span> f_corr_matrix <span class="ot">&lt;-</span> f_diagonal_factor <span class="sc">%*%</span> f_mmrm_fit<span class="sc">$</span>cov <span class="sc">%*%</span> f_diagonal_factor</span>
 <span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">colnames</span>(f_corr_matrix) <span class="ot">&lt;-</span> visit_levels</span></code></pre></div>
@@ -2519,21 +2597,21 @@ frequentist MMRMs.
 <td headers="diff_relative_estimate" class="gt_row gt_right">−0.0004</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">avisitvis2</td>
+<td headers="variable" class="gt_row gt_left">avisit2</td>
 <td headers="bayes_estimate" class="gt_row gt_right">4.7996</td>
 <td headers="freq_estimate" class="gt_row gt_right">4.7904</td>
 <td headers="diff_estimate" class="gt_row gt_right">0.0093</td>
 <td headers="diff_relative_estimate" class="gt_row gt_right">0.0019</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">avisitvis3</td>
+<td headers="variable" class="gt_row gt_left">avisit3</td>
 <td headers="bayes_estimate" class="gt_row gt_right">10.3730</td>
 <td headers="freq_estimate" class="gt_row gt_right">10.3660</td>
 <td headers="diff_estimate" class="gt_row gt_right">0.0070</td>
 <td headers="diff_relative_estimate" class="gt_row gt_right">0.0007</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">avisitvis4</td>
+<td headers="variable" class="gt_row gt_left">avisit4</td>
 <td headers="bayes_estimate" class="gt_row gt_right">15.1989</td>
 <td headers="freq_estimate" class="gt_row gt_right">15.1923</td>
 <td headers="diff_estimate" class="gt_row gt_right">0.0066</td>
@@ -2561,56 +2639,56 @@ frequentist MMRMs.
 <td headers="diff_relative_estimate" class="gt_row gt_right">0.0221</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">avisitvis1:armcdtrt</td>
+<td headers="variable" class="gt_row gt_left">avisit1:armcdtrt</td>
 <td headers="bayes_estimate" class="gt_row gt_right">3.9842</td>
 <td headers="freq_estimate" class="gt_row gt_right">3.9833</td>
 <td headers="diff_estimate" class="gt_row gt_right">0.0009</td>
 <td headers="diff_relative_estimate" class="gt_row gt_right">0.0002</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">avisitvis2:armcdtrt</td>
+<td headers="variable" class="gt_row gt_left">avisit2:armcdtrt</td>
 <td headers="bayes_estimate" class="gt_row gt_right">3.9330</td>
 <td headers="freq_estimate" class="gt_row gt_right">3.9308</td>
 <td headers="diff_estimate" class="gt_row gt_right">0.0023</td>
 <td headers="diff_relative_estimate" class="gt_row gt_right">0.0006</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">avisitvis3:armcdtrt</td>
+<td headers="variable" class="gt_row gt_left">avisit3:armcdtrt</td>
 <td headers="bayes_estimate" class="gt_row gt_right">2.9795</td>
 <td headers="freq_estimate" class="gt_row gt_right">2.9837</td>
 <td headers="diff_estimate" class="gt_row gt_right">−0.0042</td>
 <td headers="diff_relative_estimate" class="gt_row gt_right">−0.0014</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">avisitvis4:armcdtrt</td>
+<td headers="variable" class="gt_row gt_left">avisit4:armcdtrt</td>
 <td headers="bayes_estimate" class="gt_row gt_right">4.4066</td>
 <td headers="freq_estimate" class="gt_row gt_right">4.4040</td>
 <td headers="diff_estimate" class="gt_row gt_right">0.0026</td>
 <td headers="diff_relative_estimate" class="gt_row gt_right">0.0006</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">sigma_avisitvis1</td>
+<td headers="variable" class="gt_row gt_left">sigma_avisit1</td>
 <td headers="bayes_estimate" class="gt_row gt_right">6.2317</td>
 <td headers="freq_estimate" class="gt_row gt_right">6.1506</td>
 <td headers="diff_estimate" class="gt_row gt_right">0.0811</td>
 <td headers="diff_relative_estimate" class="gt_row gt_right">0.0132</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">sigma_avisitvis2</td>
+<td headers="variable" class="gt_row gt_left">sigma_avisit2</td>
 <td headers="bayes_estimate" class="gt_row gt_right">4.9146</td>
 <td headers="freq_estimate" class="gt_row gt_right">4.8526</td>
 <td headers="diff_estimate" class="gt_row gt_right">0.0620</td>
 <td headers="diff_relative_estimate" class="gt_row gt_right">0.0128</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">sigma_avisitvis3</td>
+<td headers="variable" class="gt_row gt_left">sigma_avisit3</td>
 <td headers="bayes_estimate" class="gt_row gt_right">3.7775</td>
 <td headers="freq_estimate" class="gt_row gt_right">3.7153</td>
 <td headers="diff_estimate" class="gt_row gt_right">0.0622</td>
 <td headers="diff_relative_estimate" class="gt_row gt_right">0.0167</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">sigma_avisitvis4</td>
+<td headers="variable" class="gt_row gt_left">sigma_avisit4</td>
 <td headers="bayes_estimate" class="gt_row gt_right">9.7953</td>
 <td headers="freq_estimate" class="gt_row gt_right">9.6417</td>
 <td headers="diff_estimate" class="gt_row gt_right">0.1536</td>
@@ -3150,21 +3228,21 @@ frequentist MMRMs.
 <td headers="diff_relative_se" class="gt_row gt_right">0.0046</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">avisitvis2</td>
+<td headers="variable" class="gt_row gt_left">avisit2</td>
 <td headers="bayes_se" class="gt_row gt_right">0.8176</td>
 <td headers="freq_se" class="gt_row gt_right">0.7985</td>
 <td headers="diff_se" class="gt_row gt_right">0.0191</td>
 <td headers="diff_relative_se" class="gt_row gt_right">0.0239</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">avisitvis3</td>
+<td headers="variable" class="gt_row gt_left">avisit3</td>
 <td headers="bayes_se" class="gt_row gt_right">0.8335</td>
 <td headers="freq_se" class="gt_row gt_right">0.8132</td>
 <td headers="diff_se" class="gt_row gt_right">0.0203</td>
 <td headers="diff_relative_se" class="gt_row gt_right">0.0250</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">avisitvis4</td>
+<td headers="variable" class="gt_row gt_left">avisit4</td>
 <td headers="bayes_se" class="gt_row gt_right">1.3283</td>
 <td headers="freq_se" class="gt_row gt_right">1.3086</td>
 <td headers="diff_se" class="gt_row gt_right">0.0198</td>
@@ -3192,28 +3270,28 @@ frequentist MMRMs.
 <td headers="diff_relative_se" class="gt_row gt_right">0.0390</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">avisitvis1:armcdtrt</td>
+<td headers="variable" class="gt_row gt_left">avisit1:armcdtrt</td>
 <td headers="bayes_se" class="gt_row gt_right">1.0651</td>
 <td headers="freq_se" class="gt_row gt_right">1.0454</td>
 <td headers="diff_se" class="gt_row gt_right">0.0197</td>
 <td headers="diff_relative_se" class="gt_row gt_right">0.0188</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">avisitvis2:armcdtrt</td>
+<td headers="variable" class="gt_row gt_left">avisit2:armcdtrt</td>
 <td headers="bayes_se" class="gt_row gt_right">0.8260</td>
 <td headers="freq_se" class="gt_row gt_right">0.8135</td>
 <td headers="diff_se" class="gt_row gt_right">0.0125</td>
 <td headers="diff_relative_se" class="gt_row gt_right">0.0154</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">avisitvis3:armcdtrt</td>
+<td headers="variable" class="gt_row gt_left">avisit3:armcdtrt</td>
 <td headers="bayes_se" class="gt_row gt_right">0.6771</td>
 <td headers="freq_se" class="gt_row gt_right">0.6657</td>
 <td headers="diff_se" class="gt_row gt_right">0.0114</td>
 <td headers="diff_relative_se" class="gt_row gt_right">0.0171</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">avisitvis4:armcdtrt</td>
+<td headers="variable" class="gt_row gt_left">avisit4:armcdtrt</td>
 <td headers="bayes_se" class="gt_row gt_right">1.6805</td>
 <td headers="freq_se" class="gt_row gt_right">1.6605</td>
 <td headers="diff_se" class="gt_row gt_right">0.0200</td>
@@ -3233,7 +3311,7 @@ frequentist MMRMs.
 <span id="cb24-4"><a href="#cb24-4" tabindex="-1"></a><span class="co">#&gt; Running under: macOS Sonoma 14.5</span></span>
 <span id="cb24-5"><a href="#cb24-5" tabindex="-1"></a><span class="co">#&gt; </span></span>
 <span id="cb24-6"><a href="#cb24-6" tabindex="-1"></a><span class="co">#&gt; Matrix products: default</span></span>
-<span id="cb24-7"><a href="#cb24-7" tabindex="-1"></a><span class="co">#&gt; BLAS:   /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib </span></span>
+<span id="cb24-7"><a href="#cb24-7" tabindex="-1"></a><span class="co">#&gt; BLAS:   /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/lib/libRblas.0.dylib </span></span>
 <span id="cb24-8"><a href="#cb24-8" tabindex="-1"></a><span class="co">#&gt; LAPACK: /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.0</span></span>
 <span id="cb24-9"><a href="#cb24-9" tabindex="-1"></a><span class="co">#&gt; </span></span>
 <span id="cb24-10"><a href="#cb24-10" tabindex="-1"></a><span class="co">#&gt; locale:</span></span>
@@ -3243,48 +3321,47 @@ frequentist MMRMs.
 <span id="cb24-14"><a href="#cb24-14" tabindex="-1"></a><span class="co">#&gt; tzcode source: internal</span></span>
 <span id="cb24-15"><a href="#cb24-15" tabindex="-1"></a><span class="co">#&gt; </span></span>
 <span id="cb24-16"><a href="#cb24-16" tabindex="-1"></a><span class="co">#&gt; attached base packages:</span></span>
-<span id="cb24-17"><a href="#cb24-17" tabindex="-1"></a><span class="co">#&gt; [1] parallel  stats     graphics  grDevices utils     datasets  methods   base     </span></span>
-<span id="cb24-18"><a href="#cb24-18" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb24-19"><a href="#cb24-19" tabindex="-1"></a><span class="co">#&gt; other attached packages:</span></span>
-<span id="cb24-20"><a href="#cb24-20" tabindex="-1"></a><span class="co">#&gt;  [1] posterior_1.5.0      mmrm_0.3.11          brms.mmrm_1.0.1.9002 purrr_1.0.2         </span></span>
-<span id="cb24-21"><a href="#cb24-21" tabindex="-1"></a><span class="co">#&gt;  [5] gtsummary_1.7.2      gt_0.10.1            ggplot2_3.5.1        tidyr_1.3.1         </span></span>
-<span id="cb24-22"><a href="#cb24-22" tabindex="-1"></a><span class="co">#&gt;  [9] dplyr_1.1.4          knitr_1.46          </span></span>
-<span id="cb24-23"><a href="#cb24-23" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb24-24"><a href="#cb24-24" tabindex="-1"></a><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
-<span id="cb24-25"><a href="#cb24-25" tabindex="-1"></a><span class="co">#&gt;   [1] Rdpack_2.6           gridExtra_2.3        inline_0.3.19       </span></span>
-<span id="cb24-26"><a href="#cb24-26" tabindex="-1"></a><span class="co">#&gt;   [4] sandwich_3.1-0       rlang_1.1.4          magrittr_2.0.3      </span></span>
-<span id="cb24-27"><a href="#cb24-27" tabindex="-1"></a><span class="co">#&gt;   [7] multcomp_1.4-25      matrixStats_1.3.0    ggridges_0.5.6      </span></span>
-<span id="cb24-28"><a href="#cb24-28" tabindex="-1"></a><span class="co">#&gt;  [10] compiler_4.4.0       loo_2.7.0            callr_3.7.6         </span></span>
-<span id="cb24-29"><a href="#cb24-29" tabindex="-1"></a><span class="co">#&gt;  [13] vctrs_0.6.5          reshape2_1.4.4       stringr_1.5.1       </span></span>
-<span id="cb24-30"><a href="#cb24-30" tabindex="-1"></a><span class="co">#&gt;  [16] crayon_1.5.2         pkgconfig_2.0.3      arrayhelpers_1.1-0  </span></span>
-<span id="cb24-31"><a href="#cb24-31" tabindex="-1"></a><span class="co">#&gt;  [19] fastmap_1.2.0        backports_1.4.1      labeling_0.4.3      </span></span>
-<span id="cb24-32"><a href="#cb24-32" tabindex="-1"></a><span class="co">#&gt;  [22] utf8_1.2.4           rmarkdown_2.26       markdown_1.12       </span></span>
-<span id="cb24-33"><a href="#cb24-33" tabindex="-1"></a><span class="co">#&gt;  [25] ps_1.7.6             xfun_0.43            jsonlite_1.8.8      </span></span>
-<span id="cb24-34"><a href="#cb24-34" tabindex="-1"></a><span class="co">#&gt;  [28] highr_0.10           tidybayes_3.0.6      trialr_0.1.6        </span></span>
-<span id="cb24-35"><a href="#cb24-35" tabindex="-1"></a><span class="co">#&gt;  [31] R6_2.5.1             stringi_1.8.4        StanHeaders_2.32.8  </span></span>
-<span id="cb24-36"><a href="#cb24-36" tabindex="-1"></a><span class="co">#&gt;  [34] estimability_1.5     Rcpp_1.0.12          rstan_2.32.6        </span></span>
-<span id="cb24-37"><a href="#cb24-37" tabindex="-1"></a><span class="co">#&gt;  [37] zoo_1.8-12           usethis_2.2.3        bayesplot_1.11.1    </span></span>
-<span id="cb24-38"><a href="#cb24-38" tabindex="-1"></a><span class="co">#&gt;  [40] Matrix_1.7-0         splines_4.4.0        tidyselect_1.2.1    </span></span>
-<span id="cb24-39"><a href="#cb24-39" tabindex="-1"></a><span class="co">#&gt;  [43] rstudioapi_0.16.0    abind_1.4-5          yaml_2.3.8          </span></span>
-<span id="cb24-40"><a href="#cb24-40" tabindex="-1"></a><span class="co">#&gt;  [46] TMB_1.9.11           codetools_0.2-20     curl_5.2.1          </span></span>
-<span id="cb24-41"><a href="#cb24-41" tabindex="-1"></a><span class="co">#&gt;  [49] processx_3.8.4       pkgbuild_1.4.4       lattice_0.22-6      </span></span>
-<span id="cb24-42"><a href="#cb24-42" tabindex="-1"></a><span class="co">#&gt;  [52] tibble_3.2.1         plyr_1.8.9           withr_3.0.0         </span></span>
-<span id="cb24-43"><a href="#cb24-43" tabindex="-1"></a><span class="co">#&gt;  [55] bridgesampling_1.1-2 coda_0.19-4.1        evaluate_0.23       </span></span>
-<span id="cb24-44"><a href="#cb24-44" tabindex="-1"></a><span class="co">#&gt;  [58] survival_3.5-8       RcppParallel_5.1.7   ggdist_3.3.2        </span></span>
-<span id="cb24-45"><a href="#cb24-45" tabindex="-1"></a><span class="co">#&gt;  [61] xml2_1.3.6           pillar_1.9.0         rsconnect_1.2.2     </span></span>
-<span id="cb24-46"><a href="#cb24-46" tabindex="-1"></a><span class="co">#&gt;  [64] tensorA_0.36.2.1     checkmate_2.3.1      stats4_4.4.0        </span></span>
-<span id="cb24-47"><a href="#cb24-47" tabindex="-1"></a><span class="co">#&gt;  [67] distributional_0.4.0 generics_0.1.3       rprojroot_2.0.4     </span></span>
-<span id="cb24-48"><a href="#cb24-48" tabindex="-1"></a><span class="co">#&gt;  [70] rstantools_2.4.0     munsell_0.5.1        commonmark_1.9.1    </span></span>
-<span id="cb24-49"><a href="#cb24-49" tabindex="-1"></a><span class="co">#&gt;  [73] scales_1.3.0         gtools_3.9.5         xtable_1.8-4        </span></span>
-<span id="cb24-50"><a href="#cb24-50" tabindex="-1"></a><span class="co">#&gt;  [76] glue_1.7.0           emmeans_1.10.1       tools_4.4.0         </span></span>
-<span id="cb24-51"><a href="#cb24-51" tabindex="-1"></a><span class="co">#&gt;  [79] forcats_1.0.0        fs_1.6.4             mvtnorm_1.2-4       </span></span>
-<span id="cb24-52"><a href="#cb24-52" tabindex="-1"></a><span class="co">#&gt;  [82] grid_4.4.0           rbibutils_2.2.16     QuickJSR_1.1.3      </span></span>
-<span id="cb24-53"><a href="#cb24-53" tabindex="-1"></a><span class="co">#&gt;  [85] colorspace_2.1-0     nlme_3.1-164         cli_3.6.2           </span></span>
-<span id="cb24-54"><a href="#cb24-54" tabindex="-1"></a><span class="co">#&gt;  [88] fansi_1.0.6          svUnit_1.0.6         binom_1.1-1.1       </span></span>
-<span id="cb24-55"><a href="#cb24-55" tabindex="-1"></a><span class="co">#&gt;  [91] broom.helpers_1.15.0 Brobdingnag_1.2-9    V8_4.4.2            </span></span>
-<span id="cb24-56"><a href="#cb24-56" tabindex="-1"></a><span class="co">#&gt;  [94] gtable_0.3.5         sass_0.4.9           digest_0.6.35       </span></span>
-<span id="cb24-57"><a href="#cb24-57" tabindex="-1"></a><span class="co">#&gt;  [97] TH.data_1.1-2        brms_2.21.0          farver_2.1.2        </span></span>
-<span id="cb24-58"><a href="#cb24-58" tabindex="-1"></a><span class="co">#&gt; [100] htmltools_0.5.8.1    lifecycle_1.0.4      MASS_7.3-60.2</span></span></code></pre></div>
+<span id="cb24-17"><a href="#cb24-17" tabindex="-1"></a><span class="co">#&gt; [1] parallel  stats     graphics  grDevices utils     datasets  methods  </span></span>
+<span id="cb24-18"><a href="#cb24-18" tabindex="-1"></a><span class="co">#&gt; [8] base     </span></span>
+<span id="cb24-19"><a href="#cb24-19" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb24-20"><a href="#cb24-20" tabindex="-1"></a><span class="co">#&gt; other attached packages:</span></span>
+<span id="cb24-21"><a href="#cb24-21" tabindex="-1"></a><span class="co">#&gt;  [1] posterior_1.5.0      mmrm_0.3.11          brms.mmrm_1.0.1.9005</span></span>
+<span id="cb24-22"><a href="#cb24-22" tabindex="-1"></a><span class="co">#&gt;  [4] purrr_1.0.2          gtsummary_1.9.9.9003 gt_0.10.1           </span></span>
+<span id="cb24-23"><a href="#cb24-23" tabindex="-1"></a><span class="co">#&gt;  [7] ggplot2_3.5.1        tidyr_1.3.1          dplyr_1.1.4         </span></span>
+<span id="cb24-24"><a href="#cb24-24" tabindex="-1"></a><span class="co">#&gt; [10] knitr_1.46          </span></span>
+<span id="cb24-25"><a href="#cb24-25" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb24-26"><a href="#cb24-26" tabindex="-1"></a><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
+<span id="cb24-27"><a href="#cb24-27" tabindex="-1"></a><span class="co">#&gt;  [1] tidyselect_1.2.1     svUnit_1.0.6         farver_2.1.2        </span></span>
+<span id="cb24-28"><a href="#cb24-28" tabindex="-1"></a><span class="co">#&gt;  [4] loo_2.7.0            tidybayes_3.0.6      fastmap_1.2.0       </span></span>
+<span id="cb24-29"><a href="#cb24-29" tabindex="-1"></a><span class="co">#&gt;  [7] TH.data_1.1-2        tensorA_0.36.2.1     digest_0.6.35       </span></span>
+<span id="cb24-30"><a href="#cb24-30" tabindex="-1"></a><span class="co">#&gt; [10] estimability_1.5     lifecycle_1.0.4      StanHeaders_2.32.8  </span></span>
+<span id="cb24-31"><a href="#cb24-31" tabindex="-1"></a><span class="co">#&gt; [13] processx_3.8.4       survival_3.5-8       magrittr_2.0.3      </span></span>
+<span id="cb24-32"><a href="#cb24-32" tabindex="-1"></a><span class="co">#&gt; [16] compiler_4.4.0       rlang_1.1.4          sass_0.4.9          </span></span>
+<span id="cb24-33"><a href="#cb24-33" tabindex="-1"></a><span class="co">#&gt; [19] tools_4.4.0          utf8_1.2.4           labeling_0.4.3      </span></span>
+<span id="cb24-34"><a href="#cb24-34" tabindex="-1"></a><span class="co">#&gt; [22] bridgesampling_1.1-2 pkgbuild_1.4.4       curl_5.2.1          </span></span>
+<span id="cb24-35"><a href="#cb24-35" tabindex="-1"></a><span class="co">#&gt; [25] plyr_1.8.9           xml2_1.3.6           abind_1.4-5         </span></span>
+<span id="cb24-36"><a href="#cb24-36" tabindex="-1"></a><span class="co">#&gt; [28] multcomp_1.4-25      withr_3.0.0          grid_4.4.0          </span></span>
+<span id="cb24-37"><a href="#cb24-37" tabindex="-1"></a><span class="co">#&gt; [31] stats4_4.4.0         fansi_1.0.6          xtable_1.8-4        </span></span>
+<span id="cb24-38"><a href="#cb24-38" tabindex="-1"></a><span class="co">#&gt; [34] colorspace_2.1-0     inline_0.3.19        emmeans_1.10.1      </span></span>
+<span id="cb24-39"><a href="#cb24-39" tabindex="-1"></a><span class="co">#&gt; [37] scales_1.3.0         gtools_3.9.5         MASS_7.3-60.2       </span></span>
+<span id="cb24-40"><a href="#cb24-40" tabindex="-1"></a><span class="co">#&gt; [40] ggridges_0.5.6       cli_3.6.2            mvtnorm_1.2-4       </span></span>
+<span id="cb24-41"><a href="#cb24-41" tabindex="-1"></a><span class="co">#&gt; [43] generics_0.1.3       RcppParallel_5.1.7   binom_1.1-1.1       </span></span>
+<span id="cb24-42"><a href="#cb24-42" tabindex="-1"></a><span class="co">#&gt; [46] reshape2_1.4.4       commonmark_1.9.1     rstan_2.32.6        </span></span>
+<span id="cb24-43"><a href="#cb24-43" tabindex="-1"></a><span class="co">#&gt; [49] stringr_1.5.1        splines_4.4.0        bayesplot_1.11.1    </span></span>
+<span id="cb24-44"><a href="#cb24-44" tabindex="-1"></a><span class="co">#&gt; [52] matrixStats_1.3.0    brms_2.21.0          vctrs_0.6.5         </span></span>
+<span id="cb24-45"><a href="#cb24-45" tabindex="-1"></a><span class="co">#&gt; [55] V8_4.4.2             Matrix_1.7-0         sandwich_3.1-0      </span></span>
+<span id="cb24-46"><a href="#cb24-46" tabindex="-1"></a><span class="co">#&gt; [58] jsonlite_1.8.8       callr_3.7.6          arrayhelpers_1.1-0  </span></span>
+<span id="cb24-47"><a href="#cb24-47" tabindex="-1"></a><span class="co">#&gt; [61] ggdist_3.3.2         glue_1.7.0           ps_1.7.6            </span></span>
+<span id="cb24-48"><a href="#cb24-48" tabindex="-1"></a><span class="co">#&gt; [64] codetools_0.2-20     distributional_0.4.0 stringi_1.8.4       </span></span>
+<span id="cb24-49"><a href="#cb24-49" tabindex="-1"></a><span class="co">#&gt; [67] gtable_0.3.5         QuickJSR_1.1.3       munsell_0.5.1       </span></span>
+<span id="cb24-50"><a href="#cb24-50" tabindex="-1"></a><span class="co">#&gt; [70] tibble_3.2.1         pillar_1.9.0         htmltools_0.5.8.1   </span></span>
+<span id="cb24-51"><a href="#cb24-51" tabindex="-1"></a><span class="co">#&gt; [73] Brobdingnag_1.2-9    TMB_1.9.11           R6_2.5.1            </span></span>
+<span id="cb24-52"><a href="#cb24-52" tabindex="-1"></a><span class="co">#&gt; [76] Rdpack_2.6           evaluate_0.23        lattice_0.22-6      </span></span>
+<span id="cb24-53"><a href="#cb24-53" tabindex="-1"></a><span class="co">#&gt; [79] highr_0.10           markdown_1.12        cards_0.1.0.9046    </span></span>
+<span id="cb24-54"><a href="#cb24-54" tabindex="-1"></a><span class="co">#&gt; [82] rbibutils_2.2.16     backports_1.4.1      trialr_0.1.6        </span></span>
+<span id="cb24-55"><a href="#cb24-55" tabindex="-1"></a><span class="co">#&gt; [85] rstantools_2.4.0     Rcpp_1.0.12          coda_0.19-4.1       </span></span>
+<span id="cb24-56"><a href="#cb24-56" tabindex="-1"></a><span class="co">#&gt; [88] gridExtra_2.3        nlme_3.1-164         checkmate_2.3.1     </span></span>
+<span id="cb24-57"><a href="#cb24-57" tabindex="-1"></a><span class="co">#&gt; [91] xfun_0.43            zoo_1.8-12           pkgconfig_2.0.3</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

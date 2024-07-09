@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">brms.mmrm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1.9004</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1.9005</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -129,21 +129,22 @@ disease (COPD).</p>
 <span>    reference_time <span class="op">=</span> <span class="st">"VIS1"</span>,</span>
 <span>    reference_group <span class="op">=</span> <span class="st">"PBO"</span>,</span>
 <span>    covariates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"WEIGHT"</span>, <span class="st">"SEX"</span><span class="op">)</span></span>
-<span>  <span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/brm_data_chronologize.html">brm_data_chronologize</a></span><span class="op">(</span>order <span class="op">=</span> <span class="st">"VISITN"</span><span class="op">)</span></span>
 <span><span class="va">data</span></span>
-<span><span class="co">#&gt; # A tibble: 800 × 6</span></span>
-<span><span class="co">#&gt;     FEV1 ARMCD AVISIT USUBJID WEIGHT SEX   </span></span>
-<span><span class="co">#&gt;    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;  &lt;fct&gt;    &lt;dbl&gt; &lt;fct&gt; </span></span>
-<span><span class="co">#&gt;  1  NA   PBO   VIS1   PT2      0.465 Male  </span></span>
-<span><span class="co">#&gt;  2  31.5 PBO   VIS2   PT2      0.233 Male  </span></span>
-<span><span class="co">#&gt;  3  36.9 PBO   VIS3   PT2      0.360 Male  </span></span>
-<span><span class="co">#&gt;  4  48.8 PBO   VIS4   PT2      0.507 Male  </span></span>
-<span><span class="co">#&gt;  5  NA   PBO   VIS1   PT3      0.682 Female</span></span>
-<span><span class="co">#&gt;  6  36.0 PBO   VIS2   PT3      0.892 Female</span></span>
-<span><span class="co">#&gt;  7  NA   PBO   VIS3   PT3      0.128 Female</span></span>
-<span><span class="co">#&gt;  8  37.2 PBO   VIS4   PT3      0.222 Female</span></span>
-<span><span class="co">#&gt;  9  32.3 PBO   VIS1   PT5      0.411 Male  </span></span>
-<span><span class="co">#&gt; 10  NA   PBO   VIS2   PT5      0.422 Male  </span></span>
+<span><span class="co">#&gt; # A tibble: 800 × 10</span></span>
+<span><span class="co">#&gt;    USUBJID AVISIT ARMCD RACE           SEX   FEV1_BL  FEV1 WEIGHT VISITN VISITN2</span></span>
+<span><span class="co">#&gt;    &lt;fct&gt;   &lt;ord&gt;  &lt;fct&gt; &lt;fct&gt;          &lt;fct&gt;   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;  &lt;int&gt;   &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 PT2     VIS1   PBO   Asian          Male     45.0  NA    0.465      1  0.330 </span></span>
+<span><span class="co">#&gt;  2 PT2     VIS2   PBO   Asian          Male     45.0  31.5  0.233      2 -0.820 </span></span>
+<span><span class="co">#&gt;  3 PT2     VIS3   PBO   Asian          Male     45.0  36.9  0.360      3  0.487 </span></span>
+<span><span class="co">#&gt;  4 PT2     VIS4   PBO   Asian          Male     45.0  48.8  0.507      4  0.738 </span></span>
+<span><span class="co">#&gt;  5 PT3     VIS1   PBO   Black or Afri… Fema…    43.5  NA    0.682      1  0.576 </span></span>
+<span><span class="co">#&gt;  6 PT3     VIS2   PBO   Black or Afri… Fema…    43.5  36.0  0.892      2 -0.305 </span></span>
+<span><span class="co">#&gt;  7 PT3     VIS3   PBO   Black or Afri… Fema…    43.5  NA    0.128      3  1.51  </span></span>
+<span><span class="co">#&gt;  8 PT3     VIS4   PBO   Black or Afri… Fema…    43.5  37.2  0.222      4  0.390 </span></span>
+<span><span class="co">#&gt;  9 PT5     VIS1   PBO   Black or Afri… Male     43.6  32.3  0.411      1 -0.0162</span></span>
+<span><span class="co">#&gt; 10 PT5     VIS2   PBO   Black or Afri… Male     43.6  NA    0.422      2  0.944 </span></span>
 <span><span class="co">#&gt; # ℹ 790 more rows</span></span></code></pre></div>
 <p>The functions listed at <a href="https://openpharma.github.io/brms.mmrm/reference/index.html#informative-prior-archetypes" class="external-link uri">https://openpharma.github.io/brms.mmrm/reference/index.html#informative-prior-archetypes</a>
 can create different kinds of informative prior archetypes from a
@@ -159,29 +160,31 @@ of the “successive cells” archetype.</p>
 columns.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">archetype</span></span>
-<span><span class="co">#&gt; # A tibble: 800 × 16</span></span>
-<span><span class="co">#&gt;    x_PBO_VIS1 x_PBO_VIS2 x_PBO_VIS3 x_PBO_VIS4 x_TRT_VIS1 x_TRT_VIS2 x_TRT_VIS3 x_TRT_VIS4</span></span>
-<span><span class="co">#&gt;  *      &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1          1          0          0          0          0          0          0          0</span></span>
-<span><span class="co">#&gt;  2          1          1          0          0          0          0          0          0</span></span>
-<span><span class="co">#&gt;  3          1          1          1          0          0          0          0          0</span></span>
-<span><span class="co">#&gt;  4          1          1          1          1          0          0          0          0</span></span>
-<span><span class="co">#&gt;  5          1          0          0          0          0          0          0          0</span></span>
-<span><span class="co">#&gt;  6          1          1          0          0          0          0          0          0</span></span>
-<span><span class="co">#&gt;  7          1          1          1          0          0          0          0          0</span></span>
-<span><span class="co">#&gt;  8          1          1          1          1          0          0          0          0</span></span>
-<span><span class="co">#&gt;  9          1          0          0          0          0          0          0          0</span></span>
-<span><span class="co">#&gt; 10          1          1          0          0          0          0          0          0</span></span>
+<span><span class="co">#&gt; # A tibble: 800 × 20</span></span>
+<span><span class="co">#&gt;    x_PBO_VIS1 x_PBO_VIS2 x_PBO_VIS3 x_PBO_VIS4 x_TRT_VIS1 x_TRT_VIS2 x_TRT_VIS3</span></span>
+<span><span class="co">#&gt;  *      &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1          1          0          0          0          0          0          0</span></span>
+<span><span class="co">#&gt;  2          1          1          0          0          0          0          0</span></span>
+<span><span class="co">#&gt;  3          1          1          1          0          0          0          0</span></span>
+<span><span class="co">#&gt;  4          1          1          1          1          0          0          0</span></span>
+<span><span class="co">#&gt;  5          1          0          0          0          0          0          0</span></span>
+<span><span class="co">#&gt;  6          1          1          0          0          0          0          0</span></span>
+<span><span class="co">#&gt;  7          1          1          1          0          0          0          0</span></span>
+<span><span class="co">#&gt;  8          1          1          1          1          0          0          0</span></span>
+<span><span class="co">#&gt;  9          1          0          0          0          0          0          0</span></span>
+<span><span class="co">#&gt; 10          1          1          0          0          0          0          0</span></span>
 <span><span class="co">#&gt; # ℹ 790 more rows</span></span>
-<span><span class="co">#&gt; # ℹ 8 more variables: nuisance_WEIGHT &lt;dbl&gt;, nuisance_SEX_Male &lt;dbl&gt;, USUBJID &lt;fct&gt;,</span></span>
-<span><span class="co">#&gt; #   AVISIT &lt;chr&gt;, FEV1 &lt;dbl&gt;, ARMCD &lt;chr&gt;, WEIGHT &lt;dbl&gt;, SEX &lt;fct&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt; # ℹ 13 more variables: x_TRT_VIS4 &lt;dbl&gt;, nuisance_WEIGHT &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   nuisance_SEX_Male &lt;dbl&gt;, USUBJID &lt;fct&gt;, AVISIT &lt;ord&gt;, ARMCD &lt;fct&gt;,</span></span>
+<span><span class="co">#&gt; #   RACE &lt;fct&gt;, SEX &lt;fct&gt;, FEV1_BL &lt;dbl&gt;, FEV1 &lt;dbl&gt;, WEIGHT &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   VISITN &lt;int&gt;, VISITN2 &lt;dbl&gt;</span></span></code></pre></div>
 <p>Those new columns constitute a custom model matrix to describe the
 desired parameterization. We have effects of interest to express
 successive differences:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">archetype</span>, <span class="st">"brm_archetype_interest"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "x_PBO_VIS1" "x_PBO_VIS2" "x_PBO_VIS3" "x_PBO_VIS4" "x_TRT_VIS1" "x_TRT_VIS2"</span></span>
-<span><span class="co">#&gt; [7] "x_TRT_VIS3" "x_TRT_VIS4"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "x_PBO_VIS1" "x_PBO_VIS2" "x_PBO_VIS3" "x_PBO_VIS4" "x_TRT_VIS1"</span></span>
+<span><span class="co">#&gt; [6] "x_TRT_VIS2" "x_TRT_VIS3" "x_TRT_VIS4"</span></span></code></pre></div>
 <p>In addition, we have nuisance variables. Some nuisance variables are
 continuous covariates, while others are levels of one-hot-encoded
 concomitant factors or interactions of those concomitant factors with
@@ -308,15 +311,24 @@ can create a <code>brms</code> prior for the important fixed effects.<a class="f
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">prior</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/brm_prior_archetype.html">brm_prior_archetype</a></span><span class="op">(</span>label <span class="op">=</span> <span class="va">label</span>, archetype <span class="op">=</span> <span class="va">archetype</span><span class="op">)</span></span>
 <span><span class="va">prior</span></span>
-<span><span class="co">#&gt;                      prior class       coef group resp dpar nlpar   lb   ub source</span></span>
-<span><span class="co">#&gt;  student_t(4, -7.57, 4.96)     b x_PBO_VIS1                       &lt;NA&gt; &lt;NA&gt;   user</span></span>
-<span><span class="co">#&gt;  student_t(4,  3.14, 7.86)     b x_PBO_VIS2                       &lt;NA&gt; &lt;NA&gt;   user</span></span>
-<span><span class="co">#&gt;  student_t(4,  8.78, 8.18)     b x_PBO_VIS3                       &lt;NA&gt; &lt;NA&gt;   user</span></span>
-<span><span class="co">#&gt;  student_t(4,  3.36, 8.10)     b x_PBO_VIS4                       &lt;NA&gt; &lt;NA&gt;   user</span></span>
-<span><span class="co">#&gt;  student_t(4, -2.96, 4.78)     b x_TRT_VIS1                       &lt;NA&gt; &lt;NA&gt;   user</span></span>
-<span><span class="co">#&gt;  student_t(4,  3.13, 7.64)     b x_TRT_VIS2                       &lt;NA&gt; &lt;NA&gt;   user</span></span>
-<span><span class="co">#&gt;  student_t(4,  7.65, 8.24)     b x_TRT_VIS3                       &lt;NA&gt; &lt;NA&gt;   user</span></span>
-<span><span class="co">#&gt;  student_t(4,  4.64, 8.21)     b x_TRT_VIS4                       &lt;NA&gt; &lt;NA&gt;   user</span></span></code></pre></div>
+<span><span class="co">#&gt;                      prior class       coef group resp dpar nlpar   lb   ub</span></span>
+<span><span class="co">#&gt;  student_t(4, -7.57, 4.96)     b x_PBO_VIS1                       &lt;NA&gt; &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;  student_t(4,  3.14, 7.86)     b x_PBO_VIS2                       &lt;NA&gt; &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;  student_t(4,  8.78, 8.18)     b x_PBO_VIS3                       &lt;NA&gt; &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;  student_t(4,  3.36, 8.10)     b x_PBO_VIS4                       &lt;NA&gt; &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;  student_t(4, -2.96, 4.78)     b x_TRT_VIS1                       &lt;NA&gt; &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;  student_t(4,  3.13, 7.64)     b x_TRT_VIS2                       &lt;NA&gt; &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;  student_t(4,  7.65, 8.24)     b x_TRT_VIS3                       &lt;NA&gt; &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;  student_t(4,  4.64, 8.21)     b x_TRT_VIS4                       &lt;NA&gt; &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;  source</span></span>
+<span><span class="co">#&gt;    user</span></span>
+<span><span class="co">#&gt;    user</span></span>
+<span><span class="co">#&gt;    user</span></span>
+<span><span class="co">#&gt;    user</span></span>
+<span><span class="co">#&gt;    user</span></span>
+<span><span class="co">#&gt;    user</span></span>
+<span><span class="co">#&gt;    user</span></span>
+<span><span class="co">#&gt;    user</span></span></code></pre></div>
 <p>In less common situations, you may wish to assign priors to nuisance
 parameters. For example, our model accounts for interactions between
 baseline and discrete time, and it may be reasonable to assign priors to
@@ -376,42 +388,42 @@ same as in non-archetype workflows.</p>
 <span><span class="co">#&gt; Compiling Stan program...</span></span>
 <span><span class="co">#&gt; Start sampling</span></span>
 <span><span class="fu">brms</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/rstantools/reference/prior_summary.html" class="external-link">prior_summary</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span>
-<span><span class="co">#&gt;                      prior    class              coef group resp  dpar nlpar lb ub</span></span>
-<span><span class="co">#&gt;                     (flat)        b                                               </span></span>
-<span><span class="co">#&gt;                     (flat)        b nuisance_SEX_Male                             </span></span>
-<span><span class="co">#&gt;                     (flat)        b   nuisance_WEIGHT                             </span></span>
-<span><span class="co">#&gt;  student_t(4, -7.57, 4.96)        b        x_PBO_VIS1                             </span></span>
-<span><span class="co">#&gt;  student_t(4,  3.14, 7.86)        b        x_PBO_VIS2                             </span></span>
-<span><span class="co">#&gt;  student_t(4,  8.78, 8.18)        b        x_PBO_VIS3                             </span></span>
-<span><span class="co">#&gt;  student_t(4,  3.36, 8.10)        b        x_PBO_VIS4                             </span></span>
-<span><span class="co">#&gt;  student_t(4, -2.96, 4.78)        b        x_TRT_VIS1                             </span></span>
-<span><span class="co">#&gt;  student_t(4,  3.13, 7.64)        b        x_TRT_VIS2                             </span></span>
-<span><span class="co">#&gt;  student_t(4,  7.65, 8.24)        b        x_TRT_VIS3                             </span></span>
-<span><span class="co">#&gt;  student_t(4,  4.64, 8.21)        b        x_TRT_VIS4                             </span></span>
-<span><span class="co">#&gt;                     (flat)        b                              sigma            </span></span>
-<span><span class="co">#&gt;                     (flat)        b        AVISITVIS1            sigma            </span></span>
-<span><span class="co">#&gt;                     (flat)        b        AVISITVIS2            sigma            </span></span>
-<span><span class="co">#&gt;                     (flat)        b        AVISITVIS3            sigma            </span></span>
-<span><span class="co">#&gt;                     (flat)        b        AVISITVIS4            sigma            </span></span>
-<span><span class="co">#&gt;       lkj_corr_cholesky(1) Lcortime                                               </span></span>
-<span><span class="co">#&gt;        source</span></span>
-<span><span class="co">#&gt;       default</span></span>
-<span><span class="co">#&gt;  (vectorized)</span></span>
-<span><span class="co">#&gt;  (vectorized)</span></span>
-<span><span class="co">#&gt;          user</span></span>
-<span><span class="co">#&gt;          user</span></span>
-<span><span class="co">#&gt;          user</span></span>
-<span><span class="co">#&gt;          user</span></span>
-<span><span class="co">#&gt;          user</span></span>
-<span><span class="co">#&gt;          user</span></span>
-<span><span class="co">#&gt;          user</span></span>
-<span><span class="co">#&gt;          user</span></span>
-<span><span class="co">#&gt;       default</span></span>
-<span><span class="co">#&gt;  (vectorized)</span></span>
-<span><span class="co">#&gt;  (vectorized)</span></span>
-<span><span class="co">#&gt;  (vectorized)</span></span>
-<span><span class="co">#&gt;  (vectorized)</span></span>
-<span><span class="co">#&gt;       default</span></span></code></pre></div>
+<span><span class="co">#&gt;                      prior    class              coef group resp  dpar nlpar lb</span></span>
+<span><span class="co">#&gt;                     (flat)        b                                            </span></span>
+<span><span class="co">#&gt;                     (flat)        b nuisance_SEX_Male                          </span></span>
+<span><span class="co">#&gt;                     (flat)        b   nuisance_WEIGHT                          </span></span>
+<span><span class="co">#&gt;  student_t(4, -7.57, 4.96)        b        x_PBO_VIS1                          </span></span>
+<span><span class="co">#&gt;  student_t(4,  3.14, 7.86)        b        x_PBO_VIS2                          </span></span>
+<span><span class="co">#&gt;  student_t(4,  8.78, 8.18)        b        x_PBO_VIS3                          </span></span>
+<span><span class="co">#&gt;  student_t(4,  3.36, 8.10)        b        x_PBO_VIS4                          </span></span>
+<span><span class="co">#&gt;  student_t(4, -2.96, 4.78)        b        x_TRT_VIS1                          </span></span>
+<span><span class="co">#&gt;  student_t(4,  3.13, 7.64)        b        x_TRT_VIS2                          </span></span>
+<span><span class="co">#&gt;  student_t(4,  7.65, 8.24)        b        x_TRT_VIS3                          </span></span>
+<span><span class="co">#&gt;  student_t(4,  4.64, 8.21)        b        x_TRT_VIS4                          </span></span>
+<span><span class="co">#&gt;                     (flat)        b                              sigma         </span></span>
+<span><span class="co">#&gt;                     (flat)        b        AVISITVIS1            sigma         </span></span>
+<span><span class="co">#&gt;                     (flat)        b        AVISITVIS2            sigma         </span></span>
+<span><span class="co">#&gt;                     (flat)        b        AVISITVIS3            sigma         </span></span>
+<span><span class="co">#&gt;                     (flat)        b        AVISITVIS4            sigma         </span></span>
+<span><span class="co">#&gt;       lkj_corr_cholesky(1) Lcortime                                            </span></span>
+<span><span class="co">#&gt;  ub       source</span></span>
+<span><span class="co">#&gt;          default</span></span>
+<span><span class="co">#&gt;     (vectorized)</span></span>
+<span><span class="co">#&gt;     (vectorized)</span></span>
+<span><span class="co">#&gt;             user</span></span>
+<span><span class="co">#&gt;             user</span></span>
+<span><span class="co">#&gt;             user</span></span>
+<span><span class="co">#&gt;             user</span></span>
+<span><span class="co">#&gt;             user</span></span>
+<span><span class="co">#&gt;             user</span></span>
+<span><span class="co">#&gt;             user</span></span>
+<span><span class="co">#&gt;             user</span></span>
+<span><span class="co">#&gt;          default</span></span>
+<span><span class="co">#&gt;     (vectorized)</span></span>
+<span><span class="co">#&gt;     (vectorized)</span></span>
+<span><span class="co">#&gt;     (vectorized)</span></span>
+<span><span class="co">#&gt;     (vectorized)</span></span>
+<span><span class="co">#&gt;          default</span></span></code></pre></div>
 <p>Marginal mean estimation, post-processing, and visualization
 automatically understand the archetype without any user
 intervention.</p>

@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">brms.mmrm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1.9004</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1.9005</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,7 +75,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>BCVA data comparison between Bayesian and frequentist MMRMs</h1>
             
-            <h4 data-toc-skip class="date">08/07/2024</h4>
+            <h4 data-toc-skip class="date">09/07/2024</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/openpharma/brms.mmrm/blob/main/vignettes/bcva.Rmd" class="external-link"><code>vignettes/bcva.Rmd</code></a></small>
       <div class="d-none name"><code>bcva.Rmd</code></div>
@@ -129,15 +129,15 @@ ophthalmology trial evaluating the change in baseline corrected visual
 acuity (BCVA) over the course of 10 visits. BCVA corresponds to the
 number of letters read from a visual acuity chart.</p>
 </blockquote>
-<p>The dataset is a <code>tibble</code> with 800 rows and 7 variables.
-The primary endpoint for the analysis is <code>BCVA_CHG</code>.</p>
+<p>The dataset is a <code>tibble</code> with 8605 rows and the following
+notable variables.</p>
 <ul>
 <li>
 <code>USUBJID</code> (subject ID)</li>
 <li>
-<code>AVISITN</code> (visit number, numeric)</li>
-<li>
 <code>AVISIT</code> (visit number, factor)</li>
+<li>
+<code>VISITN</code> (visit number, numeric)</li>
 <li>
 <code>ARMCD</code> (treatment, <code>TRT</code> or
 <code>CTL</code>)</li>
@@ -146,22 +146,25 @@ The primary endpoint for the analysis is <code>BCVA_CHG</code>.</p>
 <li>
 <code>BCVA_BL</code> (BCVA at baseline)</li>
 <li>
-<code>BCVA_CHG</code> (BCVA change from baseline)</li>
+<code>BCVA_CHG</code> (BCVA change from baseline, primary endpoint
+for the analysis)</li>
 </ul>
 <p>The rest of the pre-processing steps create factors for the study arm
 and visit and apply the usual checking and standardization steps of
 <code><a href="../reference/brm_data.html">brms.mmrm::brm_data()</a></code>.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="sc">&gt;</span> bcva_data <span class="ot">&lt;-</span> <span class="fu">brm_data</span>(</span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="sc">+</span>   <span class="at">data =</span> bcva_data,</span>
-<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="sc">+</span>   <span class="at">outcome =</span> <span class="st">"BCVA_CHG"</span>,</span>
-<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="sc">+</span>   <span class="at">role =</span> <span class="st">"change"</span>,</span>
-<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="sc">+</span>   <span class="at">group =</span> <span class="st">"ARMCD"</span>,</span>
-<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="sc">+</span>   <span class="at">time =</span> <span class="st">"AVISIT"</span>,</span>
-<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="sc">+</span>   <span class="at">patient =</span> <span class="st">"USUBJID"</span>,</span>
-<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="sc">+</span>   <span class="at">baseline =</span> <span class="st">"BCVA_BL"</span>,</span>
-<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="sc">+</span>   <span class="at">reference_group =</span> <span class="st">"CTL"</span>,</span>
-<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="sc">+</span>   <span class="at">covariates =</span> <span class="st">"RACE"</span></span>
-<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="sc">+</span> )</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="sc">&gt;</span> bcva_data <span class="ot">&lt;-</span> bcva_data <span class="sc">|&gt;</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="sc">+</span>   <span class="fu">mutate</span>(<span class="at">AVISIT =</span> <span class="fu">gsub</span>(<span class="st">"VIS0*"</span>, <span class="st">"VIS"</span>, <span class="fu">as.character</span>(AVISIT))) <span class="sc">|&gt;</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="sc">+</span>   <span class="fu">brm_data</span>(</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="sc">+</span>     <span class="at">outcome =</span> <span class="st">"BCVA_CHG"</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="sc">+</span>     <span class="at">role =</span> <span class="st">"change"</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="sc">+</span>     <span class="at">group =</span> <span class="st">"ARMCD"</span>,</span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="sc">+</span>     <span class="at">time =</span> <span class="st">"AVISIT"</span>,</span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="sc">+</span>     <span class="at">patient =</span> <span class="st">"USUBJID"</span>,</span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="sc">+</span>     <span class="at">baseline =</span> <span class="st">"BCVA_BL"</span>,</span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="sc">+</span>     <span class="at">reference_group =</span> <span class="st">"CTL"</span>,</span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="sc">+</span>     <span class="at">covariates =</span> <span class="st">"RACE"</span></span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a><span class="sc">+</span>   ) <span class="sc">|&gt;</span></span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a><span class="sc">+</span>   <span class="fu">brm_data_chronologize</span>(<span class="at">order =</span> <span class="st">"VISITN"</span>)</span></code></pre></div>
 <p>The following table shows the first rows of the dataset.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">head</span>(bcva_data) <span class="sc">|&gt;</span></span>
 <span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="sc">+</span>   <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
@@ -612,61 +615,68 @@ Table 1. First rows of the pre-processed <code>bcva_data</code> dataset.
 </caption>
 
   <thead><tr class="gt_col_headings">
-<th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="BCVA_CHG">BCVA_CHG</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="BCVA_BL">BCVA_BL</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="ARMCD">ARMCD</th>
+<th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="USUBJID">USUBJID</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="AVISIT">AVISIT</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="USUBJID">USUBJID</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="VISITN">VISITN</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="ARMCD">ARMCD</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="RACE">RACE</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="BCVA_BL">BCVA_BL</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="BCVA_CHG">BCVA_CHG</th>
     </tr></thead>
 <tbody class="gt_table_body">
 <tr>
+<td headers="USUBJID" class="gt_row gt_center">3</td>
+<td headers="AVISIT" class="gt_row gt_center">VIS1</td>
+<td headers="VISITN" class="gt_row gt_right">1</td>
+<td headers="ARMCD" class="gt_row gt_left">CTL</td>
+<td headers="RACE" class="gt_row gt_left">Asian</td>
+<td headers="BCVA_BL" class="gt_row gt_right">71.70881</td>
 <td headers="BCVA_CHG" class="gt_row gt_right">5.058546</td>
-<td headers="BCVA_BL" class="gt_row gt_right">71.70881</td>
-<td headers="ARMCD" class="gt_row gt_left">CTL</td>
-<td headers="AVISIT" class="gt_row gt_center">VIS01</td>
-<td headers="USUBJID" class="gt_row gt_center">3</td>
-<td headers="RACE" class="gt_row gt_left">Asian</td>
 </tr>
 <tr>
+<td headers="USUBJID" class="gt_row gt_center">3</td>
+<td headers="AVISIT" class="gt_row gt_center">VIS10</td>
+<td headers="VISITN" class="gt_row gt_right">10</td>
+<td headers="ARMCD" class="gt_row gt_left">CTL</td>
+<td headers="RACE" class="gt_row gt_left">Asian</td>
+<td headers="BCVA_BL" class="gt_row gt_right">71.70881</td>
+<td headers="BCVA_CHG" class="gt_row gt_right">10.152565</td>
+</tr>
+<tr>
+<td headers="USUBJID" class="gt_row gt_center">3</td>
+<td headers="AVISIT" class="gt_row gt_center">VIS2</td>
+<td headers="VISITN" class="gt_row gt_right">2</td>
+<td headers="ARMCD" class="gt_row gt_left">CTL</td>
+<td headers="RACE" class="gt_row gt_left">Asian</td>
+<td headers="BCVA_BL" class="gt_row gt_right">71.70881</td>
 <td headers="BCVA_CHG" class="gt_row gt_right">4.018582</td>
-<td headers="BCVA_BL" class="gt_row gt_right">71.70881</td>
-<td headers="ARMCD" class="gt_row gt_left">CTL</td>
-<td headers="AVISIT" class="gt_row gt_center">VIS02</td>
-<td headers="USUBJID" class="gt_row gt_center">3</td>
-<td headers="RACE" class="gt_row gt_left">Asian</td>
 </tr>
 <tr>
+<td headers="USUBJID" class="gt_row gt_center">3</td>
+<td headers="AVISIT" class="gt_row gt_center">VIS3</td>
+<td headers="VISITN" class="gt_row gt_right">3</td>
+<td headers="ARMCD" class="gt_row gt_left">CTL</td>
+<td headers="RACE" class="gt_row gt_left">Asian</td>
+<td headers="BCVA_BL" class="gt_row gt_right">71.70881</td>
 <td headers="BCVA_CHG" class="gt_row gt_right">3.572535</td>
-<td headers="BCVA_BL" class="gt_row gt_right">71.70881</td>
-<td headers="ARMCD" class="gt_row gt_left">CTL</td>
-<td headers="AVISIT" class="gt_row gt_center">VIS03</td>
-<td headers="USUBJID" class="gt_row gt_center">3</td>
-<td headers="RACE" class="gt_row gt_left">Asian</td>
 </tr>
 <tr>
+<td headers="USUBJID" class="gt_row gt_center">3</td>
+<td headers="AVISIT" class="gt_row gt_center">VIS4</td>
+<td headers="VISITN" class="gt_row gt_right">4</td>
+<td headers="ARMCD" class="gt_row gt_left">CTL</td>
+<td headers="RACE" class="gt_row gt_left">Asian</td>
+<td headers="BCVA_BL" class="gt_row gt_right">71.70881</td>
 <td headers="BCVA_CHG" class="gt_row gt_right">4.822669</td>
-<td headers="BCVA_BL" class="gt_row gt_right">71.70881</td>
-<td headers="ARMCD" class="gt_row gt_left">CTL</td>
-<td headers="AVISIT" class="gt_row gt_center">VIS04</td>
-<td headers="USUBJID" class="gt_row gt_center">3</td>
-<td headers="RACE" class="gt_row gt_left">Asian</td>
 </tr>
 <tr>
+<td headers="USUBJID" class="gt_row gt_center">3</td>
+<td headers="AVISIT" class="gt_row gt_center">VIS5</td>
+<td headers="VISITN" class="gt_row gt_right">5</td>
+<td headers="ARMCD" class="gt_row gt_left">CTL</td>
+<td headers="RACE" class="gt_row gt_left">Asian</td>
+<td headers="BCVA_BL" class="gt_row gt_right">71.70881</td>
 <td headers="BCVA_CHG" class="gt_row gt_right">7.348768</td>
-<td headers="BCVA_BL" class="gt_row gt_right">71.70881</td>
-<td headers="ARMCD" class="gt_row gt_left">CTL</td>
-<td headers="AVISIT" class="gt_row gt_center">VIS05</td>
-<td headers="USUBJID" class="gt_row gt_center">3</td>
-<td headers="RACE" class="gt_row gt_left">Asian</td>
-</tr>
-<tr>
-<td headers="BCVA_CHG" class="gt_row gt_right">6.076615</td>
-<td headers="BCVA_BL" class="gt_row gt_right">71.70881</td>
-<td headers="ARMCD" class="gt_row gt_left">CTL</td>
-<td headers="AVISIT" class="gt_row gt_center">VIS06</td>
-<td headers="USUBJID" class="gt_row gt_center">3</td>
-<td headers="RACE" class="gt_row gt_left">Asian</td>
 </tr>
 </tbody>
 </table>
@@ -1135,11 +1145,15 @@ Table 2. Baseline characteristics.
 
   <thead><tr class="gt_col_headings">
 <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="&lt;strong&gt;Characteristic&lt;/strong&gt;"><strong>Characteristic</strong></th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id='&lt;strong&gt;CTL&lt;/strong&gt;, N = 494&lt;span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/span&gt;'>
-<strong>CTL</strong>, N = 494<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id='&lt;strong&gt;CTL&lt;/strong&gt;&lt;br /&gt;
+N = 494&lt;span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/span&gt;'>
+<strong>CTL</strong><br>
+N = 494<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span>
 </th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id='&lt;strong&gt;TRT&lt;/strong&gt;, N = 506&lt;span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/span&gt;'>
-<strong>TRT</strong>, N = 506<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id='&lt;strong&gt;TRT&lt;/strong&gt;&lt;br /&gt;
+N = 506&lt;span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/span&gt;'>
+<strong>TRT</strong><br>
+N = 506<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span>
 </th>
     </tr></thead>
 <tbody class="gt_table_body">
@@ -1644,14 +1658,18 @@ Table 3. Change from baseline.
 
   <thead><tr class="gt_col_headings">
 <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="&lt;strong&gt;Characteristic&lt;/strong&gt;"><strong>Characteristic</strong></th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="&lt;strong&gt;CTL&lt;/strong&gt;, N = 494">
-<strong>CTL</strong>, N = 494</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="&lt;strong&gt;TRT&lt;/strong&gt;, N = 506">
-<strong>TRT</strong>, N = 506</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="&lt;strong&gt;CTL&lt;/strong&gt;&lt;br /&gt;
+N = 494">
+<strong>CTL</strong><br>
+N = 494</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="&lt;strong&gt;TRT&lt;/strong&gt;&lt;br /&gt;
+N = 506">
+<strong>TRT</strong><br>
+N = 506</th>
     </tr></thead>
 <tbody class="gt_table_body">
 <tr>
-<td headers="label" class="gt_row gt_left">Visit  VIS01</td>
+<td headers="label" class="gt_row gt_left">Visit  VIS1</td>
 <td headers="stat_1" class="gt_row gt_center"><br></td>
 <td headers="stat_2" class="gt_row gt_center"><br></td>
 </tr>
@@ -1661,12 +1679,12 @@ Table 3. Change from baseline.
 <td headers="stat_2" class="gt_row gt_center">5.86 (1.33)</td>
 </tr>
 <tr>
-<td headers="label" class="gt_row gt_left">    Median (IQR)</td>
+<td headers="label" class="gt_row gt_left">    Median (Q1, Q3)</td>
 <td headers="stat_1" class="gt_row gt_center">5.34 (4.51, 6.17)</td>
 <td headers="stat_2" class="gt_row gt_center">5.86 (4.98, 6.81)</td>
 </tr>
 <tr>
-<td headers="label" class="gt_row gt_left">    Range</td>
+<td headers="label" class="gt_row gt_left">    Min, Max</td>
 <td headers="stat_1" class="gt_row gt_center">1.83, 9.02</td>
 <td headers="stat_2" class="gt_row gt_center">2.28, 10.30</td>
 </tr>
@@ -1676,7 +1694,7 @@ Table 3. Change from baseline.
 <td headers="stat_2" class="gt_row gt_center">5</td>
 </tr>
 <tr>
-<td headers="label" class="gt_row gt_left">Visit  VIS02</td>
+<td headers="label" class="gt_row gt_left">Visit  VIS2</td>
 <td headers="stat_1" class="gt_row gt_center"><br></td>
 <td headers="stat_2" class="gt_row gt_center"><br></td>
 </tr>
@@ -1686,12 +1704,12 @@ Table 3. Change from baseline.
 <td headers="stat_2" class="gt_row gt_center">6.33 (1.45)</td>
 </tr>
 <tr>
-<td headers="label" class="gt_row gt_left">    Median (IQR)</td>
+<td headers="label" class="gt_row gt_left">    Median (Q1, Q3)</td>
 <td headers="stat_1" class="gt_row gt_center">5.53 (4.64, 6.47)</td>
 <td headers="stat_2" class="gt_row gt_center">6.36 (5.34, 7.31)</td>
 </tr>
 <tr>
-<td headers="label" class="gt_row gt_left">    Range</td>
+<td headers="label" class="gt_row gt_left">    Min, Max</td>
 <td headers="stat_1" class="gt_row gt_center">0.29, 10.15</td>
 <td headers="stat_2" class="gt_row gt_center">2.35, 10.75</td>
 </tr>
@@ -1701,7 +1719,7 @@ Table 3. Change from baseline.
 <td headers="stat_2" class="gt_row gt_center">7</td>
 </tr>
 <tr>
-<td headers="label" class="gt_row gt_left">Visit  VIS03</td>
+<td headers="label" class="gt_row gt_left">Visit  VIS3</td>
 <td headers="stat_1" class="gt_row gt_center"><br></td>
 <td headers="stat_2" class="gt_row gt_center"><br></td>
 </tr>
@@ -1711,12 +1729,12 @@ Table 3. Change from baseline.
 <td headers="stat_2" class="gt_row gt_center">6.79 (1.71)</td>
 </tr>
 <tr>
-<td headers="label" class="gt_row gt_left">    Median (IQR)</td>
-<td headers="stat_1" class="gt_row gt_center">5.73 (4.64, 6.89)</td>
+<td headers="label" class="gt_row gt_left">    Median (Q1, Q3)</td>
+<td headers="stat_1" class="gt_row gt_center">5.73 (4.64, 6.91)</td>
 <td headers="stat_2" class="gt_row gt_center">6.82 (5.66, 7.93)</td>
 </tr>
 <tr>
-<td headers="label" class="gt_row gt_left">    Range</td>
+<td headers="label" class="gt_row gt_left">    Min, Max</td>
 <td headers="stat_1" class="gt_row gt_center">1.53, 11.46</td>
 <td headers="stat_2" class="gt_row gt_center">1.13, 11.49</td>
 </tr>
@@ -1726,7 +1744,7 @@ Table 3. Change from baseline.
 <td headers="stat_2" class="gt_row gt_center">17</td>
 </tr>
 <tr>
-<td headers="label" class="gt_row gt_left">Visit  VIS04</td>
+<td headers="label" class="gt_row gt_left">Visit  VIS4</td>
 <td headers="stat_1" class="gt_row gt_center"><br></td>
 <td headers="stat_2" class="gt_row gt_center"><br></td>
 </tr>
@@ -1736,12 +1754,12 @@ Table 3. Change from baseline.
 <td headers="stat_2" class="gt_row gt_center">7.29 (1.82)</td>
 </tr>
 <tr>
-<td headers="label" class="gt_row gt_left">    Median (IQR)</td>
-<td headers="stat_1" class="gt_row gt_center">6.14 (5.05, 7.40)</td>
-<td headers="stat_2" class="gt_row gt_center">7.24 (6.06, 8.54)</td>
+<td headers="label" class="gt_row gt_left">    Median (Q1, Q3)</td>
+<td headers="stat_1" class="gt_row gt_center">6.14 (5.05, 7.41)</td>
+<td headers="stat_2" class="gt_row gt_center">7.24 (6.05, 8.54)</td>
 </tr>
 <tr>
-<td headers="label" class="gt_row gt_left">    Range</td>
+<td headers="label" class="gt_row gt_left">    Min, Max</td>
 <td headers="stat_1" class="gt_row gt_center">0.45, 11.49</td>
 <td headers="stat_2" class="gt_row gt_center">2.07, 11.47</td>
 </tr>
@@ -1751,7 +1769,7 @@ Table 3. Change from baseline.
 <td headers="stat_2" class="gt_row gt_center">18</td>
 </tr>
 <tr>
-<td headers="label" class="gt_row gt_left">Visit  VIS05</td>
+<td headers="label" class="gt_row gt_left">Visit  VIS5</td>
 <td headers="stat_1" class="gt_row gt_center"><br></td>
 <td headers="stat_2" class="gt_row gt_center"><br></td>
 </tr>
@@ -1761,12 +1779,12 @@ Table 3. Change from baseline.
 <td headers="stat_2" class="gt_row gt_center">7.68 (1.94)</td>
 </tr>
 <tr>
-<td headers="label" class="gt_row gt_left">    Median (IQR)</td>
+<td headers="label" class="gt_row gt_left">    Median (Q1, Q3)</td>
 <td headers="stat_1" class="gt_row gt_center">6.18 (4.96, 7.71)</td>
-<td headers="stat_2" class="gt_row gt_center">7.75 (6.48, 8.93)</td>
+<td headers="stat_2" class="gt_row gt_center">7.75 (6.48, 8.95)</td>
 </tr>
 <tr>
-<td headers="label" class="gt_row gt_left">    Range</td>
+<td headers="label" class="gt_row gt_left">    Min, Max</td>
 <td headers="stat_1" class="gt_row gt_center">0.87, 11.53</td>
 <td headers="stat_2" class="gt_row gt_center">2.24, 14.10</td>
 </tr>
@@ -1776,7 +1794,7 @@ Table 3. Change from baseline.
 <td headers="stat_2" class="gt_row gt_center">35</td>
 </tr>
 <tr>
-<td headers="label" class="gt_row gt_left">Visit  VIS06</td>
+<td headers="label" class="gt_row gt_left">Visit  VIS6</td>
 <td headers="stat_1" class="gt_row gt_center"><br></td>
 <td headers="stat_2" class="gt_row gt_center"><br></td>
 </tr>
@@ -1786,12 +1804,12 @@ Table 3. Change from baseline.
 <td headers="stat_2" class="gt_row gt_center">8.31 (1.98)</td>
 </tr>
 <tr>
-<td headers="label" class="gt_row gt_left">    Median (IQR)</td>
+<td headers="label" class="gt_row gt_left">    Median (Q1, Q3)</td>
 <td headers="stat_1" class="gt_row gt_center">6.64 (5.26, 8.14)</td>
-<td headers="stat_2" class="gt_row gt_center">8.29 (6.92, 9.73)</td>
+<td headers="stat_2" class="gt_row gt_center">8.29 (6.92, 9.74)</td>
 </tr>
 <tr>
-<td headers="label" class="gt_row gt_left">    Range</td>
+<td headers="label" class="gt_row gt_left">    Min, Max</td>
 <td headers="stat_1" class="gt_row gt_center">1.35, 12.95</td>
 <td headers="stat_2" class="gt_row gt_center">1.93, 14.38</td>
 </tr>
@@ -1801,7 +1819,7 @@ Table 3. Change from baseline.
 <td headers="stat_2" class="gt_row gt_center">48</td>
 </tr>
 <tr>
-<td headers="label" class="gt_row gt_left">Visit  VIS07</td>
+<td headers="label" class="gt_row gt_left">Visit  VIS7</td>
 <td headers="stat_1" class="gt_row gt_center"><br></td>
 <td headers="stat_2" class="gt_row gt_center"><br></td>
 </tr>
@@ -1811,12 +1829,12 @@ Table 3. Change from baseline.
 <td headers="stat_2" class="gt_row gt_center">8.78 (2.11)</td>
 </tr>
 <tr>
-<td headers="label" class="gt_row gt_left">    Median (IQR)</td>
+<td headers="label" class="gt_row gt_left">    Median (Q1, Q3)</td>
 <td headers="stat_1" class="gt_row gt_center">6.91 (5.46, 8.29)</td>
-<td headers="stat_2" class="gt_row gt_center">8.67 (7.44, 10.25)</td>
+<td headers="stat_2" class="gt_row gt_center">8.67 (7.44, 10.26)</td>
 </tr>
 <tr>
-<td headers="label" class="gt_row gt_left">    Range</td>
+<td headers="label" class="gt_row gt_left">    Min, Max</td>
 <td headers="stat_1" class="gt_row gt_center">-1.54, 11.99</td>
 <td headers="stat_2" class="gt_row gt_center">3.21, 14.36</td>
 </tr>
@@ -1826,7 +1844,7 @@ Table 3. Change from baseline.
 <td headers="stat_2" class="gt_row gt_center">78</td>
 </tr>
 <tr>
-<td headers="label" class="gt_row gt_left">Visit  VIS08</td>
+<td headers="label" class="gt_row gt_left">Visit  VIS8</td>
 <td headers="stat_1" class="gt_row gt_center"><br></td>
 <td headers="stat_2" class="gt_row gt_center"><br></td>
 </tr>
@@ -1836,12 +1854,12 @@ Table 3. Change from baseline.
 <td headers="stat_2" class="gt_row gt_center">9.40 (2.26)</td>
 </tr>
 <tr>
-<td headers="label" class="gt_row gt_left">    Median (IQR)</td>
-<td headers="stat_1" class="gt_row gt_center">7.08 (5.57, 8.67)</td>
+<td headers="label" class="gt_row gt_left">    Median (Q1, Q3)</td>
+<td headers="stat_1" class="gt_row gt_center">7.08 (5.55, 8.68)</td>
 <td headers="stat_2" class="gt_row gt_center">9.35 (7.96, 10.86)</td>
 </tr>
 <tr>
-<td headers="label" class="gt_row gt_left">    Range</td>
+<td headers="label" class="gt_row gt_left">    Min, Max</td>
 <td headers="stat_1" class="gt_row gt_center">0.97, 13.71</td>
 <td headers="stat_2" class="gt_row gt_center">2.28, 15.95</td>
 </tr>
@@ -1851,7 +1869,7 @@ Table 3. Change from baseline.
 <td headers="stat_2" class="gt_row gt_center">86</td>
 </tr>
 <tr>
-<td headers="label" class="gt_row gt_left">Visit  VIS09</td>
+<td headers="label" class="gt_row gt_left">Visit  VIS9</td>
 <td headers="stat_1" class="gt_row gt_center"><br></td>
 <td headers="stat_2" class="gt_row gt_center"><br></td>
 </tr>
@@ -1861,12 +1879,12 @@ Table 3. Change from baseline.
 <td headers="stat_2" class="gt_row gt_center">10.01 (2.50)</td>
 </tr>
 <tr>
-<td headers="label" class="gt_row gt_left">    Median (IQR)</td>
-<td headers="stat_1" class="gt_row gt_center">7.47 (5.77, 9.05)</td>
-<td headers="stat_2" class="gt_row gt_center">10.01 (8.19, 11.73)</td>
+<td headers="label" class="gt_row gt_left">    Median (Q1, Q3)</td>
+<td headers="stat_1" class="gt_row gt_center">7.47 (5.76, 9.05)</td>
+<td headers="stat_2" class="gt_row gt_center">10.01 (8.19, 11.74)</td>
 </tr>
 <tr>
-<td headers="label" class="gt_row gt_left">    Range</td>
+<td headers="label" class="gt_row gt_left">    Min, Max</td>
 <td headers="stat_1" class="gt_row gt_center">0.04, 14.61</td>
 <td headers="stat_2" class="gt_row gt_center">4.22, 18.09</td>
 </tr>
@@ -1886,12 +1904,12 @@ Table 3. Change from baseline.
 <td headers="stat_2" class="gt_row gt_center">10.59 (2.36)</td>
 </tr>
 <tr>
-<td headers="label" class="gt_row gt_left">    Median (IQR)</td>
+<td headers="label" class="gt_row gt_left">    Median (Q1, Q3)</td>
 <td headers="stat_1" class="gt_row gt_center">7.40 (5.73, 9.01)</td>
-<td headers="stat_2" class="gt_row gt_center">10.71 (9.03, 12.24)</td>
+<td headers="stat_2" class="gt_row gt_center">10.71 (9.03, 12.25)</td>
 </tr>
 <tr>
-<td headers="label" class="gt_row gt_left">    Range</td>
+<td headers="label" class="gt_row gt_left">    Min, Max</td>
 <td headers="stat_1" class="gt_row gt_center">-0.08, 15.75</td>
 <td headers="stat_2" class="gt_row gt_center">3.24, 16.40</td>
 </tr>
@@ -1973,92 +1991,126 @@ effects and pairwise correlation among visits within patients.</p>
 <span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a><span class="co">#&gt;          total post-warmup draws = 32000</span></span>
 <span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a><span class="co">#&gt; </span></span>
 <span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a><span class="co">#&gt; Correlation Structures:</span></span>
-<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a><span class="co">#&gt;                      Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS</span></span>
-<span id="cb11-12"><a href="#cb11-12" tabindex="-1"></a><span class="co">#&gt; cortime(VIS01,VIS02)     0.05      0.03    -0.01     0.11 1.00    63561    23159</span></span>
-<span id="cb11-13"><a href="#cb11-13" tabindex="-1"></a><span class="co">#&gt; cortime(VIS01,VIS03)     0.31      0.03     0.25     0.36 1.00    70330    25831</span></span>
-<span id="cb11-14"><a href="#cb11-14" tabindex="-1"></a><span class="co">#&gt; cortime(VIS02,VIS03)     0.05      0.03    -0.02     0.11 1.00    67715    22226</span></span>
-<span id="cb11-15"><a href="#cb11-15" tabindex="-1"></a><span class="co">#&gt; cortime(VIS01,VIS04)     0.21      0.03     0.15     0.27 1.00    46375    28108</span></span>
-<span id="cb11-16"><a href="#cb11-16" tabindex="-1"></a><span class="co">#&gt; cortime(VIS02,VIS04)     0.14      0.03     0.07     0.20 1.00    50232    27277</span></span>
-<span id="cb11-17"><a href="#cb11-17" tabindex="-1"></a><span class="co">#&gt; cortime(VIS03,VIS04)    -0.01      0.03    -0.07     0.05 1.00    50449    26940</span></span>
-<span id="cb11-18"><a href="#cb11-18" tabindex="-1"></a><span class="co">#&gt; cortime(VIS01,VIS05)     0.17      0.03     0.11     0.23 1.00    49366    27023</span></span>
-<span id="cb11-19"><a href="#cb11-19" tabindex="-1"></a><span class="co">#&gt; cortime(VIS02,VIS05)     0.12      0.03     0.05     0.18 1.00    53327    28297</span></span>
-<span id="cb11-20"><a href="#cb11-20" tabindex="-1"></a><span class="co">#&gt; cortime(VIS03,VIS05)    -0.01      0.03    -0.07     0.06 1.00    52752    26884</span></span>
-<span id="cb11-21"><a href="#cb11-21" tabindex="-1"></a><span class="co">#&gt; cortime(VIS04,VIS05)     0.38      0.03     0.32     0.43 1.00    49514    26959</span></span>
-<span id="cb11-22"><a href="#cb11-22" tabindex="-1"></a><span class="co">#&gt; cortime(VIS01,VIS06)     0.26      0.03     0.20     0.32 1.00    45483    26765</span></span>
-<span id="cb11-23"><a href="#cb11-23" tabindex="-1"></a><span class="co">#&gt; cortime(VIS02,VIS06)     0.20      0.03     0.14     0.27 1.00    48236    27168</span></span>
-<span id="cb11-24"><a href="#cb11-24" tabindex="-1"></a><span class="co">#&gt; cortime(VIS03,VIS06)     0.04      0.03    -0.02     0.11 1.00    51506    27189</span></span>
-<span id="cb11-25"><a href="#cb11-25" tabindex="-1"></a><span class="co">#&gt; cortime(VIS04,VIS06)     0.40      0.03     0.35     0.46 1.00    48730    25696</span></span>
-<span id="cb11-26"><a href="#cb11-26" tabindex="-1"></a><span class="co">#&gt; cortime(VIS05,VIS06)     0.39      0.03     0.34     0.45 1.00    55438    25998</span></span>
-<span id="cb11-27"><a href="#cb11-27" tabindex="-1"></a><span class="co">#&gt; cortime(VIS01,VIS07)     0.07      0.04    -0.00     0.13 1.00    66961    24586</span></span>
-<span id="cb11-28"><a href="#cb11-28" tabindex="-1"></a><span class="co">#&gt; cortime(VIS02,VIS07)     0.09      0.03     0.02     0.15 1.00    66564    23212</span></span>
-<span id="cb11-29"><a href="#cb11-29" tabindex="-1"></a><span class="co">#&gt; cortime(VIS03,VIS07)    -0.00      0.03    -0.07     0.07 1.00    62299    24284</span></span>
-<span id="cb11-30"><a href="#cb11-30" tabindex="-1"></a><span class="co">#&gt; cortime(VIS04,VIS07)     0.15      0.03     0.08     0.22 1.00    70101    23346</span></span>
-<span id="cb11-31"><a href="#cb11-31" tabindex="-1"></a><span class="co">#&gt; cortime(VIS05,VIS07)     0.19      0.03     0.13     0.26 1.00    71412    24243</span></span>
-<span id="cb11-32"><a href="#cb11-32" tabindex="-1"></a><span class="co">#&gt; cortime(VIS06,VIS07)     0.21      0.04     0.14     0.28 1.00    69307    23697</span></span>
-<span id="cb11-33"><a href="#cb11-33" tabindex="-1"></a><span class="co">#&gt; cortime(VIS01,VIS08)     0.05      0.04    -0.02     0.12 1.00    70424    22845</span></span>
-<span id="cb11-34"><a href="#cb11-34" tabindex="-1"></a><span class="co">#&gt; cortime(VIS02,VIS08)     0.10      0.04     0.03     0.17 1.00    71230    23497</span></span>
-<span id="cb11-35"><a href="#cb11-35" tabindex="-1"></a><span class="co">#&gt; cortime(VIS03,VIS08)    -0.03      0.04    -0.10     0.04 1.00    65689    22667</span></span>
-<span id="cb11-36"><a href="#cb11-36" tabindex="-1"></a><span class="co">#&gt; cortime(VIS04,VIS08)     0.17      0.03     0.10     0.24 1.00    68079    23681</span></span>
-<span id="cb11-37"><a href="#cb11-37" tabindex="-1"></a><span class="co">#&gt; cortime(VIS05,VIS08)     0.17      0.04     0.10     0.24 1.00    73436    24011</span></span>
-<span id="cb11-38"><a href="#cb11-38" tabindex="-1"></a><span class="co">#&gt; cortime(VIS06,VIS08)     0.16      0.04     0.09     0.23 1.00    68602    23567</span></span>
-<span id="cb11-39"><a href="#cb11-39" tabindex="-1"></a><span class="co">#&gt; cortime(VIS07,VIS08)     0.05      0.04    -0.02     0.13 1.00    68688    23661</span></span>
-<span id="cb11-40"><a href="#cb11-40" tabindex="-1"></a><span class="co">#&gt; cortime(VIS01,VIS09)     0.03      0.04    -0.04     0.10 1.00    70389    23613</span></span>
-<span id="cb11-41"><a href="#cb11-41" tabindex="-1"></a><span class="co">#&gt; cortime(VIS02,VIS09)    -0.01      0.04    -0.08     0.07 1.00    72988    22674</span></span>
-<span id="cb11-42"><a href="#cb11-42" tabindex="-1"></a><span class="co">#&gt; cortime(VIS03,VIS09)    -0.04      0.04    -0.12     0.03 1.00    73818    23450</span></span>
-<span id="cb11-43"><a href="#cb11-43" tabindex="-1"></a><span class="co">#&gt; cortime(VIS04,VIS09)     0.12      0.04     0.04     0.19 1.00    73299    24366</span></span>
-<span id="cb11-44"><a href="#cb11-44" tabindex="-1"></a><span class="co">#&gt; cortime(VIS05,VIS09)     0.09      0.04     0.02     0.16 1.00    72264    22069</span></span>
-<span id="cb11-45"><a href="#cb11-45" tabindex="-1"></a><span class="co">#&gt; cortime(VIS06,VIS09)     0.17      0.04     0.10     0.24 1.00    74018    24561</span></span>
-<span id="cb11-46"><a href="#cb11-46" tabindex="-1"></a><span class="co">#&gt; cortime(VIS07,VIS09)     0.02      0.04    -0.06     0.09 1.00    70521    22326</span></span>
-<span id="cb11-47"><a href="#cb11-47" tabindex="-1"></a><span class="co">#&gt; cortime(VIS08,VIS09)     0.06      0.04    -0.02     0.14 1.00    71301    22488</span></span>
-<span id="cb11-48"><a href="#cb11-48" tabindex="-1"></a><span class="co">#&gt; cortime(VIS01,VIS10)     0.02      0.04    -0.06     0.10 1.00    62930    25421</span></span>
-<span id="cb11-49"><a href="#cb11-49" tabindex="-1"></a><span class="co">#&gt; cortime(VIS02,VIS10)     0.13      0.04     0.05     0.20 1.00    58101    25684</span></span>
-<span id="cb11-50"><a href="#cb11-50" tabindex="-1"></a><span class="co">#&gt; cortime(VIS03,VIS10)     0.02      0.04    -0.06     0.10 1.00    60757    24802</span></span>
-<span id="cb11-51"><a href="#cb11-51" tabindex="-1"></a><span class="co">#&gt; cortime(VIS04,VIS10)     0.31      0.04     0.24     0.38 1.00    62762    26583</span></span>
-<span id="cb11-52"><a href="#cb11-52" tabindex="-1"></a><span class="co">#&gt; cortime(VIS05,VIS10)     0.24      0.04     0.16     0.31 1.00    66606    25076</span></span>
-<span id="cb11-53"><a href="#cb11-53" tabindex="-1"></a><span class="co">#&gt; cortime(VIS06,VIS10)     0.30      0.04     0.22     0.37 1.00    67998    23891</span></span>
-<span id="cb11-54"><a href="#cb11-54" tabindex="-1"></a><span class="co">#&gt; cortime(VIS07,VIS10)     0.06      0.04    -0.03     0.15 1.00    68944    23170</span></span>
-<span id="cb11-55"><a href="#cb11-55" tabindex="-1"></a><span class="co">#&gt; cortime(VIS08,VIS10)     0.09      0.04     0.01     0.18 1.00    71353    23530</span></span>
-<span id="cb11-56"><a href="#cb11-56" tabindex="-1"></a><span class="co">#&gt; cortime(VIS09,VIS10)     0.08      0.05    -0.01     0.17 1.00    65710    22799</span></span>
+<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a><span class="co">#&gt;                     Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS</span></span>
+<span id="cb11-12"><a href="#cb11-12" tabindex="-1"></a><span class="co">#&gt; cortime(VIS1,VIS2)      0.05      0.03    -0.01     0.11 1.00    63561    23159</span></span>
+<span id="cb11-13"><a href="#cb11-13" tabindex="-1"></a><span class="co">#&gt; cortime(VIS1,VIS3)      0.31      0.03     0.25     0.36 1.00    70330    25831</span></span>
+<span id="cb11-14"><a href="#cb11-14" tabindex="-1"></a><span class="co">#&gt; cortime(VIS2,VIS3)      0.05      0.03    -0.02     0.11 1.00    67715    22226</span></span>
+<span id="cb11-15"><a href="#cb11-15" tabindex="-1"></a><span class="co">#&gt; cortime(VIS1,VIS4)      0.21      0.03     0.15     0.27 1.00    46375    28108</span></span>
+<span id="cb11-16"><a href="#cb11-16" tabindex="-1"></a><span class="co">#&gt; cortime(VIS2,VIS4)      0.14      0.03     0.07     0.20 1.00    50232    27277</span></span>
+<span id="cb11-17"><a href="#cb11-17" tabindex="-1"></a><span class="co">#&gt; cortime(VIS3,VIS4)     -0.01      0.03    -0.07     0.05 1.00    50449    26940</span></span>
+<span id="cb11-18"><a href="#cb11-18" tabindex="-1"></a><span class="co">#&gt; cortime(VIS1,VIS5)      0.17      0.03     0.11     0.23 1.00    49366    27023</span></span>
+<span id="cb11-19"><a href="#cb11-19" tabindex="-1"></a><span class="co">#&gt; cortime(VIS2,VIS5)      0.12      0.03     0.05     0.18 1.00    53327    28297</span></span>
+<span id="cb11-20"><a href="#cb11-20" tabindex="-1"></a><span class="co">#&gt; cortime(VIS3,VIS5)     -0.01      0.03    -0.07     0.06 1.00    52752    26884</span></span>
+<span id="cb11-21"><a href="#cb11-21" tabindex="-1"></a><span class="co">#&gt; cortime(VIS4,VIS5)      0.38      0.03     0.32     0.43 1.00    49514    26959</span></span>
+<span id="cb11-22"><a href="#cb11-22" tabindex="-1"></a><span class="co">#&gt; cortime(VIS1,VIS6)      0.26      0.03     0.20     0.32 1.00    45483    26765</span></span>
+<span id="cb11-23"><a href="#cb11-23" tabindex="-1"></a><span class="co">#&gt; cortime(VIS2,VIS6)      0.20      0.03     0.14     0.27 1.00    48236    27168</span></span>
+<span id="cb11-24"><a href="#cb11-24" tabindex="-1"></a><span class="co">#&gt; cortime(VIS3,VIS6)      0.04      0.03    -0.02     0.11 1.00    51506    27189</span></span>
+<span id="cb11-25"><a href="#cb11-25" tabindex="-1"></a><span class="co">#&gt; cortime(VIS4,VIS6)      0.40      0.03     0.35     0.46 1.00    48730    25696</span></span>
+<span id="cb11-26"><a href="#cb11-26" tabindex="-1"></a><span class="co">#&gt; cortime(VIS5,VIS6)      0.39      0.03     0.34     0.45 1.00    55438    25998</span></span>
+<span id="cb11-27"><a href="#cb11-27" tabindex="-1"></a><span class="co">#&gt; cortime(VIS1,VIS7)      0.07      0.04    -0.00     0.13 1.00    66961    24586</span></span>
+<span id="cb11-28"><a href="#cb11-28" tabindex="-1"></a><span class="co">#&gt; cortime(VIS2,VIS7)      0.09      0.03     0.02     0.15 1.00    66564    23212</span></span>
+<span id="cb11-29"><a href="#cb11-29" tabindex="-1"></a><span class="co">#&gt; cortime(VIS3,VIS7)     -0.00      0.03    -0.07     0.07 1.00    62299    24284</span></span>
+<span id="cb11-30"><a href="#cb11-30" tabindex="-1"></a><span class="co">#&gt; cortime(VIS4,VIS7)      0.15      0.03     0.08     0.22 1.00    70101    23346</span></span>
+<span id="cb11-31"><a href="#cb11-31" tabindex="-1"></a><span class="co">#&gt; cortime(VIS5,VIS7)      0.19      0.03     0.13     0.26 1.00    71412    24243</span></span>
+<span id="cb11-32"><a href="#cb11-32" tabindex="-1"></a><span class="co">#&gt; cortime(VIS6,VIS7)      0.21      0.04     0.14     0.28 1.00    69307    23697</span></span>
+<span id="cb11-33"><a href="#cb11-33" tabindex="-1"></a><span class="co">#&gt; cortime(VIS1,VIS8)      0.05      0.04    -0.02     0.12 1.00    70424    22845</span></span>
+<span id="cb11-34"><a href="#cb11-34" tabindex="-1"></a><span class="co">#&gt; cortime(VIS2,VIS8)      0.10      0.04     0.03     0.17 1.00    71230    23497</span></span>
+<span id="cb11-35"><a href="#cb11-35" tabindex="-1"></a><span class="co">#&gt; cortime(VIS3,VIS8)     -0.03      0.04    -0.10     0.04 1.00    65689    22667</span></span>
+<span id="cb11-36"><a href="#cb11-36" tabindex="-1"></a><span class="co">#&gt; cortime(VIS4,VIS8)      0.17      0.03     0.10     0.24 1.00    68079    23681</span></span>
+<span id="cb11-37"><a href="#cb11-37" tabindex="-1"></a><span class="co">#&gt; cortime(VIS5,VIS8)      0.17      0.04     0.10     0.24 1.00    73436    24011</span></span>
+<span id="cb11-38"><a href="#cb11-38" tabindex="-1"></a><span class="co">#&gt; cortime(VIS6,VIS8)      0.16      0.04     0.09     0.23 1.00    68602    23567</span></span>
+<span id="cb11-39"><a href="#cb11-39" tabindex="-1"></a><span class="co">#&gt; cortime(VIS7,VIS8)      0.05      0.04    -0.02     0.13 1.00    68688    23661</span></span>
+<span id="cb11-40"><a href="#cb11-40" tabindex="-1"></a><span class="co">#&gt; cortime(VIS1,VIS9)      0.03      0.04    -0.04     0.10 1.00    70389    23613</span></span>
+<span id="cb11-41"><a href="#cb11-41" tabindex="-1"></a><span class="co">#&gt; cortime(VIS2,VIS9)     -0.01      0.04    -0.08     0.07 1.00    72988    22674</span></span>
+<span id="cb11-42"><a href="#cb11-42" tabindex="-1"></a><span class="co">#&gt; cortime(VIS3,VIS9)     -0.04      0.04    -0.12     0.03 1.00    73818    23450</span></span>
+<span id="cb11-43"><a href="#cb11-43" tabindex="-1"></a><span class="co">#&gt; cortime(VIS4,VIS9)      0.12      0.04     0.04     0.19 1.00    73299    24366</span></span>
+<span id="cb11-44"><a href="#cb11-44" tabindex="-1"></a><span class="co">#&gt; cortime(VIS5,VIS9)      0.09      0.04     0.02     0.16 1.00    72264    22069</span></span>
+<span id="cb11-45"><a href="#cb11-45" tabindex="-1"></a><span class="co">#&gt; cortime(VIS6,VIS9)      0.17      0.04     0.10     0.24 1.00    74018    24561</span></span>
+<span id="cb11-46"><a href="#cb11-46" tabindex="-1"></a><span class="co">#&gt; cortime(VIS7,VIS9)      0.02      0.04    -0.06     0.09 1.00    70521    22326</span></span>
+<span id="cb11-47"><a href="#cb11-47" tabindex="-1"></a><span class="co">#&gt; cortime(VIS8,VIS9)      0.06      0.04    -0.02     0.14 1.00    71301    22488</span></span>
+<span id="cb11-48"><a href="#cb11-48" tabindex="-1"></a><span class="co">#&gt; cortime(VIS1,VIS10)     0.02      0.04    -0.06     0.10 1.00    62930    25421</span></span>
+<span id="cb11-49"><a href="#cb11-49" tabindex="-1"></a><span class="co">#&gt; cortime(VIS2,VIS10)     0.13      0.04     0.05     0.20 1.00    58101    25684</span></span>
+<span id="cb11-50"><a href="#cb11-50" tabindex="-1"></a><span class="co">#&gt; cortime(VIS3,VIS10)     0.02      0.04    -0.06     0.10 1.00    60757    24802</span></span>
+<span id="cb11-51"><a href="#cb11-51" tabindex="-1"></a><span class="co">#&gt; cortime(VIS4,VIS10)     0.31      0.04     0.24     0.38 1.00    62762    26583</span></span>
+<span id="cb11-52"><a href="#cb11-52" tabindex="-1"></a><span class="co">#&gt; cortime(VIS5,VIS10)     0.24      0.04     0.16     0.31 1.00    66606    25076</span></span>
+<span id="cb11-53"><a href="#cb11-53" tabindex="-1"></a><span class="co">#&gt; cortime(VIS6,VIS10)     0.30      0.04     0.22     0.37 1.00    67998    23891</span></span>
+<span id="cb11-54"><a href="#cb11-54" tabindex="-1"></a><span class="co">#&gt; cortime(VIS7,VIS10)     0.06      0.04    -0.03     0.15 1.00    68944    23170</span></span>
+<span id="cb11-55"><a href="#cb11-55" tabindex="-1"></a><span class="co">#&gt; cortime(VIS8,VIS10)     0.09      0.04     0.01     0.18 1.00    71353    23530</span></span>
+<span id="cb11-56"><a href="#cb11-56" tabindex="-1"></a><span class="co">#&gt; cortime(VIS9,VIS10)     0.08      0.05    -0.01     0.17 1.00    65710    22799</span></span>
 <span id="cb11-57"><a href="#cb11-57" tabindex="-1"></a><span class="co">#&gt; </span></span>
 <span id="cb11-58"><a href="#cb11-58" tabindex="-1"></a><span class="co">#&gt; Regression Coefficients:</span></span>
-<span id="cb11-59"><a href="#cb11-59" tabindex="-1"></a><span class="co">#&gt;                      Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS</span></span>
-<span id="cb11-60"><a href="#cb11-60" tabindex="-1"></a><span class="co">#&gt; Intercept                4.29      0.17     3.96     4.62 1.00    56813    25046</span></span>
-<span id="cb11-61"><a href="#cb11-61" tabindex="-1"></a><span class="co">#&gt; BCVA_BL                 -0.00      0.00    -0.01     0.00 1.00    59119    22844</span></span>
-<span id="cb11-62"><a href="#cb11-62" tabindex="-1"></a><span class="co">#&gt; AVISITVIS02              0.28      0.07     0.14     0.42 1.00    29890    25900</span></span>
-<span id="cb11-63"><a href="#cb11-63" tabindex="-1"></a><span class="co">#&gt; AVISITVIS03              0.46      0.07     0.33     0.59 1.00    44348    26347</span></span>
-<span id="cb11-64"><a href="#cb11-64" tabindex="-1"></a><span class="co">#&gt; AVISITVIS04              0.86      0.08     0.70     1.01 1.00    27610    26145</span></span>
-<span id="cb11-65"><a href="#cb11-65" tabindex="-1"></a><span class="co">#&gt; AVISITVIS05              0.96      0.09     0.79     1.13 1.00    29630    25959</span></span>
-<span id="cb11-66"><a href="#cb11-66" tabindex="-1"></a><span class="co">#&gt; AVISITVIS06              1.33      0.09     1.16     1.50 1.00    28672    25061</span></span>
-<span id="cb11-67"><a href="#cb11-67" tabindex="-1"></a><span class="co">#&gt; AVISITVIS07              1.42      0.11     1.21     1.63 1.00    34514    27504</span></span>
-<span id="cb11-68"><a href="#cb11-68" tabindex="-1"></a><span class="co">#&gt; AVISITVIS08              1.71      0.11     1.49     1.94 1.00    34167    26821</span></span>
-<span id="cb11-69"><a href="#cb11-69" tabindex="-1"></a><span class="co">#&gt; AVISITVIS09              2.00      0.13     1.75     2.25 1.00    35177    25947</span></span>
-<span id="cb11-70"><a href="#cb11-70" tabindex="-1"></a><span class="co">#&gt; AVISITVIS10              2.10      0.14     1.82     2.38 1.00    33084    25296</span></span>
-<span id="cb11-71"><a href="#cb11-71" tabindex="-1"></a><span class="co">#&gt; RACEBlack                1.04      0.05     0.93     1.15 1.00    53517    25805</span></span>
-<span id="cb11-72"><a href="#cb11-72" tabindex="-1"></a><span class="co">#&gt; RACEWhite                2.01      0.05     1.90     2.11 1.00    54553    27113</span></span>
-<span id="cb11-73"><a href="#cb11-73" tabindex="-1"></a><span class="co">#&gt; AVISITVIS01:ARMCDTRT     0.54      0.06     0.41     0.66 1.00    34057    27968</span></span>
-<span id="cb11-74"><a href="#cb11-74" tabindex="-1"></a><span class="co">#&gt; AVISITVIS02:ARMCDTRT     0.72      0.08     0.57     0.88 1.00    50542    25650</span></span>
-<span id="cb11-75"><a href="#cb11-75" tabindex="-1"></a><span class="co">#&gt; AVISITVIS03:ARMCDTRT     1.01      0.09     0.83     1.19 1.00    48732    27016</span></span>
-<span id="cb11-76"><a href="#cb11-76" tabindex="-1"></a><span class="co">#&gt; AVISITVIS04:ARMCDTRT     1.10      0.10     0.91     1.31 1.00    36650    26502</span></span>
-<span id="cb11-77"><a href="#cb11-77" tabindex="-1"></a><span class="co">#&gt; AVISITVIS05:ARMCDTRT     1.38      0.12     1.16     1.61 1.00    38946    25407</span></span>
-<span id="cb11-78"><a href="#cb11-78" tabindex="-1"></a><span class="co">#&gt; AVISITVIS06:ARMCDTRT     1.63      0.12     1.40     1.86 1.00    36052    26418</span></span>
-<span id="cb11-79"><a href="#cb11-79" tabindex="-1"></a><span class="co">#&gt; AVISITVIS07:ARMCDTRT     2.02      0.14     1.74     2.29 1.00    45530    26547</span></span>
-<span id="cb11-80"><a href="#cb11-80" tabindex="-1"></a><span class="co">#&gt; AVISITVIS08:ARMCDTRT     2.35      0.15     2.06     2.64 1.00    44496    26731</span></span>
-<span id="cb11-81"><a href="#cb11-81" tabindex="-1"></a><span class="co">#&gt; AVISITVIS09:ARMCDTRT     2.66      0.16     2.33     2.98 1.00    44251    26034</span></span>
-<span id="cb11-82"><a href="#cb11-82" tabindex="-1"></a><span class="co">#&gt; AVISITVIS10:ARMCDTRT     3.07      0.18     2.71     3.43 1.00    41207    25859</span></span>
-<span id="cb11-83"><a href="#cb11-83" tabindex="-1"></a><span class="co">#&gt; sigma_AVISITVIS01       -0.01      0.02    -0.05     0.03 1.00    63843    24881</span></span>
-<span id="cb11-84"><a href="#cb11-84" tabindex="-1"></a><span class="co">#&gt; sigma_AVISITVIS02        0.23      0.02     0.18     0.27 1.00    77180    24252</span></span>
-<span id="cb11-85"><a href="#cb11-85" tabindex="-1"></a><span class="co">#&gt; sigma_AVISITVIS03        0.36      0.02     0.31     0.40 1.00    68147    23768</span></span>
-<span id="cb11-86"><a href="#cb11-86" tabindex="-1"></a><span class="co">#&gt; sigma_AVISITVIS04        0.44      0.02     0.40     0.49 1.00    54719    25358</span></span>
-<span id="cb11-87"><a href="#cb11-87" tabindex="-1"></a><span class="co">#&gt; sigma_AVISITVIS05        0.57      0.02     0.52     0.61 1.00    60122    25761</span></span>
-<span id="cb11-88"><a href="#cb11-88" tabindex="-1"></a><span class="co">#&gt; sigma_AVISITVIS06        0.58      0.02     0.54     0.63 1.00    54741    27071</span></span>
-<span id="cb11-89"><a href="#cb11-89" tabindex="-1"></a><span class="co">#&gt; sigma_AVISITVIS07        0.69      0.02     0.64     0.74 1.00    67848    24330</span></span>
-<span id="cb11-90"><a href="#cb11-90" tabindex="-1"></a><span class="co">#&gt; sigma_AVISITVIS08        0.74      0.03     0.69     0.79 1.00    73959    22567</span></span>
-<span id="cb11-91"><a href="#cb11-91" tabindex="-1"></a><span class="co">#&gt; sigma_AVISITVIS09        0.80      0.03     0.75     0.85 1.00    73387    22205</span></span>
-<span id="cb11-92"><a href="#cb11-92" tabindex="-1"></a><span class="co">#&gt; sigma_AVISITVIS10        0.84      0.03     0.79     0.90 1.00    69664    25249</span></span>
-<span id="cb11-93"><a href="#cb11-93" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb11-94"><a href="#cb11-94" tabindex="-1"></a><span class="co">#&gt; Draws were sampled using sampling(NUTS). For each parameter, Bulk_ESS</span></span>
-<span id="cb11-95"><a href="#cb11-95" tabindex="-1"></a><span class="co">#&gt; and Tail_ESS are effective sample size measures, and Rhat is the potential</span></span>
-<span id="cb11-96"><a href="#cb11-96" tabindex="-1"></a><span class="co">#&gt; scale reduction factor on split chains (at convergence, Rhat = 1).</span></span></code></pre></div>
+<span id="cb11-59"><a href="#cb11-59" tabindex="-1"></a><span class="co">#&gt;                      Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS</span></span>
+<span id="cb11-60"><a href="#cb11-60" tabindex="-1"></a><span class="co">#&gt; Intercept                4.29      0.17     3.96     4.62 1.00    56813</span></span>
+<span id="cb11-61"><a href="#cb11-61" tabindex="-1"></a><span class="co">#&gt; BCVA_BL                 -0.00      0.00    -0.01     0.00 1.00    59119</span></span>
+<span id="cb11-62"><a href="#cb11-62" tabindex="-1"></a><span class="co">#&gt; AVISIT2                  0.28      0.07     0.14     0.42 1.00    29890</span></span>
+<span id="cb11-63"><a href="#cb11-63" tabindex="-1"></a><span class="co">#&gt; AVISIT3                  0.46      0.07     0.33     0.59 1.00    44348</span></span>
+<span id="cb11-64"><a href="#cb11-64" tabindex="-1"></a><span class="co">#&gt; AVISIT4                  0.86      0.08     0.70     1.01 1.00    27610</span></span>
+<span id="cb11-65"><a href="#cb11-65" tabindex="-1"></a><span class="co">#&gt; AVISIT5                  0.96      0.09     0.79     1.13 1.00    29630</span></span>
+<span id="cb11-66"><a href="#cb11-66" tabindex="-1"></a><span class="co">#&gt; AVISIT6                  1.33      0.09     1.16     1.50 1.00    28672</span></span>
+<span id="cb11-67"><a href="#cb11-67" tabindex="-1"></a><span class="co">#&gt; AVISIT7                  1.42      0.11     1.21     1.63 1.00    34514</span></span>
+<span id="cb11-68"><a href="#cb11-68" tabindex="-1"></a><span class="co">#&gt; AVISIT8                  1.71      0.11     1.49     1.94 1.00    34167</span></span>
+<span id="cb11-69"><a href="#cb11-69" tabindex="-1"></a><span class="co">#&gt; AVISIT9                  2.00      0.13     1.75     2.25 1.00    35177</span></span>
+<span id="cb11-70"><a href="#cb11-70" tabindex="-1"></a><span class="co">#&gt; AVISIT10                 2.10      0.14     1.82     2.38 1.00    33084</span></span>
+<span id="cb11-71"><a href="#cb11-71" tabindex="-1"></a><span class="co">#&gt; RACEBlack                1.04      0.05     0.93     1.15 1.00    53517</span></span>
+<span id="cb11-72"><a href="#cb11-72" tabindex="-1"></a><span class="co">#&gt; RACEWhite                2.01      0.05     1.90     2.11 1.00    54553</span></span>
+<span id="cb11-73"><a href="#cb11-73" tabindex="-1"></a><span class="co">#&gt; AVISITVIS1:ARMCDTRT      0.54      0.06     0.41     0.66 1.00    34057</span></span>
+<span id="cb11-74"><a href="#cb11-74" tabindex="-1"></a><span class="co">#&gt; AVISITVIS2:ARMCDTRT      0.72      0.08     0.57     0.88 1.00    50542</span></span>
+<span id="cb11-75"><a href="#cb11-75" tabindex="-1"></a><span class="co">#&gt; AVISITVIS3:ARMCDTRT      1.01      0.09     0.83     1.19 1.00    48732</span></span>
+<span id="cb11-76"><a href="#cb11-76" tabindex="-1"></a><span class="co">#&gt; AVISITVIS4:ARMCDTRT      1.10      0.10     0.91     1.31 1.00    36650</span></span>
+<span id="cb11-77"><a href="#cb11-77" tabindex="-1"></a><span class="co">#&gt; AVISITVIS5:ARMCDTRT      1.38      0.12     1.16     1.61 1.00    38946</span></span>
+<span id="cb11-78"><a href="#cb11-78" tabindex="-1"></a><span class="co">#&gt; AVISITVIS6:ARMCDTRT      1.63      0.12     1.40     1.86 1.00    36052</span></span>
+<span id="cb11-79"><a href="#cb11-79" tabindex="-1"></a><span class="co">#&gt; AVISITVIS7:ARMCDTRT      2.02      0.14     1.74     2.29 1.00    45530</span></span>
+<span id="cb11-80"><a href="#cb11-80" tabindex="-1"></a><span class="co">#&gt; AVISITVIS8:ARMCDTRT      2.35      0.15     2.06     2.64 1.00    44496</span></span>
+<span id="cb11-81"><a href="#cb11-81" tabindex="-1"></a><span class="co">#&gt; AVISITVIS9:ARMCDTRT      2.66      0.16     2.33     2.98 1.00    44251</span></span>
+<span id="cb11-82"><a href="#cb11-82" tabindex="-1"></a><span class="co">#&gt; AVISITVIS10:ARMCDTRT     3.07      0.18     2.71     3.43 1.00    41207</span></span>
+<span id="cb11-83"><a href="#cb11-83" tabindex="-1"></a><span class="co">#&gt; sigma_AVISITVIS1        -0.01      0.02    -0.05     0.03 1.00    63843</span></span>
+<span id="cb11-84"><a href="#cb11-84" tabindex="-1"></a><span class="co">#&gt; sigma_AVISITVIS2         0.23      0.02     0.18     0.27 1.00    77180</span></span>
+<span id="cb11-85"><a href="#cb11-85" tabindex="-1"></a><span class="co">#&gt; sigma_AVISITVIS3         0.36      0.02     0.31     0.40 1.00    68147</span></span>
+<span id="cb11-86"><a href="#cb11-86" tabindex="-1"></a><span class="co">#&gt; sigma_AVISITVIS4         0.44      0.02     0.40     0.49 1.00    54719</span></span>
+<span id="cb11-87"><a href="#cb11-87" tabindex="-1"></a><span class="co">#&gt; sigma_AVISITVIS5         0.57      0.02     0.52     0.61 1.00    60122</span></span>
+<span id="cb11-88"><a href="#cb11-88" tabindex="-1"></a><span class="co">#&gt; sigma_AVISITVIS6         0.58      0.02     0.54     0.63 1.00    54741</span></span>
+<span id="cb11-89"><a href="#cb11-89" tabindex="-1"></a><span class="co">#&gt; sigma_AVISITVIS7         0.69      0.02     0.64     0.74 1.00    67848</span></span>
+<span id="cb11-90"><a href="#cb11-90" tabindex="-1"></a><span class="co">#&gt; sigma_AVISITVIS8         0.74      0.03     0.69     0.79 1.00    73959</span></span>
+<span id="cb11-91"><a href="#cb11-91" tabindex="-1"></a><span class="co">#&gt; sigma_AVISITVIS9         0.80      0.03     0.75     0.85 1.00    73387</span></span>
+<span id="cb11-92"><a href="#cb11-92" tabindex="-1"></a><span class="co">#&gt; sigma_AVISITVIS10        0.84      0.03     0.79     0.90 1.00    69664</span></span>
+<span id="cb11-93"><a href="#cb11-93" tabindex="-1"></a><span class="co">#&gt;                      Tail_ESS</span></span>
+<span id="cb11-94"><a href="#cb11-94" tabindex="-1"></a><span class="co">#&gt; Intercept               25046</span></span>
+<span id="cb11-95"><a href="#cb11-95" tabindex="-1"></a><span class="co">#&gt; BCVA_BL                 22844</span></span>
+<span id="cb11-96"><a href="#cb11-96" tabindex="-1"></a><span class="co">#&gt; AVISIT2                 25900</span></span>
+<span id="cb11-97"><a href="#cb11-97" tabindex="-1"></a><span class="co">#&gt; AVISIT3                 26347</span></span>
+<span id="cb11-98"><a href="#cb11-98" tabindex="-1"></a><span class="co">#&gt; AVISIT4                 26145</span></span>
+<span id="cb11-99"><a href="#cb11-99" tabindex="-1"></a><span class="co">#&gt; AVISIT5                 25959</span></span>
+<span id="cb11-100"><a href="#cb11-100" tabindex="-1"></a><span class="co">#&gt; AVISIT6                 25061</span></span>
+<span id="cb11-101"><a href="#cb11-101" tabindex="-1"></a><span class="co">#&gt; AVISIT7                 27504</span></span>
+<span id="cb11-102"><a href="#cb11-102" tabindex="-1"></a><span class="co">#&gt; AVISIT8                 26821</span></span>
+<span id="cb11-103"><a href="#cb11-103" tabindex="-1"></a><span class="co">#&gt; AVISIT9                 25947</span></span>
+<span id="cb11-104"><a href="#cb11-104" tabindex="-1"></a><span class="co">#&gt; AVISIT10                25296</span></span>
+<span id="cb11-105"><a href="#cb11-105" tabindex="-1"></a><span class="co">#&gt; RACEBlack               25805</span></span>
+<span id="cb11-106"><a href="#cb11-106" tabindex="-1"></a><span class="co">#&gt; RACEWhite               27113</span></span>
+<span id="cb11-107"><a href="#cb11-107" tabindex="-1"></a><span class="co">#&gt; AVISITVIS1:ARMCDTRT     27968</span></span>
+<span id="cb11-108"><a href="#cb11-108" tabindex="-1"></a><span class="co">#&gt; AVISITVIS2:ARMCDTRT     25650</span></span>
+<span id="cb11-109"><a href="#cb11-109" tabindex="-1"></a><span class="co">#&gt; AVISITVIS3:ARMCDTRT     27016</span></span>
+<span id="cb11-110"><a href="#cb11-110" tabindex="-1"></a><span class="co">#&gt; AVISITVIS4:ARMCDTRT     26502</span></span>
+<span id="cb11-111"><a href="#cb11-111" tabindex="-1"></a><span class="co">#&gt; AVISITVIS5:ARMCDTRT     25407</span></span>
+<span id="cb11-112"><a href="#cb11-112" tabindex="-1"></a><span class="co">#&gt; AVISITVIS6:ARMCDTRT     26418</span></span>
+<span id="cb11-113"><a href="#cb11-113" tabindex="-1"></a><span class="co">#&gt; AVISITVIS7:ARMCDTRT     26547</span></span>
+<span id="cb11-114"><a href="#cb11-114" tabindex="-1"></a><span class="co">#&gt; AVISITVIS8:ARMCDTRT     26731</span></span>
+<span id="cb11-115"><a href="#cb11-115" tabindex="-1"></a><span class="co">#&gt; AVISITVIS9:ARMCDTRT     26034</span></span>
+<span id="cb11-116"><a href="#cb11-116" tabindex="-1"></a><span class="co">#&gt; AVISITVIS10:ARMCDTRT    25859</span></span>
+<span id="cb11-117"><a href="#cb11-117" tabindex="-1"></a><span class="co">#&gt; sigma_AVISITVIS1        24881</span></span>
+<span id="cb11-118"><a href="#cb11-118" tabindex="-1"></a><span class="co">#&gt; sigma_AVISITVIS2        24252</span></span>
+<span id="cb11-119"><a href="#cb11-119" tabindex="-1"></a><span class="co">#&gt; sigma_AVISITVIS3        23768</span></span>
+<span id="cb11-120"><a href="#cb11-120" tabindex="-1"></a><span class="co">#&gt; sigma_AVISITVIS4        25358</span></span>
+<span id="cb11-121"><a href="#cb11-121" tabindex="-1"></a><span class="co">#&gt; sigma_AVISITVIS5        25761</span></span>
+<span id="cb11-122"><a href="#cb11-122" tabindex="-1"></a><span class="co">#&gt; sigma_AVISITVIS6        27071</span></span>
+<span id="cb11-123"><a href="#cb11-123" tabindex="-1"></a><span class="co">#&gt; sigma_AVISITVIS7        24330</span></span>
+<span id="cb11-124"><a href="#cb11-124" tabindex="-1"></a><span class="co">#&gt; sigma_AVISITVIS8        22567</span></span>
+<span id="cb11-125"><a href="#cb11-125" tabindex="-1"></a><span class="co">#&gt; sigma_AVISITVIS9        22205</span></span>
+<span id="cb11-126"><a href="#cb11-126" tabindex="-1"></a><span class="co">#&gt; sigma_AVISITVIS10       25249</span></span>
+<span id="cb11-127"><a href="#cb11-127" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb11-128"><a href="#cb11-128" tabindex="-1"></a><span class="co">#&gt; Draws were sampled using sampling(NUTS). For each parameter, Bulk_ESS</span></span>
+<span id="cb11-129"><a href="#cb11-129" tabindex="-1"></a><span class="co">#&gt; and Tail_ESS are effective sample size measures, and Rhat is the potential</span></span>
+<span id="cb11-130"><a href="#cb11-130" tabindex="-1"></a><span class="co">#&gt; scale reduction factor on split chains (at convergence, Rhat = 1).</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="frequentist-model">Frequentist model<a class="anchor" aria-label="anchor" href="#frequentist-model"></a>
@@ -2069,65 +2121,80 @@ fit the model below.</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r fold-hide"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="sc">&gt;</span> f_mmrm_fit <span class="ot">&lt;-</span> mmrm<span class="sc">::</span><span class="fu">mmrm</span>(</span>
 <span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a><span class="sc">+</span>   <span class="at">formula =</span> BCVA_CHG <span class="sc">~</span> BCVA_BL <span class="sc">+</span> ARMCD<span class="sc">:</span>AVISIT <span class="sc">+</span> AVISIT <span class="sc">+</span> RACE <span class="sc">+</span></span>
 <span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a><span class="sc">+</span>     <span class="fu">us</span>(AVISIT <span class="sc">|</span> USUBJID),</span>
-<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a><span class="sc">+</span>   <span class="at">data =</span> bcva_data</span>
-<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a><span class="sc">+</span> )</span></code></pre></div>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a><span class="sc">+</span>   <span class="at">data =</span> <span class="fu">mutate</span>(</span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a><span class="sc">+</span>     bcva_data,</span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a><span class="sc">+</span>     <span class="at">AVISIT =</span> <span class="fu">factor</span>(<span class="fu">as.character</span>(AVISIT), <span class="at">ordered =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a><span class="sc">+</span>   )</span>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a><span class="sc">+</span> )</span></code></pre></div>
 <p>The parameter summaries of the frequentist model are below.</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r fold-hide"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">summary</span>(f_mmrm_fit)</span>
 <span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a><span class="co">#&gt; mmrm fit</span></span>
 <span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a><span class="co">#&gt; </span></span>
 <span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a><span class="co">#&gt; Formula:     BCVA_CHG ~ BCVA_BL + ARMCD:AVISIT + AVISIT + RACE + us(AVISIT |  </span></span>
 <span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a><span class="co">#&gt;     USUBJID)</span></span>
-<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a><span class="co">#&gt; Data:        bcva_data (used 8605 observations from 1000 subjects with maximum 10 </span></span>
-<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a><span class="co">#&gt; timepoints)</span></span>
-<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a><span class="co">#&gt; Covariance:  unstructured (55 variance parameters)</span></span>
-<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a><span class="co">#&gt; Method:      Satterthwaite</span></span>
-<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a><span class="co">#&gt; Vcov Method: Asymptotic</span></span>
-<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a><span class="co">#&gt; Inference:   REML</span></span>
-<span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb13-13"><a href="#cb13-13" tabindex="-1"></a><span class="co">#&gt; Model selection criteria:</span></span>
-<span id="cb13-14"><a href="#cb13-14" tabindex="-1"></a><span class="co">#&gt;      AIC      BIC   logLik deviance </span></span>
-<span id="cb13-15"><a href="#cb13-15" tabindex="-1"></a><span class="co">#&gt;  32181.0  32451.0 -16035.5  32071.0 </span></span>
-<span id="cb13-16"><a href="#cb13-16" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb13-17"><a href="#cb13-17" tabindex="-1"></a><span class="co">#&gt; Coefficients: </span></span>
-<span id="cb13-18"><a href="#cb13-18" tabindex="-1"></a><span class="co">#&gt;                        Estimate Std. Error         df t value Pr(&gt;|t|)    </span></span>
-<span id="cb13-19"><a href="#cb13-19" tabindex="-1"></a><span class="co">#&gt; (Intercept)           4.288e+00  1.709e-01  1.065e+03  25.086  &lt; 2e-16 ***</span></span>
-<span id="cb13-20"><a href="#cb13-20" tabindex="-1"></a><span class="co">#&gt; BCVA_BL              -9.933e-04  2.156e-03  9.906e+02  -0.461    0.645    </span></span>
-<span id="cb13-21"><a href="#cb13-21" tabindex="-1"></a><span class="co">#&gt; AVISITVIS02           2.810e-01  7.067e-02  9.995e+02   3.976 7.51e-05 ***</span></span>
-<span id="cb13-22"><a href="#cb13-22" tabindex="-1"></a><span class="co">#&gt; AVISITVIS03           4.573e-01  6.716e-02  9.747e+02   6.809 1.71e-11 ***</span></span>
-<span id="cb13-23"><a href="#cb13-23" tabindex="-1"></a><span class="co">#&gt; AVISITVIS04           8.570e-01  7.637e-02  9.795e+02  11.221  &lt; 2e-16 ***</span></span>
-<span id="cb13-24"><a href="#cb13-24" tabindex="-1"></a><span class="co">#&gt; AVISITVIS05           9.638e-01  8.634e-02  9.629e+02  11.163  &lt; 2e-16 ***</span></span>
-<span id="cb13-25"><a href="#cb13-25" tabindex="-1"></a><span class="co">#&gt; AVISITVIS06           1.334e+00  8.650e-02  9.450e+02  15.421  &lt; 2e-16 ***</span></span>
-<span id="cb13-26"><a href="#cb13-26" tabindex="-1"></a><span class="co">#&gt; AVISITVIS07           1.417e+00  1.071e-01  8.698e+02  13.233  &lt; 2e-16 ***</span></span>
-<span id="cb13-27"><a href="#cb13-27" tabindex="-1"></a><span class="co">#&gt; AVISITVIS08           1.711e+00  1.145e-01  8.467e+02  14.943  &lt; 2e-16 ***</span></span>
-<span id="cb13-28"><a href="#cb13-28" tabindex="-1"></a><span class="co">#&gt; AVISITVIS09           1.996e+00  1.283e-01  7.784e+02  15.550  &lt; 2e-16 ***</span></span>
-<span id="cb13-29"><a href="#cb13-29" tabindex="-1"></a><span class="co">#&gt; AVISITVIS10           2.101e+00  1.400e-01  7.025e+02  15.003  &lt; 2e-16 ***</span></span>
-<span id="cb13-30"><a href="#cb13-30" tabindex="-1"></a><span class="co">#&gt; RACEBlack             1.038e+00  5.496e-02  1.011e+03  18.892  &lt; 2e-16 ***</span></span>
-<span id="cb13-31"><a href="#cb13-31" tabindex="-1"></a><span class="co">#&gt; RACEWhite             2.005e+00  5.198e-02  9.769e+02  38.574  &lt; 2e-16 ***</span></span>
-<span id="cb13-32"><a href="#cb13-32" tabindex="-1"></a><span class="co">#&gt; AVISITVIS01:ARMCDTRT  5.391e-01  6.281e-02  9.859e+02   8.583  &lt; 2e-16 ***</span></span>
-<span id="cb13-33"><a href="#cb13-33" tabindex="-1"></a><span class="co">#&gt; AVISITVIS02:ARMCDTRT  7.248e-01  7.984e-02  9.803e+02   9.078  &lt; 2e-16 ***</span></span>
-<span id="cb13-34"><a href="#cb13-34" tabindex="-1"></a><span class="co">#&gt; AVISITVIS03:ARMCDTRT  1.012e+00  9.163e-02  9.638e+02  11.039  &lt; 2e-16 ***</span></span>
-<span id="cb13-35"><a href="#cb13-35" tabindex="-1"></a><span class="co">#&gt; AVISITVIS04:ARMCDTRT  1.104e+00  1.004e-01  9.653e+02  11.003  &lt; 2e-16 ***</span></span>
-<span id="cb13-36"><a href="#cb13-36" tabindex="-1"></a><span class="co">#&gt; AVISITVIS05:ARMCDTRT  1.383e+00  1.147e-01  9.505e+02  12.065  &lt; 2e-16 ***</span></span>
-<span id="cb13-37"><a href="#cb13-37" tabindex="-1"></a><span class="co">#&gt; AVISITVIS06:ARMCDTRT  1.630e+00  1.189e-01  9.157e+02  13.715  &lt; 2e-16 ***</span></span>
-<span id="cb13-38"><a href="#cb13-38" tabindex="-1"></a><span class="co">#&gt; AVISITVIS07:ARMCDTRT  2.016e+00  1.382e-01  8.262e+02  14.592  &lt; 2e-16 ***</span></span>
-<span id="cb13-39"><a href="#cb13-39" tabindex="-1"></a><span class="co">#&gt; AVISITVIS08:ARMCDTRT  2.347e+00  1.474e-01  8.041e+02  15.924  &lt; 2e-16 ***</span></span>
-<span id="cb13-40"><a href="#cb13-40" tabindex="-1"></a><span class="co">#&gt; AVISITVIS09:ARMCDTRT  2.658e+00  1.644e-01  7.277e+02  16.173  &lt; 2e-16 ***</span></span>
-<span id="cb13-41"><a href="#cb13-41" tabindex="-1"></a><span class="co">#&gt; AVISITVIS10:ARMCDTRT  3.072e+00  1.815e-01  6.621e+02  16.929  &lt; 2e-16 ***</span></span>
-<span id="cb13-42"><a href="#cb13-42" tabindex="-1"></a><span class="co">#&gt; ---</span></span>
-<span id="cb13-43"><a href="#cb13-43" tabindex="-1"></a><span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
-<span id="cb13-44"><a href="#cb13-44" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb13-45"><a href="#cb13-45" tabindex="-1"></a><span class="co">#&gt; Covariance estimate:</span></span>
-<span id="cb13-46"><a href="#cb13-46" tabindex="-1"></a><span class="co">#&gt;        VIS01   VIS02   VIS03   VIS04   VIS05  VIS06   VIS07   VIS08   VIS09  VIS10</span></span>
-<span id="cb13-47"><a href="#cb13-47" tabindex="-1"></a><span class="co">#&gt; VIS01 0.9712  0.0630  0.4371  0.3314  0.3055 0.4686  0.1324  0.1019  0.0610 0.0585</span></span>
-<span id="cb13-48"><a href="#cb13-48" tabindex="-1"></a><span class="co">#&gt; VIS02 0.0630  1.5618  0.0871  0.2685  0.2635 0.4636  0.2180  0.2776 -0.0153 0.3762</span></span>
-<span id="cb13-49"><a href="#cb13-49" tabindex="-1"></a><span class="co">#&gt; VIS03 0.4371  0.0871  2.0221 -0.0216 -0.0189 0.1102 -0.0048 -0.0993 -0.1322 0.0719</span></span>
-<span id="cb13-50"><a href="#cb13-50" tabindex="-1"></a><span class="co">#&gt; VIS04 0.3314  0.2685 -0.0216  2.4114  1.0476 1.1409  0.4625  0.5660  0.4086 1.1481</span></span>
-<span id="cb13-51"><a href="#cb13-51" tabindex="-1"></a><span class="co">#&gt; VIS05 0.3055  0.2635 -0.0189  1.0476  3.0915 1.2592  0.6909  0.6307  0.3593 0.9999</span></span>
-<span id="cb13-52"><a href="#cb13-52" tabindex="-1"></a><span class="co">#&gt; VIS06 0.4686  0.4636  0.1102  1.1409  1.2592 3.1852  0.7539  0.6093  0.6821 1.2559</span></span>
-<span id="cb13-53"><a href="#cb13-53" tabindex="-1"></a><span class="co">#&gt; VIS07 0.1324  0.2180 -0.0048  0.4625  0.6909 0.7539  3.9273  0.2306  0.0723 0.3017</span></span>
-<span id="cb13-54"><a href="#cb13-54" tabindex="-1"></a><span class="co">#&gt; VIS08 0.1019  0.2776 -0.0993  0.5660  0.6307 0.6093  0.2306  4.3272  0.2682 0.4658</span></span>
-<span id="cb13-55"><a href="#cb13-55" tabindex="-1"></a><span class="co">#&gt; VIS09 0.0610 -0.0153 -0.1322  0.4086  0.3593 0.6821  0.0723  0.2682  4.8635 0.4138</span></span>
-<span id="cb13-56"><a href="#cb13-56" tabindex="-1"></a><span class="co">#&gt; VIS10 0.0585  0.3762  0.0719  1.1481  0.9999 1.2559  0.3017  0.4658  0.4138 5.3520</span></span></code></pre></div>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a><span class="co">#&gt; Data:        </span></span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a><span class="co">#&gt; mutate(bcva_data, AVISIT = factor(as.character(AVISIT), ordered = FALSE)) (used </span></span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a><span class="co">#&gt; 8605 observations from 1000 subjects with maximum 10 timepoints)</span></span>
+<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a><span class="co">#&gt; Covariance:  unstructured (55 variance parameters)</span></span>
+<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a><span class="co">#&gt; Method:      Satterthwaite</span></span>
+<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a><span class="co">#&gt; Vcov Method: Asymptotic</span></span>
+<span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a><span class="co">#&gt; Inference:   REML</span></span>
+<span id="cb13-13"><a href="#cb13-13" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb13-14"><a href="#cb13-14" tabindex="-1"></a><span class="co">#&gt; Model selection criteria:</span></span>
+<span id="cb13-15"><a href="#cb13-15" tabindex="-1"></a><span class="co">#&gt;      AIC      BIC   logLik deviance </span></span>
+<span id="cb13-16"><a href="#cb13-16" tabindex="-1"></a><span class="co">#&gt;  32181.0  32451.0 -16035.5  32071.0 </span></span>
+<span id="cb13-17"><a href="#cb13-17" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb13-18"><a href="#cb13-18" tabindex="-1"></a><span class="co">#&gt; Coefficients: </span></span>
+<span id="cb13-19"><a href="#cb13-19" tabindex="-1"></a><span class="co">#&gt;                        Estimate Std. Error         df t value Pr(&gt;|t|)    </span></span>
+<span id="cb13-20"><a href="#cb13-20" tabindex="-1"></a><span class="co">#&gt; (Intercept)           4.288e+00  1.709e-01  1.065e+03  25.085  &lt; 2e-16 ***</span></span>
+<span id="cb13-21"><a href="#cb13-21" tabindex="-1"></a><span class="co">#&gt; BCVA_BL              -9.935e-04  2.156e-03  9.905e+02  -0.461    0.645    </span></span>
+<span id="cb13-22"><a href="#cb13-22" tabindex="-1"></a><span class="co">#&gt; AVISITVIS10           2.101e+00  1.400e-01  7.025e+02  15.003  &lt; 2e-16 ***</span></span>
+<span id="cb13-23"><a href="#cb13-23" tabindex="-1"></a><span class="co">#&gt; AVISITVIS2            2.810e-01  7.067e-02  9.995e+02   3.976 7.51e-05 ***</span></span>
+<span id="cb13-24"><a href="#cb13-24" tabindex="-1"></a><span class="co">#&gt; AVISITVIS3            4.573e-01  6.716e-02  9.747e+02   6.809 1.71e-11 ***</span></span>
+<span id="cb13-25"><a href="#cb13-25" tabindex="-1"></a><span class="co">#&gt; AVISITVIS4            8.570e-01  7.636e-02  9.796e+02  11.222  &lt; 2e-16 ***</span></span>
+<span id="cb13-26"><a href="#cb13-26" tabindex="-1"></a><span class="co">#&gt; AVISITVIS5            9.638e-01  8.634e-02  9.630e+02  11.163  &lt; 2e-16 ***</span></span>
+<span id="cb13-27"><a href="#cb13-27" tabindex="-1"></a><span class="co">#&gt; AVISITVIS6            1.334e+00  8.650e-02  9.451e+02  15.421  &lt; 2e-16 ***</span></span>
+<span id="cb13-28"><a href="#cb13-28" tabindex="-1"></a><span class="co">#&gt; AVISITVIS7            1.417e+00  1.071e-01  8.698e+02  13.233  &lt; 2e-16 ***</span></span>
+<span id="cb13-29"><a href="#cb13-29" tabindex="-1"></a><span class="co">#&gt; AVISITVIS8            1.711e+00  1.145e-01  8.467e+02  14.944  &lt; 2e-16 ***</span></span>
+<span id="cb13-30"><a href="#cb13-30" tabindex="-1"></a><span class="co">#&gt; AVISITVIS9            1.996e+00  1.283e-01  7.784e+02  15.549  &lt; 2e-16 ***</span></span>
+<span id="cb13-31"><a href="#cb13-31" tabindex="-1"></a><span class="co">#&gt; RACEBlack             1.038e+00  5.496e-02  1.011e+03  18.891  &lt; 2e-16 ***</span></span>
+<span id="cb13-32"><a href="#cb13-32" tabindex="-1"></a><span class="co">#&gt; RACEWhite             2.005e+00  5.198e-02  9.768e+02  38.573  &lt; 2e-16 ***</span></span>
+<span id="cb13-33"><a href="#cb13-33" tabindex="-1"></a><span class="co">#&gt; AVISITVIS1:ARMCDTRT   5.391e-01  6.282e-02  9.859e+02   8.582  &lt; 2e-16 ***</span></span>
+<span id="cb13-34"><a href="#cb13-34" tabindex="-1"></a><span class="co">#&gt; AVISITVIS10:ARMCDTRT  3.072e+00  1.815e-01  6.620e+02  16.929  &lt; 2e-16 ***</span></span>
+<span id="cb13-35"><a href="#cb13-35" tabindex="-1"></a><span class="co">#&gt; AVISITVIS2:ARMCDTRT   7.248e-01  7.984e-02  9.803e+02   9.078  &lt; 2e-16 ***</span></span>
+<span id="cb13-36"><a href="#cb13-36" tabindex="-1"></a><span class="co">#&gt; AVISITVIS3:ARMCDTRT   1.012e+00  9.163e-02  9.638e+02  11.039  &lt; 2e-16 ***</span></span>
+<span id="cb13-37"><a href="#cb13-37" tabindex="-1"></a><span class="co">#&gt; AVISITVIS4:ARMCDTRT   1.104e+00  1.004e-01  9.653e+02  11.003  &lt; 2e-16 ***</span></span>
+<span id="cb13-38"><a href="#cb13-38" tabindex="-1"></a><span class="co">#&gt; AVISITVIS5:ARMCDTRT   1.383e+00  1.147e-01  9.505e+02  12.065  &lt; 2e-16 ***</span></span>
+<span id="cb13-39"><a href="#cb13-39" tabindex="-1"></a><span class="co">#&gt; AVISITVIS6:ARMCDTRT   1.630e+00  1.189e-01  9.157e+02  13.715  &lt; 2e-16 ***</span></span>
+<span id="cb13-40"><a href="#cb13-40" tabindex="-1"></a><span class="co">#&gt; AVISITVIS7:ARMCDTRT   2.016e+00  1.382e-01  8.262e+02  14.592  &lt; 2e-16 ***</span></span>
+<span id="cb13-41"><a href="#cb13-41" tabindex="-1"></a><span class="co">#&gt; AVISITVIS8:ARMCDTRT   2.347e+00  1.474e-01  8.041e+02  15.924  &lt; 2e-16 ***</span></span>
+<span id="cb13-42"><a href="#cb13-42" tabindex="-1"></a><span class="co">#&gt; AVISITVIS9:ARMCDTRT   2.658e+00  1.644e-01  7.277e+02  16.172  &lt; 2e-16 ***</span></span>
+<span id="cb13-43"><a href="#cb13-43" tabindex="-1"></a><span class="co">#&gt; ---</span></span>
+<span id="cb13-44"><a href="#cb13-44" tabindex="-1"></a><span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
+<span id="cb13-45"><a href="#cb13-45" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb13-46"><a href="#cb13-46" tabindex="-1"></a><span class="co">#&gt; Covariance estimate:</span></span>
+<span id="cb13-47"><a href="#cb13-47" tabindex="-1"></a><span class="co">#&gt;         VIS1  VIS10    VIS2    VIS3    VIS4    VIS5   VIS6    VIS7    VIS8</span></span>
+<span id="cb13-48"><a href="#cb13-48" tabindex="-1"></a><span class="co">#&gt; VIS1  0.9713 0.0587  0.0630  0.4371  0.3315  0.3056 0.4688  0.1325  0.1020</span></span>
+<span id="cb13-49"><a href="#cb13-49" tabindex="-1"></a><span class="co">#&gt; VIS10 0.0587 5.3519  0.3761  0.0719  1.1478  0.9997 1.2558  0.3021  0.4658</span></span>
+<span id="cb13-50"><a href="#cb13-50" tabindex="-1"></a><span class="co">#&gt; VIS2  0.0630 0.3761  1.5618  0.0871  0.2684  0.2635 0.4636  0.2180  0.2776</span></span>
+<span id="cb13-51"><a href="#cb13-51" tabindex="-1"></a><span class="co">#&gt; VIS3  0.4371 0.0719  0.0871  2.0221 -0.0216 -0.0189 0.1102 -0.0048 -0.0993</span></span>
+<span id="cb13-52"><a href="#cb13-52" tabindex="-1"></a><span class="co">#&gt; VIS4  0.3315 1.1478  0.2684 -0.0216  2.4113  1.0475 1.1409  0.4625  0.5659</span></span>
+<span id="cb13-53"><a href="#cb13-53" tabindex="-1"></a><span class="co">#&gt; VIS5  0.3056 0.9997  0.2635 -0.0189  1.0475  3.0916 1.2593  0.6911  0.6308</span></span>
+<span id="cb13-54"><a href="#cb13-54" tabindex="-1"></a><span class="co">#&gt; VIS6  0.4688 1.2558  0.4636  0.1102  1.1409  1.2593 3.1853  0.7540  0.6094</span></span>
+<span id="cb13-55"><a href="#cb13-55" tabindex="-1"></a><span class="co">#&gt; VIS7  0.1325 0.3021  0.2180 -0.0048  0.4625  0.6911 0.7540  3.9272  0.2306</span></span>
+<span id="cb13-56"><a href="#cb13-56" tabindex="-1"></a><span class="co">#&gt; VIS8  0.1020 0.4658  0.2776 -0.0993  0.5659  0.6308 0.6094  0.2306  4.3272</span></span>
+<span id="cb13-57"><a href="#cb13-57" tabindex="-1"></a><span class="co">#&gt; VIS9  0.0611 0.4141 -0.0153 -0.1321  0.4085  0.3594 0.6823  0.0723  0.2683</span></span>
+<span id="cb13-58"><a href="#cb13-58" tabindex="-1"></a><span class="co">#&gt;          VIS9</span></span>
+<span id="cb13-59"><a href="#cb13-59" tabindex="-1"></a><span class="co">#&gt; VIS1   0.0611</span></span>
+<span id="cb13-60"><a href="#cb13-60" tabindex="-1"></a><span class="co">#&gt; VIS10  0.4141</span></span>
+<span id="cb13-61"><a href="#cb13-61" tabindex="-1"></a><span class="co">#&gt; VIS2  -0.0153</span></span>
+<span id="cb13-62"><a href="#cb13-62" tabindex="-1"></a><span class="co">#&gt; VIS3  -0.1321</span></span>
+<span id="cb13-63"><a href="#cb13-63" tabindex="-1"></a><span class="co">#&gt; VIS4   0.4085</span></span>
+<span id="cb13-64"><a href="#cb13-64" tabindex="-1"></a><span class="co">#&gt; VIS5   0.3594</span></span>
+<span id="cb13-65"><a href="#cb13-65" tabindex="-1"></a><span class="co">#&gt; VIS6   0.6823</span></span>
+<span id="cb13-66"><a href="#cb13-66" tabindex="-1"></a><span class="co">#&gt; VIS7   0.0723</span></span>
+<span id="cb13-67"><a href="#cb13-67" tabindex="-1"></a><span class="co">#&gt; VIS8   0.2683</span></span>
+<span id="cb13-68"><a href="#cb13-68" tabindex="-1"></a><span class="co">#&gt; VIS9   4.8635</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -2158,8 +2225,9 @@ fit the model below.</p>
 <span id="cb14-16"><a href="#cb14-16" tabindex="-1"></a><span class="sc">+</span>       <span class="fu">gsub</span>(<span class="at">pattern =</span> <span class="st">"b_"</span>, <span class="at">replacement =</span> <span class="st">""</span>) <span class="sc">|&gt;</span></span>
 <span id="cb14-17"><a href="#cb14-17" tabindex="-1"></a><span class="sc">+</span>       <span class="fu">gsub</span>(<span class="at">pattern =</span> <span class="st">"b_sigma_AVISIT"</span>, <span class="at">replacement =</span> <span class="st">"sigma_"</span>) <span class="sc">|&gt;</span></span>
 <span id="cb14-18"><a href="#cb14-18" tabindex="-1"></a><span class="sc">+</span>       <span class="fu">gsub</span>(<span class="at">pattern =</span> <span class="st">"cortime"</span>, <span class="at">replacement =</span> <span class="st">"correlation"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb14-19"><a href="#cb14-19" tabindex="-1"></a><span class="sc">+</span>       <span class="fu">gsub</span>(<span class="at">pattern =</span> <span class="st">"__"</span>, <span class="at">replacement =</span> <span class="st">"_"</span>)</span>
-<span id="cb14-20"><a href="#cb14-20" tabindex="-1"></a><span class="sc">+</span>   )</span></code></pre></div>
+<span id="cb14-19"><a href="#cb14-19" tabindex="-1"></a><span class="sc">+</span>       <span class="fu">gsub</span>(<span class="at">pattern =</span> <span class="st">"__"</span>, <span class="at">replacement =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb14-20"><a href="#cb14-20" tabindex="-1"></a><span class="sc">+</span>       <span class="fu">gsub</span>(<span class="at">pattern =</span> <span class="st">"avisitvis"</span>, <span class="at">replacement =</span> <span class="st">"avisit"</span>)</span>
+<span id="cb14-21"><a href="#cb14-21" tabindex="-1"></a><span class="sc">+</span>   )</span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="extract-estimates-from-frequentist-model">Extract estimates from frequentist model<a class="anchor" aria-label="anchor" href="#extract-estimates-from-frequentist-model"></a>
@@ -2170,12 +2238,15 @@ fit the model below.</p>
 <span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a><span class="sc">+</span>   <span class="fu">mutate</span>(<span class="at">variable =</span> <span class="fu">tolower</span>(variable)) <span class="sc">|&gt;</span></span>
 <span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a><span class="sc">+</span>   <span class="fu">mutate</span>(<span class="at">variable =</span> <span class="fu">gsub</span>(<span class="st">"("</span>, <span class="st">""</span>, variable, <span class="at">fixed =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span></span>
 <span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a><span class="sc">+</span>   <span class="fu">mutate</span>(<span class="at">variable =</span> <span class="fu">gsub</span>(<span class="st">")"</span>, <span class="st">""</span>, variable, <span class="at">fixed =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a><span class="sc">+</span>   <span class="fu">rename</span>(<span class="at">freq_estimate =</span> Estimate, <span class="at">freq_se =</span> <span class="st">`</span><span class="at">Std. Error</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
-<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a><span class="sc">+</span>   <span class="fu">select</span>(variable, freq_estimate, freq_se)</span></code></pre></div>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a><span class="sc">+</span>   <span class="fu">mutate</span>(<span class="at">variable =</span> <span class="fu">gsub</span>(<span class="st">"avisitvis"</span>, <span class="st">"avisit"</span>, variable)) <span class="sc">|&gt;</span></span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a><span class="sc">+</span>   <span class="fu">rename</span>(<span class="at">freq_estimate =</span> Estimate, <span class="at">freq_se =</span> <span class="st">`</span><span class="at">Std. Error</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a><span class="sc">+</span>   <span class="fu">select</span>(variable, freq_estimate, freq_se)</span></code></pre></div>
 <div class="sourceCode" id="cb16"><pre class="sourceCode r fold-hide"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="sc">&gt;</span> f_mmrm_variance <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
-<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a><span class="sc">+</span>   <span class="at">variable =</span> <span class="fu">paste0</span>(<span class="st">"sigma_AVISIT"</span>, visit_levels) <span class="sc">|&gt;</span> <span class="fu">tolower</span>(),</span>
-<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a><span class="sc">+</span>   <span class="at">freq_estimate =</span> <span class="fu">sqrt</span>(<span class="fu">diag</span>(f_mmrm_fit<span class="sc">$</span>cov))</span>
-<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a><span class="sc">+</span> )</span></code></pre></div>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a><span class="sc">+</span>   <span class="at">variable =</span> <span class="fu">paste0</span>(<span class="st">"sigma_AVISIT"</span>, visit_levels) <span class="sc">|&gt;</span></span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a><span class="sc">+</span>     <span class="fu">tolower</span>() <span class="sc">|&gt;</span></span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a><span class="sc">+</span>     <span class="fu">gsub</span>(<span class="at">pattern =</span> <span class="st">"avisitvis"</span>, <span class="at">replacement =</span> <span class="st">"avisit"</span>),</span>
+<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a><span class="sc">+</span>   <span class="at">freq_estimate =</span> <span class="fu">sqrt</span>(<span class="fu">diag</span>(f_mmrm_fit<span class="sc">$</span>cov))</span>
+<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a><span class="sc">+</span> )</span></code></pre></div>
 <div class="sourceCode" id="cb17"><pre class="sourceCode r fold-hide"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="sc">&gt;</span> f_diagonal_factor <span class="ot">&lt;-</span> <span class="fu">diag</span>(<span class="dv">1</span> <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">diag</span>(f_mmrm_fit<span class="sc">$</span>cov)))</span>
 <span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a><span class="sc">&gt;</span> f_corr_matrix <span class="ot">&lt;-</span> f_diagonal_factor <span class="sc">%*%</span> f_mmrm_fit<span class="sc">$</span>cov <span class="sc">%*%</span> f_diagonal_factor</span>
 <span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">colnames</span>(f_corr_matrix) <span class="ot">&lt;-</span> visit_levels</span></code></pre></div>
@@ -2712,66 +2783,66 @@ frequentist MMRMs.
 <td headers="bayes_estimate" class="gt_row gt_right">−0.0010</td>
 <td headers="freq_estimate" class="gt_row gt_right">−0.0010</td>
 <td headers="diff_estimate" class="gt_row gt_right">0.0000</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">0.0144</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">0.0143</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">avisitvis02</td>
+<td headers="variable" class="gt_row gt_left">avisit2</td>
 <td headers="bayes_estimate" class="gt_row gt_right">0.2806</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.2810</td>
 <td headers="diff_estimate" class="gt_row gt_right">−0.0004</td>
 <td headers="diff_relative_estimate" class="gt_row gt_right">−0.0014</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">avisitvis03</td>
+<td headers="variable" class="gt_row gt_left">avisit3</td>
 <td headers="bayes_estimate" class="gt_row gt_right">0.4577</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.4573</td>
 <td headers="diff_estimate" class="gt_row gt_right">0.0005</td>
 <td headers="diff_relative_estimate" class="gt_row gt_right">0.0010</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">avisitvis04</td>
+<td headers="variable" class="gt_row gt_left">avisit4</td>
 <td headers="bayes_estimate" class="gt_row gt_right">0.8564</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.8570</td>
 <td headers="diff_estimate" class="gt_row gt_right">−0.0005</td>
 <td headers="diff_relative_estimate" class="gt_row gt_right">−0.0006</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">avisitvis05</td>
+<td headers="variable" class="gt_row gt_left">avisit5</td>
 <td headers="bayes_estimate" class="gt_row gt_right">0.9631</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.9638</td>
 <td headers="diff_estimate" class="gt_row gt_right">−0.0007</td>
 <td headers="diff_relative_estimate" class="gt_row gt_right">−0.0007</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">avisitvis06</td>
+<td headers="variable" class="gt_row gt_left">avisit6</td>
 <td headers="bayes_estimate" class="gt_row gt_right">1.3333</td>
 <td headers="freq_estimate" class="gt_row gt_right">1.3339</td>
 <td headers="diff_estimate" class="gt_row gt_right">−0.0006</td>
 <td headers="diff_relative_estimate" class="gt_row gt_right">−0.0005</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">avisitvis07</td>
+<td headers="variable" class="gt_row gt_left">avisit7</td>
 <td headers="bayes_estimate" class="gt_row gt_right">1.4161</td>
 <td headers="freq_estimate" class="gt_row gt_right">1.4167</td>
 <td headers="diff_estimate" class="gt_row gt_right">−0.0006</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0004</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0005</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">avisitvis08</td>
+<td headers="variable" class="gt_row gt_left">avisit8</td>
 <td headers="bayes_estimate" class="gt_row gt_right">1.7106</td>
 <td headers="freq_estimate" class="gt_row gt_right">1.7107</td>
 <td headers="diff_estimate" class="gt_row gt_right">−0.0001</td>
 <td headers="diff_relative_estimate" class="gt_row gt_right">−0.0001</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">avisitvis09</td>
+<td headers="variable" class="gt_row gt_left">avisit9</td>
 <td headers="bayes_estimate" class="gt_row gt_right">1.9955</td>
 <td headers="freq_estimate" class="gt_row gt_right">1.9956</td>
 <td headers="diff_estimate" class="gt_row gt_right">−0.0001</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0001</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">0.0000</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">avisitvis10</td>
+<td headers="variable" class="gt_row gt_left">avisit10</td>
 <td headers="bayes_estimate" class="gt_row gt_right">2.0997</td>
 <td headers="freq_estimate" class="gt_row gt_right">2.1005</td>
 <td headers="diff_estimate" class="gt_row gt_right">−0.0008</td>
@@ -2792,459 +2863,459 @@ frequentist MMRMs.
 <td headers="diff_relative_estimate" class="gt_row gt_right">0.0002</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">avisitvis01:armcdtrt</td>
+<td headers="variable" class="gt_row gt_left">avisit1:armcdtrt</td>
 <td headers="bayes_estimate" class="gt_row gt_right">0.5391</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.5391</td>
 <td headers="diff_estimate" class="gt_row gt_right">0.0000</td>
 <td headers="diff_relative_estimate" class="gt_row gt_right">−0.0001</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">avisitvis02:armcdtrt</td>
+<td headers="variable" class="gt_row gt_left">avisit2:armcdtrt</td>
 <td headers="bayes_estimate" class="gt_row gt_right">0.7249</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.7248</td>
 <td headers="diff_estimate" class="gt_row gt_right">0.0001</td>
 <td headers="diff_relative_estimate" class="gt_row gt_right">0.0001</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">avisitvis03:armcdtrt</td>
+<td headers="variable" class="gt_row gt_left">avisit3:armcdtrt</td>
 <td headers="bayes_estimate" class="gt_row gt_right">1.0110</td>
 <td headers="freq_estimate" class="gt_row gt_right">1.0115</td>
 <td headers="diff_estimate" class="gt_row gt_right">−0.0005</td>
 <td headers="diff_relative_estimate" class="gt_row gt_right">−0.0005</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">avisitvis04:armcdtrt</td>
+<td headers="variable" class="gt_row gt_left">avisit4:armcdtrt</td>
 <td headers="bayes_estimate" class="gt_row gt_right">1.1049</td>
 <td headers="freq_estimate" class="gt_row gt_right">1.1042</td>
 <td headers="diff_estimate" class="gt_row gt_right">0.0007</td>
 <td headers="diff_relative_estimate" class="gt_row gt_right">0.0007</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">avisitvis05:armcdtrt</td>
+<td headers="variable" class="gt_row gt_left">avisit5:armcdtrt</td>
 <td headers="bayes_estimate" class="gt_row gt_right">1.3843</td>
 <td headers="freq_estimate" class="gt_row gt_right">1.3834</td>
 <td headers="diff_estimate" class="gt_row gt_right">0.0009</td>
 <td headers="diff_relative_estimate" class="gt_row gt_right">0.0007</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">avisitvis06:armcdtrt</td>
+<td headers="variable" class="gt_row gt_left">avisit6:armcdtrt</td>
 <td headers="bayes_estimate" class="gt_row gt_right">1.6304</td>
 <td headers="freq_estimate" class="gt_row gt_right">1.6301</td>
 <td headers="diff_estimate" class="gt_row gt_right">0.0003</td>
 <td headers="diff_relative_estimate" class="gt_row gt_right">0.0002</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">avisitvis07:armcdtrt</td>
+<td headers="variable" class="gt_row gt_left">avisit7:armcdtrt</td>
 <td headers="bayes_estimate" class="gt_row gt_right">2.0168</td>
 <td headers="freq_estimate" class="gt_row gt_right">2.0160</td>
 <td headers="diff_estimate" class="gt_row gt_right">0.0009</td>
 <td headers="diff_relative_estimate" class="gt_row gt_right">0.0004</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">avisitvis08:armcdtrt</td>
+<td headers="variable" class="gt_row gt_left">avisit8:armcdtrt</td>
 <td headers="bayes_estimate" class="gt_row gt_right">2.3471</td>
 <td headers="freq_estimate" class="gt_row gt_right">2.3469</td>
 <td headers="diff_estimate" class="gt_row gt_right">0.0002</td>
 <td headers="diff_relative_estimate" class="gt_row gt_right">0.0001</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">avisitvis09:armcdtrt</td>
+<td headers="variable" class="gt_row gt_left">avisit9:armcdtrt</td>
 <td headers="bayes_estimate" class="gt_row gt_right">2.6592</td>
 <td headers="freq_estimate" class="gt_row gt_right">2.6585</td>
 <td headers="diff_estimate" class="gt_row gt_right">0.0007</td>
 <td headers="diff_relative_estimate" class="gt_row gt_right">0.0003</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">avisitvis10:armcdtrt</td>
+<td headers="variable" class="gt_row gt_left">avisit10:armcdtrt</td>
 <td headers="bayes_estimate" class="gt_row gt_right">3.0742</td>
-<td headers="freq_estimate" class="gt_row gt_right">3.0722</td>
+<td headers="freq_estimate" class="gt_row gt_right">3.0723</td>
 <td headers="diff_estimate" class="gt_row gt_right">0.0019</td>
 <td headers="diff_relative_estimate" class="gt_row gt_right">0.0006</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">sigma_avisitvis01</td>
+<td headers="variable" class="gt_row gt_left">sigma_avisit1</td>
 <td headers="bayes_estimate" class="gt_row gt_right">0.9893</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.9855</td>
-<td headers="diff_estimate" class="gt_row gt_right">0.0038</td>
+<td headers="diff_estimate" class="gt_row gt_right">0.0037</td>
 <td headers="diff_relative_estimate" class="gt_row gt_right">0.0038</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">sigma_avisitvis02</td>
+<td headers="variable" class="gt_row gt_left">sigma_avisit2</td>
 <td headers="bayes_estimate" class="gt_row gt_right">1.2557</td>
 <td headers="freq_estimate" class="gt_row gt_right">1.2497</td>
 <td headers="diff_estimate" class="gt_row gt_right">0.0060</td>
 <td headers="diff_relative_estimate" class="gt_row gt_right">0.0048</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">sigma_avisitvis03</td>
+<td headers="variable" class="gt_row gt_left">sigma_avisit3</td>
 <td headers="bayes_estimate" class="gt_row gt_right">1.4289</td>
 <td headers="freq_estimate" class="gt_row gt_right">1.4220</td>
 <td headers="diff_estimate" class="gt_row gt_right">0.0069</td>
 <td headers="diff_relative_estimate" class="gt_row gt_right">0.0048</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">sigma_avisitvis04</td>
+<td headers="variable" class="gt_row gt_left">sigma_avisit4</td>
 <td headers="bayes_estimate" class="gt_row gt_right">1.5568</td>
-<td headers="freq_estimate" class="gt_row gt_right">1.5529</td>
+<td headers="freq_estimate" class="gt_row gt_right">1.5528</td>
 <td headers="diff_estimate" class="gt_row gt_right">0.0040</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">0.0025</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">0.0026</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">sigma_avisitvis05</td>
+<td headers="variable" class="gt_row gt_left">sigma_avisit5</td>
 <td headers="bayes_estimate" class="gt_row gt_right">1.7633</td>
 <td headers="freq_estimate" class="gt_row gt_right">1.7583</td>
 <td headers="diff_estimate" class="gt_row gt_right">0.0050</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">0.0029</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">0.0028</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">sigma_avisitvis06</td>
+<td headers="variable" class="gt_row gt_left">sigma_avisit6</td>
 <td headers="bayes_estimate" class="gt_row gt_right">1.7888</td>
 <td headers="freq_estimate" class="gt_row gt_right">1.7847</td>
 <td headers="diff_estimate" class="gt_row gt_right">0.0041</td>
 <td headers="diff_relative_estimate" class="gt_row gt_right">0.0023</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">sigma_avisitvis07</td>
+<td headers="variable" class="gt_row gt_left">sigma_avisit7</td>
 <td headers="bayes_estimate" class="gt_row gt_right">1.9931</td>
 <td headers="freq_estimate" class="gt_row gt_right">1.9817</td>
 <td headers="diff_estimate" class="gt_row gt_right">0.0113</td>
 <td headers="diff_relative_estimate" class="gt_row gt_right">0.0057</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">sigma_avisitvis08</td>
+<td headers="variable" class="gt_row gt_left">sigma_avisit8</td>
 <td headers="bayes_estimate" class="gt_row gt_right">2.0922</td>
 <td headers="freq_estimate" class="gt_row gt_right">2.0802</td>
 <td headers="diff_estimate" class="gt_row gt_right">0.0120</td>
 <td headers="diff_relative_estimate" class="gt_row gt_right">0.0058</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">sigma_avisitvis09</td>
+<td headers="variable" class="gt_row gt_left">sigma_avisit9</td>
 <td headers="bayes_estimate" class="gt_row gt_right">2.2208</td>
 <td headers="freq_estimate" class="gt_row gt_right">2.2053</td>
 <td headers="diff_estimate" class="gt_row gt_right">0.0155</td>
 <td headers="diff_relative_estimate" class="gt_row gt_right">0.0070</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">sigma_avisitvis10</td>
+<td headers="variable" class="gt_row gt_left">sigma_avisit10</td>
 <td headers="bayes_estimate" class="gt_row gt_right">2.3279</td>
 <td headers="freq_estimate" class="gt_row gt_right">2.3134</td>
 <td headers="diff_estimate" class="gt_row gt_right">0.0145</td>
 <td headers="diff_relative_estimate" class="gt_row gt_right">0.0063</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">correlation_vis01_vis02</td>
+<td headers="variable" class="gt_row gt_left">correlation_vis1_vis2</td>
 <td headers="bayes_estimate" class="gt_row gt_right">0.0489</td>
-<td headers="freq_estimate" class="gt_row gt_right">0.0511</td>
-<td headers="diff_estimate" class="gt_row gt_right">−0.0022</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0435</td>
+<td headers="freq_estimate" class="gt_row gt_right">0.0512</td>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0023</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0441</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">correlation_vis01_vis03</td>
+<td headers="variable" class="gt_row gt_left">correlation_vis1_vis3</td>
 <td headers="bayes_estimate" class="gt_row gt_right">0.3084</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.3119</td>
 <td headers="diff_estimate" class="gt_row gt_right">−0.0036</td>
 <td headers="diff_relative_estimate" class="gt_row gt_right">−0.0114</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">correlation_vis02_vis03</td>
+<td headers="variable" class="gt_row gt_left">correlation_vis2_vis3</td>
 <td headers="bayes_estimate" class="gt_row gt_right">0.0482</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.0490</td>
 <td headers="diff_estimate" class="gt_row gt_right">−0.0008</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0161</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0164</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">correlation_vis01_vis04</td>
+<td headers="variable" class="gt_row gt_left">correlation_vis1_vis4</td>
 <td headers="bayes_estimate" class="gt_row gt_right">0.2126</td>
-<td headers="freq_estimate" class="gt_row gt_right">0.2165</td>
-<td headers="diff_estimate" class="gt_row gt_right">−0.0039</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0181</td>
+<td headers="freq_estimate" class="gt_row gt_right">0.2166</td>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0040</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0184</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">correlation_vis02_vis04</td>
+<td headers="variable" class="gt_row gt_left">correlation_vis2_vis4</td>
 <td headers="bayes_estimate" class="gt_row gt_right">0.1351</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.1383</td>
 <td headers="diff_estimate" class="gt_row gt_right">−0.0033</td>
 <td headers="diff_relative_estimate" class="gt_row gt_right">−0.0237</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">correlation_vis03_vis04</td>
+<td headers="variable" class="gt_row gt_left">correlation_vis3_vis4</td>
 <td headers="bayes_estimate" class="gt_row gt_right">−0.0106</td>
 <td headers="freq_estimate" class="gt_row gt_right">−0.0098</td>
 <td headers="diff_estimate" class="gt_row gt_right">−0.0008</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">0.0858</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">0.0869</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">correlation_vis01_vis05</td>
+<td headers="variable" class="gt_row gt_left">correlation_vis1_vis5</td>
 <td headers="bayes_estimate" class="gt_row gt_right">0.1722</td>
-<td headers="freq_estimate" class="gt_row gt_right">0.1763</td>
+<td headers="freq_estimate" class="gt_row gt_right">0.1764</td>
 <td headers="diff_estimate" class="gt_row gt_right">−0.0041</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0231</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0234</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">correlation_vis02_vis05</td>
+<td headers="variable" class="gt_row gt_left">correlation_vis2_vis5</td>
 <td headers="bayes_estimate" class="gt_row gt_right">0.1167</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.1199</td>
 <td headers="diff_estimate" class="gt_row gt_right">−0.0032</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0267</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0265</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">correlation_vis03_vis05</td>
+<td headers="variable" class="gt_row gt_left">correlation_vis3_vis5</td>
 <td headers="bayes_estimate" class="gt_row gt_right">−0.0082</td>
 <td headers="freq_estimate" class="gt_row gt_right">−0.0076</td>
 <td headers="diff_estimate" class="gt_row gt_right">−0.0006</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">0.0833</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">0.0849</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">correlation_vis04_vis05</td>
+<td headers="variable" class="gt_row gt_left">correlation_vis4_vis5</td>
 <td headers="bayes_estimate" class="gt_row gt_right">0.3770</td>
-<td headers="freq_estimate" class="gt_row gt_right">0.3837</td>
-<td headers="diff_estimate" class="gt_row gt_right">−0.0067</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0174</td>
+<td headers="freq_estimate" class="gt_row gt_right">0.3836</td>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0066</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0173</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">correlation_vis01_vis06</td>
+<td headers="variable" class="gt_row gt_left">correlation_vis1_vis6</td>
 <td headers="bayes_estimate" class="gt_row gt_right">0.2617</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.2665</td>
-<td headers="diff_estimate" class="gt_row gt_right">−0.0047</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0178</td>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0048</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0181</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">correlation_vis02_vis06</td>
+<td headers="variable" class="gt_row gt_left">correlation_vis2_vis6</td>
 <td headers="bayes_estimate" class="gt_row gt_right">0.2038</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.2079</td>
 <td headers="diff_estimate" class="gt_row gt_right">−0.0040</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0195</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0194</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">correlation_vis03_vis06</td>
+<td headers="variable" class="gt_row gt_left">correlation_vis3_vis6</td>
 <td headers="bayes_estimate" class="gt_row gt_right">0.0422</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.0434</td>
 <td headers="diff_estimate" class="gt_row gt_right">−0.0012</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0278</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0279</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">correlation_vis04_vis06</td>
+<td headers="variable" class="gt_row gt_left">correlation_vis4_vis6</td>
 <td headers="bayes_estimate" class="gt_row gt_right">0.4044</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.4117</td>
 <td headers="diff_estimate" class="gt_row gt_right">−0.0073</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0178</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0177</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">correlation_vis05_vis06</td>
+<td headers="variable" class="gt_row gt_left">correlation_vis5_vis6</td>
 <td headers="bayes_estimate" class="gt_row gt_right">0.3941</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.4013</td>
-<td headers="diff_estimate" class="gt_row gt_right">−0.0071</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0178</td>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0072</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0179</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">correlation_vis01_vis07</td>
+<td headers="variable" class="gt_row gt_left">correlation_vis1_vis7</td>
 <td headers="bayes_estimate" class="gt_row gt_right">0.0654</td>
-<td headers="freq_estimate" class="gt_row gt_right">0.0678</td>
+<td headers="freq_estimate" class="gt_row gt_right">0.0679</td>
 <td headers="diff_estimate" class="gt_row gt_right">−0.0024</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0353</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0360</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">correlation_vis02_vis07</td>
+<td headers="variable" class="gt_row gt_left">correlation_vis2_vis7</td>
 <td headers="bayes_estimate" class="gt_row gt_right">0.0857</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.0880</td>
 <td headers="diff_estimate" class="gt_row gt_right">−0.0023</td>
 <td headers="diff_relative_estimate" class="gt_row gt_right">−0.0266</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">correlation_vis03_vis07</td>
+<td headers="variable" class="gt_row gt_left">correlation_vis3_vis7</td>
 <td headers="bayes_estimate" class="gt_row gt_right">−0.0019</td>
 <td headers="freq_estimate" class="gt_row gt_right">−0.0017</td>
 <td headers="diff_estimate" class="gt_row gt_right">−0.0002</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">0.0967</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">0.1039</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">correlation_vis04_vis07</td>
+<td headers="variable" class="gt_row gt_left">correlation_vis4_vis7</td>
 <td headers="bayes_estimate" class="gt_row gt_right">0.1464</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.1503</td>
-<td headers="diff_estimate" class="gt_row gt_right">−0.0039</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0262</td>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0040</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0263</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">correlation_vis05_vis07</td>
+<td headers="variable" class="gt_row gt_left">correlation_vis5_vis7</td>
 <td headers="bayes_estimate" class="gt_row gt_right">0.1941</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.1983</td>
 <td headers="diff_estimate" class="gt_row gt_right">−0.0042</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0211</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0214</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">correlation_vis06_vis07</td>
+<td headers="variable" class="gt_row gt_left">correlation_vis6_vis7</td>
 <td headers="bayes_estimate" class="gt_row gt_right">0.2083</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.2132</td>
 <td headers="diff_estimate" class="gt_row gt_right">−0.0048</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0226</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0227</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">correlation_vis01_vis08</td>
+<td headers="variable" class="gt_row gt_left">correlation_vis1_vis8</td>
 <td headers="bayes_estimate" class="gt_row gt_right">0.0478</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.0497</td>
 <td headers="diff_estimate" class="gt_row gt_right">−0.0019</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0375</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0382</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">correlation_vis02_vis08</td>
+<td headers="variable" class="gt_row gt_left">correlation_vis2_vis8</td>
 <td headers="bayes_estimate" class="gt_row gt_right">0.1044</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.1068</td>
 <td headers="diff_estimate" class="gt_row gt_right">−0.0024</td>
 <td headers="diff_relative_estimate" class="gt_row gt_right">−0.0225</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">correlation_vis03_vis08</td>
+<td headers="variable" class="gt_row gt_left">correlation_vis3_vis8</td>
 <td headers="bayes_estimate" class="gt_row gt_right">−0.0332</td>
 <td headers="freq_estimate" class="gt_row gt_right">−0.0336</td>
 <td headers="diff_estimate" class="gt_row gt_right">0.0004</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0113</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0112</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">correlation_vis04_vis08</td>
+<td headers="variable" class="gt_row gt_left">correlation_vis4_vis8</td>
 <td headers="bayes_estimate" class="gt_row gt_right">0.1712</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.1752</td>
 <td headers="diff_estimate" class="gt_row gt_right">−0.0040</td>
 <td headers="diff_relative_estimate" class="gt_row gt_right">−0.0229</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">correlation_vis05_vis08</td>
+<td headers="variable" class="gt_row gt_left">correlation_vis5_vis8</td>
 <td headers="bayes_estimate" class="gt_row gt_right">0.1683</td>
-<td headers="freq_estimate" class="gt_row gt_right">0.1724</td>
+<td headers="freq_estimate" class="gt_row gt_right">0.1725</td>
 <td headers="diff_estimate" class="gt_row gt_right">−0.0041</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0239</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0240</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">correlation_vis06_vis08</td>
+<td headers="variable" class="gt_row gt_left">correlation_vis6_vis8</td>
 <td headers="bayes_estimate" class="gt_row gt_right">0.1597</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.1641</td>
 <td headers="diff_estimate" class="gt_row gt_right">−0.0045</td>
 <td headers="diff_relative_estimate" class="gt_row gt_right">−0.0273</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">correlation_vis07_vis08</td>
+<td headers="variable" class="gt_row gt_left">correlation_vis7_vis8</td>
 <td headers="bayes_estimate" class="gt_row gt_right">0.0538</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.0559</td>
 <td headers="diff_estimate" class="gt_row gt_right">−0.0022</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0390</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0392</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">correlation_vis01_vis09</td>
+<td headers="variable" class="gt_row gt_left">correlation_vis1_vis9</td>
 <td headers="bayes_estimate" class="gt_row gt_right">0.0269</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.0281</td>
 <td headers="diff_estimate" class="gt_row gt_right">−0.0012</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0431</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0432</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">correlation_vis02_vis09</td>
+<td headers="variable" class="gt_row gt_left">correlation_vis2_vis9</td>
 <td headers="bayes_estimate" class="gt_row gt_right">−0.0065</td>
 <td headers="freq_estimate" class="gt_row gt_right">−0.0056</td>
 <td headers="diff_estimate" class="gt_row gt_right">−0.0010</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">0.1731</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">0.1708</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">correlation_vis03_vis09</td>
+<td headers="variable" class="gt_row gt_left">correlation_vis3_vis9</td>
 <td headers="bayes_estimate" class="gt_row gt_right">−0.0416</td>
 <td headers="freq_estimate" class="gt_row gt_right">−0.0421</td>
 <td headers="diff_estimate" class="gt_row gt_right">0.0005</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0126</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0124</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">correlation_vis04_vis09</td>
+<td headers="variable" class="gt_row gt_left">correlation_vis4_vis9</td>
 <td headers="bayes_estimate" class="gt_row gt_right">0.1160</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.1193</td>
 <td headers="diff_estimate" class="gt_row gt_right">−0.0033</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0276</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0273</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">correlation_vis05_vis09</td>
+<td headers="variable" class="gt_row gt_left">correlation_vis5_vis9</td>
 <td headers="bayes_estimate" class="gt_row gt_right">0.0898</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.0927</td>
 <td headers="diff_estimate" class="gt_row gt_right">−0.0029</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0311</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0313</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">correlation_vis06_vis09</td>
+<td headers="variable" class="gt_row gt_left">correlation_vis6_vis9</td>
 <td headers="bayes_estimate" class="gt_row gt_right">0.1692</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.1733</td>
 <td headers="diff_estimate" class="gt_row gt_right">−0.0041</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0236</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0238</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">correlation_vis07_vis09</td>
+<td headers="variable" class="gt_row gt_left">correlation_vis7_vis9</td>
 <td headers="bayes_estimate" class="gt_row gt_right">0.0153</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.0165</td>
 <td headers="diff_estimate" class="gt_row gt_right">−0.0013</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0762</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0761</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">correlation_vis08_vis09</td>
+<td headers="variable" class="gt_row gt_left">correlation_vis8_vis9</td>
 <td headers="bayes_estimate" class="gt_row gt_right">0.0569</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.0585</td>
-<td headers="diff_estimate" class="gt_row gt_right">−0.0015</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0263</td>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0016</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0267</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">correlation_vis01_vis10</td>
+<td headers="variable" class="gt_row gt_left">correlation_vis1_vis10</td>
 <td headers="bayes_estimate" class="gt_row gt_right">0.0229</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.0257</td>
-<td headers="diff_estimate" class="gt_row gt_right">−0.0028</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−0.1083</td>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0029</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.1112</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">correlation_vis02_vis10</td>
+<td headers="variable" class="gt_row gt_left">correlation_vis2_vis10</td>
 <td headers="bayes_estimate" class="gt_row gt_right">0.1266</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.1301</td>
 <td headers="diff_estimate" class="gt_row gt_right">−0.0035</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0269</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0267</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">correlation_vis03_vis10</td>
+<td headers="variable" class="gt_row gt_left">correlation_vis3_vis10</td>
 <td headers="bayes_estimate" class="gt_row gt_right">0.0217</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.0219</td>
 <td headers="diff_estimate" class="gt_row gt_right">−0.0002</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0069</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0070</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">correlation_vis04_vis10</td>
+<td headers="variable" class="gt_row gt_left">correlation_vis4_vis10</td>
 <td headers="bayes_estimate" class="gt_row gt_right">0.3115</td>
-<td headers="freq_estimate" class="gt_row gt_right">0.3196</td>
-<td headers="diff_estimate" class="gt_row gt_right">−0.0081</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0254</td>
+<td headers="freq_estimate" class="gt_row gt_right">0.3195</td>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0080</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0251</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">correlation_vis05_vis10</td>
+<td headers="variable" class="gt_row gt_left">correlation_vis5_vis10</td>
 <td headers="bayes_estimate" class="gt_row gt_right">0.2385</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.2458</td>
-<td headers="diff_estimate" class="gt_row gt_right">−0.0074</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0300</td>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0073</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0298</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">correlation_vis06_vis10</td>
+<td headers="variable" class="gt_row gt_left">correlation_vis6_vis10</td>
 <td headers="bayes_estimate" class="gt_row gt_right">0.2959</td>
-<td headers="freq_estimate" class="gt_row gt_right">0.3042</td>
-<td headers="diff_estimate" class="gt_row gt_right">−0.0083</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0272</td>
+<td headers="freq_estimate" class="gt_row gt_right">0.3041</td>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0082</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0271</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">correlation_vis07_vis10</td>
+<td headers="variable" class="gt_row gt_left">correlation_vis7_vis10</td>
 <td headers="bayes_estimate" class="gt_row gt_right">0.0631</td>
-<td headers="freq_estimate" class="gt_row gt_right">0.0658</td>
-<td headers="diff_estimate" class="gt_row gt_right">−0.0027</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0410</td>
+<td headers="freq_estimate" class="gt_row gt_right">0.0659</td>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0028</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0422</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">correlation_vis08_vis10</td>
+<td headers="variable" class="gt_row gt_left">correlation_vis8_vis10</td>
 <td headers="bayes_estimate" class="gt_row gt_right">0.0932</td>
 <td headers="freq_estimate" class="gt_row gt_right">0.0968</td>
-<td headers="diff_estimate" class="gt_row gt_right">−0.0036</td>
+<td headers="diff_estimate" class="gt_row gt_right">−0.0037</td>
 <td headers="diff_relative_estimate" class="gt_row gt_right">−0.0377</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">correlation_vis09_vis10</td>
+<td headers="variable" class="gt_row gt_left">correlation_vis9_vis10</td>
 <td headers="bayes_estimate" class="gt_row gt_right">0.0781</td>
-<td headers="freq_estimate" class="gt_row gt_right">0.0811</td>
+<td headers="freq_estimate" class="gt_row gt_right">0.0812</td>
 <td headers="diff_estimate" class="gt_row gt_right">−0.0031</td>
-<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0377</td>
+<td headers="diff_relative_estimate" class="gt_row gt_right">−0.0383</td>
 </tr>
 </tbody>
 </table>
@@ -3738,67 +3809,67 @@ frequentist MMRMs.
 <td headers="diff_relative_se" class="gt_row gt_right">−0.0100</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">avisitvis02</td>
+<td headers="variable" class="gt_row gt_left">avisit2</td>
 <td headers="bayes_se" class="gt_row gt_right">0.0709</td>
 <td headers="freq_se" class="gt_row gt_right">0.0707</td>
 <td headers="diff_se" class="gt_row gt_right">0.0003</td>
 <td headers="diff_relative_se" class="gt_row gt_right">0.0038</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">avisitvis03</td>
+<td headers="variable" class="gt_row gt_left">avisit3</td>
 <td headers="bayes_se" class="gt_row gt_right">0.0675</td>
 <td headers="freq_se" class="gt_row gt_right">0.0672</td>
 <td headers="diff_se" class="gt_row gt_right">0.0003</td>
 <td headers="diff_relative_se" class="gt_row gt_right">0.0052</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">avisitvis04</td>
+<td headers="variable" class="gt_row gt_left">avisit4</td>
 <td headers="bayes_se" class="gt_row gt_right">0.0771</td>
 <td headers="freq_se" class="gt_row gt_right">0.0764</td>
 <td headers="diff_se" class="gt_row gt_right">0.0007</td>
 <td headers="diff_relative_se" class="gt_row gt_right">0.0094</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">avisitvis05</td>
+<td headers="variable" class="gt_row gt_left">avisit5</td>
 <td headers="bayes_se" class="gt_row gt_right">0.0868</td>
 <td headers="freq_se" class="gt_row gt_right">0.0863</td>
 <td headers="diff_se" class="gt_row gt_right">0.0005</td>
 <td headers="diff_relative_se" class="gt_row gt_right">0.0055</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">avisitvis06</td>
+<td headers="variable" class="gt_row gt_left">avisit6</td>
 <td headers="bayes_se" class="gt_row gt_right">0.0869</td>
 <td headers="freq_se" class="gt_row gt_right">0.0865</td>
 <td headers="diff_se" class="gt_row gt_right">0.0004</td>
 <td headers="diff_relative_se" class="gt_row gt_right">0.0042</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">avisitvis07</td>
+<td headers="variable" class="gt_row gt_left">avisit7</td>
 <td headers="bayes_se" class="gt_row gt_right">0.1081</td>
 <td headers="freq_se" class="gt_row gt_right">0.1071</td>
 <td headers="diff_se" class="gt_row gt_right">0.0011</td>
-<td headers="diff_relative_se" class="gt_row gt_right">0.0101</td>
+<td headers="diff_relative_se" class="gt_row gt_right">0.0102</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">avisitvis08</td>
+<td headers="variable" class="gt_row gt_left">avisit8</td>
 <td headers="bayes_se" class="gt_row gt_right">0.1147</td>
 <td headers="freq_se" class="gt_row gt_right">0.1145</td>
 <td headers="diff_se" class="gt_row gt_right">0.0002</td>
 <td headers="diff_relative_se" class="gt_row gt_right">0.0017</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">avisitvis09</td>
+<td headers="variable" class="gt_row gt_left">avisit9</td>
 <td headers="bayes_se" class="gt_row gt_right">0.1276</td>
 <td headers="freq_se" class="gt_row gt_right">0.1283</td>
 <td headers="diff_se" class="gt_row gt_right">−0.0007</td>
 <td headers="diff_relative_se" class="gt_row gt_right">−0.0057</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">avisitvis10</td>
+<td headers="variable" class="gt_row gt_left">avisit10</td>
 <td headers="bayes_se" class="gt_row gt_right">0.1418</td>
 <td headers="freq_se" class="gt_row gt_right">0.1400</td>
 <td headers="diff_se" class="gt_row gt_right">0.0018</td>
-<td headers="diff_relative_se" class="gt_row gt_right">0.0129</td>
+<td headers="diff_relative_se" class="gt_row gt_right">0.0130</td>
 </tr>
 <tr>
 <td headers="variable" class="gt_row gt_left">raceblack</td>
@@ -3812,73 +3883,73 @@ frequentist MMRMs.
 <td headers="bayes_se" class="gt_row gt_right">0.0518</td>
 <td headers="freq_se" class="gt_row gt_right">0.0520</td>
 <td headers="diff_se" class="gt_row gt_right">−0.0001</td>
-<td headers="diff_relative_se" class="gt_row gt_right">−0.0028</td>
+<td headers="diff_relative_se" class="gt_row gt_right">−0.0029</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">avisitvis01:armcdtrt</td>
+<td headers="variable" class="gt_row gt_left">avisit1:armcdtrt</td>
 <td headers="bayes_se" class="gt_row gt_right">0.0632</td>
 <td headers="freq_se" class="gt_row gt_right">0.0628</td>
 <td headers="diff_se" class="gt_row gt_right">0.0003</td>
 <td headers="diff_relative_se" class="gt_row gt_right">0.0054</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">avisitvis02:armcdtrt</td>
+<td headers="variable" class="gt_row gt_left">avisit2:armcdtrt</td>
 <td headers="bayes_se" class="gt_row gt_right">0.0806</td>
 <td headers="freq_se" class="gt_row gt_right">0.0798</td>
 <td headers="diff_se" class="gt_row gt_right">0.0007</td>
 <td headers="diff_relative_se" class="gt_row gt_right">0.0093</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">avisitvis03:armcdtrt</td>
+<td headers="variable" class="gt_row gt_left">avisit3:armcdtrt</td>
 <td headers="bayes_se" class="gt_row gt_right">0.0925</td>
 <td headers="freq_se" class="gt_row gt_right">0.0916</td>
 <td headers="diff_se" class="gt_row gt_right">0.0008</td>
 <td headers="diff_relative_se" class="gt_row gt_right">0.0092</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">avisitvis04:armcdtrt</td>
+<td headers="variable" class="gt_row gt_left">avisit4:armcdtrt</td>
 <td headers="bayes_se" class="gt_row gt_right">0.1017</td>
 <td headers="freq_se" class="gt_row gt_right">0.1004</td>
 <td headers="diff_se" class="gt_row gt_right">0.0014</td>
 <td headers="diff_relative_se" class="gt_row gt_right">0.0136</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">avisitvis05:armcdtrt</td>
+<td headers="variable" class="gt_row gt_left">avisit5:armcdtrt</td>
 <td headers="bayes_se" class="gt_row gt_right">0.1157</td>
 <td headers="freq_se" class="gt_row gt_right">0.1147</td>
 <td headers="diff_se" class="gt_row gt_right">0.0010</td>
 <td headers="diff_relative_se" class="gt_row gt_right">0.0088</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">avisitvis06:armcdtrt</td>
+<td headers="variable" class="gt_row gt_left">avisit6:armcdtrt</td>
 <td headers="bayes_se" class="gt_row gt_right">0.1189</td>
 <td headers="freq_se" class="gt_row gt_right">0.1189</td>
 <td headers="diff_se" class="gt_row gt_right">0.0000</td>
 <td headers="diff_relative_se" class="gt_row gt_right">0.0003</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">avisitvis07:armcdtrt</td>
+<td headers="variable" class="gt_row gt_left">avisit7:armcdtrt</td>
 <td headers="bayes_se" class="gt_row gt_right">0.1390</td>
 <td headers="freq_se" class="gt_row gt_right">0.1382</td>
 <td headers="diff_se" class="gt_row gt_right">0.0008</td>
 <td headers="diff_relative_se" class="gt_row gt_right">0.0060</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">avisitvis08:armcdtrt</td>
+<td headers="variable" class="gt_row gt_left">avisit8:armcdtrt</td>
 <td headers="bayes_se" class="gt_row gt_right">0.1484</td>
 <td headers="freq_se" class="gt_row gt_right">0.1474</td>
 <td headers="diff_se" class="gt_row gt_right">0.0010</td>
 <td headers="diff_relative_se" class="gt_row gt_right">0.0066</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">avisitvis09:armcdtrt</td>
+<td headers="variable" class="gt_row gt_left">avisit9:armcdtrt</td>
 <td headers="bayes_se" class="gt_row gt_right">0.1643</td>
 <td headers="freq_se" class="gt_row gt_right">0.1644</td>
 <td headers="diff_se" class="gt_row gt_right">−0.0001</td>
 <td headers="diff_relative_se" class="gt_row gt_right">−0.0004</td>
 </tr>
 <tr>
-<td headers="variable" class="gt_row gt_left">avisitvis10:armcdtrt</td>
+<td headers="variable" class="gt_row gt_left">avisit10:armcdtrt</td>
 <td headers="bayes_se" class="gt_row gt_right">0.1837</td>
 <td headers="freq_se" class="gt_row gt_right">0.1815</td>
 <td headers="diff_se" class="gt_row gt_right">0.0022</td>
