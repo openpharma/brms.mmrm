@@ -108,6 +108,7 @@ brm_data_chronologize <- function(
   )
   if (!is.null(order)) {
     grid <- dplyr::distinct(data[, c(time, order)])
+    grid <- grid[complete.cases(grid), ]
     assert(
       !anyDuplicated(grid[[time]]),
       !anyDuplicated(grid[[order]]),
@@ -123,7 +124,11 @@ brm_data_chronologize <- function(
         time,
         "and",
         order,
-        "have a 1:1 correspondence between their levels."
+        "have a 1:1 correspondence between their levels",
+        "and that",
+        order,
+        "has enough non-missing values to chronologize all of",
+        time
       )
     )
     grid <- grid[order(grid[[order]]),, drop = FALSE] # nolint
