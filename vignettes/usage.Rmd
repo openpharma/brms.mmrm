@@ -49,8 +49,7 @@ raw_data
 #> # ℹ 1,190 more rows
 ```
 
-It is good practice to convert the time variable to an ordered factor so individual discrete time points correctly represent correct chronological order.^[Ordered factors usually have polynomial contrasts (`contr.poly()`), which makes the fixed effect parameterization counterintuitive. However, `brm_data()` manually sets the contrasts of the time variable to be treatment contrasts (`contr.treatment()`) so there are individual fixed effects for individual discrete time points. To revert back to polynomial contrasts, use `contr.poly()` after the call to `brm_data()`.]
-
+It is good practice to call `brm_data_chronologize()` to convert the time variable to an ordered factor so individual discrete time points correctly represent correct chronological order.^[`brm_data_chronologize()` also has the added benefit of applying `contr.treatment()` post-hoc to avoid [counterintuitive polynomial contrasts for ordered factors](https://library.virginia.edu/data/articles/understanding-ordered-factors-in-a-linear-model). That way, the fixed effect parameterizations in the model conform to our expectations about factors.]
 
 ```r
 raw_data <- raw_data |>

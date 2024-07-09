@@ -96,17 +96,18 @@ The dataset is a `tibble` with 8605 rows and the following notable variables.
 The rest of the pre-processing steps create factors for the study arm and visit and apply the usual checking and standardization steps of `brms.mmrm::brm_data()`.
 
 ```{r }
-bcva_data <- brm_data(
-  data = bcva_data,
-  outcome = "BCVA_CHG",
-  role = "change",
-  group = "ARMCD",
-  time = "AVISIT",
-  patient = "USUBJID",
-  baseline = "BCVA_BL",
-  reference_group = "CTL",
-  covariates = "RACE"
-) |>
+bcva_data <- bcva_data |>
+  mutate(AVISIT = gsub("VIS0*", "VIS", as.character(AVISIT))) |>
+  brm_data(
+    outcome = "BCVA_CHG",
+    role = "change",
+    group = "ARMCD",
+    time = "AVISIT",
+    patient = "USUBJID",
+    baseline = "BCVA_BL",
+    reference_group = "CTL",
+    covariates = "RACE"
+  ) |>
   brm_data_chronologize(order = "VISITN")
 ```
 
@@ -230,7 +231,10 @@ The formula for the frequentist model is the same, except for the different synt
 f_mmrm_fit <- mmrm::mmrm(
   formula = BCVA_CHG ~ BCVA_BL + ARMCD:AVISIT + AVISIT + RACE +
     us(AVISIT | USUBJID),
-  data = bcva_data
+  data = mutate(
+    bcva_data,
+    AVISIT = factor(as.character(AVISIT), ordered = FALSE)
+  )
 )
 ```
 
@@ -267,7 +271,8 @@ b_mmrm_summary <- b_mmrm_draws |>
       gsub(pattern = "b_", replacement = "") |>
       gsub(pattern = "b_sigma_AVISIT", replacement = "sigma_") |>
       gsub(pattern = "cortime", replacement = "correlation") |>
-      gsub(pattern = "__", replacement = "_")
+      gsub(pattern = "__", replacement = "_") |>
+      gsub(pattern = "avisitvis", replacement = "avisit")
   )
 ```
 
@@ -281,13 +286,16 @@ f_mmrm_fixed <- summary(f_mmrm_fit)$coefficients |>
   mutate(variable = tolower(variable)) |>
   mutate(variable = gsub("(", "", variable, fixed = TRUE)) |>
   mutate(variable = gsub(")", "", variable, fixed = TRUE)) |>
+  mutate(variable = gsub("avisitvis", "avisit", variable)) |>
   rename(freq_estimate = Estimate, freq_se = `Std. Error`) |>
   select(variable, freq_estimate, freq_se)
 ```
 
 ```{r comparison_2b, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
 f_mmrm_variance <- tibble(
-  variable = paste0("sigma_AVISIT", visit_levels) |> tolower(),
+  variable = paste0("sigma_AVISIT", visit_levels) |>
+    tolower() |>
+    gsub(pattern = "avisitvis", replacement = "avisit"),
   freq_estimate = sqrt(diag(f_mmrm_fit$cov))
 )
 ```

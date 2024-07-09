@@ -242,7 +242,10 @@ The formula for the frequentist model is the same, except for the different synt
 f_mmrm_fit <- mmrm::mmrm(
   formula = FEV1_CHG ~ FEV1_BL + ARMCD:AVISIT + AVISIT + RACE + SEX +
     us(AVISIT | USUBJID),
-  data = fev_data
+  data = mutate(
+    fev_data,
+    AVISIT = factor(as.character(AVISIT), ordered = FALSE)
+  )
 )
 ```
 
@@ -279,7 +282,8 @@ b_mmrm_summary <- b_mmrm_draws |>
       gsub(pattern = "b_", replacement = "") |>
       gsub(pattern = "b_sigma_AVISIT", replacement = "sigma_") |>
       gsub(pattern = "cortime", replacement = "correlation") |>
-      gsub(pattern = "__", replacement = "_")
+      gsub(pattern = "__", replacement = "_") |>
+      gsub(pattern = "avisitvis", replacement = "avisit")
   )
 ```
 
@@ -293,13 +297,16 @@ f_mmrm_fixed <- summary(f_mmrm_fit)$coefficients |>
   mutate(variable = tolower(variable)) |>
   mutate(variable = gsub("(", "", variable, fixed = TRUE)) |>
   mutate(variable = gsub(")", "", variable, fixed = TRUE)) |>
+  mutate(variable = gsub("avisitvis", "avisit", variable)) |>
   rename(freq_estimate = Estimate, freq_se = `Std. Error`) |>
   select(variable, freq_estimate, freq_se)
 ```
 
 ```{r comparison_2b, eval=TRUE, echo=TRUE, class.source = 'fold-hide'}
 f_mmrm_variance <- tibble(
-  variable = paste0("sigma_AVISIT", visit_levels) |> tolower(),
+  variable = paste0("sigma_AVISIT", visit_levels) |>
+    tolower() |>
+    gsub(pattern = "avisitvis", replacement = "avisit"),
   freq_estimate = sqrt(diag(f_mmrm_fit$cov))
 )
 ```
