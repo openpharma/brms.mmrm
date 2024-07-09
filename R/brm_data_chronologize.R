@@ -130,5 +130,6 @@ brm_data_chronologize <- function(
     levels <- grid[[time]]
   }
   data[[time]] <- ordered(data[[time]], levels = levels)
+  contrasts(data[[time]]) <- stats::contr.treatment(n = length(levels))
   data
 }

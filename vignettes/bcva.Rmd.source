@@ -83,15 +83,15 @@ According to <https://openpharma.github.io/mmrm/latest-tag/articles/mmrm_review_
 
 > The BCVA dataset contains data from a randomized longitudinal ophthalmology trial evaluating the change in baseline corrected visual acuity (BCVA) over the course of 10 visits. BCVA corresponds to the number of letters read from a visual acuity chart.
 
-The dataset is a `tibble` with 800 rows and 7 variables. The primary endpoint for the analysis is `BCVA_CHG`.
+The dataset is a `tibble` with 8605 rows and the following notable variables.
 
 * `USUBJID` (subject ID)
-* `AVISITN` (visit number, numeric)
 * `AVISIT` (visit number, factor)
+* `VISITN` (visit number, numeric)
 * `ARMCD` (treatment, `TRT` or `CTL`)
 * `RACE` (3-category race)
 * `BCVA_BL` (BCVA at baseline)
-* `BCVA_CHG` (BCVA change from baseline)
+* `BCVA_CHG` (BCVA change from baseline, primary endpoint for the analysis)
 
 The rest of the pre-processing steps create factors for the study arm and visit and apply the usual checking and standardization steps of `brms.mmrm::brm_data()`.
 
@@ -106,7 +106,8 @@ bcva_data <- brm_data(
   baseline = "BCVA_BL",
   reference_group = "CTL",
   covariates = "RACE"
-)
+) |>
+  brm_data_chronologize(order = "VISITN")
 ```
 
 The following table shows the first rows of the dataset.

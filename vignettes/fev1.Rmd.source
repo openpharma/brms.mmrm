@@ -86,16 +86,17 @@ compared to placebo. `FEV1` is a measure of how quickly the lungs can be
 emptied and low levels may indicate chronic obstructive pulmonary disease 
 (COPD). 
 
-The dataset is a `tibble` with 800 rows and 7 variables:
+The dataset is a `tibble` with 800 rows and the following notable variables:
 
-* `USUBJID` (subject ID),
-* `AVISIT` (visit number),
-* `ARMCD` (treatment, `TRT` or `PBO`),
-* `RACE` (3-category race),
-* `SEX` (sex),
-* `FEV1_BL` (FEV1 at baseline, %),
-* `FEV1` (FEV1 at study visits),
-* `WEIGHT` (weighting variable).
+* `USUBJID` (subject ID)
+* `AVISIT` (visit number, factor)
+* `VISITN` (visit number, numeric)
+* `ARMCD` (treatment, `TRT` or `PBO`)
+* `RACE` (3-category race)
+* `SEX` (female or male)
+* `FEV1_BL` (FEV1 at baseline, %)
+* `FEV1` (FEV1 at study visits)
+* `WEIGHT` (weighting variable)
 
 The primary endpoint for the analysis is change from baseline in `FEV1`, which we derive below and denote `FEV1_CHG`.
 
@@ -117,7 +118,8 @@ fev_data <- brm_data(
   baseline = "FEV1_BL",
   reference_group = "PBO",
   covariates = c("RACE", "SEX")
-)
+) |>
+  brm_data_chronologize(order = "VISITN")
 ```
 
 The following table shows the first rows of the dataset.
@@ -220,7 +222,7 @@ b_mmrm_fit <- brm_model(
   iter = 10000,
   warmup = 2000,
   chains = 4,
-  cores = 1 + (detectCores() > 1),
+  cores = 4,
   seed = 1,
   refresh = 0
 )
