@@ -41,7 +41,11 @@
 #'   character vector or unordered factor.
 #' @param time Character of length 1, name of the discrete time variable.
 #'   For most analyses, please use an ordered factor for the `time` column
-#'   in the data. This ensures the time points sort in chronological order,
+#'   in the data. You can easily turn
+#'   the time variable into an ordered factor using
+#'   [brm_data_chronologize()], either before or immediately after
+#'   [brm_data()] (but before any `brm_archetype_*()` functions).
+#'   This ensures the time points sort in chronological order,
 #'   which ensures the correctness of informative prior archetypes and
 #'   autoregressive / moving average correlation structures.
 #'

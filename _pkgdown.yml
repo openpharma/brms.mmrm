@@ -27,6 +27,7 @@ reference:
   contents:
   - 'brm_data'
   - 'brm_data_change'
+  - 'brm_data_chronologize'
 - title: Simulation
   contents:
   - 'brm_simulate_categorical'

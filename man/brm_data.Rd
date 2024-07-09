@@ -47,7 +47,11 @@ character vector or unordered factor.}
 
 \item{time}{Character of length 1, name of the discrete time variable.
 For most analyses, please use an ordered factor for the \code{time} column
-in the data. This ensures the time points sort in chronological order,
+in the data. You can easily turn
+the time variable into an ordered factor using
+\code{\link[=brm_data_chronologize]{brm_data_chronologize()}}, either before or immediately after
+\code{\link[=brm_data]{brm_data()}} (but before any \verb{brm_archetype_*()} functions).
+This ensures the time points sort in chronological order,
 which ensures the correctness of informative prior archetypes and
 autoregressive / moving average correlation structures.
 
@@ -153,6 +157,7 @@ brm_data(
 }
 \seealso{
 Other data: 
-\code{\link{brm_data_change}()}
+\code{\link{brm_data_change}()},
+\code{\link{brm_data_chronologize}()}
 }
 \concept{data}

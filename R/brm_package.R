@@ -26,8 +26,8 @@
 #'     CRC Press, Taylor & Francis Group.
 #' @family help
 #' @importFrom brms brm brmsformula get_prior make_standata prior unstr
-#' @importFrom dplyr across bind_cols bind_rows left_join rename select
-#'   summarize
+#' @importFrom dplyr across arrange bind_cols bind_rows distinct left_join
+#'   rename select summarize
 #' @importFrom ggplot2 aes facet_wrap geom_point geom_errorbar ggplot
 #'   position_dodge theme_gray xlab ylab
 #' @importFrom ggridges geom_density_ridges2

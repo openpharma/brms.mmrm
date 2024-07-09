@@ -58,6 +58,7 @@ attr(data, "brm_reference_time")
 }
 \seealso{
 Other data: 
-\code{\link{brm_data}()}
+\code{\link{brm_data}()},
+\code{\link{brm_data_chronologize}()}
 }
 \concept{data}

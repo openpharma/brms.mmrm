@@ -46,6 +46,15 @@ raw_data <- brm_simulate_simple(
 raw_data
 ```
 
+It is good practice to convert the time variable to an ordered factor so individual discrete time points correctly represent correct chronological order.^[Ordered factors usually have polynomial contrasts (`contr.poly()`), which makes the fixed effect parameterization counterintuitive. However, `brm_data()` manually sets the contrasts of the time variable to be treatment contrasts (`contr.treatment()`) so there are individual fixed effects for individual discrete time points. To revert back to polynomial contrasts, use `contr.poly()` after the call to `brm_data()`.]
+
+```{r}
+raw_data <- raw_data |>
+  brm_data_chronologize(time = "time", levels = paste0("time_", seq_len(4)))
+
+str(raw_data$time)
+```
+
 Next, create a special classed dataset that the package will recognize. The classed data object contains a pre-processed version of the data, along with attributes to declare the outcome variable, whether the outcome is response or change from baseline, the treatment group variable, the discrete time point variable, control group, baseline time point, and the covariates selected for analysis.
 
 ```{r}
