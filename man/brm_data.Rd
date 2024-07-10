@@ -6,16 +6,16 @@
 \usage{
 brm_data(
   data,
-  outcome = "CHG",
+  outcome,
   role = "change",
   baseline = NULL,
-  group = "TRT01P",
+  group,
   subgroup = NULL,
-  time = "AVISIT",
-  patient = "USUBJID",
+  time,
+  patient,
   covariates = character(0L),
   missing = NULL,
-  reference_group = "Placebo",
+  reference_group,
   reference_subgroup = NULL,
   reference_time = NULL,
   level_baseline = NULL,
@@ -25,18 +25,25 @@ brm_data(
 \arguments{
 \item{data}{Data frame or tibble with longitudinal data.}
 
-\item{outcome}{Character of length 1, name of the outcome variable.}
+\item{outcome}{Character of length 1, name of the continuous
+outcome variable.
+Example possibilities from clinical trial datasets include
+\code{"CHG"} and \code{"AVAL"}.
+The \code{outcome} column in the data should be a numeric vector.}
 
 \item{role}{Character of length 1. Either \code{"response"} if \code{outcome}
 is the raw response variable (e.g. AVAL) or \code{"change"} if \code{outcome}
 is change from baseline (e.g. CHG).}
 
 \item{baseline}{Character of length 1,
-name of the baseline response variable.
+name of the baseline response variable (for example, \code{"BASE"}
+in many clinical trial datasets).
 Only relevant if the response variable is change from baseline.
 Supply \code{NULL} to ignore or omit.}
 
 \item{group}{Character of length 1, name of the treatment group variable.
+Example possibilities from clinical trial datasets include
+\code{"TRT01P"}, \code{"TREATMENT"}, \code{"TRT"}, and \code{"GROUP"}.
 The \code{group} column in the data should be a
 character vector or unordered factor.}
 
@@ -46,8 +53,10 @@ If present, the \code{subgroup} column in the data should be a
 character vector or unordered factor.}
 
 \item{time}{Character of length 1, name of the discrete time variable.
-For most analyses, please use an ordered factor for the \code{time} column
-in the data. You can easily turn
+Example possibilities from clinical trial datasets include
+\code{"AVISIT"} and \code{"VISIT"}.
+For most analyses, please ensure the time column in the data
+is an ordered factor. You can easily turn
 the time variable into an ordered factor using
 \code{\link[=brm_data_chronologize]{brm_data_chronologize()}}, either before or immediately after
 \code{\link[=brm_data]{brm_data()}} (but before any \verb{brm_archetype_*()} functions).
@@ -63,7 +72,11 @@ using \code{\link[=contr.treatment]{contr.treatment()}}. If you prefer different
 manually set \code{contrasts(data[[time]])} to something else after
 calling \code{\link[=brm_data]{brm_data()}}.}
 
-\item{patient}{Character of length 1, name of the patient ID variable.}
+\item{patient}{Character of length 1, name of the patient ID variable.
+Example possibilities from clinical trial datasets include
+\code{"USUBJID"}, \code{"SUBJID"}, \code{"PATIENT"}, \code{"PATIENTID"}, \code{"SUBJECT"},
+\code{"SUBJIDID"}, \code{"SBJID"}, \code{"STYSID1A"}, \code{"SBJ1N"}, and \code{"ID"}.
+The \code{patient} column in the data should be a factor or character vector.}
 
 \item{covariates}{Character vector of names of other covariates.}
 
@@ -73,6 +86,9 @@ Set to \code{NULL} to omit.}
 
 \item{reference_group}{Atomic value of length 1, Level of the \code{group}
 column to indicate the control group.
+Example possibilities from clinical trial datasets include
+\code{"Placebo"}, \code{"PLACEBO"}, \code{"PBO"}, \code{"PLB"}, \code{"CONTROL"}, \code{"CTRL"},
+\code{"REFERENCE"}, and \code{"REF"}.
 \code{reference_group} only applies to the post-processing that happens
 in functions like \code{\link[=brm_marginal_draws]{brm_marginal_draws()}} downstream of the model.
 It does not control the fixed effect mapping in the
