@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">brms.mmrm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1.9005</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1.9006</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -97,7 +97,9 @@ Must fit a continuous outcome variable and have the identity link.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A fitted model object from <code>brms</code>.</p>
+    <p>A fitted model object from <code>brms</code>, with new list elements
+<code>brms.mmrm_data</code> and <code>brms.mmrm_formula</code> to capture the data
+and formula used to fit the model.</p>
     </div>
     <div class="section level2">
     <h2 id="parameterization">Parameterization<a class="anchor" aria-label="anchor" href="#parameterization"></a></h2>
@@ -164,10 +166,13 @@ demonstration.</p>
 <span class="r-in"><span>    <span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="co"># The output model is a brms model fit object.</span></span></span>
+<span class="r-in"><span><span class="co"># The output is a brms model fit object with added list</span></span></span>
+<span class="r-in"><span><span class="co"># elements "brms.mmrm_data" and "brms.mmrm_formula" to track the dataset</span></span></span>
+<span class="r-in"><span><span class="co"># and formula used to fit the model.</span></span></span>
+<span class="r-in"><span><span class="va">model</span><span class="op">$</span><span class="va">brms.mmrm_data</span></span></span>
+<span class="r-in"><span><span class="va">model</span><span class="op">$</span><span class="va">brms.mmrm_formula</span></span></span>
+<span class="r-in"><span><span class="co"># Otherwise, the fitted model object acts exactly like a brms fitted model.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="co"># The `prior_summary()` function shows the full prior specification</span></span></span>
-<span class="r-in"><span><span class="co"># which reflects the fully realized fixed effects mapping.</span></span></span>
 <span class="r-in"><span><span class="fu">brms</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/rstantools/reference/prior_summary.html" class="external-link">prior_summary</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>

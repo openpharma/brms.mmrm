@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">brms.mmrm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1.9005</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1.9006</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,16 +56,16 @@
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">brm_data</span><span class="op">(</span></span>
 <span>  <span class="va">data</span>,</span>
-<span>  outcome <span class="op">=</span> <span class="st">"CHG"</span>,</span>
+<span>  <span class="va">outcome</span>,</span>
 <span>  role <span class="op">=</span> <span class="st">"change"</span>,</span>
 <span>  baseline <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  group <span class="op">=</span> <span class="st">"TRT01P"</span>,</span>
+<span>  <span class="va">group</span>,</span>
 <span>  subgroup <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  time <span class="op">=</span> <span class="st">"AVISIT"</span>,</span>
-<span>  patient <span class="op">=</span> <span class="st">"USUBJID"</span>,</span>
+<span>  <span class="va">time</span>,</span>
+<span>  <span class="va">patient</span>,</span>
 <span>  covariates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="fl">0L</span><span class="op">)</span>,</span>
 <span>  missing <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  reference_group <span class="op">=</span> <span class="st">"Placebo"</span>,</span>
+<span>  <span class="va">reference_group</span>,</span>
 <span>  reference_subgroup <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  reference_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  level_baseline <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -82,7 +82,11 @@
 
 
 <dt id="arg-outcome">outcome<a class="anchor" aria-label="anchor" href="#arg-outcome"></a></dt>
-<dd><p>Character of length 1, name of the outcome variable.</p></dd>
+<dd><p>Character of length 1, name of the continuous
+outcome variable.
+Example possibilities from clinical trial datasets include
+<code>"CHG"</code> and <code>"AVAL"</code>.
+The <code>outcome</code> column in the data should be a numeric vector.</p></dd>
 
 
 <dt id="arg-role">role<a class="anchor" aria-label="anchor" href="#arg-role"></a></dt>
@@ -93,13 +97,16 @@ is change from baseline (e.g. CHG).</p></dd>
 
 <dt id="arg-baseline">baseline<a class="anchor" aria-label="anchor" href="#arg-baseline"></a></dt>
 <dd><p>Character of length 1,
-name of the baseline response variable.
+name of the baseline response variable (for example, <code>"BASE"</code>
+in many clinical trial datasets).
 Only relevant if the response variable is change from baseline.
 Supply <code>NULL</code> to ignore or omit.</p></dd>
 
 
 <dt id="arg-group">group<a class="anchor" aria-label="anchor" href="#arg-group"></a></dt>
 <dd><p>Character of length 1, name of the treatment group variable.
+Example possibilities from clinical trial datasets include
+<code>"TRT01P"</code>, <code>"TREATMENT"</code>, <code>"TRT"</code>, and <code>"GROUP"</code>.
 The <code>group</code> column in the data should be a
 character vector or unordered factor.</p></dd>
 
@@ -113,8 +120,10 @@ character vector or unordered factor.</p></dd>
 
 <dt id="arg-time">time<a class="anchor" aria-label="anchor" href="#arg-time"></a></dt>
 <dd><p>Character of length 1, name of the discrete time variable.
-For most analyses, please use an ordered factor for the <code>time</code> column
-in the data. You can easily turn
+Example possibilities from clinical trial datasets include
+<code>"AVISIT"</code> and <code>"VISIT"</code>.
+For most analyses, please ensure the time column in the data
+is an ordered factor. You can easily turn
 the time variable into an ordered factor using
 <code><a href="brm_data_chronologize.html">brm_data_chronologize()</a></code>, either before or immediately after
 <code>brm_data()</code> (but before any <code>brm_archetype_*()</code> functions).
@@ -131,7 +140,11 @@ calling <code>brm_data()</code>.</p></dd>
 
 
 <dt id="arg-patient">patient<a class="anchor" aria-label="anchor" href="#arg-patient"></a></dt>
-<dd><p>Character of length 1, name of the patient ID variable.</p></dd>
+<dd><p>Character of length 1, name of the patient ID variable.
+Example possibilities from clinical trial datasets include
+<code>"USUBJID"</code>, <code>"SUBJID"</code>, <code>"PATIENT"</code>, <code>"PATIENTID"</code>, <code>"SUBJECT"</code>,
+<code>"SUBJIDID"</code>, <code>"SBJID"</code>, <code>"STYSID1A"</code>, <code>"SBJ1N"</code>, and <code>"ID"</code>.
+The <code>patient</code> column in the data should be a factor or character vector.</p></dd>
 
 
 <dt id="arg-covariates">covariates<a class="anchor" aria-label="anchor" href="#arg-covariates"></a></dt>
@@ -147,6 +160,9 @@ Set to <code>NULL</code> to omit.</p></dd>
 <dt id="arg-reference-group">reference_group<a class="anchor" aria-label="anchor" href="#arg-reference-group"></a></dt>
 <dd><p>Atomic value of length 1, Level of the <code>group</code>
 column to indicate the control group.
+Example possibilities from clinical trial datasets include
+<code>"Placebo"</code>, <code>"PLACEBO"</code>, <code>"PBO"</code>, <code>"PLB"</code>, <code>"CONTROL"</code>, <code>"CTRL"</code>,
+<code>"REFERENCE"</code>, and <code>"REF"</code>.
 <code>reference_group</code> only applies to the post-processing that happens
 in functions like <code><a href="brm_marginal_draws.html">brm_marginal_draws()</a></code> downstream of the model.
 It does not control the fixed effect mapping in the

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">brms.mmrm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1.9005</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1.9006</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -55,11 +55,13 @@
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">brm_marginal_draws</span><span class="op">(</span></span>
-<span>  <span class="va">data</span>,</span>
-<span>  <span class="va">formula</span>,</span>
 <span>  <span class="va">model</span>,</span>
-<span>  transform <span class="op">=</span> <span class="fu">brms.mmrm</span><span class="fu">::</span><span class="fu"><a href="brm_transform_marginal.html">brm_transform_marginal</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">formula</span><span class="op">)</span>,</span>
-<span>  effect_size <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  data <span class="op">=</span> <span class="va">model</span><span class="op">$</span><span class="va">brms.mmrm_data</span>,</span>
+<span>  formula <span class="op">=</span> <span class="va">model</span><span class="op">$</span><span class="va">brms.mmrm_formula</span>,</span>
+<span>  transform <span class="op">=</span> <span class="fu">brms.mmrm</span><span class="fu">::</span><span class="fu"><a href="brm_transform_marginal.html">brm_transform_marginal</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">data</span>, formula <span class="op">=</span> <span class="va">formula</span>,</span>
+<span>    average_within_subgroup <span class="op">=</span> <span class="va">average_within_subgroup</span><span class="op">)</span>,</span>
+<span>  effect_size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">formula</span>, <span class="st">"brm_allow_effect_size"</span><span class="op">)</span>,</span>
+<span>  average_within_subgroup <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  use_subgroup <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  control <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  baseline <span class="op">=</span> <span class="cn">NULL</span></span>
@@ -70,7 +72,11 @@
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
+<dl><dt id="arg-model">model<a class="anchor" aria-label="anchor" href="#arg-model"></a></dt>
+<dd><p>A fitted model object from <code><a href="brm_model.html">brm_model()</a></code>.</p></dd>
+
+
+<dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
 <dd><p>A classed data frame from <code><a href="brm_data.html">brm_data()</a></code>, or an informative
 prior archetype from a function like <code><a href="brm_archetype_successive_cells.html">brm_archetype_successive_cells()</a></code>.</p></dd>
 
@@ -81,10 +87,6 @@ or <code><a href="https://paul-buerkner.github.io/brms/reference/brmsformula.htm
 of the model, including fixed effects, residual correlation,
 and heterogeneity in the discrete-time-specific residual variance
 components.</p></dd>
-
-
-<dt id="arg-model">model<a class="anchor" aria-label="anchor" href="#arg-model"></a></dt>
-<dd><p>A fitted model object from <code><a href="brm_model.html">brm_model()</a></code>.</p></dd>
 
 
 <dt id="arg-transform">transform<a class="anchor" aria-label="anchor" href="#arg-transform"></a></dt>
@@ -106,6 +108,15 @@ effect size when baseline or covariates are included
 in the <code><a href="brm_formula_sigma.html">brm_formula_sigma()</a></code> formula. If <code>effect_size</code> is <code>TRUE</code>
 in this case, then <code>brm_marginal_draws()</code> will automatically
 omit effect size and throw an informative warning.</p></dd>
+
+
+<dt id="arg-average-within-subgroup">average_within_subgroup<a class="anchor" aria-label="anchor" href="#arg-average-within-subgroup"></a></dt>
+<dd><p><code>TRUE</code>, <code>FALSE</code>, or <code>NULL</code> to control
+whether nuisance parameters are averaged within subgroup levels
+in <code><a href="brm_transform_marginal.html">brm_transform_marginal()</a></code>. Ignored if the <code>transform</code> argument
+is manually supplied by the user. See the help page of
+<code><a href="brm_transform_marginal.html">brm_transform_marginal()</a></code> for details on the
+<code>average_within_subgroup</code> argument.</p></dd>
 
 
 <dt id="arg-use-subgroup">use_subgroup<a class="anchor" aria-label="anchor" href="#arg-use-subgroup"></a></dt>
