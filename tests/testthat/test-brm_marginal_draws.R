@@ -40,7 +40,8 @@ test_that("brm_marginal_draws() on response, no subgroup", {
     excluded <- brm_marginal_draws(
       model = model,
       formula = formula_exclude,
-      data = data
+      data = data,
+      effect_size = TRUE
     ),
     class = "brm_warn"
   )

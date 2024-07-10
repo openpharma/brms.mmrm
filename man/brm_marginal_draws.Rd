@@ -5,17 +5,21 @@
 \title{MCMC draws from the marginal posterior of an MMRM}
 \usage{
 brm_marginal_draws(
-  data,
-  formula,
   model,
-  transform = brms.mmrm::brm_transform_marginal(data, formula),
-  effect_size = TRUE,
+  data = model$brms.mmrm_data,
+  formula = model$brms.mmrm_formula,
+  transform = brms.mmrm::brm_transform_marginal(data = data, formula = formula,
+    average_within_subgroup = average_within_subgroup),
+  effect_size = attr(formula, "brm_allow_effect_size"),
+  average_within_subgroup = NULL,
   use_subgroup = NULL,
   control = NULL,
   baseline = NULL
 )
 }
 \arguments{
+\item{model}{A fitted model object from \code{\link[=brm_model]{brm_model()}}.}
+
 \item{data}{A classed data frame from \code{\link[=brm_data]{brm_data()}}, or an informative
 prior archetype from a function like \code{\link[=brm_archetype_successive_cells]{brm_archetype_successive_cells()}}.}
 
@@ -24,8 +28,6 @@ or \code{brms::brmsformula()}. Should include the full mapping
 of the model, including fixed effects, residual correlation,
 and heterogeneity in the discrete-time-specific residual variance
 components.}
-
-\item{model}{A fitted model object from \code{\link[=brm_model]{brm_model()}}.}
 
 \item{transform}{Matrix with one row per marginal mean and one column
 per model parameter. \code{\link[=brm_marginal_draws]{brm_marginal_draws()}} uses this matrix
@@ -43,6 +45,13 @@ effect size when baseline or covariates are included
 in the \code{\link[=brm_formula_sigma]{brm_formula_sigma()}} formula. If \code{effect_size} is \code{TRUE}
 in this case, then \code{\link[=brm_marginal_draws]{brm_marginal_draws()}} will automatically
 omit effect size and throw an informative warning.}
+
+\item{average_within_subgroup}{\code{TRUE}, \code{FALSE}, or \code{NULL} to control
+whether nuisance parameters are averaged within subgroup levels
+in \code{\link[=brm_transform_marginal]{brm_transform_marginal()}}. Ignored if the \code{transform} argument
+is manually supplied by the user. See the help page of
+\code{\link[=brm_transform_marginal]{brm_transform_marginal()}} for details on the
+\code{average_within_subgroup} argument.}
 
 \item{use_subgroup}{Deprecated. No longer used. \code{\link[=brm_marginal_draws]{brm_marginal_draws()}}
 no longer marginalizes over the subgroup declared

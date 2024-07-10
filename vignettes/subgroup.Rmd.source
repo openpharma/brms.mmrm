@@ -130,27 +130,15 @@ model_reduced <- brm_model(
 
 ```{r}
 draws_subgroup <- brm_marginal_draws(
-  data = data,
-  formula = formula_subgroup,
   model = model_subgroup,
-  transform = brm_transform_marginal(
-    data = data,
-    formula = formula_subgroup,
-    average_within_subgroup = FALSE
-  )
+  average_within_subgroup = FALSE
 )
 ```
 
 ```{r}
 draws_reduced <- brm_marginal_draws(
-  data = data,
-  formula = formula_reduced,
   model = model_reduced,
-  transform = brm_transform_marginal(
-    data = data,
-    formula = formula_reduced,
-    average_within_subgroup = FALSE
-  )
+  average_within_subgroup = FALSE
 )
 ```
 

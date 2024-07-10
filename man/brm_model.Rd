@@ -32,7 +32,9 @@ or a \code{"brmsprior"} object from \code{brms::prior()}.}
 Must fit a continuous outcome variable and have the identity link.}
 }
 \value{
-A fitted model object from \code{brms}.
+A fitted model object from \code{brms}, with new list elements
+\code{brms.mmrm_data} and \code{brms.mmrm_formula} to capture the data
+and formula used to fit the model.
 }
 \description{
 Fit an MMRM model using \code{brms}.
@@ -93,10 +95,13 @@ tmp <- utils::capture.output(
     )
   )
 )
-# The output model is a brms model fit object.
+# The output is a brms model fit object with added list
+# elements "brms.mmrm_data" and "brms.mmrm_formula" to track the dataset
+# and formula used to fit the model.
+model$brms.mmrm_data
+model$brms.mmrm_formula
+# Otherwise, the fitted model object acts exactly like a brms fitted model.
 suppressWarnings(print(model))
-# The `prior_summary()` function shows the full prior specification
-# which reflects the fully realized fixed effects mapping.
 brms::prior_summary(model)
 }
 }

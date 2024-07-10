@@ -49,7 +49,8 @@ raw_data
 #> # ℹ 1,190 more rows
 ```
 
-It is good practice to call `brm_data_chronologize()` to convert the time variable to an ordered factor so individual discrete time points correctly represent correct chronological order.^[`brm_data_chronologize()` also has the added benefit of applying `contr.treatment()` post-hoc to avoid [counterintuitive polynomial contrasts for ordered factors](https://library.virginia.edu/data/articles/understanding-ordered-factors-in-a-linear-model). That way, the fixed effect parameterizations in the model conform to our expectations about factors.]
+It is good practice to convert the time variable to an ordered factor so individual discrete time points correctly represent correct chronological order.^[Ordered factors usually have polynomial contrasts (`contr.poly()`), which makes the fixed effect parameterization counterintuitive. However, `brm_data()` manually sets the contrasts of the time variable to be treatment contrasts (`contr.treatment()`) so there are individual fixed effects for individual discrete time points. To revert back to polynomial contrasts, use `contr.poly()` after the call to `brm_data()`.]
+
 
 ```r
 raw_data <- raw_data |>
@@ -294,7 +295,7 @@ model <- brm_model(data = data, formula = formula, refresh = 0)
 
 
 
-The result is a `brms` model object.
+The result is a `brms` model object with extra list elements `brms.mmrm_data` and `brms.mmrm_formula` to keep track of the data and formula used to fit the model.
 
 
 ```r
@@ -349,6 +350,32 @@ model
 #> scale reduction factor on split chains (at convergence, Rhat = 1).
 ```
 
+
+```r
+model$brms.mmrm_data
+#> # A tibble: 1,200 × 7
+#>    patient     time   response group   biomarker1 biomarker2 biomarker3
+#>    <chr>       <ord>     <dbl> <chr>        <dbl>      <dbl>      <dbl>
+#>  1 patient_001 time_1    1.11  group_1      1.31      -0.361      1.52 
+#>  2 patient_001 time_2    2.15  group_1      1.31      -0.361      1.52 
+#>  3 patient_001 time_3    2.54  group_1      1.31      -0.361      1.52 
+#>  4 patient_001 time_4   -1.73  group_1      1.31      -0.361      1.52 
+#>  5 patient_002 time_1    1.11  group_1      0.107     -2.44      -0.139
+#>  6 patient_002 time_2    2.64  group_1      0.107     -2.44      -0.139
+#>  7 patient_002 time_3    1.69  group_1      0.107     -2.44      -0.139
+#>  8 patient_002 time_4    0.783 group_1      0.107     -2.44      -0.139
+#>  9 patient_003 time_1    0.118 group_1      1.44      -0.419     -1.54 
+#> 10 patient_003 time_2    2.48  group_1      1.44      -0.419     -1.54 
+#> # ℹ 1,190 more rows
+```
+
+
+```r
+model$brms.mmrm_formula
+#> response ~ group + group:time + time + biomarker1 + biomarker2 + unstr(time = time, gr = patient) 
+#> sigma ~ 0 + time
+```
+
 # Marginals
 
 Regardless of the choice of fixed effects formula, `brms.mmrm` performs inference on the marginal distributions at each treatment group and time point of the mean of the following quantities:
@@ -362,7 +389,7 @@ To derive posterior draws of these marginals, use the `brm_marginal_draws()` fun
 
 
 ```r
-draws <- brm_marginal_draws(data = data, formula = formula, model = model)
+draws <- brm_marginal_draws(model = model)
 
 draws
 #> $response
@@ -678,7 +705,7 @@ brm_plot_compare(
 )
 ```
 
-![plot of chunk response](usage/response-1.png)
+![](usage/response-1.png)
 
 If you omit the marginals of the data, you can show inference on change from baseline or the treatment effect.
 
@@ -691,7 +718,7 @@ brm_plot_compare(
 )
 ```
 
-![plot of chunk difference](usage/difference-1.png)
+![](usage/difference-1.png)
 
 Additional arguments let you control the primary comparison of interest (the color aesthetic), the horizontal axis, and the faceting variable.
 
@@ -707,7 +734,7 @@ brm_plot_compare(
 )
 ```
 
-![plot of chunk differencecustom](usage/differencecustom-1.png)
+![](usage/differencecustom-1.png)
 
 Finally, `brm_plot_draws()` can plot the posterior draws of the response, change from baseline, or treatment difference.
 
@@ -716,7 +743,7 @@ Finally, `brm_plot_draws()` can plot the posterior draws of the response, change
 brm_plot_draws(draws = draws$difference_group)
 ```
 
-![plot of chunk draws](usage/draws-1.png)
+![](usage/draws-1.png)
 
 The `axis` and `facet` arguments customize the horizontal axis and faceting variable, respectively.
 
@@ -729,4 +756,4 @@ brm_plot_draws(
 )
 ```
 
-![plot of chunk drawscustom](usage/drawscustom-1.png)
+![](usage/drawscustom-1.png)

@@ -24,15 +24,22 @@
 #' @return A classed tibble with attributes which denote features of
 #'   the data such as the treatment group and discrete time variables.
 #' @param data Data frame or tibble with longitudinal data.
-#' @param outcome Character of length 1, name of the outcome variable.
+#' @param outcome Character of length 1, name of the continuous
+#'   outcome variable.
+#'   Example possibilities from clinical trial datasets include
+#'   `"CHG"` and `"AVAL"`.
+#'   The `outcome` column in the data should be a numeric vector.
 #' @param role Character of length 1. Either `"response"` if `outcome`
 #'   is the raw response variable (e.g. AVAL) or `"change"` if `outcome`
 #'   is change from baseline (e.g. CHG).
 #' @param baseline Character of length 1,
-#'   name of the baseline response variable.
+#'   name of the baseline response variable (for example, `"BASE"`
+#'   in many clinical trial datasets).
 #'   Only relevant if the response variable is change from baseline.
 #'   Supply `NULL` to ignore or omit.
 #' @param group Character of length 1, name of the treatment group variable.
+#'   Example possibilities from clinical trial datasets include
+#'   `"TRT01P"`, `"TREATMENT"`, `"TRT"`, and `"GROUP"`.
 #'   The `group` column in the data should be a
 #'   character vector or unordered factor.
 #' @param subgroup Character of length 1, optional name of the a
@@ -40,8 +47,10 @@
 #'   If present, the `subgroup` column in the data should be a
 #'   character vector or unordered factor.
 #' @param time Character of length 1, name of the discrete time variable.
-#'   For most analyses, please use an ordered factor for the `time` column
-#'   in the data. You can easily turn
+#'   Example possibilities from clinical trial datasets include
+#'   `"AVISIT"` and `"VISIT"`.
+#'   For most analyses, please ensure the time column in the data
+#'   is an ordered factor. You can easily turn
 #'   the time variable into an ordered factor using
 #'   [brm_data_chronologize()], either before or immediately after
 #'   [brm_data()] (but before any `brm_archetype_*()` functions).
@@ -57,12 +66,19 @@
 #'   manually set `contrasts(data[[time]])` to something else after
 #'   calling [brm_data()].
 #' @param patient Character of length 1, name of the patient ID variable.
+#'   Example possibilities from clinical trial datasets include
+#'   `"USUBJID"`, `"SUBJID"`, `"PATIENT"`, `"PATIENTID"`, `"SUBJECT"`,
+#'   `"SUBJIDID"`, `"SBJID"`, `"STYSID1A"`, `"SBJ1N"`, and `"ID"`.
+#'   The `patient` column in the data should be a factor or character vector.
 #' @param covariates Character vector of names of other covariates.
 #' @param missing Character of length 1, name of an optional variable
 #'   in a simulated dataset to indicate which outcome values should be missing.
 #'   Set to `NULL` to omit.
 #' @param reference_group Atomic value of length 1, Level of the `group`
 #'   column to indicate the control group.
+#'   Example possibilities from clinical trial datasets include
+#'   `"Placebo"`, `"PLACEBO"`, `"PBO"`, `"PLB"`, `"CONTROL"`, `"CTRL"`,
+#'   `"REFERENCE"`, and `"REF"`.
 #'   `reference_group` only applies to the post-processing that happens
 #'   in functions like [brm_marginal_draws()] downstream of the model.
 #'   It does not control the fixed effect mapping in the
@@ -107,16 +123,16 @@
 #' )
 brm_data <- function(
   data,
-  outcome = "CHG",
+  outcome,
   role = "change",
   baseline = NULL,
-  group = "TRT01P",
+  group,
   subgroup = NULL,
-  time = "AVISIT",
-  patient = "USUBJID",
+  time,
+  patient,
   covariates = character(0L),
   missing = NULL,
-  reference_group = "Placebo",
+  reference_group,
   reference_subgroup = NULL,
   reference_time = NULL,
   level_baseline = NULL,

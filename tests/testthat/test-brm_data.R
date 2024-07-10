@@ -334,6 +334,7 @@ test_that("brm_data() levels", {
       group = "nope",
       time = "col_time",
       patient = "col_patient",
+      reference_group = "group 1",
       covariates = c("col_factor2", "col_factor3")
     ),
     class = "brm_error"

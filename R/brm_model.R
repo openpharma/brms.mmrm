@@ -3,7 +3,9 @@
 #' @family models
 #' @description Fit an MMRM model using `brms`.
 #' @inheritSection brm_formula Parameterization
-#' @return A fitted model object from `brms`.
+#' @return A fitted model object from `brms`, with new list elements
+#'   `brms.mmrm_data` and `brms.mmrm_formula` to capture the data
+#'   and formula used to fit the model.
 #' @inheritParams brm_formula
 #' @param formula An object of class `"brmsformula"` from [brm_formula()]
 #'   or `brms::brmsformula()`. Should include the full mapping
@@ -58,10 +60,13 @@
 #'     )
 #'   )
 #' )
-#' # The output model is a brms model fit object.
+#' # The output is a brms model fit object with added list
+#' # elements "brms.mmrm_data" and "brms.mmrm_formula" to track the dataset
+#' # and formula used to fit the model.
+#' model$brms.mmrm_data
+#' model$brms.mmrm_formula
+#' # Otherwise, the fitted model object acts exactly like a brms fitted model.
 #' suppressWarnings(print(model))
-#' # The `prior_summary()` function shows the full prior specification
-#' # which reflects the fully realized fixed effects mapping.
 #' brms::prior_summary(model)
 #' }
 brm_model <- function(
@@ -84,12 +89,14 @@ brm_model <- function(
     prior = prior,
     ...
   )
-  model <- brm_model_new(model, formula)
+  model <- brm_model_new(model, data, formula)
   brm_model_validate(model)
   model
 }
 
-brm_model_new <- function(model, formula) {
+brm_model_new <- function(model, data, formula) {
+  model$brms.mmrm_data <- data
+  model$brms.mmrm_formula <- formula
   structure(
     model,
     class = unique(c("brms_mmrm_model", class(model)))
@@ -107,6 +114,8 @@ brm_model_validate <- function(model) {
       "in brms.mmrm may not be statistically valid."
     )
   )
+  brm_data_validate(model$brms.mmrm_data)
+  brm_formula_validate(model$brms.mmrm_formula)
 }
 
 brms_model_validate_family <- function(family) {

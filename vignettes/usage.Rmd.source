@@ -164,10 +164,18 @@ model <- brm_model(data = data, formula = formula, refresh = 0)
 model <- brm_model(data = data, formula = formula, refresh = 0)
 ```
 
-The result is a `brms` model object.
+The result is a `brms` model object with extra list elements `brms.mmrm_data` and `brms.mmrm_formula` to keep track of the data and formula used to fit the model.
 
 ```{r}
 model
+```
+
+```{r}
+model$brms.mmrm_data
+```
+
+```{r}
+model$brms.mmrm_formula
 ```
 
 # Marginals
@@ -182,7 +190,7 @@ Regardless of the choice of fixed effects formula, `brms.mmrm` performs inferenc
 To derive posterior draws of these marginals, use the `brm_marginal_draws()` function.
 
 ```{r, paged.print = FALSE}
-draws <- brm_marginal_draws(data = data, formula = formula, model = model)
+draws <- brm_marginal_draws(model = model)
 
 draws
 ```
