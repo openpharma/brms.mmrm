@@ -57,6 +57,12 @@
 #'   no longer marginalizes over the subgroup declared
 #'   in [brm_data()]. To marginalize over the subgroup, declare
 #'   that variable in `covariates` instead.
+#' @param average_within_subgroup `TRUE`, `FALSE`, or `NULL` to control
+#'   whether nuisance parameters are averaged within subgroup levels
+#'   in [brm_transform_marginal()]. Ignored if the `transform` argument
+#'   is manually supplied by the user. See the help page of
+#'   [brm_transform_marginal()] for details on the
+#'   `average_within_subgroup` argument.
 #' @param control Deprecated. Set the control group level in [brm_data()].
 #' @param baseline Deprecated. Set the control group level in [brm_data()].
 #' @examples
@@ -93,11 +99,16 @@
 #' brm_marginal_draws(data = data, formula = formula, model = model)
 #' }
 brm_marginal_draws <- function(
-  data,
-  formula,
   model,
-  transform = brms.mmrm::brm_transform_marginal(data, formula),
-  effect_size = TRUE,
+  data = model$brms.mmrm_data,
+  formula = model$brms.mmrm_formula,
+  transform = brms.mmrm::brm_transform_marginal(
+    data = data,
+    formula = formula,
+    average_within_subgroup = average_within_subgroup
+  ),
+  effect_size = attr(formula, "brm_allow_effect_size"),
+  average_within_subgroup = NULL,
   use_subgroup = NULL,
   control = NULL,
   baseline = NULL

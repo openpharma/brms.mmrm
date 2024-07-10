@@ -79,8 +79,8 @@
 #' )
 #' }
 brm_marginal_draws_average <- function(
-  data,
   draws,
+  data,
   times = NULL,
   label = "average"
 ) {

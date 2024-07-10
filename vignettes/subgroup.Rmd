@@ -1,7 +1,7 @@
 ---
 title: "Subgroup analysis"
-bibliography: '`r system.file("bibliography.bib", package = "brms.mmrm")`'
-csl: '`r system.file("asa.csl", package = "brms.mmrm")`'
+bibliography: '/Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/library/brms.mmrm/bibliography.bib'
+csl: '/Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/library/brms.mmrm/asa.csl'
 output:
   rmarkdown::html_vignette:
     toc: true
@@ -38,18 +38,18 @@ raw_data <- brm_simulate_outline(
 
 raw_data
 #> # A tibble: 900 × 6
-#>    response missing group   subgroup   time   patient    
-#>       <dbl> <lgl>   <chr>   <chr>      <chr>  <chr>      
-#>  1  1.26    FALSE   group_1 subgroup_1 time_1 patient_001
-#>  2 -0.326   FALSE   group_1 subgroup_1 time_2 patient_001
-#>  3  1.33    FALSE   group_1 subgroup_1 time_3 patient_001
-#>  4  1.27    FALSE   group_1 subgroup_1 time_1 patient_002
-#>  5  0.415   FALSE   group_1 subgroup_1 time_2 patient_002
-#>  6 -1.54    FALSE   group_1 subgroup_1 time_3 patient_002
-#>  7 -0.929   FALSE   group_1 subgroup_1 time_1 patient_003
-#>  8 -0.295   FALSE   group_1 subgroup_1 time_2 patient_003
-#>  9 -0.00577 FALSE   group_1 subgroup_1 time_3 patient_003
-#> 10  2.40    FALSE   group_1 subgroup_1 time_1 patient_004
+#>    patient     time   group   subgroup   missing response
+#>    <chr>       <chr>  <chr>   <chr>      <lgl>      <dbl>
+#>  1 patient_001 time_1 group_1 subgroup_1 FALSE    1.26   
+#>  2 patient_001 time_2 group_1 subgroup_1 FALSE   -0.326  
+#>  3 patient_001 time_3 group_1 subgroup_1 FALSE    1.33   
+#>  4 patient_002 time_1 group_1 subgroup_1 FALSE    1.27   
+#>  5 patient_002 time_2 group_1 subgroup_1 FALSE    0.415  
+#>  6 patient_002 time_3 group_1 subgroup_1 FALSE   -1.54   
+#>  7 patient_003 time_1 group_1 subgroup_1 FALSE   -0.929  
+#>  8 patient_003 time_2 group_1 subgroup_1 FALSE   -0.295  
+#>  9 patient_003 time_3 group_1 subgroup_1 FALSE   -0.00577
+#> 10 patient_004 time_1 group_1 subgroup_1 FALSE    2.40   
 #> # ℹ 890 more rows
 ```
 
@@ -100,12 +100,13 @@ data <- brm_data(
 )
 
 str(data)
-#> brms_mm_ [900 × 5] (S3: brms_mmrm_data/tbl_df/tbl/data.frame)
-#>  $ response: num [1:900] 1.263 -0.326 1.33 1.272 0.415 ...
+#> brms_mm_ [900 × 6] (S3: brms_mmrm_data/tbl_df/tbl/data.frame)
+#>  $ patient : chr [1:900] "patient_001" "patient_001" "patient_001" "patient_002" ...
+#>  $ time    : chr [1:900] "time_1" "time_2" "time_3" "time_1" ...
 #>  $ group   : chr [1:900] "group_1" "group_1" "group_1" "group_1" ...
 #>  $ subgroup: chr [1:900] "subgroup_1" "subgroup_1" "subgroup_1" "subgroup_1" ...
-#>  $ time    : chr [1:900] "time_1" "time_2" "time_3" "time_1" ...
-#>  $ patient : chr [1:900] "patient_001" "patient_001" "patient_001" "patient_002" ...
+#>  $ missing : logi [1:900] FALSE FALSE FALSE FALSE FALSE FALSE ...
+#>  $ response: num [1:900] 1.263 -0.326 1.33 1.272 0.415 ...
 #>  - attr(*, "brm_outcome")= chr "response"
 #>  - attr(*, "brm_role")= chr "response"
 #>  - attr(*, "brm_group")= chr "group"
@@ -116,12 +117,6 @@ str(data)
 #>  - attr(*, "brm_reference_group")= chr "group_1"
 #>  - attr(*, "brm_reference_subgroup")= chr "subgroup_1"
 #>  - attr(*, "brm_reference_time")= chr "time_1"
-#>  - attr(*, "brm_levels_group")= chr [1:3] "group_1" "group_2" "group_3"
-#>  - attr(*, "brm_labels_group")= chr [1:3] "group_1" "group_2" "group_3"
-#>  - attr(*, "brm_levels_subgroup")= chr [1:2] "subgroup_1" "subgroup_2"
-#>  - attr(*, "brm_labels_subgroup")= chr [1:2] "subgroup_1" "subgroup_2"
-#>  - attr(*, "brm_levels_time")= chr [1:3] "time_1" "time_2" "time_3"
-#>  - attr(*, "brm_labels_time")= chr [1:3] "time_1" "time_2" "time_3"
 ```
 
 # Formula
@@ -191,28 +186,16 @@ model_reduced <- brm_model(
 
 ```r
 draws_subgroup <- brm_marginal_draws(
-  data = data,
-  formula = formula_subgroup,
   model = model_subgroup,
-  transform = brm_transform_marginal(
-    data = data,
-    formula = formula_subgroup,
-    average_within_subgroup = FALSE
-  )
+  average_within_subgroup = FALSE
 )
 ```
 
 
 ```r
 draws_reduced <- brm_marginal_draws(
-  data = data,
-  formula = formula_reduced,
   model = model_reduced,
-  transform = brm_transform_marginal(
-    data = data,
-    formula = formula_reduced,
-    average_within_subgroup = FALSE
-  )
+  average_within_subgroup = FALSE
 )
 ```
 
@@ -281,7 +264,7 @@ summaries_reduced <- brm_marginal_summaries(
 )
 
 summaries_subgroup
-#> # A tibble: 250 × 7
+#> # A tibble: 340 × 7
 #>    marginal         statistic group   subgroup   time     value    mcse
 #>    <chr>            <chr>     <chr>   <chr>      <chr>    <dbl>   <dbl>
 #>  1 difference_group lower     group_2 subgroup_1 time_2 -0.300  0.00952
@@ -294,7 +277,7 @@ summaries_subgroup
 #>  8 difference_group lower     group_3 subgroup_2 time_3 -0.286  0.00976
 #>  9 difference_group mean      group_2 subgroup_1 time_2  0.0913 0.00439
 #> 10 difference_group mean      group_2 subgroup_1 time_3 -0.167  0.00403
-#> # ℹ 240 more rows
+#> # ℹ 330 more rows
 ```
 
 `brm_marginal_probabilities()` still focuses on treatment effects, not on differences between pairs of subgroup levels.
@@ -468,7 +451,7 @@ loo::loo_compare(loo_subgroup, loo_reduced)
 brm_plot_draws(draws_subgroup$difference_group)
 ```
 
-![plot of chunk draws](subgroup/draws-1.png)
+![](subgroup/draws-1.png)
 
 You can adjust visual aesthetics to compare subgroup levels side by side if subgroup level is the primary comparison of interest.
 
@@ -481,7 +464,7 @@ brm_plot_draws(
 )
 ```
 
-![plot of chunk drawscustom](subgroup/drawscustom-1.png)
+![](subgroup/drawscustom-1.png)
 
 The following function call compares the subgroup model results against the subgroup data.
 
@@ -494,7 +477,7 @@ brm_plot_compare(
 )
 ```
 
-![plot of chunk subgroup-vs-data](subgroup/subgroup-vs-data-1.png)
+![](subgroup/subgroup-vs-data-1.png)
 
 You can adjust plot aesthetics to view subgroup levels side by side as the primary comparison of interest.
 
@@ -510,7 +493,7 @@ brm_plot_compare(
 )
 ```
 
-![plot of chunk subgroup-vs-data-levels](subgroup/subgroup-vs-data-levels-1.png)
+![](subgroup/subgroup-vs-data-levels-1.png)
 
 We can also visually compare the treatment effects of a subgroup level against the marginal treatment effects of the reduced model.
 
@@ -523,7 +506,7 @@ brm_plot_compare(
 )
 ```
 
-![plot of chunk reduced-model-comparison](subgroup/reduced-model-comparison-1.png)
+![](subgroup/reduced-model-comparison-1.png)
 
 Please remember to filter on a single subgroup level. Otherwise, `brm_plot_compare()` throws an informative error to prevent overplotting.
 
