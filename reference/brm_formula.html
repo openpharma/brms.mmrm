@@ -109,7 +109,8 @@ brm_data() dataset or an informative prior archetype."><meta property="og:image"
 <span>  autoregressive_order <span class="op">=</span> <span class="fl">1L</span>,</span>
 <span>  moving_average_order <span class="op">=</span> <span class="fl">1L</span>,</span>
 <span>  residual_covariance_arma_estimation <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  <span class="va">...</span></span>
+<span>  <span class="va">...</span>,</span>
+<span>  warn_ignored <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -320,6 +321,12 @@ Use <code>baseline_time</code> instead.</p></dd>
 <dd><p>Deprecated on 2024-01-16 (version 0.0.2.9002).
 Use <code>group_time</code> instead.</p></dd>
 
+
+<dt id="arg-warn-ignored">warn_ignored<a class="anchor" aria-label="anchor" href="#arg-warn-ignored"></a></dt>
+<dd><p>Set to <code>TRUE</code>
+to throw a warning if ignored arguments are specified,
+<code>FALSE</code> otherwise.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -418,12 +425,12 @@ demonstration.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> sigma ~ 0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"brm_allow_effect_size")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55d64e480df8&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x5590ce7af2d8&gt;</span>
 <span class="r-in"><span><span class="va">by_group</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> sigma ~ group + time</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"brm_allow_effect_size")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55d64e266f18&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x5590ce05c660&gt;</span>
 <span class="r-in"><span><span class="fu">brm_formula</span><span class="op">(</span><span class="va">data</span>, sigma <span class="op">=</span> <span class="va">homogeneous</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> response ~ group + group:time + time + unstr(time = time, gr = patient) </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> sigma ~ 0</span>
