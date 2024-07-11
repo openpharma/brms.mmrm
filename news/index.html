@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">brms.mmrm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1.9006</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1.9007</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -48,7 +48,7 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.0.1.9006" id="brmsmmrm-1019006-development">brms.mmrm 1.0.1.9006 (development)<a class="anchor" aria-label="anchor" href="#brmsmmrm-1019006-development"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.0.1.9007" id="brmsmmrm-1019007-development">brms.mmrm 1.0.1.9007 (development)<a class="anchor" aria-label="anchor" href="#brmsmmrm-1019007-development"></a></h2>
 <ul><li>Add <code><a href="../reference/brm_marginal_grid.html">brm_marginal_grid()</a></code>.</li>
 <li>Show posterior samples of <code>sigma</code> in <code><a href="../reference/brm_marginal_draws.html">brm_marginal_draws()</a></code> and <code><a href="../reference/brm_marginal_summaries.html">brm_marginal_summaries()</a></code>.</li>
 <li>Allow <code>outcome = "response"</code> with <code>reference_time = NULL</code>. Sometimes raw response is analyzed but the data has no baseline time point.</li>
@@ -59,6 +59,7 @@
 <li>Take defaults <code>data</code> and <code>formula</code> from the above in <code><a href="../reference/brm_marginal_draws.html">brm_marginal_draws()</a></code>.</li>
 <li>Set the default value of <code>effect_size</code> to <code>attr(formula, "brm_allow_effect_size")</code>.</li>
 <li>Remove defaults from some arguments to <code><a href="../reference/brm_data.html">brm_data()</a></code> and document examples.</li>
+<li>Deprecate the <code>role</code> argument of <code><a href="../reference/brm_data.html">brm_data()</a></code> in favor of <code>reference_time</code> (<a href="https://github.com/openpharma/brms.mmrm/issues/119" class="external-link">#119</a>).</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.0.1" id="brmsmmrm-101">brms.mmrm 1.0.1<a class="anchor" aria-label="anchor" href="#brmsmmrm-101"></a></h2><p class="text-muted">CRAN release: 2024-06-25</p>

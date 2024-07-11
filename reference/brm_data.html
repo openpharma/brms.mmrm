@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">brms.mmrm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1.9006</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1.9007</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,7 +57,6 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">brm_data</span><span class="op">(</span></span>
 <span>  <span class="va">data</span>,</span>
 <span>  <span class="va">outcome</span>,</span>
-<span>  role <span class="op">=</span> <span class="st">"change"</span>,</span>
 <span>  baseline <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">group</span>,</span>
 <span>  subgroup <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -68,6 +67,7 @@
 <span>  <span class="va">reference_group</span>,</span>
 <span>  reference_subgroup <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  reference_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  role <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  level_baseline <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  level_control <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -87,12 +87,6 @@ outcome variable.
 Example possibilities from clinical trial datasets include
 <code>"CHG"</code> and <code>"AVAL"</code>.
 The <code>outcome</code> column in the data should be a numeric vector.</p></dd>
-
-
-<dt id="arg-role">role<a class="anchor" aria-label="anchor" href="#arg-role"></a></dt>
-<dd><p>Character of length 1. Either <code>"response"</code> if <code>outcome</code>
-is the raw response variable (e.g. AVAL) or <code>"change"</code> if <code>outcome</code>
-is change from baseline (e.g. CHG).</p></dd>
 
 
 <dt id="arg-baseline">baseline<a class="anchor" aria-label="anchor" href="#arg-baseline"></a></dt>
@@ -181,16 +175,23 @@ model matrix that <code>brms</code> derives from the formula from <code><a href=
 <dt id="arg-reference-time">reference_time<a class="anchor" aria-label="anchor" href="#arg-reference-time"></a></dt>
 <dd><p>Atomic value of length 1 or <code>NULL</code>,
 level of the <code>time</code> column to indicate the baseline time point.
-This value must be <code>NULL</code> if the outcome
-variable is already change from baseline. If the outcome
-is raw response, then <code>reference_time</code> may or may not be <code>NULL</code>.
-<code><a href="brm_marginal_draws.html">brm_marginal_draws()</a></code> and downstream functions calculate posterior
-inference on change from baseline if and only if
-<code>reference_time</code> is not <code>NULL</code>.</p>
+Leave as <code>NULL</code> if there is no baseline or baseline is not included
+in <code>data[[time]]</code>.</p>
+<p>If <code>reference_time</code> is not <code>NULL</code>, then <code><a href="brm_marginal_draws.html">brm_marginal_draws()</a></code> will
+calculate change from baseline, and it will calculate treatment
+differences as differences between change-from-baseline values.
+If <code>reference_time</code> is not <code>NULL</code>, then <code><a href="brm_marginal_draws.html">brm_marginal_draws()</a></code> will
+not calculate change from baseline, and it will calculate treatment
+differences as differences between response values.</p>
 <p>Note: <code>reference_time</code> only applies to the post-processing that happens
 in functions like <code><a href="brm_marginal_draws.html">brm_marginal_draws()</a></code> downstream of the model.
 It does not control the fixed effect mapping in the
 model matrix that <code>brms</code> derives from the formula from <code><a href="brm_formula.html">brm_formula()</a></code>.</p></dd>
+
+
+<dt id="arg-role">role<a class="anchor" aria-label="anchor" href="#arg-role"></a></dt>
+<dd><p>Deprecated as unnecessary on 2024-07-11 (version 1.0.1.9007).
+Use <code>reference_time</code> to supply a baseline time point value if it exists.</p></dd>
 
 
 <dt id="arg-level-baseline">level_baseline<a class="anchor" aria-label="anchor" href="#arg-level-baseline"></a></dt>
@@ -264,7 +265,6 @@ this string. To set a custom string yourself, use
 <span class="r-in"><span><span class="fu">brm_data</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  data <span class="op">=</span> <span class="va">data</span>,</span></span>
 <span class="r-in"><span>  outcome <span class="op">=</span> <span class="st">"col_response"</span>,</span></span>
-<span class="r-in"><span>  role <span class="op">=</span> <span class="st">"response"</span>,</span></span>
 <span class="r-in"><span>  group <span class="op">=</span> <span class="st">"col_group"</span>,</span></span>
 <span class="r-in"><span>  time <span class="op">=</span> <span class="st">"col_time"</span>,</span></span>
 <span class="r-in"><span>  patient <span class="op">=</span> <span class="st">"col_patient"</span>,</span></span>

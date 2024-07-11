@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">brms.mmrm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1.9006</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1.9007</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -151,15 +151,21 @@ Only returned if the <code>reference_time</code> argument of <code><a href="brm_
 not <code>NULL</code> (i.e. if a baseline value for the time variable
 was identified).</p></li>
 <li><p><code>difference_group</code>: treatment effect:
-the <code>difference_time</code> at each active group minus the <code>difference_time</code>
-at the control group (<code>reference_group</code>).
-If <code>reference_time</code> was <code>NULL</code> in <code><a href="brm_data.html">brm_data()</a></code> (i.e. no baseline
-time point), then treatment group
-is instead the difference between <code>response</code> at each active group minus
-the <code>response</code> at the control group.</p></li>
+These samples depend on the values of <code>reference_group</code> and
+<code>reference_time</code> which were originally declared in <code><a href="brm_data.html">brm_data()</a></code>.
+<code>reference_group</code> is the control group, and <code>reference_time</code>
+is baseline. If baseline was originally given (via <code>reference_time</code>
+in <code><a href="brm_data.html">brm_data()</a></code>),
+then <code>difference_time</code> is the change-from-baseline value of
+each active group minus that of the control group.
+Otherwise, if baseline is omitted (i.e. <code>reference_time = NULL</code>
+(default) in <code><a href="brm_data.html">brm_data()</a></code>), then <code>difference_time</code> is the
+raw response at each active group minus that of the control group.</p></li>
 <li><p><code>difference_subgroup</code>: subgroup differences: the <code>difference_group</code>
 at each subgroup level minus the <code>difference_group</code> at the subgroup
-reference level (<code>reference_subgroup</code>).</p></li>
+reference level (<code>reference_subgroup</code>). Only reported if a subgroup
+analysis was specified through the appropriate arguments to
+<code><a href="brm_data.html">brm_data()</a></code> and <code><a href="brm_formula.html">brm_formula()</a></code>.</p></li>
 <li><p><code>effect</code>: effect size, defined as the treatment difference
 divided by the residual standard deviation. Omitted if
 the <code>effect_size</code> argument is <code>FALSE</code> or if the
@@ -169,6 +175,20 @@ of residuals. Omitted if
 the <code>effect_size</code> argument is <code>FALSE</code> or if the
 <code><a href="brm_formula_sigma.html">brm_formula_sigma()</a></code> includes baseline or covariates.</p></li>
 </ul></div>
+    <div class="section level2">
+    <h2 id="baseline">Baseline<a class="anchor" aria-label="anchor" href="#baseline"></a></h2>
+
+
+<p>The returned values from <code>brm_marginal_draws()</code>
+depend on whether a baseline time point
+was declared through the <code>reference_time</code> argument of <code><a href="brm_data.html">brm_data()</a></code>.
+If <code>reference_time</code> was not <code>NULL</code>, then <code>brm_marginal_draws()</code> will
+calculate change from baseline, and it will calculate treatment
+differences as differences between change-from-baseline values.
+If <code>reference_time</code> was not <code>NULL</code>, then <code>brm_marginal_draws()</code> will
+not calculate change from baseline, and it will calculate treatment
+differences as differences between response values.</p>
+    </div>
     <div class="section level2">
     <h2 id="separation-string">Separation string<a class="anchor" aria-label="anchor" href="#separation-string"></a></h2>
 
@@ -197,7 +217,6 @@ this string. To set a custom string yourself, use
 <span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="brm_data.html">brm_data</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  data <span class="op">=</span> <span class="fu"><a href="brm_simulate_simple.html">brm_simulate_simple</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">data</span>,</span></span>
 <span class="r-in"><span>  outcome <span class="op">=</span> <span class="st">"response"</span>,</span></span>
-<span class="r-in"><span>  role <span class="op">=</span> <span class="st">"response"</span>,</span></span>
 <span class="r-in"><span>  group <span class="op">=</span> <span class="st">"group"</span>,</span></span>
 <span class="r-in"><span>  time <span class="op">=</span> <span class="st">"time"</span>,</span></span>
 <span class="r-in"><span>  patient <span class="op">=</span> <span class="st">"patient"</span>,</span></span>

@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">brms.mmrm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1.9006</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1.9007</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -156,15 +156,14 @@ and visit and apply the usual checking and standardization steps of
 <span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="sc">+</span>   <span class="fu">mutate</span>(<span class="at">AVISIT =</span> <span class="fu">gsub</span>(<span class="st">"VIS0*"</span>, <span class="st">"VIS"</span>, <span class="fu">as.character</span>(AVISIT))) <span class="sc">|&gt;</span></span>
 <span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="sc">+</span>   <span class="fu">brm_data</span>(</span>
 <span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="sc">+</span>     <span class="at">outcome =</span> <span class="st">"BCVA_CHG"</span>,</span>
-<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="sc">+</span>     <span class="at">role =</span> <span class="st">"change"</span>,</span>
-<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="sc">+</span>     <span class="at">group =</span> <span class="st">"ARMCD"</span>,</span>
-<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="sc">+</span>     <span class="at">time =</span> <span class="st">"AVISIT"</span>,</span>
-<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="sc">+</span>     <span class="at">patient =</span> <span class="st">"USUBJID"</span>,</span>
-<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="sc">+</span>     <span class="at">baseline =</span> <span class="st">"BCVA_BL"</span>,</span>
-<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="sc">+</span>     <span class="at">reference_group =</span> <span class="st">"CTL"</span>,</span>
-<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="sc">+</span>     <span class="at">covariates =</span> <span class="st">"RACE"</span></span>
-<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a><span class="sc">+</span>   ) <span class="sc">|&gt;</span></span>
-<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a><span class="sc">+</span>   <span class="fu">brm_data_chronologize</span>(<span class="at">order =</span> <span class="st">"VISITN"</span>)</span></code></pre></div>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="sc">+</span>     <span class="at">group =</span> <span class="st">"ARMCD"</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="sc">+</span>     <span class="at">time =</span> <span class="st">"AVISIT"</span>,</span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="sc">+</span>     <span class="at">patient =</span> <span class="st">"USUBJID"</span>,</span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="sc">+</span>     <span class="at">baseline =</span> <span class="st">"BCVA_BL"</span>,</span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="sc">+</span>     <span class="at">reference_group =</span> <span class="st">"CTL"</span>,</span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="sc">+</span>     <span class="at">covariates =</span> <span class="st">"RACE"</span></span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="sc">+</span>   ) <span class="sc">|&gt;</span></span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a><span class="sc">+</span>   <span class="fu">brm_data_chronologize</span>(<span class="at">order =</span> <span class="st">"VISITN"</span>)</span></code></pre></div>
 <p>The following table shows the first rows of the dataset.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">head</span>(bcva_data) <span class="sc">|&gt;</span></span>
 <span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="sc">+</span>   <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
