@@ -85,14 +85,16 @@ brm_prior_archetype <- function(label, archetype) {
       )
     )
   }
-  joined <- dplyr::inner_join(x = map, y = label, by = fields)
+  if (!("variable" %in% colnames(label))) {
+    label <- dplyr::inner_join(x = map, y = label, by = fields)
+  }
   priors <- lapply(
-    X = seq_len(nrow(joined)),
+    X = seq_len(nrow(label)),
     FUN = function(index) {
       brms::set_prior(
-        prior = joined$code[index],
+        prior = label$code[index],
         class = "b",
-        coef = joined$variable[index]
+        coef = label$variable[index]
       )
     }
   )
