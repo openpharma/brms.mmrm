@@ -56,7 +56,8 @@ brm_formula(
   autoregressive_order = 1L,
   moving_average_order = 1L,
   residual_covariance_arma_estimation = FALSE,
-  ...
+  ...,
+  warn_ignored = TRUE
 )
 }
 \arguments{
@@ -213,6 +214,10 @@ Use \code{baseline_time} instead.}
 
 \item{interaction_group}{Deprecated on 2024-01-16 (version 0.0.2.9002).
 Use \code{group_time} instead.}
+
+\item{warn_ignored}{Set to \code{TRUE}
+to throw a warning if ignored arguments are specified,
+\code{FALSE} otherwise.}
 }
 \value{
 An object of class \code{"brmsformula"} returned from

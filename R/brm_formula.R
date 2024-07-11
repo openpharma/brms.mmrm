@@ -168,6 +168,9 @@
 #'   throw an error if rank deficiency is detected. `FALSE` to skip
 #'   this check. Rank-deficient models may have non-identifiable
 #'   parameters and it is recommended to choose a full-rank mapping.
+#' @param warn_ignored Set to `TRUE`
+#'   to throw a warning if ignored arguments are specified,
+#'   `FALSE` otherwise.
 #' @param ... Named arguments to specific [brm_formula()] methods.
 #' @param effect_baseline Deprecated on 2024-01-16 (version 0.0.2.9002).
 #'   Use `baseline` instead.
@@ -442,7 +445,8 @@ brm_formula.brms_mmrm_archetype <- function(
   autoregressive_order = 1L,
   moving_average_order = 1L,
   residual_covariance_arma_estimation = FALSE,
-  ...
+  ...,
+  warn_ignored = TRUE
 ) {
   brm_data_validate(data)
   brm_formula_validate_correlation(correlation)
@@ -467,6 +471,7 @@ brm_formula.brms_mmrm_archetype <- function(
     . >= 0,
     message = "moving_average_order must be a nonnegative integer of length 1"
   )
+  assert_lgl(warn_ignored, message = "warn_ignored must be TRUE or FALSE")
   args <- list(...)
   ignored <- c(
     "baseline",
@@ -474,14 +479,15 @@ brm_formula.brms_mmrm_archetype <- function(
     "baseline_subgroup_time",
     "baseline_time"
   )
-  if (any(names(args) %in% ignored)) {
+  if (any(names(args) %in% ignored) && warn_ignored) {
     message <- paste(
       "brm_formula() ignores baseline-related arguments",
       "for informative prior archetypes",
       "(baseline, baseline_subgroup, baseline_subgroup_time",
       "and baseline_time).",
       "Please instead set these baseline arguments",
-      "in the archetype function, e.g. brm_archetype_effects()"
+      "in the archetype function, e.g. brm_archetype_effects()",
+      "Set warn_ignored = FALSE to suppress this warning."
     )
     brm_warn(message)
   }
