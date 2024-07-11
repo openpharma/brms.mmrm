@@ -43,8 +43,8 @@ outcomes that are missing. Missing outcomes of this type are independent
 and uniformly distributed across the data.}
 }
 \value{
-A data frame from \code{\link[=brm_data]{brm_data()}} with attributes to define roles
-for various columns in the dataset. The data frame has one row per
+A classed data frame from \code{\link[=brm_data]{brm_data()}}.
+The data frame has one row per
 patient per time point and the following columns:
 \itemize{
 \item \code{group}: integer index of the treatment group.

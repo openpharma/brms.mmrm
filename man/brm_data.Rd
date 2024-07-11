@@ -7,7 +7,6 @@
 brm_data(
   data,
   outcome,
-  role = "change",
   baseline = NULL,
   group,
   subgroup = NULL,
@@ -18,6 +17,7 @@ brm_data(
   reference_group,
   reference_subgroup = NULL,
   reference_time = NULL,
+  role = NULL,
   level_baseline = NULL,
   level_control = NULL
 )
@@ -30,10 +30,6 @@ outcome variable.
 Example possibilities from clinical trial datasets include
 \code{"CHG"} and \code{"AVAL"}.
 The \code{outcome} column in the data should be a numeric vector.}
-
-\item{role}{Character of length 1. Either \code{"response"} if \code{outcome}
-is the raw response variable (e.g. AVAL) or \code{"change"} if \code{outcome}
-is change from baseline (e.g. CHG).}
 
 \item{baseline}{Character of length 1,
 name of the baseline response variable (for example, \code{"BASE"}
@@ -103,17 +99,23 @@ model matrix that \code{brms} derives from the formula from \code{brm_formula()}
 
 \item{reference_time}{Atomic value of length 1 or \code{NULL},
 level of the \code{time} column to indicate the baseline time point.
-This value must be \code{NULL} if the outcome
-variable is already change from baseline. If the outcome
-is raw response, then \code{reference_time} may or may not be \code{NULL}.
-\code{\link[=brm_marginal_draws]{brm_marginal_draws()}} and downstream functions calculate posterior
-inference on change from baseline if and only if
-\code{reference_time} is not \code{NULL}.
+Leave as \code{NULL} if there is no baseline or baseline is not included
+in \code{data[[time]]}.
+
+If \code{reference_time} is not \code{NULL}, then \code{\link[=brm_marginal_draws]{brm_marginal_draws()}} will
+calculate change from baseline, and it will calculate treatment
+differences as differences between change-from-baseline values.
+If \code{reference_time} is not \code{NULL}, then \code{\link[=brm_marginal_draws]{brm_marginal_draws()}} will
+not calculate change from baseline, and it will calculate treatment
+differences as differences between response values.
 
 Note: \code{reference_time} only applies to the post-processing that happens
 in functions like \code{\link[=brm_marginal_draws]{brm_marginal_draws()}} downstream of the model.
 It does not control the fixed effect mapping in the
 model matrix that \code{brms} derives from the formula from \code{brm_formula()}.}
+
+\item{role}{Deprecated as unnecessary on 2024-07-11 (version 1.0.1.9007).
+Use \code{reference_time} to supply a baseline time point value if it exists.}
 
 \item{level_baseline}{Deprecated on 2024-01-11 (version 0.2.0.9002).
 Use \code{reference_time} instead.}
@@ -163,7 +165,6 @@ data
 brm_data(
   data = data,
   outcome = "col_response",
-  role = "response",
   group = "col_group",
   time = "col_time",
   patient = "col_patient",

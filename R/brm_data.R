@@ -29,9 +29,6 @@
 #'   Example possibilities from clinical trial datasets include
 #'   `"CHG"` and `"AVAL"`.
 #'   The `outcome` column in the data should be a numeric vector.
-#' @param role Character of length 1. Either `"response"` if `outcome`
-#'   is the raw response variable (e.g. AVAL) or `"change"` if `outcome`
-#'   is change from baseline (e.g. CHG).
 #' @param baseline Character of length 1,
 #'   name of the baseline response variable (for example, `"BASE"`
 #'   in many clinical trial datasets).
@@ -91,17 +88,22 @@
 #'   model matrix that `brms` derives from the formula from `brm_formula()`.
 #' @param reference_time Atomic value of length 1 or `NULL`,
 #'   level of the `time` column to indicate the baseline time point.
-#'   This value must be `NULL` if the outcome
-#'   variable is already change from baseline. If the outcome
-#'   is raw response, then `reference_time` may or may not be `NULL`.
-#'   [brm_marginal_draws()] and downstream functions calculate posterior
-#'   inference on change from baseline if and only if
-#'   `reference_time` is not `NULL`.
+#'   Leave as `NULL` if there is no baseline or baseline is not included
+#'   in `data[[time]]`.
+#'
+#'   If `reference_time` is not `NULL`, then [brm_marginal_draws()] will
+#'   calculate change from baseline, and it will calculate treatment
+#'   differences as differences between change-from-baseline values.
+#'   If `reference_time` is not `NULL`, then [brm_marginal_draws()] will
+#'   not calculate change from baseline, and it will calculate treatment
+#'   differences as differences between response values.
 #'
 #'   Note: `reference_time` only applies to the post-processing that happens
 #'   in functions like [brm_marginal_draws()] downstream of the model.
 #'   It does not control the fixed effect mapping in the
 #'   model matrix that `brms` derives from the formula from `brm_formula()`.
+#' @param role Deprecated as unnecessary on 2024-07-11 (version 1.0.1.9007).
+#'   Use `reference_time` to supply a baseline time point value if it exists.
 #' @param level_baseline Deprecated on 2024-01-11 (version 0.2.0.9002).
 #'   Use `reference_time` instead.
 #' @param level_control Deprecated on 2024-01-11 (version 0.2.0.9002).
@@ -114,7 +116,6 @@
 #' brm_data(
 #'   data = data,
 #'   outcome = "col_response",
-#'   role = "response",
 #'   group = "col_group",
 #'   time = "col_time",
 #'   patient = "col_patient",
@@ -124,7 +125,6 @@
 brm_data <- function(
   data,
   outcome,
-  role = "change",
   baseline = NULL,
   group,
   subgroup = NULL,
@@ -135,10 +135,18 @@ brm_data <- function(
   reference_group,
   reference_subgroup = NULL,
   reference_time = NULL,
+  role = NULL,
   level_baseline = NULL,
   level_control = NULL
 ) {
   assert(is.data.frame(data), message = "data arg must be a data frame.")
+  if (!is.null(role)) {
+    brm_deprecate(
+      "The 'role' argument was deprecated as unnecessary on 2024-07-11 ",
+      "(version 1.0.1.9007). Use reference_time to specify a baseline ",
+      "time value if it exists."
+    )
+  }
   if (!is.null(level_control)) {
     brm_deprecate(
       "level_control was deprecated on 2024-01-11 (version 0.2.0.9002). ",
@@ -158,7 +166,6 @@ brm_data <- function(
   out <- brm_data_new(
     data = data,
     brm_outcome = as.character(outcome),
-    brm_role = as.character(role),
     brm_baseline = baseline,
     brm_group = as.character(group),
     brm_subgroup = subgroup,
@@ -177,7 +184,6 @@ brm_data <- function(
 brm_data_new <- function(
   data,
   brm_outcome = NULL,
-  brm_role = NULL,
   brm_baseline = NULL,
   brm_group = NULL,
   brm_subgroup = NULL,
@@ -193,7 +199,6 @@ brm_data_new <- function(
   structure(
     out,
     brm_outcome = brm_outcome,
-    brm_role = brm_role,
     brm_baseline = brm_baseline,
     brm_group = brm_group,
     brm_subgroup = brm_subgroup,
@@ -220,7 +225,6 @@ brm_data_validate <- function(data) {
 #' @export
 brm_data_validate.default <- function(data) {
   outcome <- attr(data, "brm_outcome")
-  role <- attr(data, "brm_role")
   baseline <- attr(data, "brm_baseline")
   group <- attr(data, "brm_group")
   subgroup <- attr(data, "brm_subgroup")
@@ -237,7 +241,6 @@ brm_data_validate.default <- function(data) {
     message = "please use brm_data() to preprocess your data"
   )
   assert_chr(outcome, "outcome of data must be a nonempty character string")
-  assert_chr(role, "role of data must be a nonempty character string")
   assert_chr(
     baseline %|||% "x",
     "baseline must NULL or a nonempty character string"
@@ -265,10 +268,6 @@ brm_data_validate.default <- function(data) {
       "reference_time must NULL or a nonempty element of the time column",
       "in the data"
     )
-  )
-  assert(
-    role %in% c("response", "change"),
-    message = "role must be either \"response\" or \"change\""
   )
   assert_col(outcome, data)
   assert_col(baseline, data)
@@ -367,12 +366,6 @@ brm_data_validate.default <- function(data) {
           "and all factor levels must be non-missing."
         )
       )
-    )
-  }
-  if (role == "change") {
-    assert(
-      is.null(reference_time),
-      message = "reference_time must be NULL if role is \"change\"."
     )
   }
 }

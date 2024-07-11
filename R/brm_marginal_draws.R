@@ -2,6 +2,16 @@
 #' @export
 #' @family marginals
 #' @description Get marginal posterior draws from a fitted MMRM.
+#' @section Baseline:
+#'   The returned values from [brm_marginal_draws()]
+#'   depend on whether a baseline time point
+#'   was declared through the `reference_time` argument of [brm_data()].
+#'   If `reference_time` was not `NULL`, then [brm_marginal_draws()] will
+#'   calculate change from baseline, and it will calculate treatment
+#'   differences as differences between change-from-baseline values.
+#'   If `reference_time` was not `NULL`, then [brm_marginal_draws()] will
+#'   not calculate change from baseline, and it will calculate treatment
+#'   differences as differences between response values.
 #' @inheritSection brm_data Separation string
 #' @return A named list of tibbles of MCMC draws of the marginal posterior
 #'   distribution of each treatment group and time point. These marginals
@@ -19,15 +29,21 @@
 #'     not `NULL` (i.e. if a baseline value for the time variable
 #'     was identified).
 #'   * `difference_group`: treatment effect:
-#'     the `difference_time` at each active group minus the `difference_time`
-#'     at the control group (`reference_group`).
-#'     If `reference_time` was `NULL` in [brm_data()] (i.e. no baseline
-#'     time point), then treatment group
-#'     is instead the difference between `response` at each active group minus
-#'     the `response` at the control group.
+#'     These samples depend on the values of `reference_group` and
+#'     `reference_time` which were originally declared in [brm_data()].
+#'     `reference_group` is the control group, and `reference_time`
+#'     is baseline. If baseline was originally given (via `reference_time`
+#'     in [brm_data()]),
+#'     then `difference_time` is the change-from-baseline value of
+#'     each active group minus that of the control group.
+#'     Otherwise, if baseline is omitted (i.e. `reference_time = NULL`
+#'     (default) in [brm_data()]), then `difference_time` is the
+#'     raw response at each active group minus that of the control group.
 #'   * `difference_subgroup`: subgroup differences: the `difference_group`
 #'     at each subgroup level minus the `difference_group` at the subgroup
-#'     reference level (`reference_subgroup`).
+#'     reference level (`reference_subgroup`). Only reported if a subgroup
+#'     analysis was specified through the appropriate arguments to
+#'     [brm_data()] and [brm_formula()].
 #'   * `effect`: effect size, defined as the treatment difference
 #'     divided by the residual standard deviation. Omitted if
 #'     the `effect_size` argument is `FALSE` or if the
@@ -71,7 +87,6 @@
 #' data <- brm_data(
 #'   data = brm_simulate_simple()$data,
 #'   outcome = "response",
-#'   role = "response",
 #'   group = "group",
 #'   time = "time",
 #'   patient = "patient",
@@ -143,7 +158,6 @@ brm_marginal_draws <- function(
   brm_data_validate(data)
   brm_formula_validate(formula)
   brm_model_validate(model)
-  role <- attr(data, "brm_role")
   base <- attr(data, "brm_base")
   group <- attr(data, "brm_group")
   subgroup <- attr(data, "brm_subgroup")
@@ -161,7 +175,7 @@ brm_marginal_draws <- function(
   reference_subgroup <- attr(data, "brm_reference_subgroup")
   reference_time <- attr(data, "brm_reference_time")
   has_subgroup <- brm_has_subgroup(data = data, formula = formula)
-  has_baseline <- identical(role, "response") && !is.null(reference_time)
+  has_baseline <- !is.null(reference_time)
   if (effect_size && !attr(formula, "brm_allow_effect_size")) {
     effect_size <- FALSE
     brm_warn(
@@ -197,7 +211,7 @@ brm_marginal_draws <- function(
   draws_response <- tibble::as_tibble(as.matrix(draws_beta) %*% t(transform))
   draws_response <- dplyr::bind_cols(draws_response, index_mcmc)
   draws_response <- posterior::as_draws_df(draws_response)
-  if (has_baseline) { # baseline
+  if (has_baseline) { # baseline exists, subgroup exists
     if (has_subgroup) {
       draws_difference_time <- subtract_reference_time_subroup(
         draws = draws_response,
@@ -220,7 +234,7 @@ brm_marginal_draws <- function(
         levels_time = setdiff(levels_time, reference_time),
         reference_subgroup = reference_subgroup
       )
-    } else { # role is "response", no subgroup
+    } else { # baseline exists, no subgroup
       draws_difference_time <- subtract_reference_time(
         draws = draws_response,
         levels_group = levels_group,
@@ -234,7 +248,7 @@ brm_marginal_draws <- function(
         reference_group = reference_group
       )
     }
-  } else { # baseline does not exist
+  } else { # baseline does not exist, subgroup exists
     if (has_subgroup) {
       draws_difference_group <- subtract_reference_group_subgroup(
         draws = draws_response,
@@ -250,7 +264,7 @@ brm_marginal_draws <- function(
         levels_time = levels_time,
         reference_subgroup = reference_subgroup
       )
-    } else { # role is "change", no subgroup
+    } else { # baseline does not exist, no subgroup
       draws_difference_group <- subtract_reference_group(
         draws = draws_response,
         levels_group = levels_group,

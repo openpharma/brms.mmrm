@@ -14,7 +14,8 @@
 #'   change from baseline will be missing if either the post-baseline response
 #'   is missing or the baseline response is missing.
 #' @param data A classed `tibble` (e.g. from [brm_data()]) with raw response
-#'   as the outcome variable (role = `"response"` in [brm_data()]).
+#'   as the outcome variable and no baseline time point stored in the
+#'   attributes.
 #' @param name_change Character of length 1, name of the new outcome column
 #'   for change from baseline.
 #' @param name_baseline Character of length 1, name of the new column for
@@ -24,7 +25,6 @@
 #' data <- brm_data(
 #'   data = dplyr::rename(brm_simulate_simple()$data, y_values = response),
 #'   outcome = "y_values",
-#'   role = "response",
 #'   group = "group",
 #'   time = "time",
 #'   patient = "patient",
@@ -32,13 +32,11 @@
 #'   reference_time = "time_1"
 #' )
 #' data
-#' attr(data, "brm_role")
 #' attr(data, "brm_outcome")
 #' attr(data, "brm_baseline")
 #' attr(data, "brm_reference_time")
 #' changed <- brm_data_change(data = data, name_change = "delta")
 #' changed
-#' attr(changed, "brm_role")
 #' attr(changed, "brm_outcome")
 #' attr(changed, "brm_baseline")
 #' attr(data, "brm_reference_time")
@@ -55,11 +53,10 @@ brm_data_change <- function(
     )
   )
   assert(
-    attr(data, "brm_role") == "response",
+    !is.null(attr(data, "brm_reference_time")),
     message = paste(
-      "outcome variable must be raw response",
-      "(not change from baseline)",
-      "in the data supplied to brm_data_change()."
+      "In brm_data_change(), a baseline time point needs to exist.",
+      "It needs to have already been specified through brm_data()."
     )
   )
   assert_chr(name_change)
@@ -101,7 +98,6 @@ brm_data_change <- function(
   brm_data(
     data = out,
     outcome = name_change,
-    role = "change",
     baseline = name_baseline,
     group = attr(data, "brm_group"),
     subgroup = attr(data, "brm_subgroup"),

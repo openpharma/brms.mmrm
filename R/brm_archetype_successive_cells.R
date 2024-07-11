@@ -25,7 +25,7 @@
 #'
 #'   For group A, `beta_1` is the time 1 intercept, `beta_2` represents
 #'   time 2 minus time 1, and `beta_3` represents time 3 minus time 2.
-#'   `beta_4`, `beta_5`, and `beta_6` represent the analogous roles.
+#'   `beta_4`, `beta_5`, and `beta_6` behave analogously for group B.
 #' @section Nuisance variables:
 #'   In the presence of covariate adjustment, functions like
 #'   [brm_archetype_successive_cells()] convert nuisance factors into binary

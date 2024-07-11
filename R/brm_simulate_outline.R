@@ -2,8 +2,8 @@
 #' @export
 #' @family simulation
 #' @description Begin creating a simulated dataset.
-#' @return A data frame from [brm_data()] with attributes to define roles
-#'   for various columns in the dataset. The data frame has one row per
+#' @return A classed data frame from [brm_data()].
+#'   The data frame has one row per
 #'   patient per time point and the following columns:
 #'   * `group`: integer index of the treatment group.
 #'   * `patient`: integer index of the patient.
@@ -84,7 +84,6 @@ brm_simulate_outline <- function(
   data <- brm_data(
     data = data,
     outcome = "response",
-    role = "response",
     baseline = NULL,
     group = "group",
     subgroup = if_any(is.null(n_subgroup), NULL, "subgroup"),

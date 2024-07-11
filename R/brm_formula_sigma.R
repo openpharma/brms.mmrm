@@ -76,7 +76,6 @@
 #' data <- brm_data(
 #'   data = brm_simulate_simple()$data,
 #'   outcome = "response",
-#'   role = "response",
 #'   group = "group",
 #'   time = "time",
 #'   patient = "patient",
@@ -150,7 +149,6 @@ brm_formula_sigma <- function(
     baseline_time ||
     covariates
   allow_effect_size <- !exclude_effect_size
-  name_role <- attr(data, "brm_role")
   name_baseline <- attr(data, "brm_baseline")
   name_group <- attr(data, "brm_group")
   name_subgroup <- attr(data, "brm_subgroup")

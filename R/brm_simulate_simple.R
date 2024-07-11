@@ -95,7 +95,6 @@ brm_simulate_simple <- function(
   data <- brm_data(
     data = data,
     outcome = "response",
-    role = "response",
     baseline = NULL,
     group = "group",
     time = "time",

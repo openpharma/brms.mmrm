@@ -1,4 +1,4 @@
-# brms.mmrm 1.0.1.9006 (development)
+# brms.mmrm 1.0.1.9007 (development)
 
 * Add `brm_marginal_grid()`.
 * Show posterior samples of `sigma` in `brm_marginal_draws()` and `brm_marginal_summaries()`.
@@ -10,6 +10,7 @@
 * Take defaults `data` and `formula` from the above in `brm_marginal_draws()`.
 * Set the default value of `effect_size` to `attr(formula, "brm_allow_effect_size")`.
 * Remove defaults from some arguments to `brm_data()` and document examples.
+* Deprecate the `role` argument of `brm_data()` in favor of `reference_time` (#119).
 
 # brms.mmrm 1.0.1
 

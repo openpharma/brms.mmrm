@@ -111,7 +111,7 @@ which express the marginal means \code{mu_gt} as follows:
 
 For group A, \code{beta_1} is the time 1 intercept, \code{beta_2} represents
 time 2 minus time 1, and \code{beta_3} represents time 3 minus time 2.
-\code{beta_4}, \code{beta_5}, and \code{beta_6} represent the analogous roles.
+\code{beta_4}, \code{beta_5}, and \code{beta_6} behave analogously for group B.
 }
 \section{Nuisance variables}{
 
