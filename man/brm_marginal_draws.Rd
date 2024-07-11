@@ -80,15 +80,21 @@ Only returned if the \code{reference_time} argument of \code{\link[=brm_data]{br
 not \code{NULL} (i.e. if a baseline value for the time variable
 was identified).
 \item \code{difference_group}: treatment effect:
-the \code{difference_time} at each active group minus the \code{difference_time}
-at the control group (\code{reference_group}).
-If \code{reference_time} was \code{NULL} in \code{\link[=brm_data]{brm_data()}} (i.e. no baseline
-time point), then treatment group
-is instead the difference between \code{response} at each active group minus
-the \code{response} at the control group.
+These samples depend on the values of \code{reference_group} and
+\code{reference_time} which were originally declared in \code{\link[=brm_data]{brm_data()}}.
+\code{reference_group} is the control group, and \code{reference_time}
+is baseline. If baseline was originally given (via \code{reference_time}
+in \code{\link[=brm_data]{brm_data()}}),
+then \code{difference_time} is the change-from-baseline value of
+each active group minus that of the control group.
+Otherwise, if baseline is omitted (i.e. \code{reference_time = NULL}
+(default) in \code{\link[=brm_data]{brm_data()}}), then \code{difference_time} is the
+raw response at each active group minus that of the control group.
 \item \code{difference_subgroup}: subgroup differences: the \code{difference_group}
 at each subgroup level minus the \code{difference_group} at the subgroup
-reference level (\code{reference_subgroup}).
+reference level (\code{reference_subgroup}). Only reported if a subgroup
+analysis was specified through the appropriate arguments to
+\code{\link[=brm_data]{brm_data()}} and \code{\link[=brm_formula]{brm_formula()}}.
 \item \code{effect}: effect size, defined as the treatment difference
 divided by the residual standard deviation. Omitted if
 the \code{effect_size} argument is \code{FALSE} or if the
@@ -102,6 +108,19 @@ the \code{effect_size} argument is \code{FALSE} or if the
 \description{
 Get marginal posterior draws from a fitted MMRM.
 }
+\section{Baseline}{
+
+The returned values from \code{\link[=brm_marginal_draws]{brm_marginal_draws()}}
+depend on whether a baseline time point
+was declared through the \code{reference_time} argument of \code{\link[=brm_data]{brm_data()}}.
+If \code{reference_time} was not \code{NULL}, then \code{\link[=brm_marginal_draws]{brm_marginal_draws()}} will
+calculate change from baseline, and it will calculate treatment
+differences as differences between change-from-baseline values.
+If \code{reference_time} was not \code{NULL}, then \code{\link[=brm_marginal_draws]{brm_marginal_draws()}} will
+not calculate change from baseline, and it will calculate treatment
+differences as differences between response values.
+}
+
 \section{Separation string}{
 
 Post-processing in \code{\link[=brm_marginal_draws]{brm_marginal_draws()}} names each of the
@@ -118,7 +137,6 @@ set.seed(0L)
 data <- brm_data(
   data = brm_simulate_simple()$data,
   outcome = "response",
-  role = "response",
   group = "group",
   time = "time",
   patient = "patient",

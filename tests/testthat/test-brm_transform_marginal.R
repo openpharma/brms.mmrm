@@ -10,7 +10,6 @@ test_that("brm_transform_marginal(), response, non-subgroup", {
   data <- brm_data(
     data = raw_data,
     outcome = "FEV1",
-    role = "response",
     group = "ARMCD",
     time = "AVISIT",
     patient = "USUBJID",
@@ -89,7 +88,6 @@ test_that("brm_transform_marginal(), change, non-subgroup", {
   data <- brm_data(
     data = raw_data,
     outcome = "FEV1_CHG",
-    role = "change",
     group = "ARMCD",
     time = "AVISIT",
     patient = "USUBJID",
@@ -174,7 +172,6 @@ test_that("brm_transform_marginal(), change, subgroup, global", {
   data <- brm_data(
     data = raw_data,
     outcome = "FEV1_CHG",
-    role = "change",
     group = "ARMCD",
     subgroup = "SEX",
     time = "AVISIT",
@@ -282,7 +279,6 @@ test_that("brm_transform_marginal(), change, subgroup, local", {
   data <- brm_data(
     data = raw_data,
     outcome = "FEV1_CHG",
-    role = "change",
     group = "ARMCD",
     subgroup = "SEX",
     time = "AVISIT",

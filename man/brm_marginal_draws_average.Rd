@@ -27,28 +27,10 @@ after the label and time points are sanitized.}
 A named list of tibbles of MCMC draws of the marginal posterior
 distribution of each treatment group and time point
 (or group-by-subgroup-by-time, if applicable).
-In each tibble, there is 1 row per posterior sample sand one column for
-each type of marginal distribution (i.e. each combination of treatment
-group and discrete time point. The specific \code{tibble}s in the returned
-list are described below:
-\itemize{
-\item \code{response}: on the scale of the response variable.
-\item \code{difference_time}: change from baseline: the
-\code{response} at a particular time minus the \code{response} at baseline
-(\code{reference_time}).
-Only returned if the \code{role} argument of \code{\link[=brm_data]{brm_data()}} was
-\code{"response"}. (If \code{role} is \code{"change"}, then \code{response} already
-represents change from baseline.)
-\item \code{difference_group}: treatment effect: the
-the \code{difference_time} at each active group minus the \code{difference_time}
-at the control group (\code{reference_group}).
-If \code{role} is \code{"change"}, then treatment group
-is instead the difference between \code{response} at each active group minus
-the \code{response} at the control group.
-\item \code{difference_subgroup}: subgroup differences: the \code{difference_group}
-at each subgroup level minus the \code{difference_group} at the subgroup
-reference level (\code{reference_subgroup}).
-}
+See \code{\link[=brm_marginal_draws]{brm_marginal_draws()}} for the full details of the return value.
+The only difference is that \code{\link[=brm_marginal_draws_average]{brm_marginal_draws_average()}} returns
+a single pseudo-time-point to represent the average across
+multiple real time points.
 }
 \description{
 Simple un-weighted arithmetic mean of
@@ -70,7 +52,6 @@ set.seed(0L)
 data <- brm_data(
   data = brm_simulate_simple()$data,
   outcome = "response",
-  role = "response",
   group = "group",
   time = "time",
   patient = "patient",

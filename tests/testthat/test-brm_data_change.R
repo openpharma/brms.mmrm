@@ -5,7 +5,6 @@ test_that("brm_data_change()", {
   data <- brm_data(
     data = data,
     outcome = "y_values",
-    role = "response",
     group = "group",
     time = "time",
     missing = "missing",
@@ -13,7 +12,6 @@ test_that("brm_data_change()", {
     reference_group = "group_1",
     reference_time = "time_1"
   )
-  expect_equal(attr(data, "brm_role"), "response")
   expect_equal(attr(data, "brm_outcome"), "y_values")
   expect_null(attr(data, "brm_baseline"))
   expect_equal(attr(data, "brm_reference_time"), "time_1")
@@ -29,7 +27,6 @@ test_that("brm_data_change()", {
     sub2 <- changed[changed$time == time, ]
     expect_true(all(sub2$missing == base$missing | sub1$missing))
   }
-  expect_equal(attr(changed, "brm_role"), "change")
   expect_equal(attr(changed, "brm_outcome"), "delta")
   expect_equal(attr(changed, "brm_baseline"), "base")
   expect_null(attr(changed, "brm_reference_time"))
@@ -54,14 +51,12 @@ test_that("brm_data_change()", {
   data <- brm_data(
     data = dplyr::rename(brm_simulate_simple()$data, y_values = response),
     outcome = "y_values",
-    role = "response",
     group = "group",
     time = "time",
     patient = "patient",
     reference_group = "group_1",
     reference_time = "time_1"
   )
-  expect_equal(attr(data, "brm_role"), "response")
   expect_equal(attr(data, "brm_outcome"), "y_values")
   expect_null(attr(data, "brm_baseline"))
   expect_equal(attr(data, "brm_reference_time"), "time_1")
@@ -70,7 +65,6 @@ test_that("brm_data_change()", {
     name_change = "delta",
     name_baseline = "base"
   )
-  expect_equal(attr(changed, "brm_role"), "change")
   expect_equal(attr(changed, "brm_outcome"), "delta")
   expect_equal(attr(changed, "brm_baseline"), "base")
   expect_null(attr(changed, "brm_reference_time"))
@@ -95,14 +89,12 @@ test_that("brm_data_change() assertions", {
   data <- brm_data(
     data = dplyr::rename(brm_simulate_simple()$data, y_values = response),
     outcome = "y_values",
-    role = "response",
     group = "group",
     time = "time",
     patient = "patient",
     reference_group = "group_1",
     reference_time = "time_1"
   )
-  expect_equal(attr(data, "brm_role"), "response")
   expect_equal(attr(data, "brm_outcome"), "y_values")
   expect_null(attr(data, "brm_baseline"))
   expect_equal(attr(data, "brm_reference_time"), "time_1")

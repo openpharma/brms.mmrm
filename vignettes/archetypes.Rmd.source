@@ -44,7 +44,6 @@ data(fev_data, package = "mmrm")
 data <- fev_data |>
   brm_data(
     outcome = "FEV1",
-    role = "response",
     group = "ARMCD",
     time = "AVISIT",
     patient = "USUBJID",

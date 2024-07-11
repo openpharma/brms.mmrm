@@ -8,7 +8,6 @@ test_that("brm_formula() with default names and all non-subgroup terms", {
       USUBJID = c("x", "y")
     ),
     outcome = "CHG",
-    role = "change",
     group = "TRT01P",
     time = "AVISIT",
     baseline = "baseline",
@@ -66,7 +65,6 @@ test_that("brm_formula() same with homogeneous variance", {
       USUBJID = c("x", "y")
     ),
     outcome = "CHG",
-    role = "change",
     group = "TRT01P",
     time = "AVISIT",
     baseline = "baseline",
@@ -116,7 +114,6 @@ test_that("brm_formula() different correlation structures", {
       USUBJID = c("x", "y")
     ),
     outcome = "CHG",
-    role = "change",
     group = "TRT01P",
     time = "AVISIT",
     baseline = "baseline",
@@ -269,7 +266,6 @@ test_that("brm_formula() with default names and all terms", {
       USUBJID = c("x", "y")
     ),
     outcome = "CHG",
-    role = "change",
     group = "TRT01P",
     subgroup = "subgroup",
     time = "AVISIT",
@@ -323,7 +319,6 @@ test_that("brm_formula() with all user-supplied columns, all non-sub terms", {
       a = c(1, 2)
     ),
     outcome = "y",
-    role = "change",
     group = "g",
     time = "t",
     baseline = "b",
@@ -364,7 +359,6 @@ test_that("brm_formula() with one user-supplied column, all non-sub terms", {
       a = c(1, 2)
     ),
     outcome = "y",
-    role = "change",
     group = "g",
     time = "t",
     baseline = "b",
@@ -405,7 +399,6 @@ test_that("brm_formula() omitting covariates", {
       a = c(1, 2)
     ),
     outcome = "y",
-    role = "change",
     group = "g",
     time = "t",
     baseline = "b",
@@ -448,7 +441,6 @@ test_that("brm_formula() with all user-supplied columns, all terms", {
       a = c(1, 2)
     ),
     outcome = "y",
-    role = "change",
     group = "g",
     subgroup = "s",
     time = "t",
@@ -500,7 +492,6 @@ test_that("brm_formula() with individual terms", {
       SUBGROUP = c("x", "y")
     ),
     outcome = "CHG",
-    role = "change",
     group = "GROUP",
     subgroup = "SUBGROUP",
     time = "TIME",

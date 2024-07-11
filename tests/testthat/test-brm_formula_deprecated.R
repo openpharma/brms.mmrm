@@ -8,7 +8,6 @@ test_that("brm_formula() with default names and all terms", {
       USUBJID = c("x", "y")
     ),
     outcome = "CHG",
-    role = "change",
     group = "TRT01P",
     time = "AVISIT",
     baseline = "baseline",
@@ -57,7 +56,6 @@ test_that("brm_formula() with all user-supplied columns and all terms", {
       a = c(1, 2)
     ),
     outcome = "y",
-    role = "change",
     group = "g",
     time = "t",
     baseline = "b",
@@ -102,7 +100,6 @@ test_that("brm_formula() without intercept", {
       USUBJID = c("x", "y")
     ),
     outcome = "CHG",
-    role = "change",
     group = "TRT01P",
     time = "AVISIT",
     baseline = "baseline",
@@ -149,7 +146,6 @@ test_that("brm_formula() without group effect", {
       USUBJID = c("x", "y")
     ),
     outcome = "CHG",
-    role = "change",
     group = "TRT01P",
     time = "AVISIT",
     baseline = "baseline",
@@ -196,7 +192,6 @@ test_that("brm_formula() without time effect", {
       USUBJID = c("x", "y")
     ),
     outcome = "CHG",
-    role = "change",
     group = "TRT01P",
     time = "AVISIT",
     baseline = "baseline",
@@ -243,7 +238,6 @@ test_that("brm_formula() without baseline effect", {
       USUBJID = c("x", "y")
     ),
     outcome = "CHG",
-    role = "change",
     group = "TRT01P",
     time = "AVISIT",
     baseline = "baseline",
@@ -290,7 +284,6 @@ test_that("brm_formula() without baseline interaction", {
       USUBJID = c("x", "y")
     ),
     outcome = "CHG",
-    role = "change",
     group = "TRT01P",
     time = "AVISIT",
     baseline = "baseline",
@@ -337,7 +330,6 @@ test_that("brm_formula() without group interaction", {
       USUBJID = c("x", "y")
     ),
     outcome = "CHG",
-    role = "change",
     group = "TRT01P",
     time = "AVISIT",
     baseline = "baseline",

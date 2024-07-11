@@ -16,7 +16,6 @@ test_that("brm_data() response", {
   out <- brm_data(
     data = data,
     outcome = "col_response",
-    role = "response",
     group = "col_group",
     time = "col_time",
     patient = "col_patient",
@@ -61,7 +60,6 @@ test_that("brm_data() response", {
   expect_equal(out$col_patient, out$col_factor2)
   expect_equal(out$col_patient, out$col_factor3)
   expect_equal(attr(out, "brm_outcome"), "col_response")
-  expect_equal(attr(out, "brm_role"), "response")
   expect_equal(attr(out, "brm_group"), "col_group")
   expect_null(attr(out, "brm_subgroup"))
   expect_equal(attr(out, "brm_time"), "col_time")
@@ -95,7 +93,6 @@ test_that("brm_data() response with subgroup", {
     brm_data(
       data = data,
       outcome = "col_response",
-      role = "response",
       group = "col_group",
       subgroup = "col_subgroup",
       time = "col_time",
@@ -110,7 +107,6 @@ test_that("brm_data() response with subgroup", {
   out <- brm_data(
     data = data,
     outcome = "col_response",
-    role = "response",
     group = "col_group",
     subgroup = "col_subgroup",
     time = "col_time",
@@ -184,7 +180,6 @@ test_that("brm_data() response with subgroup", {
   expect_equal(out$col_patient, out$col_factor2)
   expect_equal(out$col_patient, out$col_factor3)
   expect_equal(attr(out, "brm_outcome"), "col_response")
-  expect_equal(attr(out, "brm_role"), "response")
   expect_equal(attr(out, "brm_group"), "col_group")
   expect_equal(attr(out, "brm_subgroup"), "col_subgroup")
   expect_equal(attr(out, "brm_time"), "col_time")
@@ -214,7 +209,6 @@ test_that("brm_data() change", {
   out <- brm_data(
     data = data,
     outcome = "col_response",
-    role = "change",
     group = "col_group",
     time = "col_time",
     patient = "col_patient",
@@ -254,7 +248,6 @@ test_that("brm_data() change", {
     sort(c(data$col_response))
   )
   expect_equal(attr(out, "brm_outcome"), "col_response")
-  expect_equal(attr(out, "brm_role"), "change")
   expect_equal(attr(out, "brm_group"), "col_group")
   expect_equal(attr(out, "brm_time"), "col_time")
   expect_equal(attr(out, "brm_patient"), "col_patient")
@@ -264,7 +257,7 @@ test_that("brm_data() change", {
   expect_null(attr(out, "brm_reference_time"))
 })
 
-test_that("brm_data() bad role", {
+test_that("brm_data() bad reference_time", {
   set.seed(0)
   sim <- brm_simulate_simple()
   data <- tibble::as_tibble(sim$data)
@@ -277,16 +270,27 @@ test_that("brm_data() bad role", {
   expect_error(
     brm_data(
       data = data,
-      outcome = "response",
-      role = "nope",
+      outcome = "col_response",
       group = "col_group",
       time = "col_time",
       patient = "col_patient",
       covariates = c("col_factor2", "col_factor3"),
-      reference_group = "group 1",
-      reference_time = "time 1"
+      reference_group = "group_1",
+      reference_time = "time_nope"
     ),
     class = "brm_error"
+  )
+  expect_silent(
+    brm_data(
+      data = data,
+      outcome = "col_response",
+      group = "col_group",
+      time = "col_time",
+      patient = "col_patient",
+      covariates = c("col_factor2", "col_factor3"),
+      reference_group = "group_1",
+      reference_time = "time_1"
+    )
   )
 })
 
@@ -304,7 +308,6 @@ test_that("brm_data() bad group", {
     brm_data(
       data = data,
       outcome = "col_response",
-      role = "response",
       group = "nope",
       time = "col_time",
       patient = "col_patient",
@@ -330,7 +333,6 @@ test_that("brm_data() levels", {
     brm_data(
       data = data,
       outcome = "col_response",
-      role = "response",
       group = "nope",
       time = "col_time",
       patient = "col_patient",
@@ -357,7 +359,6 @@ test_that("brm_data() deprecate level_control", {
     brm_data(
       data = brm_simulate_simple()$data,
       outcome = "response",
-      role = "response",
       group = "group",
       time = "time",
       patient = "patient",
@@ -374,7 +375,6 @@ test_that("brm_data() deprecate level_baseline", {
     brm_data(
       data = brm_simulate_simple()$data,
       outcome = "response",
-      role = "response",
       group = "group",
       time = "time",
       patient = "patient",
@@ -397,7 +397,6 @@ test_that("brm_data() ordered factor contrasts", {
   out <- brm_data(
     data = data,
     outcome = "response",
-    role = "response",
     group = "group",
     time = "time",
     patient = "patient",
@@ -407,5 +406,50 @@ test_that("brm_data() ordered factor contrasts", {
   expect_equal(
     sort(colnames(model.matrix(~ time, data = out))),
     sort(c("(Intercept)", "time2", "time3", "time4"))
+  )
+})
+
+test_that("deprecate role argument", {
+  set.seed(0)
+  sim <- brm_simulate_simple()
+  data <- tibble::as_tibble(sim$data)
+  for (field in c("group", "time", "patient")) {
+    data[[field]] <- gsub("_", " ", data[[field]])
+  }
+  data$group <- as.factor(data$group)
+  data$factor1 <- data$patient
+  data$factor2 <- data$patient
+  data$factor3 <- data$patient
+  colnames(data) <- paste0("col_", colnames(data))
+  data <- data[- c(2L, 3L), ]
+  data <- data[sample.int(n = nrow(data)), ]
+  data$col_missing <- FALSE
+  expect_warning(
+    out <- brm_data(
+      data = data,
+      outcome = "col_response",
+      role = "response",
+      group = "col_group",
+      time = "col_time",
+      patient = "col_patient",
+      covariates = c("col_factor2", "col_factor3"),
+      reference_group = "group 1",
+      reference_time = "time 1",
+      missing = "col_missing"
+    ),
+    class = "brm_deprecate"
+  )
+  expect_silent(
+    out <- brm_data(
+      data = data,
+      outcome = "col_response",
+      group = "col_group",
+      time = "col_time",
+      patient = "col_patient",
+      covariates = c("col_factor2", "col_factor3"),
+      reference_group = "group 1",
+      reference_time = "time 1",
+      missing = "col_missing"
+    )
   )
 })

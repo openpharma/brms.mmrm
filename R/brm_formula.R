@@ -187,7 +187,6 @@
 #' data <- brm_data(
 #'   data = brm_simulate_simple()$data,
 #'   outcome = "response",
-#'   role = "response",
 #'   group = "group",
 #'   time = "time",
 #'   patient = "patient",
@@ -371,7 +370,6 @@ brm_formula.default <- function(
   brm_formula_validate_correlation(correlation)
   brm_formula_sigma_validate(sigma)
   name_outcome <- attr(data, "brm_outcome")
-  name_role <- attr(data, "brm_role")
   name_baseline <- attr(data, "brm_baseline")
   name_group <- attr(data, "brm_group")
   name_subgroup <- attr(data, "brm_subgroup")

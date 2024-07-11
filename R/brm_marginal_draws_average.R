@@ -7,26 +7,10 @@
 #' @return A named list of tibbles of MCMC draws of the marginal posterior
 #'   distribution of each treatment group and time point
 #'   (or group-by-subgroup-by-time, if applicable).
-#'   In each tibble, there is 1 row per posterior sample sand one column for
-#'   each type of marginal distribution (i.e. each combination of treatment
-#'   group and discrete time point. The specific `tibble`s in the returned
-#'   list are described below:
-#'   * `response`: on the scale of the response variable.
-#'   * `difference_time`: change from baseline: the
-#'     `response` at a particular time minus the `response` at baseline
-#'     (`reference_time`).
-#'     Only returned if the `role` argument of [brm_data()] was
-#'     `"response"`. (If `role` is `"change"`, then `response` already
-#'     represents change from baseline.)
-#'   * `difference_group`: treatment effect: the
-#'     the `difference_time` at each active group minus the `difference_time`
-#'     at the control group (`reference_group`).
-#'     If `role` is `"change"`, then treatment group
-#'     is instead the difference between `response` at each active group minus
-#'     the `response` at the control group.
-#'   * `difference_subgroup`: subgroup differences: the `difference_group`
-#'     at each subgroup level minus the `difference_group` at the subgroup
-#'     reference level (`reference_subgroup`).
+#'   See [brm_marginal_draws()] for the full details of the return value.
+#'   The only difference is that [brm_marginal_draws_average()] returns
+#'   a single pseudo-time-point to represent the average across
+#'   multiple real time points.
 #' @inheritParams brm_marginal_draws
 #' @param draws List of posterior draws from [brm_marginal_draws()].
 #' @param times Character vector of discrete time point levels
@@ -44,7 +28,6 @@
 #' data <- brm_data(
 #'   data = brm_simulate_simple()$data,
 #'   outcome = "response",
-#'   role = "response",
 #'   group = "group",
 #'   time = "time",
 #'   patient = "patient",

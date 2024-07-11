@@ -4,7 +4,6 @@ test_that("brm_marginal_draws() on response, no subgroup", {
   data <- brm_data(
     data = brm_simulate_simple()$data,
     outcome = "response",
-    role = "response",
     group = "group",
     time = "time",
     patient = "patient",
@@ -139,7 +138,6 @@ test_that("brm_marginal_draws() on response without baseline", {
   data <- brm_data(
     data = brm_simulate_simple()$data,
     outcome = "response",
-    role = "response",
     group = "group",
     time = "time",
     patient = "patient",
@@ -340,7 +338,6 @@ test_that("brm_marginal_draws() on change, homogeneous var, no subgroup", {
   data <- brm_data(
     data = tibble::as_tibble(brm_simulate_simple()$data),
     outcome = "response",
-    role = "change",
     group = "group",
     time = "time",
     patient = "patient",

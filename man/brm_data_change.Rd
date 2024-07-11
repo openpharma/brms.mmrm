@@ -8,7 +8,8 @@ brm_data_change(data, name_change = "change", name_baseline = "baseline")
 }
 \arguments{
 \item{data}{A classed \code{tibble} (e.g. from \code{\link[=brm_data]{brm_data()}}) with raw response
-as the outcome variable (role = \code{"response"} in \code{\link[=brm_data]{brm_data()}}).}
+as the outcome variable and no baseline time point stored in the
+attributes.}
 
 \item{name_change}{Character of length 1, name of the new outcome column
 for change from baseline.}
@@ -37,7 +38,6 @@ set.seed(0)
 data <- brm_data(
   data = dplyr::rename(brm_simulate_simple()$data, y_values = response),
   outcome = "y_values",
-  role = "response",
   group = "group",
   time = "time",
   patient = "patient",
@@ -45,13 +45,11 @@ data <- brm_data(
   reference_time = "time_1"
 )
 data
-attr(data, "brm_role")
 attr(data, "brm_outcome")
 attr(data, "brm_baseline")
 attr(data, "brm_reference_time")
 changed <- brm_data_change(data = data, name_change = "delta")
 changed
-attr(changed, "brm_role")
 attr(changed, "brm_outcome")
 attr(changed, "brm_baseline")
 attr(data, "brm_reference_time")

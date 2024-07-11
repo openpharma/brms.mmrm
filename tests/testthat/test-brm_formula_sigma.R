@@ -8,7 +8,6 @@ test_that("brm_formula_sigma() with default names and all non-subgroup terms", {
       USUBJID = c("x", "y")
     ),
     outcome = "CHG",
-    role = "change",
     group = "TRT01P",
     time = "AVISIT",
     baseline = "baseline",
@@ -57,7 +56,6 @@ test_that("brm_formula_sigma() same with homogeneous variance", {
       USUBJID = c("x", "y")
     ),
     outcome = "CHG",
-    role = "change",
     group = "TRT01P",
     time = "AVISIT",
     baseline = "baseline",
@@ -91,7 +89,6 @@ test_that("brm_formula_sigma() with default names and terms", {
       USUBJID = c("x", "y")
     ),
     outcome = "CHG",
-    role = "change",
     group = "TRT01P",
     subgroup = "subgroup",
     time = "AVISIT",
@@ -118,7 +115,6 @@ test_that("brm_formula_sigma() with default names and terms, subgroup", {
       USUBJID = c("x", "y")
     ),
     outcome = "CHG",
-    role = "change",
     group = "TRT01P",
     subgroup = "subgroup",
     time = "AVISIT",
@@ -149,7 +145,6 @@ test_that("brm_formula_sigma() brm_allow_effect_size", {
       USUBJID = c("x", "y")
     ),
     outcome = "CHG",
-    role = "change",
     group = "TRT01P",
     subgroup = "subgroup",
     time = "AVISIT",
