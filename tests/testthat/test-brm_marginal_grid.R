@@ -4,7 +4,6 @@ test_that("brm_marginal_grid() non-subgroup", {
   data <- brm_data(
     data = fev_data,
     outcome = "FEV1",
-    role = "response",
     group = "ARMCD",
     time = "AVISIT",
     patient = "USUBJID",
@@ -45,7 +44,6 @@ test_that("brm_marginal_grid() subgroup", {
   data <- brm_data(
     data = fev_data,
     outcome = "FEV1",
-    role = "response",
     group = "ARMCD",
     subgroup = "SEX",
     time = "AVISIT",

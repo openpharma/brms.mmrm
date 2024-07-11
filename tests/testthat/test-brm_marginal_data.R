@@ -3,7 +3,6 @@ test_that("brm_marginal_data()", {
   data <- brm_data(
     data = tibble::as_tibble(brm_simulate_simple()$data),
     outcome = "response",
-    role = "response",
     group = "group",
     time = "time",
     patient = "patient",
@@ -56,7 +55,6 @@ test_that("brm_marginal_data() subgroup", {
       tibble::tibble(subgroup = c("subgroup_1", "subgroup_2"))
     ),
     outcome = "response",
-    role = "response",
     group = "group",
     subgroup = "subgroup",
     time = "time",

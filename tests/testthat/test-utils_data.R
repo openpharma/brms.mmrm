@@ -30,7 +30,6 @@ test_that("brm_has_subgroup() on regular data", {
       SUBGROUP = c("x", "y")
     ),
     outcome = "CHG",
-    role = "change",
     group = "GROUP",
     subgroup = "SUBGROUP",
     time = "TIME",
@@ -124,7 +123,6 @@ test_that("brm_has_nuisance() on regular data", {
       FACTOR = c("x", "y")
     ),
     outcome = "CHG",
-    role = "change",
     group = "GROUP",
     subgroup = "SUBGROUP",
     time = "TIME",
