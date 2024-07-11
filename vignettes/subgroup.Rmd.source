@@ -62,7 +62,6 @@ When you create the special classed dataset for `brms.mmrm` using `brm_data()`, 
 data <- brm_data(
   data = raw_data,
   outcome = "response",
-  role = "response",
   baseline = NULL,
   group = "group",
   subgroup = "subgroup",

@@ -88,7 +88,6 @@ When you create the special classed dataset for `brms.mmrm` using `brm_data()`, 
 data <- brm_data(
   data = raw_data,
   outcome = "response",
-  role = "response",
   baseline = NULL,
   group = "group",
   subgroup = "subgroup",
@@ -108,7 +107,6 @@ str(data)
 #>  $ missing : logi [1:900] FALSE FALSE FALSE FALSE FALSE FALSE ...
 #>  $ response: num [1:900] 1.263 -0.326 1.33 1.272 0.415 ...
 #>  - attr(*, "brm_outcome")= chr "response"
-#>  - attr(*, "brm_role")= chr "response"
 #>  - attr(*, "brm_group")= chr "group"
 #>  - attr(*, "brm_subgroup")= chr "subgroup"
 #>  - attr(*, "brm_time")= chr "time"

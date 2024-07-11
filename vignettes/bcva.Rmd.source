@@ -100,7 +100,6 @@ bcva_data <- bcva_data |>
   mutate(AVISIT = gsub("VIS0*", "VIS", as.character(AVISIT))) |>
   brm_data(
     outcome = "BCVA_CHG",
-    role = "change",
     group = "ARMCD",
     time = "AVISIT",
     patient = "USUBJID",

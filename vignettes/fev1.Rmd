@@ -100,7 +100,6 @@ The rest of the pre-processing steps create factors for the study arm and visit 
 > fev_data <- brm_data(
 +   data = fev_data,
 +   outcome = "FEV1_CHG",
-+   role = "change",
 +   group = "ARMCD",
 +   time = "AVISIT",
 +   patient = "USUBJID",
