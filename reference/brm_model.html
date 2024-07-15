@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">brms.mmrm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1.9007</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1.9008</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,7 +69,13 @@
 
 <dl><dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
 <dd><p>A classed data frame from <code><a href="brm_data.html">brm_data()</a></code>, or an informative
-prior archetype from a function like <code><a href="brm_archetype_successive_cells.html">brm_archetype_successive_cells()</a></code>.</p></dd>
+prior archetype from a function like <code><a href="brm_archetype_successive_cells.html">brm_archetype_successive_cells()</a></code>.
+Unless you supplied <code>model_missing_outcomes = TRUE</code> in <code><a href="brm_formula.html">brm_formula()</a></code>,
+rows with missing outcomes are automatically removed from the dataset
+just prior to fitting the model. The <code>brms.mmrm_data</code> attribute
+in the output object is always the version of the data prior to
+removing these rows. See the non-<code>brms.mmrm</code> inner attributes of the
+output object for the final data actually supplied to the model.</p></dd>
 
 
 <dt id="arg-formula">formula<a class="anchor" aria-label="anchor" href="#arg-formula"></a></dt>
@@ -99,7 +105,9 @@ Must fit a continuous outcome variable and have the identity link.</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A fitted model object from <code>brms</code>, with new list elements
 <code>brms.mmrm_data</code> and <code>brms.mmrm_formula</code> to capture the data
-and formula used to fit the model.</p>
+and formula supplied to <code>brm_model()</code>. See the explanation of the
+<code>data</code> argument for how the data is handled and how it relates
+to the data returned in the <code>brms.mmrm_data</code> attribute.</p>
     </div>
     <div class="section level2">
     <h2 id="parameterization">Parameterization<a class="anchor" aria-label="anchor" href="#parameterization"></a></h2>

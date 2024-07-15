@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">brms.mmrm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1.9007</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1.9008</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -142,7 +142,11 @@ The <code>patient</code> column in the data should be a factor or character vect
 
 
 <dt id="arg-covariates">covariates<a class="anchor" aria-label="anchor" href="#arg-covariates"></a></dt>
-<dd><p>Character vector of names of other covariates.</p></dd>
+<dd><p>Character vector of names of other covariates.
+All these covariates are assumed to be non-time-varying. For time-varying
+covariates, please manually expand the data to the full grid of patients
+and time points before you call <code>brm_data()</code>. See the "Preprocessing"
+section for details.</p></dd>
 
 
 <dt id="arg-missing">missing<a class="anchor" aria-label="anchor" href="#arg-missing"></a></dt>
@@ -220,7 +224,11 @@ are properly formatted.</p></li>
 <code>make.names(unique = FALSE, allow_ = TRUE)</code> to ensure agreement
 between the data and the output of <code>brms</code>.</p></li>
 <li><p>For each implicitly missing outcome observation, add explicit row
-with the outcome variable equal to <code>NA_real_</code>.</p></li>
+with the outcome variable equal to <code>NA_real_</code>. Missing values
+in the predictors are implicitly filled using <code><a href="https://rdrr.io/pkg/zoo/man/na.locf.html" class="external-link">zoo::na.locf()</a></code>
+on within each patient, which is not valid for time-varying
+covariates. If any covariates are time-varying, please
+manually perform this step before calling <code>brm_data()</code>.</p></li>
 <li><p>Arrange the rows of the data by group, then patient, then discrete time.</p></li>
 <li><p>Select only the columns of the data relevant to an MMRM analysis.</p></li>
 </ul></div>

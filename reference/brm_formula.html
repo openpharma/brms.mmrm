@@ -9,7 +9,7 @@ brm_data() dataset or an informative prior archetype."><meta property="og:image"
 
     <a class="navbar-brand me-2" href="../index.html">brms.mmrm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1.9007</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1.9008</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -59,6 +59,7 @@ brm_data() dataset or an informative prior archetype."><meta property="og:image"
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">brm_formula</span><span class="op">(</span></span>
 <span>  <span class="va">data</span>,</span>
+<span>  model_missing_outcomes <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  check_rank <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  sigma <span class="op">=</span> <span class="fu">brms.mmrm</span><span class="fu">::</span><span class="fu"><a href="brm_formula_sigma.html">brm_formula_sigma</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">data</span>, check_rank <span class="op">=</span> <span class="va">check_rank</span><span class="op">)</span>,</span>
 <span>  correlation <span class="op">=</span> <span class="st">"unstructured"</span>,</span>
@@ -71,6 +72,7 @@ brm_data() dataset or an informative prior archetype."><meta property="og:image"
 <span><span class="co"># Default S3 method</span></span>
 <span><span class="fu">brm_formula</span><span class="op">(</span></span>
 <span>  <span class="va">data</span>,</span>
+<span>  model_missing_outcomes <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  check_rank <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  sigma <span class="op">=</span> <span class="fu">brms.mmrm</span><span class="fu">::</span><span class="fu"><a href="brm_formula_sigma.html">brm_formula_sigma</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">data</span>, check_rank <span class="op">=</span> <span class="va">check_rank</span><span class="op">)</span>,</span>
 <span>  correlation <span class="op">=</span> <span class="st">"unstructured"</span>,</span>
@@ -103,6 +105,7 @@ brm_data() dataset or an informative prior archetype."><meta property="og:image"
 <span><span class="co"># S3 method for class 'brms_mmrm_archetype'</span></span>
 <span><span class="fu">brm_formula</span><span class="op">(</span></span>
 <span>  <span class="va">data</span>,</span>
+<span>  model_missing_outcomes <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  check_rank <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  sigma <span class="op">=</span> <span class="fu">brms.mmrm</span><span class="fu">::</span><span class="fu"><a href="brm_formula_sigma.html">brm_formula_sigma</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">data</span>, check_rank <span class="op">=</span> <span class="va">check_rank</span><span class="op">)</span>,</span>
 <span>  correlation <span class="op">=</span> <span class="st">"unstructured"</span>,</span>
@@ -121,6 +124,21 @@ brm_data() dataset or an informative prior archetype."><meta property="og:image"
 <dl><dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
 <dd><p>A classed data frame from <code><a href="brm_data.html">brm_data()</a></code>, or an informative
 prior archetype from a function like <code><a href="brm_archetype_successive_cells.html">brm_archetype_successive_cells()</a></code>.</p></dd>
+
+
+<dt id="arg-model-missing-outcomes">model_missing_outcomes<a class="anchor" aria-label="anchor" href="#arg-model-missing-outcomes"></a></dt>
+<dd><p>Logical of length 1, <code>TRUE</code>
+to impute missing outcomes during model fitting as described in the
+"Imputation during model fitting" section of
+<a href="https://paul-buerkner.github.io/brms/articles/brms_missings.html" class="external-link">https://paul-buerkner.github.io/brms/articles/brms_missings.html</a>.
+Specifically, if the outcome variable is <code>y</code>, then the formula will
+begin with <code>y | mi() ~ ...</code> instead of simply <code>y ~ ...</code>.
+Set to <code>FALSE</code> (default) to forgo this kind of imputation
+and discard missing observations from the data
+just prior to fitting the model inside <code><a href="brm_model.html">brm_model()</a></code>. See
+<a href="https://opensource.nibr.com/bamdd/src/02h_mmrm.html#what-estimand-does-mmrm-address" class="external-link">https://opensource.nibr.com/bamdd/src/02h_mmrm.html#what-estimand-does-mmrm-address</a> #nolint
+to understand the standard assumptions and decisions regarding MMRMs
+and missing outcomes.</p></dd>
 
 
 <dt id="arg-check-rank">check_rank<a class="anchor" aria-label="anchor" href="#arg-check-rank"></a></dt>
@@ -424,12 +442,12 @@ demonstration.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> sigma ~ 0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"brm_allow_effect_size")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x557e8f8b5280&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x5603d29bd6f8&gt;</span>
 <span class="r-in"><span><span class="va">by_group</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> sigma ~ group + time</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"brm_allow_effect_size")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x557e8f67b0d8&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x5603d27985c8&gt;</span>
 <span class="r-in"><span><span class="fu">brm_formula</span><span class="op">(</span><span class="va">data</span>, sigma <span class="op">=</span> <span class="va">homogeneous</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> response ~ group + group:time + time + unstr(time = time, gr = patient) </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> sigma ~ 0</span>
