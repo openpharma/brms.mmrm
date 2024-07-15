@@ -78,6 +78,7 @@ test_that("brm_model() runs, impute missing values during model", {
 
 test_that("brm_model() runs, impute missing values before model", {
   skip_on_cran()
+  skip_if_not_installed("mice")
   set.seed(0L)
   data <- tibble::as_tibble(brm_simulate_simple()$data)
   data$response[1L] <- NA_real_
