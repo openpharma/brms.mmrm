@@ -52,6 +52,7 @@
 #'     of residuals. Omitted if
 #'     the `effect_size` argument is `FALSE` or if the
 #'     [brm_formula_sigma()] includes baseline or covariates.
+#' @inheritParams brm_formula
 #' @inheritParams brm_model
 #' @param model A fitted model object from [brm_model()].
 #' @param transform Matrix with one row per marginal mean and one column
