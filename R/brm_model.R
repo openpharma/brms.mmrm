@@ -11,11 +11,12 @@
 #' @param data A classed data frame from [brm_data()], or an informative
 #'   prior archetype from a function like [brm_archetype_successive_cells()].
 #'   Unless you supplied `model_missing_outcomes = TRUE` in [brm_formula()],
-#'   rows with missing outcomes are automatically removed from the dataset
-#'   just prior to fitting the model. The `brms.mmrm_data` attribute
+#'   [brm_model()] automatically rows with missing outcomes
+#'   just prior to fitting the model with [brms::brm()].
+#'   The `brms.mmrm_data` attribute
 #'   in the output object is always the version of the data prior to
-#'   removing these rows. See the non-`brms.mmrm` inner attributes of the
-#'   output object for the final data actually supplied to the model.
+#'   removing these rows. See the `data` element of the returned `brms`
+#'   object for the final data actually supplied to the model.
 #' @param formula An object of class `"brmsformula"` from [brm_formula()]
 #'   or `brms::brmsformula()`. Should include the full mapping
 #'   of the model, including fixed effects, residual correlation,

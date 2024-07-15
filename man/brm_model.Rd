@@ -16,11 +16,12 @@ brm_model(
 \item{data}{A classed data frame from \code{\link[=brm_data]{brm_data()}}, or an informative
 prior archetype from a function like \code{\link[=brm_archetype_successive_cells]{brm_archetype_successive_cells()}}.
 Unless you supplied \code{model_missing_outcomes = TRUE} in \code{\link[=brm_formula]{brm_formula()}},
-rows with missing outcomes are automatically removed from the dataset
-just prior to fitting the model. The \code{brms.mmrm_data} attribute
+\code{\link[=brm_model]{brm_model()}} automatically rows with missing outcomes
+just prior to fitting the model with \code{\link[brms:brm]{brms::brm()}}.
+The \code{brms.mmrm_data} attribute
 in the output object is always the version of the data prior to
-removing these rows. See the non-\code{brms.mmrm} inner attributes of the
-output object for the final data actually supplied to the model.}
+removing these rows. See the \code{data} element of the returned \code{brms}
+object for the final data actually supplied to the model.}
 
 \item{formula}{An object of class \code{"brmsformula"} from \code{\link[=brm_formula]{brm_formula()}}
 or \code{brms::brmsformula()}. Should include the full mapping
