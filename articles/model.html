@@ -207,6 +207,18 @@ e.g. <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semanti
 given the data.</p>
 </div>
 <div class="section level2">
+<h2 id="imputation-of-missing-outcomes">Imputation of missing outcomes<a class="anchor" aria-label="anchor" href="#imputation-of-missing-outcomes"></a>
+</h2>
+<p>Under the missing at random (MAR) assumptions, MMRMs do not require
+imputation (<span class="citation">Holzhauer and Weber (2024)</span>).
+However, if the outcomes in your data are not missing at random, or if
+you are targeting an alternative estimand, then you may need to impute
+missing outcomes. <code>brms.mmrm</code> can leverage either of the two
+alternative solutions described at <a href="https://paul-buerkner.github.io/brms/articles/brms_missings.html" class="external-link uri">https://paul-buerkner.github.io/brms/articles/brms_missings.html</a>.
+Please see the <a href="https://openpharma.github.io/brms.mmrm/articles/usage.html" class="external-link">usage
+vignette</a> for details on the implementation and interface.</p>
+</div>
+<div class="section level2">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
 <div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
