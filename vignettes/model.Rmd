@@ -48,4 +48,8 @@ For the correlation matrix $\Lambda$, the default prior in `brms.mmrm` is the [L
 
 `brms.mmrm`, through [`brms`](https://paul-buerkner.github.io/brms/), fits the model to the data using the Markov chain Monte Carlo (MCMC) capabilities of [Stan](https://mc-stan.org/) [@stan2023]. Please read <https://mc-stan.org/users/documentation/> for more details on the methodology of [Stan](https://mc-stan.org/). The result of MCMC is a collection of draws from the full joint posterior distribution of the parameters given the data. Individual draws of scalar parameters such as $\beta_3$ are considered draws from the marginal posterior distribution of e.g. $\beta_3$ given the data.
 
+# Imputation of missing outcomes
+
+Under the missing at random (MAR) assumptions, MMRMs do not require imputation (@bamdd). However, if the outcomes in your data are not missing at random, or if you are targeting an alternative estimand, then you may need to impute missing outcomes. `brms.mmrm` can leverage either of the two alternative solutions described at <https://paul-buerkner.github.io/brms/articles/brms_missings.html>. Please see the [usage vignette](https://openpharma.github.io/brms.mmrm/articles/usage.html) for details on the implementation and interface.
+
 # References

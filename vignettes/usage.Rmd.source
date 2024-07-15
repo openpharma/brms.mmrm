@@ -206,7 +206,7 @@ model <- brm_model(
 )
 ```
 
-Unless you set `combine = FALSE` in `brm_model()`, `brms` automatically combines posterior samples across imputed datasets. This means the downstream post-procesing workflow below is exactly the same as the non-imputation case.
+Unless you set `combine = FALSE` in `brm_model()`, `brms` automatically combines posterior samples across imputed datasets. This means the downstream post-processing workflow below is exactly the same as the non-imputation case.
 
 ## Imputation during model fitting
 
@@ -331,3 +331,5 @@ brm_plot_draws(
   facet = "time"
 )
 ```
+
+# References
