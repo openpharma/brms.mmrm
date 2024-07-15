@@ -1,5 +1,7 @@
 ---
 title: "Usage"
+bibliography: '`r system.file("bibliography.bib", package = "brms.mmrm")`'
+csl: '`r system.file("asa.csl", package = "brms.mmrm")`'
 output:
   rmarkdown::html_vignette:
     toc: true
@@ -176,6 +178,45 @@ model$brms.mmrm_data
 ```{r}
 model$brms.mmrm_formula
 ```
+
+# Imputation of missing outcomes
+
+Under the missing at random (MAR) assumptions, MMRMs do not require imputation (@bamdd). However, if the outcomes in your data are not missing at random, or if you are targeting an alternative estimand, then you may need to impute missing outcomes. `brms.mmrm` can leverage either of the two alternative solutions described at <https://paul-buerkner.github.io/brms/articles/brms_missings.html>. 
+
+## Imputation before model fitting
+
+To impute missing outcomes before model fitting, first use `mice::mice()` to create a multiply imputed dataset. 
+
+```{r, eval = FALSE}
+imputed <- mice::mice(
+  data,
+  m = 200, # number of individual imputed datasets to create
+  print = FALSE
+)
+```
+
+Next, supply the multiply imputed dataset to the `imputed` argument of `brm_model()`. Internally, `brm_model()` calls `brms::brm_multiple(data = imputed, formula = formula)` instead of `brms::brm(data = data, formula = formula)` to fit an MMRM to each of the individual imputed datasets in the `imputed` object.
+
+```{r, eval = FALSE}
+model <- brm_model(
+  data = data, # Yes, please supply the original non-imputed dataset too.
+  formula = formula,
+  imputed = imputed,
+  refresh = 0
+)
+```
+
+Unless you set `combine = FALSE` in `brm_model()`, `brms` automatically combines posterior samples across imputed datasets. This means the downstream post-procesing workflow below is exactly the same as the non-imputation case.
+
+## Imputation during model fitting
+
+Alternatively, to conduct imputation during the fitting of that model, set `model_missing_outcomes` to `TRUE` in `brm_formula()`. This formula uses `response | mi()` instead of just `response` on the left-hand side to tell `brms` to model each missing outcome as a model parameter. To use this type of imputation, simply supply the returned formula object to the `formula` argument of `brm_model()`.
+
+```{r}
+brm_formula(data, model_missing_outcomes = TRUE)
+```
+
+Unlike imputation before model fitting, this approach requires only one fit of the model. However, that model will sample posterior draws for each missing outcome as if it were a model parameter, so the MCMC may run slower and produce a larger output object.
 
 # Marginals
 
