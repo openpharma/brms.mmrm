@@ -8,6 +8,7 @@
 \usage{
 brm_formula(
   data,
+  model_missing_outcomes = FALSE,
   check_rank = TRUE,
   sigma = brms.mmrm::brm_formula_sigma(data = data, check_rank = check_rank),
   correlation = "unstructured",
@@ -19,6 +20,7 @@ brm_formula(
 
 \method{brm_formula}{default}(
   data,
+  model_missing_outcomes = FALSE,
   check_rank = TRUE,
   sigma = brms.mmrm::brm_formula_sigma(data = data, check_rank = check_rank),
   correlation = "unstructured",
@@ -50,6 +52,7 @@ brm_formula(
 
 \method{brm_formula}{brms_mmrm_archetype}(
   data,
+  model_missing_outcomes = FALSE,
   check_rank = TRUE,
   sigma = brms.mmrm::brm_formula_sigma(data = data, check_rank = check_rank),
   correlation = "unstructured",
@@ -63,6 +66,19 @@ brm_formula(
 \arguments{
 \item{data}{A classed data frame from \code{\link[=brm_data]{brm_data()}}, or an informative
 prior archetype from a function like \code{\link[=brm_archetype_successive_cells]{brm_archetype_successive_cells()}}.}
+
+\item{model_missing_outcomes}{Logical of length 1, \code{TRUE}
+to impute missing outcomes during model fitting as described in the
+"Imputation during model fitting" section of
+\url{https://paul-buerkner.github.io/brms/articles/brms_missings.html}.
+Specifically, if the outcome variable is \code{y}, then the formula will
+begin with \code{y | mi() ~ ...} instead of simply \code{y ~ ...}.
+Set to \code{FALSE} (default) to forgo this kind of imputation
+and discard missing observations from the data
+just prior to fitting the model inside \code{\link[=brm_model]{brm_model()}}. See
+\url{https://opensource.nibr.com/bamdd/src/02h_mmrm.html#what-estimand-does-mmrm-address} #nolint
+to understand the standard assumptions and decisions regarding MMRMs
+and missing outcomes.}
 
 \item{check_rank}{\code{TRUE} to check the rank of the model matrix and
 throw an error if rank deficiency is detected. \code{FALSE} to skip

@@ -11,7 +11,11 @@
 #'     `make.names(unique = FALSE, allow_ = TRUE)` to ensure agreement
 #'     between the data and the output of `brms`.
 #'   * For each implicitly missing outcome observation, add explicit row
-#'     with the outcome variable equal to `NA_real_`.
+#'     with the outcome variable equal to `NA_real_`. Missing values
+#'     in the predictors are implicitly filled using [zoo::na.locf()]
+#'     on within each patient, which is not valid for time-varying
+#'     covariates. If any covariates are time-varying, please
+#'     manually perform this step before calling [brm_data()].
 #'   * Arrange the rows of the data by group, then patient, then discrete time.
 #'   * Select only the columns of the data relevant to an MMRM analysis.
 #' @section Separation string:
@@ -68,6 +72,10 @@
 #'   `"SUBJIDID"`, `"SBJID"`, `"STYSID1A"`, `"SBJ1N"`, and `"ID"`.
 #'   The `patient` column in the data should be a factor or character vector.
 #' @param covariates Character vector of names of other covariates.
+#'   All these covariates are assumed to be non-time-varying. For time-varying
+#'   covariates, please manually expand the data to the full grid of patients
+#'   and time points before you call [brm_data()]. See the "Preprocessing"
+#'   section for details.
 #' @param missing Character of length 1, name of an optional variable
 #'   in a simulated dataset to indicate which outcome values should be missing.
 #'   Set to `NULL` to omit.

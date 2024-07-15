@@ -27,8 +27,7 @@ for each time point), and \code{cortime} (residual correlations among
 time points within patients). See the
 \code{\link[=brm_prior_simple]{brm_prior_simple()}} function for an example.}
 
-\item{...}{Arguments to \code{brms::brm()} other than \code{data}, \code{formula},
-and \code{prior}.}
+\item{...}{Named arguments to specific \code{\link[=brm_formula]{brm_formula()}} methods.}
 }
 \value{
 A list with the following elements:

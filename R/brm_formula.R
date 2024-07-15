@@ -164,6 +164,18 @@
 #'   `"autoregressive_moving_average"`, `"autoregressive"`, and
 #'   `"moving_average"` correlation structures. C.f.
 #'   <https://paul-buerkner.github.io/brms/reference/arma.html>.
+#' @param model_missing_outcomes Logical of length 1, `TRUE`
+#'   to impute missing outcomes during model fitting as described in the
+#'   "Imputation during model fitting" section of
+#'   <https://paul-buerkner.github.io/brms/articles/brms_missings.html>.
+#'   Specifically, if the outcome variable is `y`, then the formula will
+#'   begin with `y | mi() ~ ...` instead of simply `y ~ ...`.
+#'   Set to `FALSE` (default) to forgo this kind of imputation
+#'   and discard missing observations from the data
+#'   just prior to fitting the model inside [brm_model()]. See
+#'   <https://opensource.nibr.com/bamdd/src/02h_mmrm.html#what-estimand-does-mmrm-address> #nolint
+#'   to understand the standard assumptions and decisions regarding MMRMs
+#'   and missing outcomes.
 #' @param check_rank `TRUE` to check the rank of the model matrix and
 #'   throw an error if rank deficiency is detected. `FALSE` to skip
 #'   this check. Rank-deficient models may have non-identifiable
@@ -241,6 +253,7 @@
 #' formula
 brm_formula <- function(
   data,
+  model_missing_outcomes = FALSE,
   check_rank = TRUE,
   sigma = brms.mmrm::brm_formula_sigma(data = data, check_rank = check_rank),
   correlation = "unstructured",
@@ -257,6 +270,7 @@ brm_formula <- function(
 #' @method brm_formula default
 brm_formula.default <- function(
   data,
+  model_missing_outcomes = FALSE,
   check_rank = TRUE,
   sigma = brms.mmrm::brm_formula_sigma(data = data, check_rank = check_rank),
   correlation = "unstructured",
@@ -401,7 +415,12 @@ brm_formula.default <- function(
   )
   terms <- terms[nzchar(terms)] %||% "1"
   right <- paste(terms, collapse = " + ")
-  formula_fixed <- stats::as.formula(paste(name_outcome, "~", right))
+  term_outcome <- if_any(
+    model_missing_outcomes,
+    paste(name_outcome, "| mi()"),
+    name_outcome
+  )
+  formula_fixed <- stats::as.formula(paste(term_outcome, "~", right))
   brms_formula <- brms::brmsformula(formula = formula_fixed, sigma)
   formula <- brm_formula_new(
     formula = brms_formula,
@@ -423,6 +442,7 @@ brm_formula.default <- function(
     brm_moving_average_order = moving_average_order,
     brm_residual_covariance_arma_estimation =
       residual_covariance_arma_estimation,
+    brm_model_missing_outcomes = model_missing_outcomes,
     brm_allow_effect_size = attr(sigma, "brm_allow_effect_size")
   )
   brm_formula_validate(formula)
@@ -437,6 +457,7 @@ brm_formula.default <- function(
 #' @method brm_formula brms_mmrm_archetype
 brm_formula.brms_mmrm_archetype <- function(
   data,
+  model_missing_outcomes = FALSE,
   check_rank = TRUE,
   sigma = brms.mmrm::brm_formula_sigma(data = data, check_rank = check_rank),
   correlation = "unstructured",
@@ -509,7 +530,12 @@ brm_formula.brms_mmrm_archetype <- function(
   )
   terms <- terms[nzchar(terms)] %||% "1"
   right <- paste(terms, collapse = " + ")
-  formula_fixed <- stats::as.formula(paste(name_outcome, "~", right))
+  term_outcome <- if_any(
+    model_missing_outcomes,
+    paste(name_outcome, "| mi()"),
+    name_outcome
+  )
+  formula_fixed <- stats::as.formula(paste(term_outcome, "~", right))
   brms_formula <- brms::brmsformula(formula = formula_fixed, sigma)
   formula <- brm_formula_archetype_new(
     formula = brms_formula,
@@ -518,7 +544,8 @@ brm_formula.brms_mmrm_archetype <- function(
     brm_moving_average_order = moving_average_order,
     brm_residual_covariance_arma_estimation =
       residual_covariance_arma_estimation,
-    brm_allow_effect_size = attr(sigma, "brm_allow_effect_size")
+    brm_allow_effect_size = attr(sigma, "brm_allow_effect_size"),
+    brm_model_missing_outcomes = model_missing_outcomes
   )
   brm_formula_validate(formula)
   if (check_rank) {
@@ -610,7 +637,8 @@ brm_formula_new <- function(
   brm_autoregressive_order,
   brm_moving_average_order,
   brm_residual_covariance_arma_estimation,
-  brm_allow_effect_size
+  brm_allow_effect_size,
+  brm_model_missing_outcomes
 ) {
   structure(
     formula,
@@ -633,7 +661,8 @@ brm_formula_new <- function(
     brm_moving_average_order = brm_moving_average_order,
     brm_residual_covariance_arma_estimation =
       brm_residual_covariance_arma_estimation,
-    brm_allow_effect_size = brm_allow_effect_size
+    brm_allow_effect_size = brm_allow_effect_size,
+    brm_model_missing_outcomes = brm_model_missing_outcomes
   )
 }
 
@@ -643,7 +672,8 @@ brm_formula_archetype_new <- function(
   brm_autoregressive_order,
   brm_moving_average_order,
   brm_residual_covariance_arma_estimation,
-  brm_allow_effect_size
+  brm_allow_effect_size,
+  brm_model_missing_outcomes
 ) {
   structure(
     formula,
@@ -655,7 +685,8 @@ brm_formula_archetype_new <- function(
     brm_moving_average_order = brm_moving_average_order,
     brm_residual_covariance_arma_estimation =
       brm_residual_covariance_arma_estimation,
-    brm_allow_effect_size = brm_allow_effect_size
+    brm_allow_effect_size = brm_allow_effect_size,
+    brm_model_missing_outcomes = brm_model_missing_outcomes
   )
 }
 

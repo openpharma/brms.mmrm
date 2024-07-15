@@ -40,10 +40,58 @@ test_that("brm_formula() with default names and all non-subgroup terms", {
   expect_s3_class(out, "brms_mmrm_formula")
   expect_s3_class(out, "brmsformula")
   expect_equal(attr(out, "brm_correlation"), "unstructured")
+  expect_false(attr(out, "brm_model_missing_outcomes"))
   expect_equal(
     deparse(out[[1L]], width.cutoff = 500L),
     paste(
       "CHG ~ baseline + baseline:AVISIT + TRT01P + TRT01P:AVISIT + AVISIT",
+      "+ unstr(time = AVISIT, gr = USUBJID)"
+    )
+  )
+  expect_equal(
+    deparse(out[[2L]][[1L]], width.cutoff = 500L),
+    paste(
+      "sigma ~ 0 + AVISIT"
+    )
+  )
+})
+
+test_that("same but model missing outcomes", {
+  data <- brm_data(
+    data = tibble::tibble(
+      CHG = c(1, 2),
+      AVISIT = c("x", "y"),
+      baseline = c(2, 3),
+      TRT01P = c("x", "y"),
+      USUBJID = c("x", "y")
+    ),
+    outcome = "CHG",
+    group = "TRT01P",
+    time = "AVISIT",
+    baseline = "baseline",
+    patient = "USUBJID",
+    reference_group = "x"
+  )
+  out <- brm_formula(
+    data = data,
+    intercept = TRUE,
+    baseline = TRUE,
+    baseline_time = TRUE,
+    group = TRUE,
+    group_time = TRUE,
+    time = TRUE,
+    model_missing_outcomes = TRUE,
+    check_rank = FALSE
+  )
+  expect_s3_class(out, "brms_mmrm_formula")
+  expect_s3_class(out, "brmsformula")
+  expect_equal(attr(out, "brm_correlation"), "unstructured")
+  expect_true(attr(out, "brm_model_missing_outcomes"))
+  expect_equal(
+    deparse(out[[1L]], width.cutoff = 500L),
+    paste(
+      "CHG | mi() ~ baseline + baseline:AVISIT +",
+      "TRT01P + TRT01P:AVISIT + AVISIT",
       "+ unstr(time = AVISIT, gr = USUBJID)"
     )
   )
@@ -596,10 +644,65 @@ test_that("brm_formula() archetype non-subgroup", {
   expect_equal(attr(out, "brm_autoregressive_order"), 1L)
   expect_equal(attr(out, "brm_moving_average_order"), 1L)
   expect_false(attr(out, "brm_residual_covariance_arma_estimation"))
+  expect_false(attr(out, "brm_model_missing_outcomes"))
   expect_equal(
     deparse(out[[1L]], width.cutoff = 500L),
     paste(
       "change ~ 0 + x_group_1_time_2 + x_group_1_time_3 + x_group_1_time_4 +",
+      "x_group_2_time_2 + x_group_2_time_3 + x_group_2_time_4 +",
+      "nuisance_biomarker1 + nuisance_biomarker2 + nuisance_status1_absent +",
+      "nuisance_status2_present + nuisance_baseline +",
+      "nuisance_baseline.timetime_2 + nuisance_baseline.timetime_3 +",
+      "unstr(time = time, gr = patient)"
+    )
+  )
+  expect_equal(
+    deparse(out[[2L]][[1L]], width.cutoff = 500L),
+    paste(
+      "sigma ~ 0 + time"
+    )
+  )
+})
+
+test_that("same but model missing outcomes", {
+  set.seed(0L)
+  data <- brm_simulate_outline(
+    n_group = 2,
+    n_patient = 100,
+    n_time = 4,
+    rate_dropout = 0,
+    rate_lapse = 0
+  ) |>
+    dplyr::mutate(response = rnorm(n = dplyr::n())) |>
+    brm_data_change() |>
+    brm_simulate_continuous(names = c("biomarker1", "biomarker2")) |>
+    brm_simulate_categorical(
+      names = c("status1", "status2"),
+      levels = c("present", "absent")
+    )
+  archetype <- brm_archetype_successive_cells(data)
+  expect_warning(
+    brm_formula(archetype, baseline = TRUE),
+    class = "brm_warn"
+  )
+  out <- brm_formula(
+    archetype,
+    model_missing_outcomes = TRUE,
+    check_rank = TRUE
+  )
+  expect_s3_class(out, "brms_mmrm_formula_archetype")
+  expect_s3_class(out, "brms_mmrm_formula")
+  expect_s3_class(out, "brmsformula")
+  expect_equal(attr(out, "brm_correlation"), "unstructured")
+  expect_equal(attr(out, "brm_autoregressive_order"), 1L)
+  expect_equal(attr(out, "brm_moving_average_order"), 1L)
+  expect_false(attr(out, "brm_residual_covariance_arma_estimation"))
+  expect_true(attr(out, "brm_model_missing_outcomes"))
+  expect_equal(
+    deparse(out[[1L]], width.cutoff = 500L),
+    paste(
+      "change | mi() ~ 0 + x_group_1_time_2 +",
+      "x_group_1_time_3 + x_group_1_time_4 +",
       "x_group_2_time_2 + x_group_2_time_3 + x_group_2_time_4 +",
       "nuisance_biomarker1 + nuisance_biomarker2 + nuisance_status1_absent +",
       "nuisance_status2_present + nuisance_baseline +",

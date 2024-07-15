@@ -5,8 +5,17 @@
 #' @inheritSection brm_formula Parameterization
 #' @return A fitted model object from `brms`, with new list elements
 #'   `brms.mmrm_data` and `brms.mmrm_formula` to capture the data
-#'   and formula used to fit the model.
-#' @inheritParams brm_formula
+#'   and formula supplied to [brm_model()]. See the explanation of the
+#'   `data` argument for how the data is handled and how it relates
+#'   to the data returned in the `brms.mmrm_data` attribute.
+#' @param data A classed data frame from [brm_data()], or an informative
+#'   prior archetype from a function like [brm_archetype_successive_cells()].
+#'   Unless you supplied `model_missing_outcomes = TRUE` in [brm_formula()],
+#'   rows with missing outcomes are automatically removed from the dataset
+#'   just prior to fitting the model. The `brms.mmrm_data` attribute
+#'   in the output object is always the version of the data prior to
+#'   removing these rows. See the non-`brms.mmrm` inner attributes of the
+#'   output object for the final data actually supplied to the model.
 #' @param formula An object of class `"brmsformula"` from [brm_formula()]
 #'   or `brms::brmsformula()`. Should include the full mapping
 #'   of the model, including fixed effects, residual correlation,
@@ -82,8 +91,13 @@ brm_model <- function(
     inherits(prior %|||% brms::prior("normal(0, 1)"), "brmsprior"),
     message = "prior arg must be a \"brmsprior\" object or NULL."
   )
+  modeled_data <- if_any(
+    attr(formula, "brm_model_missing_outcomes"),
+    data,
+    data[!is.na(data[[attr(data, "brm_outcome")]]), ]
+  )
   model <- brms::brm(
-    data = data[!is.na(data[[attr(data, "brm_outcome")]]), ],
+    data = modeled_data,
     formula = formula,
     prior = prior,
     ...

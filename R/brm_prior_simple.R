@@ -9,6 +9,7 @@
 #'   [brm_prior_simple()] cannot assign different priors
 #'   to different fixed effect parameters.
 #' @return A classed data frame with the `brms` prior.
+#' @inheritParams brm_formula
 #' @inheritParams brm_model
 #' @param intercept Character of length 1, Stan code for the prior
 #'   to set on the intercept parameter.

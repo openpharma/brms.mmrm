@@ -74,7 +74,11 @@ Example possibilities from clinical trial datasets include
 \code{"SUBJIDID"}, \code{"SBJID"}, \code{"STYSID1A"}, \code{"SBJ1N"}, and \code{"ID"}.
 The \code{patient} column in the data should be a factor or character vector.}
 
-\item{covariates}{Character vector of names of other covariates.}
+\item{covariates}{Character vector of names of other covariates.
+All these covariates are assumed to be non-time-varying. For time-varying
+covariates, please manually expand the data to the full grid of patients
+and time points before you call \code{\link[=brm_data]{brm_data()}}. See the "Preprocessing"
+section for details.}
 
 \item{missing}{Character of length 1, name of an optional variable
 in a simulated dataset to indicate which outcome values should be missing.
@@ -141,7 +145,11 @@ are properly formatted.
 \code{make.names(unique = FALSE, allow_ = TRUE)} to ensure agreement
 between the data and the output of \code{brms}.
 \item For each implicitly missing outcome observation, add explicit row
-with the outcome variable equal to \code{NA_real_}.
+with the outcome variable equal to \code{NA_real_}. Missing values
+in the predictors are implicitly filled using \code{\link[zoo:na.locf]{zoo::na.locf()}}
+on within each patient, which is not valid for time-varying
+covariates. If any covariates are time-varying, please
+manually perform this step before calling \code{\link[=brm_data]{brm_data()}}.
 \item Arrange the rows of the data by group, then patient, then discrete time.
 \item Select only the columns of the data relevant to an MMRM analysis.
 }

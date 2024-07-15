@@ -1,4 +1,4 @@
-# brms.mmrm 1.0.1.9007 (development)
+# brms.mmrm 1.0.1.9008 (development)
 
 * Add `brm_marginal_grid()`.
 * Show posterior samples of `sigma` in `brm_marginal_draws()` and `brm_marginal_summaries()`.
@@ -11,6 +11,7 @@
 * Set the default value of `effect_size` to `attr(formula, "brm_allow_effect_size")`.
 * Remove defaults from some arguments to `brm_data()` and document examples.
 * Deprecate the `role` argument of `brm_data()` in favor of `reference_time` (#119).
+* Add `model_missing_outcomes` in `brm_formula()` to optionally impute missing values during model fitting as described at <https://paul-buerkner.github.io/brms/articles/brms_missings.html> (#121).
 
 # brms.mmrm 1.0.1
 
