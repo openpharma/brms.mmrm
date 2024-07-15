@@ -11,7 +11,8 @@
 * Set the default value of `effect_size` to `attr(formula, "brm_allow_effect_size")`.
 * Remove defaults from some arguments to `brm_data()` and document examples.
 * Deprecate the `role` argument of `brm_data()` in favor of `reference_time` (#119).
-* Add `model_missing_outcomes` in `brm_formula()` to optionally impute missing values during model fitting as described at <https://paul-buerkner.github.io/brms/articles/brms_missings.html> (#121).
+* Add a new `model_missing_outcomes` in `brm_formula()` to optionally impute missing values during model fitting as described at <https://paul-buerkner.github.io/brms/articles/brms_missings.html> (#121).
+* Add a new `imputed` argument to accept a `mice` multiply imputed dataset ("mids") in `brm_model()` (#121).
 
 # brms.mmrm 1.0.1
 
