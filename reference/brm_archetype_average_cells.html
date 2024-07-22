@@ -9,7 +9,7 @@ with a special fixed effect to represent the average across time."><meta propert
 
     <a class="navbar-brand me-2" href="../index.html">brms.mmrm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1.9008</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1.9009</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -310,12 +310,12 @@ archetype-specific functions such as <code><a href="brm_archetype_successive_cel
 <span class="r-out co"><span class="r-pr">#&gt;</span> # marginal means (left-hand side) and fixed effect parameters</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> # (right-hand side).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> # </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #    group_1:time_2 = 3*x_group_1_time_2 - x_group_1_time_3 - x_group_1_time_4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #    group_1:time_3 = x_group_1_time_3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #    group_1:time_4 = x_group_1_time_4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #    group_2:time_2 = 3*x_group_2_time_2 - x_group_2_time_3 - x_group_2_time_4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #    group_2:time_3 = x_group_2_time_3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #    group_2:time_4 = x_group_2_time_4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #   group_1:time_2 = 3*x_group_1_time_2 - x_group_1_time_3 - x_group_1_time_4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #   group_1:time_3 = x_group_1_time_3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #   group_1:time_4 = x_group_1_time_4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #   group_2:time_2 = 3*x_group_2_time_2 - x_group_2_time_3 - x_group_2_time_4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #   group_2:time_3 = x_group_2_time_3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #   group_2:time_4 = x_group_2_time_4</span>
 <span class="r-in"><span><span class="va">formula</span> <span class="op">&lt;-</span> <span class="fu"><a href="brm_formula.html">brm_formula</a></span><span class="op">(</span><span class="va">archetype</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">formula</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> change ~ 0 + x_group_1_time_2 + x_group_1_time_3 + x_group_1_time_4 + x_group_2_time_2 + x_group_2_time_3 + x_group_2_time_4 + nuisance_biomarker1 + nuisance_biomarker2 + nuisance_status1_absent + nuisance_status2_present + nuisance_baseline + nuisance_baseline.timetime_2 + nuisance_baseline.timetime_3 + unstr(time = time, gr = patient) </span>
