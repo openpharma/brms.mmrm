@@ -22,7 +22,7 @@ test_that("brm_archetype_effects() change and non-subgroup", {
     baseline = TRUE,
     baseline_time = FALSE
   )
-  tmp <- capture.output(summary(out))
+  tmp <- suppressMessages(summary(out))
   out2 <- brm_archetype_effects(
     out,
     prefix_interest = "y_",

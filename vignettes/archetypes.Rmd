@@ -109,7 +109,7 @@ attr(archetype, "brm_archetype_nuisance")
 #> [1] "nuisance_WEIGHT"   "nuisance_SEX_Male"
 ```
 
-The factors of interest linearly map to marginal means. To see the mapping, call `summary()` on the archetype. The printed output helps build intuition on how the archetype is parameterized and what those parameters are doing.
+The factors of interest linearly map to marginal means. To see the mapping, call `summary()` on the archetype. The printed output helps build intuition on how the archetype is parameterized and what those parameters are doing.^[`summary()` also invisibly returns a simple character vector with the equations below.]
 
 
 ``` r

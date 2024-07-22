@@ -96,7 +96,9 @@ formula <- brm_formula(
   baseline_time = FALSE
 )
 transform <- brm_transform_marginal(data = data, formula = formula)
-summary(transform)
+equations <- summary(transform)
+print(equations)
+summary(transform, message = FALSE)
 class(transform)
 print(transform)
 }

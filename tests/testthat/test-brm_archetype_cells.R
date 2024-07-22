@@ -22,7 +22,8 @@ test_that("brm_archetype_cells() change and non-subgroup", {
     baseline = TRUE,
     baseline_time = FALSE
   )
-  tmp <- capture.output(summary(out))
+  suppressMessages(expect_true(is.character(summary(out))))
+  expect_true(is.character(summary(out, message = FALSE)))
   out2 <- brm_archetype_cells(
     out,
     prefix_interest = "y_",
