@@ -1,6 +1,6 @@
 Package: brms.mmrm
 Title: Bayesian MMRMs using 'brms'
-Version: 1.0.1.9008
+Version: 1.0.1.9009
 Authors@R: c(
   person(
     given = c("William", "Michael"),
@@ -91,4 +91,4 @@ Config/testthat/edition: 3
 Encoding: UTF-8
 Language: en-US
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2

@@ -176,8 +176,6 @@ summary.brms_mmrm_archetype <- function(object, ...) {
     average_within_subgroup = FALSE,
     prefix = ""
   )
-  transform <- transform[, attr(object, "brm_archetype_interest")]
-  marginals <- gsub(brm_sep(), ":", rownames(transform), fixed = TRUE)
   lines <- c(
     "This is the \"%s\" informative prior archetype in brms.mmrm.",
     "The following equations show the relationships between the",
@@ -188,19 +186,9 @@ summary.brms_mmrm_archetype <- function(object, ...) {
   name <- gsub("^brms_mmrm_", "", class(object)[1L])
   name <- gsub("_", " ", name)
   lines <- sprintf(lines, name)
-  for (index in seq_along(marginals)) {
-    coef <- transform[index, ]
-    terms <- colnames(transform)[coef != 0]
-    coef <- unname(round(coef[coef != 0], digits = 2))
-    sign <- ifelse(coef < 0, "- ", "+ ")
-    sign[1L] <- ""
-    coef[seq_along(coef) > 1L] <- abs(coef[seq_along(coef) > 1L])
-    prefix <- ifelse(coef == 1, "", paste0(coef, "*"))
-    terms <- paste0(sign, prefix, terms)
-    line <- paste("  ", marginals[index], "=", paste(terms, collapse = " "))
-    lines <- c(lines, line)
-  }
-  lines <- paste("#", lines, sep = " ")
+  transform <- transform[, attr(object, "brm_archetype_interest")]
+  lines_transform <- paste(" ", brm_transform_marginal_lines(transform))
+  lines <- paste("#", c(lines, lines_transform), sep = " ")
   cat(lines, sep = "\n")
   invisible()
 }

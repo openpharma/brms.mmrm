@@ -69,6 +69,8 @@
 #'   baseline_time = FALSE
 #' )
 #' transform <- brm_transform_marginal(data = data, formula = formula)
+#' summary(transform)
+#' class(transform)
 #' print(transform)
 #' }
 brm_transform_marginal <- function(
@@ -147,6 +149,7 @@ brm_transform_marginal <- function(
     formula = formula,
     grid = grid
   )
+  class(transform) <- c("brms_mmrm_transform_marginal", class(transform))
   transform
 }
 
@@ -284,4 +287,36 @@ brm_transform_marginal_names_rows <- function(data, formula, grid) {
     name_marginal_subgroup(group = group, subgroup = subgroup, time = time),
     name_marginal(group = group, time = time)
   )
+}
+
+#' @export
+summary.brms_mmrm_transform_marginal <- function(object, ...) {
+  lines <- c(
+    "This is a matrix to transform model parameters to marginal means.",
+    "The following equations show the relationships between the",
+    "marginal means (left-hand side) and fixed effect parameters",
+    "(right-hand side).",
+    ""
+  )
+  lines_transform <- paste(" ", brm_transform_marginal_lines(object))
+  lines <- paste("#", c(lines, lines_transform), sep = " ")
+  cat(lines, sep = "\n")
+}
+
+brm_transform_marginal_lines <- function(transform) {
+  lines <- character(0L)
+  marginals <- gsub(brm_sep(), ":", rownames(transform), fixed = TRUE)
+  for (index in seq_along(marginals)) {
+    coef <- transform[index, ]
+    terms <- colnames(transform)[coef != 0]
+    coef <- unname(round(coef[coef != 0], digits = 2))
+    sign <- ifelse(coef < 0, "- ", "+ ")
+    sign[1L] <- ""
+    coef[seq_along(coef) > 1L] <- abs(coef[seq_along(coef) > 1L])
+    prefix <- ifelse(coef == 1, "", paste0(coef, "*"))
+    terms <- paste0(sign, prefix, terms)
+    line <- paste(marginals[index], "=", paste(terms, collapse = " "))
+    lines <- c(lines, line)
+  }
+  lines
 }

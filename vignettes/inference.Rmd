@@ -18,6 +18,7 @@ knitr::opts_chunk$set(
   comment = "#>",
   eval = rlang::is_installed("emmeans")
 )
+library(brms.mmrm)
 library(dplyr)
 library(tidyr)
 library(zoo)
@@ -30,6 +31,7 @@ This vignette explains how `brms.mmrm` conducts posterior inference on a fitted 
 Throughout this vignette, we use the `mmrm` package's `fev_data` dataset, a simulation of a clinical trial in which chronic obstructive pulmonary disease (COPD) patients (variable `USUBJID`) were randomized to different treatment groups (variable `ARMCD`) and measured across four discrete time points (variable `AVISIT`). The given response variable is forced expired volume in one second (`FEV1`), and we are interested in the `FEV1` change from baseline to each time point (derived variable `FEV_CHG`). For this vignette, we impute missing responses in order to simplify the discussion.
 
 ```{r}
+library(brms.mmrm)
 library(dplyr)
 library(tidyr)
 data(fev_data, package = "mmrm")
@@ -48,7 +50,20 @@ data <- fev_data |>
   mutate(FEV1_CHG = FEV1 - FEV1_BL, USUBJID = as.character(USUBJID)) |>
   select(-FEV1) |>
   as_tibble() |>
-  arrange(USUBJID, AVISIT)
+  arrange(USUBJID, AVISIT) |>
+  brm_data(
+    outcome = "FEV1_CHG",
+    baseline = "FEV1_BL",
+    group = "ARMCD",
+    patient = "USUBJID",
+    time = "AVISIT",
+    covariates = c("RACE", "SEX", "WEIGHT"),
+    reference_group = "PBO",
+    reference_time = "VIS1"
+  )
+```
+
+```{r}
 data
 ```
 
@@ -64,12 +79,18 @@ reference_grid
 It is seldom trivial to estimate marginal means. For example, the following parameterization includes an intercept term, additive terms for each level of each factor, interactions to capture non-additive relationships among factors, continuous covariates, and different `FEV1_BL` slopes for different time points. Here, there is no model coefficient that directly corresponds to a marginal mean of interest. Even terms like `AVISITVIS2:ARMCDTRT` implicitly condition on a subset of the data because of the other variables involved.
 
 ```{r}
-formula <- FEV1_CHG ~ FEV1_BL * AVISIT + ARMCD * AVISIT + RACE + SEX + WEIGHT
-formula
+brms_mmrm_formula <- brm_formula(data, correlation = "diagonal")
+base_formula <- as.formula(brms_mmrm_formula[[1]])
+attr(base_formula, "nl") <- NULL
+attr(base_formula, "loop") <- NULL
 ```
 
 ```{r}
-colnames(model.matrix(object = formula, data = data))
+base_formula
+```
+
+```{r}
+colnames(model.matrix(object = base_formula, data = data))
 ```
 
 To accomplish our goals, we need to carefully construct a linear transformation that maps these model coefficients to the marginal means of interest. The transformation should evaluate contrasts on the interesting parameters and average out the uninteresting parameters.
@@ -82,36 +103,70 @@ Despite the existing features in `brms`, `brms.mmrm` implements custom code to t
 
 # How `brms.mmrm` estimates marginal means
 
-To transform model coefficients into marginal means, `brms.mmrm` follows a technique similar to that of [`emmeans`](https://cran.r-project.org/package=emmeans/vignettes/).^[But unlike `emmeans`, `brms.mmrm` completes the grid of patient visits to add rows for implicitly missing responses. Completing the grid of patient visits ensures all patients are represented equally when averaging over baseline covariates, regardless of patients who drop out early.]
-
-To begin, let us fit a simple regression model using the complex formula from before.
+To estimate marginal means, `brms.mmrm::brm_transform_marginal()` creates a special matrix.
 
 ```{r}
-formula
+transform <- brm_transform_marginal(data = data, formula = brms_mmrm_formula)
 ```
 
 ```{r}
-model <- lm(formula = formula, data = data)
+dim(transform)
+transform[, 1:4]
 ```
 
-For the predictions that support marginal mean estimation, we condition on the means of continuous covariates such as `FEV1_BL` and `WEIGHT`, and we condition on proportional averages of levels of concomitant factors `RACE` and `SEX`. The following settings in `emmeans` accomplish this. Behind the scenes, `emmeans` creates the transformation from model coefficients to marginal means, and then returns estimates of those marginal means. For more information, please consult @lenth2016, @searle1979, and the [`emmeans` package vignettes](https://cran.r-project.org/package=emmeans/vignettes/).
+This special matrix encodes the equations below which map model coefficients to marginal means.
+
+```{r}
+summary(transform)
+```
+
+Multiplying the matrix by a set of model coefficients is the same as plugging the coefficients into the equations above. Both produce estimates of marginal means.
+
+```{r}
+model <- lm(formula = base_formula, data = data)
+marginals_custom <- transform %*% coef(model)
+marginals_custom
+```
+
+This technique is similar to [`emmeans::emmeans(weights = "proportional")`](https://cran.r-project.org/package=emmeans)^[Unlike `emmeans`, `brms.mmrm` completes the grid of patient visits to add rows for implicitly missing responses. Completing the grid of patient visits ensures all patients are represented equally when averaging over baseline covariates, regardless of patients who drop out early.] (@lenth2016, @searle1979) and produces similar estimates.
 
 ```{r}
 library(emmeans)
 marginals_emmeans <- emmeans(
   object = model,
   specs = ~ARMCD:AVISIT,
-  wt.nuis = "proportional",
+  weights = "proportional",
   nuisance = c("USUBJID", "RACE", "SEX")
 ) |>
   as.data.frame() |>
   as_tibble() |>
   select(ARMCD, AVISIT, emmean) |>
   arrange(ARMCD, AVISIT)
+```
+
+```{r}
 marginals_emmeans
 ```
 
-To replicate this same technique manually for `lm()` fitted models, we first create a reference grid to define the factor levels of interest and the means of continuous variables to condition on.
+```{r}
+marginals_custom - marginals_emmeans$emmean
+```
+
+For our Bayesian MMRMs in `brms.mmrm`, the transformation from `brm_transform_marginal()` operates on each individual draw from the joint posterior distribution. The transformation matrix produced by `brm_transform_marginal()` is the value of the `transform` argument of `brm_marginal_draws()`. That way, `brm_marginal_draws()` produces an entire estimated posterior of each marginal mean, rather than point estimates that assume a normal or Student-t distribution.^[You can then estimate the posterior of any function of marginal means by simply applying that function to the individual posterior draws from `brm_marginal_draws()`. `brm_marginal_grid()` helps identify column names for this kind of custom inference/post-processing.]
+
+# How `brm_marginal_draws()` works
+
+Let us take a closer look at the equations that map model parameters to marginal means.
+
+```{r}
+summary(transform)
+```
+
+These equations include terms not only for the fixed effects of interest, but also for nuisance variables `FEV1_BL`, `SEX`, `RACE`, and `WEIGHT`. These nuisance variables were originally part of the model formula, which means each marginal mean can only be interpreted relative to a fixed value of `FEV1_BL`, a fixed proportion of female patients, etc. For example, if we dropped `40.13*b_FEV1_BL`, then `PBO:VIS1` would be the placebo mean at visit 1 for patients with `FEV1_BL = 0`: in other words, patients who cannot breathe out any air from their lungs at the beginning of the study. Similarly, if we dropped `0.53*b_SEXFemale`, then we would have to interpret `PBO:VIS1` as the visit 1 placebo mean for male patients only. Fixed values `40.13` and `0.53` are averages over the data to ensure our marginal means apply to the entire patient population as a whole.
+
+The major challenge of `brm_transform_marginal()` is to condition on nuisance values that represent appropriate averages over the data. To calculate these nuisance values, `brm_transform_marginal()` uses a technique similar to `weights = "proportional"` in `emmeans::emmeans()`.
+
+To replicate `brm_transform_marginal()`, we first create a reference grid to define the factor levels of interest and the means of continuous variables to condition on.
 
 ```{r}
 grid <- data |>
@@ -158,7 +213,7 @@ marginals_custom <- transform %*% coef(model)
 marginals_custom
 ```
 
-These results are extremely close to the estimated marginal mean from `emmeans`.
+These results are extremely close to the estimated marginal means from `emmeans`.
 
 ```{r}
 marginals_emmeans |>
@@ -176,7 +231,7 @@ Subgroup analysis raises important questions about how nuisance variables are av
 emmeans(
   object = model,
   specs = ~SEX:ARMCD:AVISIT,
-  wt.nuis = "proportional",
+  weights = "proportional",
   nuisance = c("USUBJID", "RACE")
 )
 ```
