@@ -114,7 +114,7 @@ dim(transform)
 transform[, 1:4]
 ```
 
-This special matrix encodes the equations below which map model coefficients to marginal means.
+This special matrix encodes the equations below which map model coefficients to marginal means.^[`summary()` also invisibly returns a simple character vector with the equations below.]
 
 ```{r}
 summary(transform)

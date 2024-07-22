@@ -22,7 +22,7 @@ test_that("brm_archetype_successive_cells() change and non-subgroup", {
     baseline = TRUE,
     baseline_time = FALSE
   )
-  tmp <- capture.output(summary(out))
+  tmp <- suppressMessages(summary(out))
   out2 <- brm_archetype_successive_cells(
     out,
     prefix_interest = "y_",
@@ -487,5 +487,111 @@ test_that("brm_archetype_successive_cells() baseline-subgroup interactions", {
         "nuisance_baseline.subgroupsubgroup_3.timetime_3"
       )
     )
+  )
+})
+
+test_that("brm_archetype_successive_cells() intercept non-subgroup", {
+  set.seed(0L)
+  data <- brm_simulate_outline(
+    n_group = 2,
+    n_patient = 100,
+    n_time = 4,
+    rate_dropout = 0,
+    rate_lapse = 0
+  ) |>
+    dplyr::mutate(response = rnorm(n = dplyr::n())) |>
+    brm_data_change() |>
+    brm_simulate_continuous(names = c("biomarker1", "biomarker2")) |>
+    brm_simulate_categorical(
+      names = c("status1", "status2"),
+      levels = c("present", "absent")
+    ) |>
+    dplyr::mutate(response = rnorm(n = dplyr::n()))
+  out <- brm_archetype_successive_cells(
+    data,
+    intercept = TRUE,
+    prefix_interest = "y_",
+    prefix_nuisance = "z_",
+    baseline = TRUE,
+    baseline_time = FALSE
+  )
+  grid <- dplyr::distinct(
+    out,
+    group,
+    time,
+    y_group_1_time_2,
+    y_group_1_time_3,
+    y_group_1_time_4,
+    y_group_2_time_2,
+    y_group_2_time_3,
+    y_group_2_time_4
+  ) |>
+    dplyr::arrange(group, time)
+  expect_equal(nrow(grid), 6L)
+  expect_equal(grid$group, rep(c("group_1", "group_2"), each = 3L))
+  expect_equal(grid$time, rep(paste0("time_", c(2L, 3L, 4L)), times = 2L))
+  exp <- kronecker(diag(2), diag(3) + lower.tri(diag(3)))
+  exp[, 1L] <- 1L
+  expect_equal(
+    unname(as.matrix(grid[, seq(3L, 8L)])),
+    exp
+  )
+})
+
+test_that("brm_archetype_successive_cells() intercept subgroup", {
+  set.seed(0L)
+  data <- brm_simulate_outline(
+    n_group = 2,
+    n_subgroup = 3,
+    n_patient = 100,
+    n_time = 3,
+    rate_dropout = 0,
+    rate_lapse = 0
+  ) |>
+    dplyr::mutate(response = rnorm(n = dplyr::n())) |>
+    brm_simulate_continuous(names = c("biomarker1", "biomarker2")) |>
+    brm_simulate_categorical(
+      names = c("status1", "status2"),
+      levels = c("present", "absent")
+    ) |>
+    dplyr::mutate(response = rnorm(n = dplyr::n()))
+  out <- brm_archetype_successive_cells(data, intercept = TRUE)
+  grid <- dplyr::distinct(
+    out,
+    group,
+    subgroup,
+    time,
+    x_group_1_subgroup_1_time_1,
+    x_group_1_subgroup_1_time_2,
+    x_group_1_subgroup_1_time_3,
+    x_group_1_subgroup_2_time_1,
+    x_group_1_subgroup_2_time_2,
+    x_group_1_subgroup_2_time_3,
+    x_group_1_subgroup_3_time_1,
+    x_group_1_subgroup_3_time_2,
+    x_group_1_subgroup_3_time_3,
+    x_group_2_subgroup_1_time_1,
+    x_group_2_subgroup_1_time_2,
+    x_group_2_subgroup_1_time_3,
+    x_group_2_subgroup_2_time_1,
+    x_group_2_subgroup_2_time_2,
+    x_group_2_subgroup_2_time_3,
+    x_group_2_subgroup_3_time_1,
+    x_group_2_subgroup_3_time_2,
+    x_group_2_subgroup_3_time_3
+  ) |>
+    dplyr::arrange(group, subgroup, time)
+  expect_equal(nrow(grid), 18L)
+  expect_equal(grid$group, rep(c("group_1", "group_2"), each = 9L))
+  expect_equal(
+    grid$subgroup,
+    rep(rep(paste0("subgroup_", seq_len(3L)), each = 3L), times = 2L)
+  )
+  expect_equal(grid$time, rep(paste0("time_", seq_len(3L)), times = 6L))
+  exp <- kronecker(diag(6L), diag(3L) + lower.tri(diag(3L)))
+  exp[, 1L] <- 1L
+  expect_equal(
+    unname(as.matrix(grid[, seq(4L, 21L)])),
+    exp
   )
 })

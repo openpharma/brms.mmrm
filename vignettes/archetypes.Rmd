@@ -29,7 +29,7 @@ The dataset is a tibble with 800 rows and 7 variables:
 We will derive `FEV1_CHG = FEV1 - FEV1_BL` and analyze `FEV1_CHG` as the outcome variable.
 
 
-```r
+``` r
 library(brms.mmrm)
 data(fev_data, package = "mmrm")
 data <- fev_data |>
@@ -63,14 +63,14 @@ data
 The functions listed at <https://openpharma.github.io/brms.mmrm/reference/index.html#informative-prior-archetypes> can create different kinds of informative prior archetypes from a dataset like the one above. For example, suppose we want to place informative priors on the successive differences between adjacent time points. This approach is appropriate and desirable in many situations because the structure naturally captures the prior correlations among adjacent visits of a clinical trial. To do this, we create an instance of the "successive cells" archetype.
 
 
-```r
+``` r
 archetype <- brm_archetype_successive_cells(data, baseline = FALSE)
 ```
 
 The instance of the archetype is an ordinary tibble, but it adds new columns.
 
 
-```r
+``` r
 archetype
 #> # A tibble: 800 × 20
 #>    x_PBO_VIS1 x_PBO_VIS2 x_PBO_VIS3 x_PBO_VIS4 x_TRT_VIS1 x_TRT_VIS2 x_TRT_VIS3
@@ -95,7 +95,7 @@ archetype
 Those new columns constitute a custom model matrix to describe the desired parameterization. We have effects of interest to express successive differences:
 
 
-```r
+``` r
 attr(archetype, "brm_archetype_interest")
 #> [1] "x_PBO_VIS1" "x_PBO_VIS2" "x_PBO_VIS3" "x_PBO_VIS4" "x_TRT_VIS1"
 #> [6] "x_TRT_VIS2" "x_TRT_VIS3" "x_TRT_VIS4"
@@ -104,30 +104,52 @@ attr(archetype, "brm_archetype_interest")
 In addition, we have nuisance variables. Some nuisance variables are continuous covariates, while others are levels of one-hot-encoded concomitant factors or interactions of those concomitant factors with baseline and/or subgroup. All nuisance variables are centered at their means so the reference level of the model is at the "center" of the data and not implicitly conditional on a subset of the data.^[`brm_recenter_nuisance()` can retroactively recenter a nuisance column to a fixed value other than its mean.] In addition, some nuisance variables are automatically dropped in order to ensure the model matrix is full-rank. This is critically important to preserve the interpretation of the columns of interest and make sure the informative priors behave as expected.
 
 
-```r
+``` r
 attr(archetype, "brm_archetype_nuisance")
 #> [1] "nuisance_WEIGHT"   "nuisance_SEX_Male"
 ```
 
-The factors of interest linearly map to marginal means. To see the mapping, call `summary()` on the archetype. The printed output helps build intuition on how the archetype is parameterized and what those parameters are doing.
+The factors of interest linearly map to marginal means. To see the mapping, call `summary()` on the archetype. The printed output helps build intuition on how the archetype is parameterized and what those parameters are doing.^[`summary()` also invisibly returns a simple character vector with the equations below.]
 
 
-```r
+``` r
 summary(archetype)
 #> # This is the "successive cells" informative prior archetype in brms.mmrm.
 #> # The following equations show the relationships between the
 #> # marginal means (left-hand side) and fixed effect parameters
 #> # (right-hand side).
 #> # 
-#> #    PBO:VIS1 = x_PBO_VIS1
-#> #    PBO:VIS2 = x_PBO_VIS1 + x_PBO_VIS2
-#> #    PBO:VIS3 = x_PBO_VIS1 + x_PBO_VIS2 + x_PBO_VIS3
-#> #    PBO:VIS4 = x_PBO_VIS1 + x_PBO_VIS2 + x_PBO_VIS3 + x_PBO_VIS4
-#> #    TRT:VIS1 = x_TRT_VIS1
-#> #    TRT:VIS2 = x_TRT_VIS1 + x_TRT_VIS2
-#> #    TRT:VIS3 = x_TRT_VIS1 + x_TRT_VIS2 + x_TRT_VIS3
-#> #    TRT:VIS4 = x_TRT_VIS1 + x_TRT_VIS2 + x_TRT_VIS3 + x_TRT_VIS4
+#> #   PBO:VIS1 = x_PBO_VIS1
+#> #   PBO:VIS2 = x_PBO_VIS1 + x_PBO_VIS2
+#> #   PBO:VIS3 = x_PBO_VIS1 + x_PBO_VIS2 + x_PBO_VIS3
+#> #   PBO:VIS4 = x_PBO_VIS1 + x_PBO_VIS2 + x_PBO_VIS3 + x_PBO_VIS4
+#> #   TRT:VIS1 = x_TRT_VIS1
+#> #   TRT:VIS2 = x_TRT_VIS1 + x_TRT_VIS2
+#> #   TRT:VIS3 = x_TRT_VIS1 + x_TRT_VIS2 + x_TRT_VIS3
+#> #   TRT:VIS4 = x_TRT_VIS1 + x_TRT_VIS2 + x_TRT_VIS3 + x_TRT_VIS4
 ```
+
+Note: the parameterization includes no intercept in the model. To include an intercept, set `intercept = TRUE` in `brm_archetype_successive_cells()`.
+
+
+``` r
+summary(brm_archetype_successive_cells(data, intercept = TRUE))
+#> # This is the "successive cells" informative prior archetype in brms.mmrm.
+#> # The following equations show the relationships between the
+#> # marginal means (left-hand side) and fixed effect parameters
+#> # (right-hand side).
+#> # 
+#> #   PBO:VIS1 = x_PBO_VIS1
+#> #   PBO:VIS2 = x_PBO_VIS1 + x_PBO_VIS2
+#> #   PBO:VIS3 = x_PBO_VIS1 + x_PBO_VIS2 + x_PBO_VIS3
+#> #   PBO:VIS4 = x_PBO_VIS1 + x_PBO_VIS2 + x_PBO_VIS3 + x_PBO_VIS4
+#> #   TRT:VIS1 = x_PBO_VIS1 + x_TRT_VIS1
+#> #   TRT:VIS2 = x_PBO_VIS1 + x_TRT_VIS1 + x_TRT_VIS2
+#> #   TRT:VIS3 = x_PBO_VIS1 + x_TRT_VIS1 + x_TRT_VIS2 + x_TRT_VIS3
+#> #   TRT:VIS4 = x_PBO_VIS1 + x_TRT_VIS1 + x_TRT_VIS2 + x_TRT_VIS3 + x_TRT_VIS4
+```
+
+Above, `x_PBO_VIS1` serves as the intercept, and `x_TRT_VIS1` is defined relative to `x_TRT_VIS1`. The rest of the parameters keep their original interpretations.
 
 ## Informative priors
 
@@ -138,7 +160,7 @@ In the printed output from `summary(archetype)`, parameters of interest such as 
 `brm_prior_label()` is one way to create a labeling scheme. Each call to `brm_prior_label()` below assigns a univariate prior to a fixed effect parameter. Each univariate prior is a Stan code string. Possible choices are documented in the Stan function reference at <https://mc-stan.org/docs/functions-reference/unbounded_continuous_distributions.html>.
 
 
-```r
+``` r
 label <- NULL |>
   brm_prior_label(code = "student_t(4, -7.57, 4.96)", group = "PBO", time = "VIS1") |>
   brm_prior_label(code = "student_t(4,  3.14, 7.86)", group = "PBO", time = "VIS2") |>
@@ -165,7 +187,7 @@ label
 As an alternative to `brm_prior_label()`, you can start with a template and manually fill in the Stan code. 
 
 
-```r
+``` r
 template <- brm_prior_template(archetype)
 template
 #> # A tibble: 8 × 3
@@ -182,7 +204,7 @@ template
 ```
 
 
-```r
+``` r
 label <- template |>
   mutate(
     code = c(
@@ -213,7 +235,7 @@ label
 After you have a labeling scheme, `brm_prior_archetype()` can create a `brms` prior for the important fixed effects.^[`brms` priors are documented in <https://paul-buerkner.github.io/brms/reference/set_prior.html>.]
 
 
-```r
+``` r
 prior <- brm_prior_archetype(label = label, archetype = archetype)
 prior
 #>                      prior class       coef group resp dpar nlpar   lb   ub
@@ -239,7 +261,7 @@ prior
 In less common situations, you may wish to assign priors to nuisance parameters. For example, our model accounts for interactions between baseline and discrete time, and it may be reasonable to assign priors to these slopes based on high-quality historical data. This requires a thorough understanding of the fixed effect structure of the model, but it can be done directly through `brms`. First, check the formula for the included nuisance parameters. `brm_formula()` automatically understands archetypes.
 
 
-```r
+``` r
 brm_formula(archetype)
 #> FEV1 ~ 0 + x_PBO_VIS1 + x_PBO_VIS2 + x_PBO_VIS3 + x_PBO_VIS4 + x_TRT_VIS1 + x_TRT_VIS2 + x_TRT_VIS3 + x_TRT_VIS4 + nuisance_WEIGHT + nuisance_SEX_Male + unstr(time = AVISIT, gr = USUBJID) 
 #> sigma ~ 0 + AVISIT
@@ -247,10 +269,7 @@ brm_formula(archetype)
 
 The `"nuisance_*"` terms are the nuisance variables, and the ones involving baseline are `nuisance_FEV1_BL.AVISITVIS1`, `nuisance_FEV1_BL.AVISITVIS2`, `nuisance_FEV1_BL.AVISITVIS3`, and `nuisance_FEV1_BL.AVISITVIS4`. Because there is no overall slope for baseline, we can interpret each term as the linear rate of change in the outcome variable per unit increase in baseline for a given discrete time point. Suppose we use this interpretation to construct informative priors `student_t(4, -0.83, 1)`, `student_t(4, -0.78, 1)`, `student_t(4, -0.86, 1)`,  and `student_t(4, -0.82, 1)`, respectively. Use `brms::set_prior()` and `c()` to append these priors to our existing `prior` object:
 
-
 The model still has many parameters where we did not set priors, and `brms` sets automatic defaults. You can see these defaults with `brms::get_prior()`.
-
-
 
 <https://paul-buerkner.github.io/brms/reference/set_prior.html> documents many of the default priors set by `brms`. In particular, `"(flat)"` denotes an improper uniform prior over all the real numbers.
 
@@ -259,7 +278,7 @@ The model still has many parameters where we did not set priors, and `brms` sets
 The downstream methods in `brms.mmrm` automatically understand how to work with informative prior archetypes. Notably, the formula uses custom interest and nuisance variables instead of the original variables in the data.
 
 
-```r
+``` r
 formula <- brm_formula(archetype)
 formula
 #> FEV1 ~ 0 + x_PBO_VIS1 + x_PBO_VIS2 + x_PBO_VIS3 + x_PBO_VIS4 + x_TRT_VIS1 + x_TRT_VIS2 + x_TRT_VIS3 + x_TRT_VIS4 + nuisance_WEIGHT + nuisance_SEX_Male + unstr(time = AVISIT, gr = USUBJID) 
@@ -269,7 +288,7 @@ formula
 The model can accept the archetype, formula, and prior. Usage is the same as in non-archetype workflows.
 
 
-```r
+``` r
 model <- brm_model(
   data = archetype,
   formula = formula,
@@ -320,7 +339,7 @@ brms::prior_summary(model)
 Marginal mean estimation, post-processing, and visualization automatically understand the archetype without any user intervention.
 
 
-```r
+``` r
 draws <- brm_marginal_draws(
   data = archetype,
   formula = formula,
@@ -341,117 +360,117 @@ brm_plot_compare(model = summaries_model, data = summaries_data)
 `brms.mmrm` supports a variety of informative prior archetypes with different kinds of fixed effects. For example, `brms.mmrm` supports simple cell mean and treatment effect parameterizations.
 
 
-```r
-summary(brm_archetype_cells(data))
+``` r
+summary(brm_archetype_cells(data, intercept = FALSE))
 #> # This is the "cells" informative prior archetype in brms.mmrm.
 #> # The following equations show the relationships between the
 #> # marginal means (left-hand side) and fixed effect parameters
 #> # (right-hand side).
 #> # 
-#> #    PBO:VIS1 = x_PBO_VIS1
-#> #    PBO:VIS2 = x_PBO_VIS2
-#> #    PBO:VIS3 = x_PBO_VIS3
-#> #    PBO:VIS4 = x_PBO_VIS4
-#> #    TRT:VIS1 = x_TRT_VIS1
-#> #    TRT:VIS2 = x_TRT_VIS2
-#> #    TRT:VIS3 = x_TRT_VIS3
-#> #    TRT:VIS4 = x_TRT_VIS4
+#> #   PBO:VIS1 = x_PBO_VIS1
+#> #   PBO:VIS2 = x_PBO_VIS2
+#> #   PBO:VIS3 = x_PBO_VIS3
+#> #   PBO:VIS4 = x_PBO_VIS4
+#> #   TRT:VIS1 = x_TRT_VIS1
+#> #   TRT:VIS2 = x_TRT_VIS2
+#> #   TRT:VIS3 = x_TRT_VIS3
+#> #   TRT:VIS4 = x_TRT_VIS4
 ```
 
 
-```r
-summary(brm_archetype_effects(data))
+``` r
+summary(brm_archetype_effects(data, intercept = FALSE))
 #> # This is the "effects" informative prior archetype in brms.mmrm.
 #> # The following equations show the relationships between the
 #> # marginal means (left-hand side) and fixed effect parameters
 #> # (right-hand side).
 #> # 
-#> #    PBO:VIS1 = x_PBO_VIS1
-#> #    PBO:VIS2 = x_PBO_VIS2
-#> #    PBO:VIS3 = x_PBO_VIS3
-#> #    PBO:VIS4 = x_PBO_VIS4
-#> #    TRT:VIS1 = x_PBO_VIS1 + x_TRT_VIS1
-#> #    TRT:VIS2 = x_PBO_VIS2 + x_TRT_VIS2
-#> #    TRT:VIS3 = x_PBO_VIS3 + x_TRT_VIS3
-#> #    TRT:VIS4 = x_PBO_VIS4 + x_TRT_VIS4
+#> #   PBO:VIS1 = x_PBO_VIS1
+#> #   PBO:VIS2 = x_PBO_VIS2
+#> #   PBO:VIS3 = x_PBO_VIS3
+#> #   PBO:VIS4 = x_PBO_VIS4
+#> #   TRT:VIS1 = x_PBO_VIS1 + x_TRT_VIS1
+#> #   TRT:VIS2 = x_PBO_VIS2 + x_TRT_VIS2
+#> #   TRT:VIS3 = x_PBO_VIS3 + x_TRT_VIS3
+#> #   TRT:VIS4 = x_PBO_VIS4 + x_TRT_VIS4
 ```
 
 There are archetypes to parameterize the average across all time points in the data. Below, `x_group_1_time_2` is the average across time points for group 1 because it is the algebraic result of simplifying `(group_1:time_2 + group_1:time_3 + group_1:time_3) / 3`.
 
 
-```r
-summary(brm_archetype_average_cells(data))
+``` r
+summary(brm_archetype_average_cells(data, intercept = FALSE))
 #> # This is the "average cells" informative prior archetype in brms.mmrm.
 #> # The following equations show the relationships between the
 #> # marginal means (left-hand side) and fixed effect parameters
 #> # (right-hand side).
 #> # 
-#> #    PBO:VIS1 = 4*x_PBO_VIS1 - x_PBO_VIS2 - x_PBO_VIS3 - x_PBO_VIS4
-#> #    PBO:VIS2 = x_PBO_VIS2
-#> #    PBO:VIS3 = x_PBO_VIS3
-#> #    PBO:VIS4 = x_PBO_VIS4
-#> #    TRT:VIS1 = 4*x_TRT_VIS1 - x_TRT_VIS2 - x_TRT_VIS3 - x_TRT_VIS4
-#> #    TRT:VIS2 = x_TRT_VIS2
-#> #    TRT:VIS3 = x_TRT_VIS3
-#> #    TRT:VIS4 = x_TRT_VIS4
+#> #   PBO:VIS1 = 4*x_PBO_VIS1 - x_PBO_VIS2 - x_PBO_VIS3 - x_PBO_VIS4
+#> #   PBO:VIS2 = x_PBO_VIS2
+#> #   PBO:VIS3 = x_PBO_VIS3
+#> #   PBO:VIS4 = x_PBO_VIS4
+#> #   TRT:VIS1 = 4*x_TRT_VIS1 - x_TRT_VIS2 - x_TRT_VIS3 - x_TRT_VIS4
+#> #   TRT:VIS2 = x_TRT_VIS2
+#> #   TRT:VIS3 = x_TRT_VIS3
+#> #   TRT:VIS4 = x_TRT_VIS4
 ```
 
 There is also a treatment effect version where `x_group_2_time_2` becomes the time-averaged treatment effect of group 2 relative to group 1.
 
 
-```r
-summary(brm_archetype_average_effects(data))
+``` r
+summary(brm_archetype_average_effects(data, intercept = FALSE))
 #> # This is the "average effects" informative prior archetype in brms.mmrm.
 #> # The following equations show the relationships between the
 #> # marginal means (left-hand side) and fixed effect parameters
 #> # (right-hand side).
 #> # 
-#> #    PBO:VIS1 = 4*x_PBO_VIS1 - x_PBO_VIS2 - x_PBO_VIS3 - x_PBO_VIS4
-#> #    PBO:VIS2 = x_PBO_VIS2
-#> #    PBO:VIS3 = x_PBO_VIS3
-#> #    PBO:VIS4 = x_PBO_VIS4
-#> #    TRT:VIS1 = 4*x_PBO_VIS1 - x_PBO_VIS2 - x_PBO_VIS3 - x_PBO_VIS4 + 4*x_TRT_VIS1 - x_TRT_VIS2 - x_TRT_VIS3 - x_TRT_VIS4
-#> #    TRT:VIS2 = x_PBO_VIS2 + x_TRT_VIS2
-#> #    TRT:VIS3 = x_PBO_VIS3 + x_TRT_VIS3
-#> #    TRT:VIS4 = x_PBO_VIS4 + x_TRT_VIS4
+#> #   PBO:VIS1 = 4*x_PBO_VIS1 - x_PBO_VIS2 - x_PBO_VIS3 - x_PBO_VIS4
+#> #   PBO:VIS2 = x_PBO_VIS2
+#> #   PBO:VIS3 = x_PBO_VIS3
+#> #   PBO:VIS4 = x_PBO_VIS4
+#> #   TRT:VIS1 = 4*x_PBO_VIS1 - x_PBO_VIS2 - x_PBO_VIS3 - x_PBO_VIS4 + 4*x_TRT_VIS1 - x_TRT_VIS2 - x_TRT_VIS3 - x_TRT_VIS4
+#> #   TRT:VIS2 = x_PBO_VIS2 + x_TRT_VIS2
+#> #   TRT:VIS3 = x_PBO_VIS3 + x_TRT_VIS3
+#> #   TRT:VIS4 = x_PBO_VIS4 + x_TRT_VIS4
 ```
 
 The example in this vignette uses the "successive cells" archetype, where fixed effects represent successive differences between adjacent time points.
 
 
-```r
-summary(brm_archetype_successive_cells(data))
+``` r
+summary(brm_archetype_successive_cells(data, intercept = FALSE))
 #> # This is the "successive cells" informative prior archetype in brms.mmrm.
 #> # The following equations show the relationships between the
 #> # marginal means (left-hand side) and fixed effect parameters
 #> # (right-hand side).
 #> # 
-#> #    PBO:VIS1 = x_PBO_VIS1
-#> #    PBO:VIS2 = x_PBO_VIS1 + x_PBO_VIS2
-#> #    PBO:VIS3 = x_PBO_VIS1 + x_PBO_VIS2 + x_PBO_VIS3
-#> #    PBO:VIS4 = x_PBO_VIS1 + x_PBO_VIS2 + x_PBO_VIS3 + x_PBO_VIS4
-#> #    TRT:VIS1 = x_TRT_VIS1
-#> #    TRT:VIS2 = x_TRT_VIS1 + x_TRT_VIS2
-#> #    TRT:VIS3 = x_TRT_VIS1 + x_TRT_VIS2 + x_TRT_VIS3
-#> #    TRT:VIS4 = x_TRT_VIS1 + x_TRT_VIS2 + x_TRT_VIS3 + x_TRT_VIS4
+#> #   PBO:VIS1 = x_PBO_VIS1
+#> #   PBO:VIS2 = x_PBO_VIS1 + x_PBO_VIS2
+#> #   PBO:VIS3 = x_PBO_VIS1 + x_PBO_VIS2 + x_PBO_VIS3
+#> #   PBO:VIS4 = x_PBO_VIS1 + x_PBO_VIS2 + x_PBO_VIS3 + x_PBO_VIS4
+#> #   TRT:VIS1 = x_TRT_VIS1
+#> #   TRT:VIS2 = x_TRT_VIS1 + x_TRT_VIS2
+#> #   TRT:VIS3 = x_TRT_VIS1 + x_TRT_VIS2 + x_TRT_VIS3
+#> #   TRT:VIS4 = x_TRT_VIS1 + x_TRT_VIS2 + x_TRT_VIS3 + x_TRT_VIS4
 ```
 
 There is also a treatment effect version of the successive differences archetype:
 
 
-```r
-summary(brm_archetype_successive_effects(data))
+``` r
+summary(brm_archetype_successive_effects(data, intercept = FALSE))
 #> # This is the "successive effects" informative prior archetype in brms.mmrm.
 #> # The following equations show the relationships between the
 #> # marginal means (left-hand side) and fixed effect parameters
 #> # (right-hand side).
 #> # 
-#> #    PBO:VIS1 = x_PBO_VIS1
-#> #    PBO:VIS2 = x_PBO_VIS1 + x_PBO_VIS2
-#> #    PBO:VIS3 = x_PBO_VIS1 + x_PBO_VIS2 + x_PBO_VIS3
-#> #    PBO:VIS4 = x_PBO_VIS1 + x_PBO_VIS2 + x_PBO_VIS3 + x_PBO_VIS4
-#> #    TRT:VIS1 = x_PBO_VIS1 + x_TRT_VIS1
-#> #    TRT:VIS2 = x_PBO_VIS1 + x_PBO_VIS2 + x_TRT_VIS1 + x_TRT_VIS2
-#> #    TRT:VIS3 = x_PBO_VIS1 + x_PBO_VIS2 + x_PBO_VIS3 + x_TRT_VIS1 + x_TRT_VIS2 + x_TRT_VIS3
-#> #    TRT:VIS4 = x_PBO_VIS1 + x_PBO_VIS2 + x_PBO_VIS3 + x_PBO_VIS4 + x_TRT_VIS1 + x_TRT_VIS2 + x_TRT_VIS3 + x_TRT_VIS4
+#> #   PBO:VIS1 = x_PBO_VIS1
+#> #   PBO:VIS2 = x_PBO_VIS1 + x_PBO_VIS2
+#> #   PBO:VIS3 = x_PBO_VIS1 + x_PBO_VIS2 + x_PBO_VIS3
+#> #   PBO:VIS4 = x_PBO_VIS1 + x_PBO_VIS2 + x_PBO_VIS3 + x_PBO_VIS4
+#> #   TRT:VIS1 = x_PBO_VIS1 + x_TRT_VIS1
+#> #   TRT:VIS2 = x_PBO_VIS1 + x_PBO_VIS2 + x_TRT_VIS1 + x_TRT_VIS2
+#> #   TRT:VIS3 = x_PBO_VIS1 + x_PBO_VIS2 + x_PBO_VIS3 + x_TRT_VIS1 + x_TRT_VIS2 + x_TRT_VIS3
+#> #   TRT:VIS4 = x_PBO_VIS1 + x_PBO_VIS2 + x_PBO_VIS3 + x_PBO_VIS4 + x_TRT_VIS1 + x_TRT_VIS2 + x_TRT_VIS3 + x_TRT_VIS4
 ```

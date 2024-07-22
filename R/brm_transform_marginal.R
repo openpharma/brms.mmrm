@@ -52,7 +52,6 @@
 #'   reconstruct the `brms` model parameter names. This argument should
 #'   only be modified for testing purposes.
 #' @examples
-#' if (identical(Sys.getenv("BRM_EXAMPLES", unset = ""), "true")) {
 #' set.seed(0L)
 #' data <- brm_data(
 #'   data = brm_simulate_simple()$data,
@@ -69,10 +68,11 @@
 #'   baseline_time = FALSE
 #' )
 #' transform <- brm_transform_marginal(data = data, formula = formula)
-#' summary(transform)
+#' equations <- summary(transform)
+#' print(equations)
+#' summary(transform, message = FALSE)
 #' class(transform)
 #' print(transform)
-#' }
 brm_transform_marginal <- function(
   data,
   formula,
@@ -289,8 +289,48 @@ brm_transform_marginal_names_rows <- function(data, formula, grid) {
   )
 }
 
+#' @title Summarize marginal transform.
 #' @export
-summary.brms_mmrm_transform_marginal <- function(object, ...) {
+#' @keywords internal
+#' @description Summarize a transformation from model parameters to
+#'   marginal means.
+#' @return Return a character vector with linear equations
+#'   that map model parameters to marginal means. If the `message`
+#'   argument is `TRUE` (default) then this character vector is returned
+#'   invisibly and a verbose description of the equations is printed.
+#' @param object The [brm_transform_marginal()] matrix to summarize.
+#' @param message TRUE to print an informative message about the archetype
+#'   and invisibly return a character vector of equations. `FALSE`
+#'   to forgo verbose messages and non-invisibly return the equations.
+#' @param ... Not used, but required for S3 methods that inherit from
+#'   the base generic [summary()].
+#' @examples
+#' set.seed(0L)
+#' data <- brm_data(
+#'   data = brm_simulate_simple()$data,
+#'   outcome = "response",
+#'   group = "group",
+#'   time = "time",
+#'   patient = "patient",
+#'   reference_group = "group_1",
+#'   reference_time = "time_1"
+#' )
+#' formula <- brm_formula(
+#'   data = data,
+#'   baseline = FALSE,
+#'   baseline_time = FALSE
+#' )
+#' transform <- brm_transform_marginal(data = data, formula = formula)
+#' equations <- summary(transform)
+#' print(equations)
+#' summary(transform, message = FALSE)
+#' class(transform)
+#' print(transform)
+summary.brms_mmrm_transform_marginal <- function(
+  object,
+  message = TRUE,
+  ...
+) {
   lines <- c(
     "This is a matrix to transform model parameters to marginal means.",
     "The following equations show the relationships between the",
@@ -298,9 +338,21 @@ summary.brms_mmrm_transform_marginal <- function(object, ...) {
     "(right-hand side).",
     ""
   )
-  lines_transform <- paste(" ", brm_transform_marginal_lines(object))
+  out <- brm_transform_marginal_lines(object)
+  lines_transform <- paste(" ", out)
   lines <- paste("#", c(lines, lines_transform), sep = " ")
-  cat(lines, sep = "\n")
+  if (message) {
+    message(paste(lines, collapse = "\n"))
+    return(invisible(out))
+  } else {
+    out
+  }
+}
+
+#' @export
+print.brms_mmrm_transform_marginal <- function(x, ...) {
+  class(x) <- c("matrix", "array")
+  NextMethod()
 }
 
 brm_transform_marginal_lines <- function(transform) {

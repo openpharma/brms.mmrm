@@ -79,7 +79,6 @@ However, please do not modify the dimensions, row names, or column
 names.
 }
 \examples{
-if (identical(Sys.getenv("BRM_EXAMPLES", unset = ""), "true")) {
 set.seed(0L)
 data <- brm_data(
   data = brm_simulate_simple()$data,
@@ -96,9 +95,10 @@ formula <- brm_formula(
   baseline_time = FALSE
 )
 transform <- brm_transform_marginal(data = data, formula = formula)
-summary(transform)
+equations <- summary(transform)
+print(equations)
+summary(transform, message = FALSE)
 class(transform)
 print(transform)
-}
 }
 \concept{transformations}

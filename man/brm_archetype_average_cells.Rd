@@ -6,41 +6,24 @@
 \usage{
 brm_archetype_average_cells(
   data,
-  covariates = TRUE,
-  prefix_interest = "x_",
-  prefix_nuisance = "nuisance_",
+  intercept = FALSE,
   baseline = !is.null(attr(data, "brm_baseline")),
   baseline_subgroup = !is.null(attr(data, "brm_baseline")) && !is.null(attr(data,
     "brm_subgroup")),
   baseline_subgroup_time = !is.null(attr(data, "brm_baseline")) && !is.null(attr(data,
     "brm_subgroup")),
-  baseline_time = !is.null(attr(data, "brm_baseline"))
+  baseline_time = !is.null(attr(data, "brm_baseline")),
+  covariates = TRUE,
+  prefix_interest = "x_",
+  prefix_nuisance = "nuisance_"
 )
 }
 \arguments{
 \item{data}{A classed data frame from \code{\link[=brm_data]{brm_data()}}, or an informative
 prior archetype from a function like \code{\link[=brm_archetype_successive_cells]{brm_archetype_successive_cells()}}.}
 
-\item{covariates}{Logical of length 1.
-\code{TRUE} (default) to include any additive covariates declared with
-the \code{covariates} argument of \code{\link[=brm_data]{brm_data()}},
-\code{FALSE} to omit.
-For informative prior archetypes, this option is set in
-functions like \code{\link[=brm_archetype_successive_cells]{brm_archetype_successive_cells()}} rather than in
-\code{\link[=brm_formula]{brm_formula()}} in order to make sure columns are appropriately
-centered and the underlying model matrix has full rank.}
-
-\item{prefix_interest}{Character string to prepend to the new columns
-of generated fixed effects of interest (relating to group, subgroup,
-and/or time).
-In rare cases, you may need to set a non-default prefix to prevent
-name conflicts with existing columns in the data, or rename
-the columns in your data.
-\code{prefix_interest} must not be the same value as \code{prefix_nuisance}.}
-
-\item{prefix_nuisance}{Same as \code{prefix_interest}, but relating to
-generated fixed effects NOT of interest (not relating to group,
-subgroup, or time). Must not be the same value as \code{prefix_interest}.}
+\item{intercept}{Logical of length 1.
+\code{TRUE} (default) to include an intercept, \code{FALSE} to omit.}
 
 \item{baseline}{Logical of length 1.
 \code{TRUE} to include an additive effect for baseline
@@ -75,6 +58,27 @@ For informative prior archetypes, this option should be set in
 functions like \code{\link[=brm_archetype_successive_cells]{brm_archetype_successive_cells()}} rather than in
 \code{\link[=brm_formula]{brm_formula()}} in order to make sure columns are appropriately
 centered and the underlying model matrix has full rank.}
+
+\item{covariates}{Logical of length 1.
+\code{TRUE} (default) to include any additive covariates declared with
+the \code{covariates} argument of \code{\link[=brm_data]{brm_data()}},
+\code{FALSE} to omit.
+For informative prior archetypes, this option is set in
+functions like \code{\link[=brm_archetype_successive_cells]{brm_archetype_successive_cells()}} rather than in
+\code{\link[=brm_formula]{brm_formula()}} in order to make sure columns are appropriately
+centered and the underlying model matrix has full rank.}
+
+\item{prefix_interest}{Character string to prepend to the new columns
+of generated fixed effects of interest (relating to group, subgroup,
+and/or time).
+In rare cases, you may need to set a non-default prefix to prevent
+name conflicts with existing columns in the data, or rename
+the columns in your data.
+\code{prefix_interest} must not be the same value as \code{prefix_nuisance}.}
+
+\item{prefix_nuisance}{Same as \code{prefix_interest}, but relating to
+generated fixed effects NOT of interest (not relating to group,
+subgroup, or time). Must not be the same value as \code{prefix_interest}.}
 }
 \value{
 A special classed \code{tibble} with data tailored to
@@ -93,6 +97,7 @@ to represent the mean response averaged across all the time points.
 
 To illustrate, suppose the dataset has two treatment groups A and B,
 time points 1, 2, and 3, and no other covariates.
+
 Let \code{mu_gt} be the marginal mean of the response at group
 \code{g} time \code{t} given data and hyperparameters.
 The model has fixed effect parameters \code{beta_1}, \code{beta_2}, ..., \code{beta_6}

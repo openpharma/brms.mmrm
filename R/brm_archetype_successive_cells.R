@@ -67,6 +67,17 @@
 #' @param prefix_nuisance Same as `prefix_interest`, but relating to
 #'   generated fixed effects NOT of interest (not relating to group,
 #'   subgroup, or time). Must not be the same value as `prefix_interest`.
+#' @param intercept `TRUE` to make one of the parameters an intercept,
+#'   `FALSE` otherwise. If `TRUE`, then the interpretation of the
+#'   parameters in the "Details" section will change, and you are
+#'   responsible for manually calling `summary()` on the archetype
+#'   and interpreting the parameters according to the output.
+#'   In addition, you are responsible for setting an
+#'   appropriate prior on the intercept. In normal usage, `brms` looks for
+#'   a model parameter called `"Intercept"` and uses the data to set the prior
+#'   to help the MCMC runs smoothly. If `intercept = TRUE` for informative
+#'   prior archetypes, the intercept will be called something else, and
+#'   `brms` cannot auto-generate a sensible default prior.
 #' @examples
 #' set.seed(0L)
 #' data <- brm_simulate_outline(
@@ -137,15 +148,16 @@
 #' }
 brm_archetype_successive_cells <- function(
   data,
-  covariates = TRUE,
-  prefix_interest = "x_",
-  prefix_nuisance = "nuisance_",
+  intercept = FALSE,
   baseline = !is.null(attr(data, "brm_baseline")),
   baseline_subgroup = !is.null(attr(data, "brm_baseline")) &&
     !is.null(attr(data, "brm_subgroup")),
   baseline_subgroup_time = !is.null(attr(data, "brm_baseline")) &&
     !is.null(attr(data, "brm_subgroup")),
-  baseline_time = !is.null(attr(data, "brm_baseline"))
+  baseline_time = !is.null(attr(data, "brm_baseline")),
+  covariates = TRUE,
+  prefix_interest = "x_",
+  prefix_nuisance = "nuisance_"
 ) {
   brm_data_validate.default(data)
   data <- brm_data_remove_archetype(data)
@@ -167,6 +179,9 @@ brm_archetype_successive_cells <- function(
     archetype_successive_cells_subgroup(data, prefix_interest),
     archetype_successive_cells(data, prefix_interest)
   )
+  if (intercept) {
+    archetype$interest[[1L]] <- 1L
+  }
   nuisance <- archetype_nuisance(
     data = data,
     interest = archetype$interest,
