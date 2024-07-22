@@ -94,19 +94,21 @@
 #' }
 brm_archetype_cells <- function(
   data,
-  covariates = TRUE,
-  prefix_interest = "x_",
-  prefix_nuisance = "nuisance_",
+  intercept = FALSE,
   baseline = !is.null(attr(data, "brm_baseline")),
   baseline_subgroup = !is.null(attr(data, "brm_baseline")) &&
     !is.null(attr(data, "brm_subgroup")),
   baseline_subgroup_time = !is.null(attr(data, "brm_baseline")) &&
     !is.null(attr(data, "brm_subgroup")),
-  baseline_time = !is.null(attr(data, "brm_baseline"))
+  baseline_time = !is.null(attr(data, "brm_baseline")),
+  covariates = TRUE,
+  prefix_interest = "x_",
+  prefix_nuisance = "nuisance_"
 ) {
   brm_data_validate.default(data)
   data <- brm_data_remove_archetype(data)
   data <- brm_data_fill(data)
+  assert_lgl(intercept, "intercept must be TRUE or FALSE")
   assert_chr(
     prefix_interest %||nzchar% "x",
     "prefix_interest must be a single character string"
@@ -124,6 +126,9 @@ brm_archetype_cells <- function(
     archetype_cells_subgroup(data, prefix_interest),
     archetype_cells(data, prefix_interest)
   )
+  if (intercept) {
+    archetype$interest[[1L]] <- 1L
+  }
   nuisance <- archetype_nuisance(
     data = data,
     interest = archetype$interest,
