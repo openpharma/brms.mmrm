@@ -383,7 +383,7 @@ test_that("archetype non-subgroup no nuisance", {
     )
   )
   expect_equal(
-    unname(transform),
+    unclass(unname(transform)),
     kronecker(diag(2), diag(3) + lower.tri(diag(3)))
   )
   terms <- c("response ~ 0", grep("^x_", colnames(scenario), value = TRUE))
