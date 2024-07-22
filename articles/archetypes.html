@@ -201,7 +201,8 @@ priors behave as expected.</p>
 <p>The factors of interest linearly map to marginal means. To see the
 mapping, call <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> on the archetype. The printed
 output helps build intuition on how the archetype is parameterized and
-what those parameters are doing.</p>
+what those parameters are doing.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;&lt;code&gt;&lt;a href="https://rdrr.io/r/base/summary.html" class="external-link"&gt;summary()&lt;/a&gt;&lt;/code&gt; also invisibly returns a simple
+character vector with the equations below.&lt;/p&gt;'><sup>2</sup></a></p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">archetype</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # This is the "successive cells" informative prior archetype in brms.mmrm.</span></span>
@@ -209,14 +210,35 @@ what those parameters are doing.</p>
 <span><span class="co">#&gt; # marginal means (left-hand side) and fixed effect parameters</span></span>
 <span><span class="co">#&gt; # (right-hand side).</span></span>
 <span><span class="co">#&gt; # </span></span>
-<span><span class="co">#&gt; #    PBO:VIS1 = x_PBO_VIS1</span></span>
-<span><span class="co">#&gt; #    PBO:VIS2 = x_PBO_VIS1 + x_PBO_VIS2</span></span>
-<span><span class="co">#&gt; #    PBO:VIS3 = x_PBO_VIS1 + x_PBO_VIS2 + x_PBO_VIS3</span></span>
-<span><span class="co">#&gt; #    PBO:VIS4 = x_PBO_VIS1 + x_PBO_VIS2 + x_PBO_VIS3 + x_PBO_VIS4</span></span>
-<span><span class="co">#&gt; #    TRT:VIS1 = x_TRT_VIS1</span></span>
-<span><span class="co">#&gt; #    TRT:VIS2 = x_TRT_VIS1 + x_TRT_VIS2</span></span>
-<span><span class="co">#&gt; #    TRT:VIS3 = x_TRT_VIS1 + x_TRT_VIS2 + x_TRT_VIS3</span></span>
-<span><span class="co">#&gt; #    TRT:VIS4 = x_TRT_VIS1 + x_TRT_VIS2 + x_TRT_VIS3 + x_TRT_VIS4</span></span></code></pre></div>
+<span><span class="co">#&gt; #   PBO:VIS1 = x_PBO_VIS1</span></span>
+<span><span class="co">#&gt; #   PBO:VIS2 = x_PBO_VIS1 + x_PBO_VIS2</span></span>
+<span><span class="co">#&gt; #   PBO:VIS3 = x_PBO_VIS1 + x_PBO_VIS2 + x_PBO_VIS3</span></span>
+<span><span class="co">#&gt; #   PBO:VIS4 = x_PBO_VIS1 + x_PBO_VIS2 + x_PBO_VIS3 + x_PBO_VIS4</span></span>
+<span><span class="co">#&gt; #   TRT:VIS1 = x_TRT_VIS1</span></span>
+<span><span class="co">#&gt; #   TRT:VIS2 = x_TRT_VIS1 + x_TRT_VIS2</span></span>
+<span><span class="co">#&gt; #   TRT:VIS3 = x_TRT_VIS1 + x_TRT_VIS2 + x_TRT_VIS3</span></span>
+<span><span class="co">#&gt; #   TRT:VIS4 = x_TRT_VIS1 + x_TRT_VIS2 + x_TRT_VIS3 + x_TRT_VIS4</span></span></code></pre></div>
+<p>Note: the parameterization includes no intercept in the model. To
+include an intercept, set <code>intercept = TRUE</code> in
+<code><a href="../reference/brm_archetype_successive_cells.html">brm_archetype_successive_cells()</a></code>.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="fu"><a href="../reference/brm_archetype_successive_cells.html">brm_archetype_successive_cells</a></span><span class="op">(</span><span class="va">data</span>, intercept <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # This is the "successive cells" informative prior archetype in brms.mmrm.</span></span>
+<span><span class="co">#&gt; # The following equations show the relationships between the</span></span>
+<span><span class="co">#&gt; # marginal means (left-hand side) and fixed effect parameters</span></span>
+<span><span class="co">#&gt; # (right-hand side).</span></span>
+<span><span class="co">#&gt; # </span></span>
+<span><span class="co">#&gt; #   PBO:VIS1 = x_PBO_VIS1</span></span>
+<span><span class="co">#&gt; #   PBO:VIS2 = x_PBO_VIS1 + x_PBO_VIS2</span></span>
+<span><span class="co">#&gt; #   PBO:VIS3 = x_PBO_VIS1 + x_PBO_VIS2 + x_PBO_VIS3</span></span>
+<span><span class="co">#&gt; #   PBO:VIS4 = x_PBO_VIS1 + x_PBO_VIS2 + x_PBO_VIS3 + x_PBO_VIS4</span></span>
+<span><span class="co">#&gt; #   TRT:VIS1 = x_PBO_VIS1 + x_TRT_VIS1</span></span>
+<span><span class="co">#&gt; #   TRT:VIS2 = x_PBO_VIS1 + x_TRT_VIS1 + x_TRT_VIS2</span></span>
+<span><span class="co">#&gt; #   TRT:VIS3 = x_PBO_VIS1 + x_TRT_VIS1 + x_TRT_VIS2 + x_TRT_VIS3</span></span>
+<span><span class="co">#&gt; #   TRT:VIS4 = x_PBO_VIS1 + x_TRT_VIS1 + x_TRT_VIS2 + x_TRT_VIS3 + x_TRT_VIS4</span></span></code></pre></div>
+<p>Above, <code>x_PBO_VIS1</code> serves as the intercept, and
+<code>x_TRT_VIS1</code> is defined relative to <code>x_TRT_VIS1</code>.
+The rest of the parameters keep their original interpretations.</p>
 </div>
 <div class="section level2">
 <h2 id="informative-priors">Informative priors<a class="anchor" aria-label="anchor" href="#informative-priors"></a>
@@ -241,7 +263,7 @@ scheme. Each call to <code><a href="../reference/brm_prior_label.html">brm_prior
 univariate prior to a fixed effect parameter. Each univariate prior is a
 Stan code string. Possible choices are documented in the Stan function
 reference at <a href="https://mc-stan.org/docs/functions-reference/unbounded_continuous_distributions.html" class="external-link uri">https://mc-stan.org/docs/functions-reference/unbounded_continuous_distributions.html</a>.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">label</span> <span class="op">&lt;-</span> <span class="cn">NULL</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/brm_prior_label.html">brm_prior_label</a></span><span class="op">(</span>code <span class="op">=</span> <span class="st">"student_t(4, -7.57, 4.96)"</span>, group <span class="op">=</span> <span class="st">"PBO"</span>, time <span class="op">=</span> <span class="st">"VIS1"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/brm_prior_label.html">brm_prior_label</a></span><span class="op">(</span>code <span class="op">=</span> <span class="st">"student_t(4,  3.14, 7.86)"</span>, group <span class="op">=</span> <span class="st">"PBO"</span>, time <span class="op">=</span> <span class="st">"VIS2"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -265,7 +287,7 @@ reference at <a href="https://mc-stan.org/docs/functions-reference/unbounded_con
 <span><span class="co">#&gt; 8 student_t(4,  4.64, 8.21) TRT   VIS4</span></span></code></pre></div>
 <p>As an alternative to <code><a href="../reference/brm_prior_label.html">brm_prior_label()</a></code>, you can start
 with a template and manually fill in the Stan code.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">template</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/brm_prior_template.html">brm_prior_template</a></span><span class="op">(</span><span class="va">archetype</span><span class="op">)</span></span>
 <span><span class="va">template</span></span>
 <span><span class="co">#&gt; # A tibble: 8 × 3</span></span>
@@ -279,7 +301,7 @@ with a template and manually fill in the Stan code.</p>
 <span><span class="co">#&gt; 6 &lt;NA&gt;  TRT   VIS2 </span></span>
 <span><span class="co">#&gt; 7 &lt;NA&gt;  TRT   VIS3 </span></span>
 <span><span class="co">#&gt; 8 &lt;NA&gt;  TRT   VIS4</span></span></code></pre></div>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">label</span> <span class="op">&lt;-</span> <span class="va">template</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">mutate</span><span class="op">(</span></span>
 <span>    code <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
@@ -306,8 +328,8 @@ with a template and manually fill in the Stan code.</p>
 <span><span class="co">#&gt; 7 student_t(4,  7.65, 8.24) TRT   VIS3 </span></span>
 <span><span class="co">#&gt; 8 student_t(4,  4.64, 8.21) TRT   VIS4</span></span></code></pre></div>
 <p>After you have a labeling scheme, <code><a href="../reference/brm_prior_archetype.html">brm_prior_archetype()</a></code>
-can create a <code>brms</code> prior for the important fixed effects.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;&lt;code&gt;brms&lt;/code&gt; priors are documented in &lt;a href="https://paul-buerkner.github.io/brms/reference/set_prior.html" class="external-link uri"&gt;https://paul-buerkner.github.io/brms/reference/set_prior.html&lt;/a&gt;.&lt;/p&gt;'><sup>2</sup></a></p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+can create a <code>brms</code> prior for the important fixed effects.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;&lt;code&gt;brms&lt;/code&gt; priors are documented in &lt;a href="https://paul-buerkner.github.io/brms/reference/set_prior.html" class="external-link uri"&gt;https://paul-buerkner.github.io/brms/reference/set_prior.html&lt;/a&gt;.&lt;/p&gt;'><sup>3</sup></a></p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">prior</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/brm_prior_archetype.html">brm_prior_archetype</a></span><span class="op">(</span>label <span class="op">=</span> <span class="va">label</span>, archetype <span class="op">=</span> <span class="va">archetype</span><span class="op">)</span></span>
 <span><span class="va">prior</span></span>
 <span><span class="co">#&gt;                      prior class       coef group resp dpar nlpar   lb   ub</span></span>
@@ -336,7 +358,7 @@ thorough understanding of the fixed effect structure of the model, but
 it can be done directly through <code>brms</code>. First, check the
 formula for the included nuisance parameters. <code><a href="../reference/brm_formula.html">brm_formula()</a></code>
 automatically understands archetypes.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/brm_formula.html">brm_formula</a></span><span class="op">(</span><span class="va">archetype</span><span class="op">)</span></span>
 <span><span class="co">#&gt; FEV1 ~ 0 + x_PBO_VIS1 + x_PBO_VIS2 + x_PBO_VIS3 + x_PBO_VIS4 + x_TRT_VIS1 + x_TRT_VIS2 + x_TRT_VIS3 + x_TRT_VIS4 + nuisance_WEIGHT + nuisance_SEX_Male + unstr(time = AVISIT, gr = USUBJID) </span></span>
 <span><span class="co">#&gt; sigma ~ 0 + AVISIT</span></span></code></pre></div>
@@ -370,14 +392,14 @@ all the real numbers.</p>
 understand how to work with informative prior archetypes. Notably, the
 formula uses custom interest and nuisance variables instead of the
 original variables in the data.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">formula</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/brm_formula.html">brm_formula</a></span><span class="op">(</span><span class="va">archetype</span><span class="op">)</span></span>
 <span><span class="va">formula</span></span>
 <span><span class="co">#&gt; FEV1 ~ 0 + x_PBO_VIS1 + x_PBO_VIS2 + x_PBO_VIS3 + x_PBO_VIS4 + x_TRT_VIS1 + x_TRT_VIS2 + x_TRT_VIS3 + x_TRT_VIS4 + nuisance_WEIGHT + nuisance_SEX_Male + unstr(time = AVISIT, gr = USUBJID) </span></span>
 <span><span class="co">#&gt; sigma ~ 0 + AVISIT</span></span></code></pre></div>
 <p>The model can accept the archetype, formula, and prior. Usage is the
 same as in non-archetype workflows.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/brm_model.html">brm_model</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">archetype</span>,</span>
 <span>  formula <span class="op">=</span> <span class="va">formula</span>,</span>
@@ -426,7 +448,7 @@ same as in non-archetype workflows.</p>
 <p>Marginal mean estimation, post-processing, and visualization
 automatically understand the archetype without any user
 intervention.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">draws</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/brm_marginal_draws.html">brm_marginal_draws</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">archetype</span>,</span>
 <span>  formula <span class="op">=</span> <span class="va">formula</span>,</span>
@@ -448,109 +470,109 @@ plot of chunk archetype_compare_data
 archetypes with different kinds of fixed effects. For example,
 <code>brms.mmrm</code> supports simple cell mean and treatment effect
 parameterizations.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="fu"><a href="../reference/brm_archetype_cells.html">brm_archetype_cells</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="fu"><a href="../reference/brm_archetype_cells.html">brm_archetype_cells</a></span><span class="op">(</span><span class="va">data</span>, intercept <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # This is the "cells" informative prior archetype in brms.mmrm.</span></span>
 <span><span class="co">#&gt; # The following equations show the relationships between the</span></span>
 <span><span class="co">#&gt; # marginal means (left-hand side) and fixed effect parameters</span></span>
 <span><span class="co">#&gt; # (right-hand side).</span></span>
 <span><span class="co">#&gt; # </span></span>
-<span><span class="co">#&gt; #    PBO:VIS1 = x_PBO_VIS1</span></span>
-<span><span class="co">#&gt; #    PBO:VIS2 = x_PBO_VIS2</span></span>
-<span><span class="co">#&gt; #    PBO:VIS3 = x_PBO_VIS3</span></span>
-<span><span class="co">#&gt; #    PBO:VIS4 = x_PBO_VIS4</span></span>
-<span><span class="co">#&gt; #    TRT:VIS1 = x_TRT_VIS1</span></span>
-<span><span class="co">#&gt; #    TRT:VIS2 = x_TRT_VIS2</span></span>
-<span><span class="co">#&gt; #    TRT:VIS3 = x_TRT_VIS3</span></span>
-<span><span class="co">#&gt; #    TRT:VIS4 = x_TRT_VIS4</span></span></code></pre></div>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="fu"><a href="../reference/brm_archetype_effects.html">brm_archetype_effects</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; #   PBO:VIS1 = x_PBO_VIS1</span></span>
+<span><span class="co">#&gt; #   PBO:VIS2 = x_PBO_VIS2</span></span>
+<span><span class="co">#&gt; #   PBO:VIS3 = x_PBO_VIS3</span></span>
+<span><span class="co">#&gt; #   PBO:VIS4 = x_PBO_VIS4</span></span>
+<span><span class="co">#&gt; #   TRT:VIS1 = x_TRT_VIS1</span></span>
+<span><span class="co">#&gt; #   TRT:VIS2 = x_TRT_VIS2</span></span>
+<span><span class="co">#&gt; #   TRT:VIS3 = x_TRT_VIS3</span></span>
+<span><span class="co">#&gt; #   TRT:VIS4 = x_TRT_VIS4</span></span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="fu"><a href="../reference/brm_archetype_effects.html">brm_archetype_effects</a></span><span class="op">(</span><span class="va">data</span>, intercept <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # This is the "effects" informative prior archetype in brms.mmrm.</span></span>
 <span><span class="co">#&gt; # The following equations show the relationships between the</span></span>
 <span><span class="co">#&gt; # marginal means (left-hand side) and fixed effect parameters</span></span>
 <span><span class="co">#&gt; # (right-hand side).</span></span>
 <span><span class="co">#&gt; # </span></span>
-<span><span class="co">#&gt; #    PBO:VIS1 = x_PBO_VIS1</span></span>
-<span><span class="co">#&gt; #    PBO:VIS2 = x_PBO_VIS2</span></span>
-<span><span class="co">#&gt; #    PBO:VIS3 = x_PBO_VIS3</span></span>
-<span><span class="co">#&gt; #    PBO:VIS4 = x_PBO_VIS4</span></span>
-<span><span class="co">#&gt; #    TRT:VIS1 = x_PBO_VIS1 + x_TRT_VIS1</span></span>
-<span><span class="co">#&gt; #    TRT:VIS2 = x_PBO_VIS2 + x_TRT_VIS2</span></span>
-<span><span class="co">#&gt; #    TRT:VIS3 = x_PBO_VIS3 + x_TRT_VIS3</span></span>
-<span><span class="co">#&gt; #    TRT:VIS4 = x_PBO_VIS4 + x_TRT_VIS4</span></span></code></pre></div>
+<span><span class="co">#&gt; #   PBO:VIS1 = x_PBO_VIS1</span></span>
+<span><span class="co">#&gt; #   PBO:VIS2 = x_PBO_VIS2</span></span>
+<span><span class="co">#&gt; #   PBO:VIS3 = x_PBO_VIS3</span></span>
+<span><span class="co">#&gt; #   PBO:VIS4 = x_PBO_VIS4</span></span>
+<span><span class="co">#&gt; #   TRT:VIS1 = x_PBO_VIS1 + x_TRT_VIS1</span></span>
+<span><span class="co">#&gt; #   TRT:VIS2 = x_PBO_VIS2 + x_TRT_VIS2</span></span>
+<span><span class="co">#&gt; #   TRT:VIS3 = x_PBO_VIS3 + x_TRT_VIS3</span></span>
+<span><span class="co">#&gt; #   TRT:VIS4 = x_PBO_VIS4 + x_TRT_VIS4</span></span></code></pre></div>
 <p>There are archetypes to parameterize the average across all time
 points in the data. Below, <code>x_group_1_time_2</code> is the average
 across time points for group 1 because it is the algebraic result of
 simplifying
 <code>(group_1:time_2 + group_1:time_3 + group_1:time_3) / 3</code>.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="fu"><a href="../reference/brm_archetype_average_cells.html">brm_archetype_average_cells</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="fu"><a href="../reference/brm_archetype_average_cells.html">brm_archetype_average_cells</a></span><span class="op">(</span><span class="va">data</span>, intercept <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # This is the "average cells" informative prior archetype in brms.mmrm.</span></span>
 <span><span class="co">#&gt; # The following equations show the relationships between the</span></span>
 <span><span class="co">#&gt; # marginal means (left-hand side) and fixed effect parameters</span></span>
 <span><span class="co">#&gt; # (right-hand side).</span></span>
 <span><span class="co">#&gt; # </span></span>
-<span><span class="co">#&gt; #    PBO:VIS1 = 4*x_PBO_VIS1 - x_PBO_VIS2 - x_PBO_VIS3 - x_PBO_VIS4</span></span>
-<span><span class="co">#&gt; #    PBO:VIS2 = x_PBO_VIS2</span></span>
-<span><span class="co">#&gt; #    PBO:VIS3 = x_PBO_VIS3</span></span>
-<span><span class="co">#&gt; #    PBO:VIS4 = x_PBO_VIS4</span></span>
-<span><span class="co">#&gt; #    TRT:VIS1 = 4*x_TRT_VIS1 - x_TRT_VIS2 - x_TRT_VIS3 - x_TRT_VIS4</span></span>
-<span><span class="co">#&gt; #    TRT:VIS2 = x_TRT_VIS2</span></span>
-<span><span class="co">#&gt; #    TRT:VIS3 = x_TRT_VIS3</span></span>
-<span><span class="co">#&gt; #    TRT:VIS4 = x_TRT_VIS4</span></span></code></pre></div>
+<span><span class="co">#&gt; #   PBO:VIS1 = 4*x_PBO_VIS1 - x_PBO_VIS2 - x_PBO_VIS3 - x_PBO_VIS4</span></span>
+<span><span class="co">#&gt; #   PBO:VIS2 = x_PBO_VIS2</span></span>
+<span><span class="co">#&gt; #   PBO:VIS3 = x_PBO_VIS3</span></span>
+<span><span class="co">#&gt; #   PBO:VIS4 = x_PBO_VIS4</span></span>
+<span><span class="co">#&gt; #   TRT:VIS1 = 4*x_TRT_VIS1 - x_TRT_VIS2 - x_TRT_VIS3 - x_TRT_VIS4</span></span>
+<span><span class="co">#&gt; #   TRT:VIS2 = x_TRT_VIS2</span></span>
+<span><span class="co">#&gt; #   TRT:VIS3 = x_TRT_VIS3</span></span>
+<span><span class="co">#&gt; #   TRT:VIS4 = x_TRT_VIS4</span></span></code></pre></div>
 <p>There is also a treatment effect version where
 <code>x_group_2_time_2</code> becomes the time-averaged treatment effect
 of group 2 relative to group 1.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="fu"><a href="../reference/brm_archetype_average_effects.html">brm_archetype_average_effects</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="fu"><a href="../reference/brm_archetype_average_effects.html">brm_archetype_average_effects</a></span><span class="op">(</span><span class="va">data</span>, intercept <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # This is the "average effects" informative prior archetype in brms.mmrm.</span></span>
 <span><span class="co">#&gt; # The following equations show the relationships between the</span></span>
 <span><span class="co">#&gt; # marginal means (left-hand side) and fixed effect parameters</span></span>
 <span><span class="co">#&gt; # (right-hand side).</span></span>
 <span><span class="co">#&gt; # </span></span>
-<span><span class="co">#&gt; #    PBO:VIS1 = 4*x_PBO_VIS1 - x_PBO_VIS2 - x_PBO_VIS3 - x_PBO_VIS4</span></span>
-<span><span class="co">#&gt; #    PBO:VIS2 = x_PBO_VIS2</span></span>
-<span><span class="co">#&gt; #    PBO:VIS3 = x_PBO_VIS3</span></span>
-<span><span class="co">#&gt; #    PBO:VIS4 = x_PBO_VIS4</span></span>
-<span><span class="co">#&gt; #    TRT:VIS1 = 4*x_PBO_VIS1 - x_PBO_VIS2 - x_PBO_VIS3 - x_PBO_VIS4 + 4*x_TRT_VIS1 - x_TRT_VIS2 - x_TRT_VIS3 - x_TRT_VIS4</span></span>
-<span><span class="co">#&gt; #    TRT:VIS2 = x_PBO_VIS2 + x_TRT_VIS2</span></span>
-<span><span class="co">#&gt; #    TRT:VIS3 = x_PBO_VIS3 + x_TRT_VIS3</span></span>
-<span><span class="co">#&gt; #    TRT:VIS4 = x_PBO_VIS4 + x_TRT_VIS4</span></span></code></pre></div>
+<span><span class="co">#&gt; #   PBO:VIS1 = 4*x_PBO_VIS1 - x_PBO_VIS2 - x_PBO_VIS3 - x_PBO_VIS4</span></span>
+<span><span class="co">#&gt; #   PBO:VIS2 = x_PBO_VIS2</span></span>
+<span><span class="co">#&gt; #   PBO:VIS3 = x_PBO_VIS3</span></span>
+<span><span class="co">#&gt; #   PBO:VIS4 = x_PBO_VIS4</span></span>
+<span><span class="co">#&gt; #   TRT:VIS1 = 4*x_PBO_VIS1 - x_PBO_VIS2 - x_PBO_VIS3 - x_PBO_VIS4 + 4*x_TRT_VIS1 - x_TRT_VIS2 - x_TRT_VIS3 - x_TRT_VIS4</span></span>
+<span><span class="co">#&gt; #   TRT:VIS2 = x_PBO_VIS2 + x_TRT_VIS2</span></span>
+<span><span class="co">#&gt; #   TRT:VIS3 = x_PBO_VIS3 + x_TRT_VIS3</span></span>
+<span><span class="co">#&gt; #   TRT:VIS4 = x_PBO_VIS4 + x_TRT_VIS4</span></span></code></pre></div>
 <p>The example in this vignette uses the “successive cells” archetype,
 where fixed effects represent successive differences between adjacent
 time points.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="fu"><a href="../reference/brm_archetype_successive_cells.html">brm_archetype_successive_cells</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="fu"><a href="../reference/brm_archetype_successive_cells.html">brm_archetype_successive_cells</a></span><span class="op">(</span><span class="va">data</span>, intercept <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # This is the "successive cells" informative prior archetype in brms.mmrm.</span></span>
 <span><span class="co">#&gt; # The following equations show the relationships between the</span></span>
 <span><span class="co">#&gt; # marginal means (left-hand side) and fixed effect parameters</span></span>
 <span><span class="co">#&gt; # (right-hand side).</span></span>
 <span><span class="co">#&gt; # </span></span>
-<span><span class="co">#&gt; #    PBO:VIS1 = x_PBO_VIS1</span></span>
-<span><span class="co">#&gt; #    PBO:VIS2 = x_PBO_VIS1 + x_PBO_VIS2</span></span>
-<span><span class="co">#&gt; #    PBO:VIS3 = x_PBO_VIS1 + x_PBO_VIS2 + x_PBO_VIS3</span></span>
-<span><span class="co">#&gt; #    PBO:VIS4 = x_PBO_VIS1 + x_PBO_VIS2 + x_PBO_VIS3 + x_PBO_VIS4</span></span>
-<span><span class="co">#&gt; #    TRT:VIS1 = x_TRT_VIS1</span></span>
-<span><span class="co">#&gt; #    TRT:VIS2 = x_TRT_VIS1 + x_TRT_VIS2</span></span>
-<span><span class="co">#&gt; #    TRT:VIS3 = x_TRT_VIS1 + x_TRT_VIS2 + x_TRT_VIS3</span></span>
-<span><span class="co">#&gt; #    TRT:VIS4 = x_TRT_VIS1 + x_TRT_VIS2 + x_TRT_VIS3 + x_TRT_VIS4</span></span></code></pre></div>
+<span><span class="co">#&gt; #   PBO:VIS1 = x_PBO_VIS1</span></span>
+<span><span class="co">#&gt; #   PBO:VIS2 = x_PBO_VIS1 + x_PBO_VIS2</span></span>
+<span><span class="co">#&gt; #   PBO:VIS3 = x_PBO_VIS1 + x_PBO_VIS2 + x_PBO_VIS3</span></span>
+<span><span class="co">#&gt; #   PBO:VIS4 = x_PBO_VIS1 + x_PBO_VIS2 + x_PBO_VIS3 + x_PBO_VIS4</span></span>
+<span><span class="co">#&gt; #   TRT:VIS1 = x_TRT_VIS1</span></span>
+<span><span class="co">#&gt; #   TRT:VIS2 = x_TRT_VIS1 + x_TRT_VIS2</span></span>
+<span><span class="co">#&gt; #   TRT:VIS3 = x_TRT_VIS1 + x_TRT_VIS2 + x_TRT_VIS3</span></span>
+<span><span class="co">#&gt; #   TRT:VIS4 = x_TRT_VIS1 + x_TRT_VIS2 + x_TRT_VIS3 + x_TRT_VIS4</span></span></code></pre></div>
 <p>There is also a treatment effect version of the successive
 differences archetype:</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="fu"><a href="../reference/brm_archetype_successive_effects.html">brm_archetype_successive_effects</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="fu"><a href="../reference/brm_archetype_successive_effects.html">brm_archetype_successive_effects</a></span><span class="op">(</span><span class="va">data</span>, intercept <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # This is the "successive effects" informative prior archetype in brms.mmrm.</span></span>
 <span><span class="co">#&gt; # The following equations show the relationships between the</span></span>
 <span><span class="co">#&gt; # marginal means (left-hand side) and fixed effect parameters</span></span>
 <span><span class="co">#&gt; # (right-hand side).</span></span>
 <span><span class="co">#&gt; # </span></span>
-<span><span class="co">#&gt; #    PBO:VIS1 = x_PBO_VIS1</span></span>
-<span><span class="co">#&gt; #    PBO:VIS2 = x_PBO_VIS1 + x_PBO_VIS2</span></span>
-<span><span class="co">#&gt; #    PBO:VIS3 = x_PBO_VIS1 + x_PBO_VIS2 + x_PBO_VIS3</span></span>
-<span><span class="co">#&gt; #    PBO:VIS4 = x_PBO_VIS1 + x_PBO_VIS2 + x_PBO_VIS3 + x_PBO_VIS4</span></span>
-<span><span class="co">#&gt; #    TRT:VIS1 = x_PBO_VIS1 + x_TRT_VIS1</span></span>
-<span><span class="co">#&gt; #    TRT:VIS2 = x_PBO_VIS1 + x_PBO_VIS2 + x_TRT_VIS1 + x_TRT_VIS2</span></span>
-<span><span class="co">#&gt; #    TRT:VIS3 = x_PBO_VIS1 + x_PBO_VIS2 + x_PBO_VIS3 + x_TRT_VIS1 + x_TRT_VIS2 + x_TRT_VIS3</span></span>
-<span><span class="co">#&gt; #    TRT:VIS4 = x_PBO_VIS1 + x_PBO_VIS2 + x_PBO_VIS3 + x_PBO_VIS4 + x_TRT_VIS1 + x_TRT_VIS2 + x_TRT_VIS3 + x_TRT_VIS4</span></span></code></pre></div>
+<span><span class="co">#&gt; #   PBO:VIS1 = x_PBO_VIS1</span></span>
+<span><span class="co">#&gt; #   PBO:VIS2 = x_PBO_VIS1 + x_PBO_VIS2</span></span>
+<span><span class="co">#&gt; #   PBO:VIS3 = x_PBO_VIS1 + x_PBO_VIS2 + x_PBO_VIS3</span></span>
+<span><span class="co">#&gt; #   PBO:VIS4 = x_PBO_VIS1 + x_PBO_VIS2 + x_PBO_VIS3 + x_PBO_VIS4</span></span>
+<span><span class="co">#&gt; #   TRT:VIS1 = x_PBO_VIS1 + x_TRT_VIS1</span></span>
+<span><span class="co">#&gt; #   TRT:VIS2 = x_PBO_VIS1 + x_PBO_VIS2 + x_TRT_VIS1 + x_TRT_VIS2</span></span>
+<span><span class="co">#&gt; #   TRT:VIS3 = x_PBO_VIS1 + x_PBO_VIS2 + x_PBO_VIS3 + x_TRT_VIS1 + x_TRT_VIS2 + x_TRT_VIS3</span></span>
+<span><span class="co">#&gt; #   TRT:VIS4 = x_PBO_VIS1 + x_PBO_VIS2 + x_PBO_VIS3 + x_PBO_VIS4 + x_TRT_VIS1 + x_TRT_VIS2 + x_TRT_VIS3 + x_TRT_VIS4</span></span></code></pre></div>
 </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

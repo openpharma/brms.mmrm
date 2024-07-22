@@ -201,7 +201,7 @@ involved.</p>
 <code class="sourceCode R"><span><span class="va">base_formula</span></span>
 <span><span class="co">#&gt; FEV1_CHG ~ FEV1_BL + FEV1_BL:AVISIT + ARMCD + ARMCD:AVISIT + </span></span>
 <span><span class="co">#&gt;     AVISIT + RACE + SEX + WEIGHT</span></span>
-<span><span class="co">#&gt; &lt;environment: 0x559ca6be3088&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt; &lt;environment: 0x557fa8137518&gt;</span></span></code></pre></div>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/model.matrix.html" class="external-link">model.matrix</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">base_formula</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  [1] "(Intercept)"                   "FEV1_BL"                      </span></span>
@@ -258,7 +258,8 @@ matrix.</p>
 <span><span class="co">#&gt; TRT|VIS3           1  40.12532          1            0</span></span>
 <span><span class="co">#&gt; TRT|VIS4           1  40.12532          1            0</span></span></code></pre></div>
 <p>This special matrix encodes the equations below which map model
-coefficients to marginal means.</p>
+coefficients to marginal means.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;&lt;code&gt;&lt;a href="https://rdrr.io/r/base/summary.html" class="external-link"&gt;summary()&lt;/a&gt;&lt;/code&gt; also invisibly returns a simple
+character vector with the equations below.&lt;/p&gt;'><sup>3</sup></a></p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">transform</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # This is a matrix to transform model parameters to marginal means.</span></span>
@@ -294,7 +295,7 @@ estimates of marginal means.</p>
 completes the grid of patient visits to add rows for implicitly missing
 responses. Completing the grid of patient visits ensures all patients
 are represented equally when averaging over baseline covariates,
-regardless of patients who drop out early.&lt;/p&gt;"><sup>3</sup></a> (<span class="citation">Lenth (2016)</span>, <span class="citation">Searle et
+regardless of patients who drop out early.&lt;/p&gt;"><sup>4</sup></a> (<span class="citation">Lenth (2016)</span>, <span class="citation">Searle et
 al. (1980)</span>) and produces similar estimates.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rvlenth.github.io/emmeans/" class="external-link">emmeans</a></span><span class="op">)</span></span>
@@ -346,7 +347,7 @@ a normal or Student-t distribution.<a class="footnote-ref" tabindex="0" data-bs-
 marginal means by simply applying that function to the individual
 posterior draws from &lt;code&gt;&lt;a href="../reference/brm_marginal_draws.html"&gt;brm_marginal_draws()&lt;/a&gt;&lt;/code&gt;.
 &lt;code&gt;&lt;a href="../reference/brm_marginal_grid.html"&gt;brm_marginal_grid()&lt;/a&gt;&lt;/code&gt; helps identify column names for this
-kind of custom inference/post-processing.&lt;/p&gt;'><sup>4</sup></a></p>
+kind of custom inference/post-processing.&lt;/p&gt;'><sup>5</sup></a></p>
 </div>
 <div class="section level2">
 <h2 id="how-brm_marginal_draws-works">How <code>brm_marginal_draws()</code> works<a class="anchor" aria-label="anchor" href="#how-brm_marginal_draws-works"></a>
@@ -466,7 +467,7 @@ variables that the experiment does not directly control), while guarding
 against hidden confounding with the factors of interest (which can lead
 to Simpson’s paradox).<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;For more context, please refer to the &lt;a href="https://cran.r-project.org/package=emmeans/vignettes/basics.html" class="external-link"&gt;&lt;code&gt;emmeans&lt;/code&gt;
 basics vignette&lt;/a&gt;, as well as discussion forums &lt;a href="https://stats.stackexchange.com/questions/332167/what-are-ls-means-useful-for" class="external-link"&gt;here&lt;/a&gt;
-and &lt;a href="https://stats.stackexchange.com/questions/510862/is-least-squares-means-lsmeans-statistical-nonsense/510923#510923" class="external-link"&gt;here&lt;/a&gt;.&lt;/p&gt;'><sup>5</sup></a></p>
+and &lt;a href="https://stats.stackexchange.com/questions/510862/is-least-squares-means-lsmeans-statistical-nonsense/510923#510923" class="external-link"&gt;here&lt;/a&gt;.&lt;/p&gt;'><sup>6</sup></a></p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">proportional_factors</span> <span class="op">&lt;-</span> <span class="va">data</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/model.matrix.html" class="external-link">model.matrix</a></span><span class="op">(</span>object <span class="op">=</span> <span class="op">~</span> <span class="fl">0</span> <span class="op">+</span> <span class="va">SEX</span> <span class="op">+</span> <span class="va">RACE</span><span class="op">)</span> <span class="op">|&gt;</span></span>

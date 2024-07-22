@@ -59,15 +59,16 @@ with a special fixed effect to represent the average across time.</p>
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">brm_archetype_average_cells</span><span class="op">(</span></span>
 <span>  <span class="va">data</span>,</span>
-<span>  covariates <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  prefix_interest <span class="op">=</span> <span class="st">"x_"</span>,</span>
-<span>  prefix_nuisance <span class="op">=</span> <span class="st">"nuisance_"</span>,</span>
+<span>  intercept <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  baseline <span class="op">=</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">data</span>, <span class="st">"brm_baseline"</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  baseline_subgroup <span class="op">=</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">data</span>, <span class="st">"brm_baseline"</span><span class="op">)</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">data</span>,</span>
 <span>    <span class="st">"brm_subgroup"</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  baseline_subgroup_time <span class="op">=</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">data</span>, <span class="st">"brm_baseline"</span><span class="op">)</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">data</span>,</span>
 <span>    <span class="st">"brm_subgroup"</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  baseline_time <span class="op">=</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">data</span>, <span class="st">"brm_baseline"</span><span class="op">)</span><span class="op">)</span></span>
+<span>  baseline_time <span class="op">=</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">data</span>, <span class="st">"brm_baseline"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  covariates <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  prefix_interest <span class="op">=</span> <span class="st">"x_"</span>,</span>
+<span>  prefix_nuisance <span class="op">=</span> <span class="st">"nuisance_"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -80,31 +81,9 @@ with a special fixed effect to represent the average across time.</p>
 prior archetype from a function like <code><a href="brm_archetype_successive_cells.html">brm_archetype_successive_cells()</a></code>.</p></dd>
 
 
-<dt id="arg-covariates">covariates<a class="anchor" aria-label="anchor" href="#arg-covariates"></a></dt>
+<dt id="arg-intercept">intercept<a class="anchor" aria-label="anchor" href="#arg-intercept"></a></dt>
 <dd><p>Logical of length 1.
-<code>TRUE</code> (default) to include any additive covariates declared with
-the <code>covariates</code> argument of <code><a href="brm_data.html">brm_data()</a></code>,
-<code>FALSE</code> to omit.
-For informative prior archetypes, this option is set in
-functions like <code><a href="brm_archetype_successive_cells.html">brm_archetype_successive_cells()</a></code> rather than in
-<code><a href="brm_formula.html">brm_formula()</a></code> in order to make sure columns are appropriately
-centered and the underlying model matrix has full rank.</p></dd>
-
-
-<dt id="arg-prefix-interest">prefix_interest<a class="anchor" aria-label="anchor" href="#arg-prefix-interest"></a></dt>
-<dd><p>Character string to prepend to the new columns
-of generated fixed effects of interest (relating to group, subgroup,
-and/or time).
-In rare cases, you may need to set a non-default prefix to prevent
-name conflicts with existing columns in the data, or rename
-the columns in your data.
-<code>prefix_interest</code> must not be the same value as <code>prefix_nuisance</code>.</p></dd>
-
-
-<dt id="arg-prefix-nuisance">prefix_nuisance<a class="anchor" aria-label="anchor" href="#arg-prefix-nuisance"></a></dt>
-<dd><p>Same as <code>prefix_interest</code>, but relating to
-generated fixed effects NOT of interest (not relating to group,
-subgroup, or time). Must not be the same value as <code>prefix_interest</code>.</p></dd>
+<code>TRUE</code> (default) to include an intercept, <code>FALSE</code> to omit.</p></dd>
 
 
 <dt id="arg-baseline">baseline<a class="anchor" aria-label="anchor" href="#arg-baseline"></a></dt>
@@ -148,6 +127,33 @@ functions like <code><a href="brm_archetype_successive_cells.html">brm_archetype
 <code><a href="brm_formula.html">brm_formula()</a></code> in order to make sure columns are appropriately
 centered and the underlying model matrix has full rank.</p></dd>
 
+
+<dt id="arg-covariates">covariates<a class="anchor" aria-label="anchor" href="#arg-covariates"></a></dt>
+<dd><p>Logical of length 1.
+<code>TRUE</code> (default) to include any additive covariates declared with
+the <code>covariates</code> argument of <code><a href="brm_data.html">brm_data()</a></code>,
+<code>FALSE</code> to omit.
+For informative prior archetypes, this option is set in
+functions like <code><a href="brm_archetype_successive_cells.html">brm_archetype_successive_cells()</a></code> rather than in
+<code><a href="brm_formula.html">brm_formula()</a></code> in order to make sure columns are appropriately
+centered and the underlying model matrix has full rank.</p></dd>
+
+
+<dt id="arg-prefix-interest">prefix_interest<a class="anchor" aria-label="anchor" href="#arg-prefix-interest"></a></dt>
+<dd><p>Character string to prepend to the new columns
+of generated fixed effects of interest (relating to group, subgroup,
+and/or time).
+In rare cases, you may need to set a non-default prefix to prevent
+name conflicts with existing columns in the data, or rename
+the columns in your data.
+<code>prefix_interest</code> must not be the same value as <code>prefix_nuisance</code>.</p></dd>
+
+
+<dt id="arg-prefix-nuisance">prefix_nuisance<a class="anchor" aria-label="anchor" href="#arg-prefix-nuisance"></a></dt>
+<dd><p>Same as <code>prefix_interest</code>, but relating to
+generated fixed effects NOT of interest (not relating to group,
+subgroup, or time). Must not be the same value as <code>prefix_interest</code>.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -162,8 +168,8 @@ do with the object.</p>
     <p>This archetype has a special fixed effect for each treatment group
 to represent the mean response averaged across all the time points.</p>
 <p>To illustrate, suppose the dataset has two treatment groups A and B,
-time points 1, 2, and 3, and no other covariates.
-Let <code>mu_gt</code> be the marginal mean of the response at group
+time points 1, 2, and 3, and no other covariates.</p>
+<p>Let <code>mu_gt</code> be the marginal mean of the response at group
 <code>g</code> time <code>t</code> given data and hyperparameters.
 The model has fixed effect parameters <code>beta_1</code>, <code>beta_2</code>, ..., <code>beta_6</code>
 which express the marginal means <code>mu_gt</code> as follows:</p>
@@ -305,17 +311,17 @@ archetype-specific functions such as <code><a href="brm_archetype_successive_cel
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   nuisance_baseline.timetime_3 &lt;dbl&gt;, patient &lt;chr&gt;, time &lt;chr&gt;, group &lt;chr&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   missing &lt;lgl&gt;, change &lt;dbl&gt;, baseline &lt;dbl&gt;, biomarker1 &lt;dbl&gt;, …</span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">archetype</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> # This is the "average cells" informative prior archetype in brms.mmrm.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> # The following equations show the relationships between the</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> # marginal means (left-hand side) and fixed effect parameters</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> # (right-hand side).</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> # </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #   group_1:time_2 = 3*x_group_1_time_2 - x_group_1_time_3 - x_group_1_time_4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #   group_1:time_3 = x_group_1_time_3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #   group_1:time_4 = x_group_1_time_4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #   group_2:time_2 = 3*x_group_2_time_2 - x_group_2_time_3 - x_group_2_time_4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #   group_2:time_3 = x_group_2_time_3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #   group_2:time_4 = x_group_2_time_4</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> # This is the "average cells" informative prior archetype in brms.mmrm.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> # The following equations show the relationships between the</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> # marginal means (left-hand side) and fixed effect parameters</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> # (right-hand side).</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> # </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> #   group_1:time_2 = 3*x_group_1_time_2 - x_group_1_time_3 - x_group_1_time_4</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> #   group_1:time_3 = x_group_1_time_3</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> #   group_1:time_4 = x_group_1_time_4</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> #   group_2:time_2 = 3*x_group_2_time_2 - x_group_2_time_3 - x_group_2_time_4</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> #   group_2:time_3 = x_group_2_time_3</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> #   group_2:time_4 = x_group_2_time_4</span>
 <span class="r-in"><span><span class="va">formula</span> <span class="op">&lt;-</span> <span class="fu"><a href="brm_formula.html">brm_formula</a></span><span class="op">(</span><span class="va">archetype</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">formula</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> change ~ 0 + x_group_1_time_2 + x_group_1_time_3 + x_group_1_time_4 + x_group_2_time_2 + x_group_2_time_3 + x_group_2_time_4 + nuisance_biomarker1 + nuisance_biomarker2 + nuisance_status1_absent + nuisance_status2_present + nuisance_baseline + nuisance_baseline.timetime_2 + nuisance_baseline.timetime_3 + unstr(time = time, gr = patient) </span>
