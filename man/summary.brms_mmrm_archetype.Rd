@@ -26,3 +26,32 @@ invisibly and a verbose description of the equations is printed.
 For an informative prior archetype, show
 the transformation from model parameters to marginal means.
 }
+\examples{
+data <- brm_simulate_outline(
+  n_group = 2,
+  n_patient = 100,
+  n_time = 4,
+  rate_dropout = 0,
+  rate_lapse = 0
+) |>
+  dplyr::mutate(response = rnorm(n = dplyr::n())) |>
+  brm_data_change() |>
+  brm_simulate_continuous(names = c("biomarker1", "biomarker2")) |>
+  brm_simulate_categorical(
+    names = c("status1", "status2"),
+    levels = c("present", "absent")
+  )
+dplyr::select(
+  data,
+  group,
+  time,
+  patient,
+  starts_with("biomarker"),
+  starts_with("status")
+)
+archetype <- brm_archetype_successive_cells(data)
+equations <- summary(archetype)
+print(equations)
+summary(archetype, message = FALSE)
+}
+\keyword{internal}

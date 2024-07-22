@@ -26,3 +26,27 @@ invisibly and a verbose description of the equations is printed.
 Summarize a transformation from model parameters to
 marginal means.
 }
+\examples{
+set.seed(0L)
+data <- brm_data(
+  data = brm_simulate_simple()$data,
+  outcome = "response",
+  group = "group",
+  time = "time",
+  patient = "patient",
+  reference_group = "group_1",
+  reference_time = "time_1"
+)
+formula <- brm_formula(
+  data = data,
+  baseline = FALSE,
+  baseline_time = FALSE
+)
+transform <- brm_transform_marginal(data = data, formula = formula)
+equations <- summary(transform)
+print(equations)
+summary(transform, message = FALSE)
+class(transform)
+print(transform)
+}
+\keyword{internal}

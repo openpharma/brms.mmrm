@@ -52,7 +52,6 @@
 #'   reconstruct the `brms` model parameter names. This argument should
 #'   only be modified for testing purposes.
 #' @examples
-#' if (identical(Sys.getenv("BRM_EXAMPLES", unset = ""), "true")) {
 #' set.seed(0L)
 #' data <- brm_data(
 #'   data = brm_simulate_simple()$data,
@@ -74,7 +73,6 @@
 #' summary(transform, message = FALSE)
 #' class(transform)
 #' print(transform)
-#' }
 brm_transform_marginal <- function(
   data,
   formula,
@@ -293,6 +291,7 @@ brm_transform_marginal_names_rows <- function(data, formula, grid) {
 
 #' @title Summarize marginal transform.
 #' @export
+#' @keywords internal
 #' @description Summarize a transformation from model parameters to
 #'   marginal means.
 #' @return Return a character vector with linear equations
@@ -305,6 +304,28 @@ brm_transform_marginal_names_rows <- function(data, formula, grid) {
 #'   to forgo verbose messages and non-invisibly return the equations.
 #' @param ... Not used, but required for S3 methods that inherit from
 #'   the base generic [summary()].
+#' @examples
+#' set.seed(0L)
+#' data <- brm_data(
+#'   data = brm_simulate_simple()$data,
+#'   outcome = "response",
+#'   group = "group",
+#'   time = "time",
+#'   patient = "patient",
+#'   reference_group = "group_1",
+#'   reference_time = "time_1"
+#' )
+#' formula <- brm_formula(
+#'   data = data,
+#'   baseline = FALSE,
+#'   baseline_time = FALSE
+#' )
+#' transform <- brm_transform_marginal(data = data, formula = formula)
+#' equations <- summary(transform)
+#' print(equations)
+#' summary(transform, message = FALSE)
+#' class(transform)
+#' print(transform)
 summary.brms_mmrm_transform_marginal <- function(
   object,
   message = TRUE,
@@ -326,6 +347,12 @@ summary.brms_mmrm_transform_marginal <- function(
   } else {
     out
   }
+}
+
+#' @export
+print.brms_mmrm_transform_marginal <- function(x, ...) {
+  class(x) <- c("matrix", "array")
+  NextMethod()
 }
 
 brm_transform_marginal_lines <- function(transform) {

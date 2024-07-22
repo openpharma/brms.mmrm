@@ -49,6 +49,7 @@ test_that("brm_transform_marginal(), response, non-subgroup", {
       expect_true(is.character(summary(transform, message = TRUE)))
     )
     expect_true(is.character(summary(transform, message = FALSE)))
+    tmp <- capture.output(print(transform))
     model_matrix <- brms::make_standata(
       formula = formula,
       data = dplyr::mutate(data, FEV1 = 0)
