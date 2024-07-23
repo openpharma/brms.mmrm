@@ -78,7 +78,6 @@ test_that("brm_model() runs, impute missing values during model", {
 
 test_that("brm_model() runs, impute missing values before model", {
   skip_on_cran()
-  skip_if_not_installed("mice")
   set.seed(0L)
   data <- tibble::as_tibble(brm_simulate_simple()$data)
   data$response[1L] <- NA_real_
@@ -91,7 +90,9 @@ test_that("brm_model() runs, impute missing values before model", {
     reference_group = "group_1",
     reference_time = "time_1"
   )
-  imputed <- suppressWarnings(mice::mice(data, m = 2L, print = FALSE))
+  data2 <- data
+  data2$response <- rnorm(n = nrow(data2))
+  imputed <- list(data2, data2)
   formula <- brm_formula(
     data = data,
     model_missing_outcomes = FALSE,
@@ -103,6 +104,7 @@ test_that("brm_model() runs, impute missing values before model", {
       suppressWarnings(
         model <- brm_model(
           data = data,
+          imputed = imputed,
           formula = formula,
           chains = 1,
           iter = 100,

@@ -185,23 +185,44 @@ Under the missing at random (MAR) assumptions, MMRMs do not require imputation (
 
 ## Imputation before model fitting
 
-To impute missing outcomes before model fitting, first use `mice::mice()` to create a multiply imputed dataset. 
+To impute missing outcomes before model fitting, first use create a list of imputed datasets using the multiple imputation method of your choice. The [`rbmi`](https://insightsengineering.github.io/rbmi/main/) package is uniquely suited to the multiple imputation of continuous longitudinal clinical trial data.
 
 ```{r, eval = FALSE}
-imputed <- mice::mice(
-  data,
-  m = 200, # number of individual imputed datasets to create
-  print = FALSE
+variables <- rbmi::set_vars(
+  outcome = "response",
+  visit = "time",
+  subjid = "patient",
+  group = "group",
+  covariates = c("biomarker1", "biomarker2")
 )
+imputation_draws <- rbmi::draws(
+  data = data |>
+    mutate(
+      patient = as.factor(patient),
+      group = as.factor(group)
+    ),
+  vars = variables,
+  method = rbmi::method_condmean(type = "jackknife"),
+  quiet = TRUE
+)
+imputation_run <- rbmi::impute(
+  draws = imputation_draws,
+  references = c(
+    group_1 = "group_1",
+    group_2 = "group_1",
+    group_3 = "group_1"
+  )
+)
+imputed_datasets <- rbmi::extract_imputed_dfs(imputation_run)
 ```
 
-Next, supply the multiply imputed dataset to the `imputed` argument of `brm_model()`. Internally, `brm_model()` calls `brms::brm_multiple(data = imputed, formula = formula)` instead of `brms::brm(data = data, formula = formula)` to fit an MMRM to each of the individual imputed datasets in the `imputed` object.
+At this point, `imputed_datasets` is a list of data frames with the response variable imputed with multiple imputation. Simply supply this list to the `imputed` argument of `brm_model()`. Internally, `brm_model()` calls `brms::brm_multiple(data = imputed, formula = formula)` instead of `brms::brm(data = data, formula = formula)` to fit an MMRM to each of the individual imputed datasets in the `imputed` object.
 
 ```{r, eval = FALSE}
 model <- brm_model(
   data = data, # Yes, please supply the original non-imputed dataset too.
   formula = formula,
-  imputed = imputed,
+  imputed = imputed_datasets,
   refresh = 0
 )
 ```
