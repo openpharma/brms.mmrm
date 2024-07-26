@@ -113,20 +113,19 @@ be the raw response or change from baseline.</p>
 <span></span>
 <span><span class="va">raw_data</span></span>
 <span><span class="co">#&gt; # A tibble: 1,200 × 7</span></span>
-<span><span class="co">#&gt;    patient     time   response group   biomarker1 biomarker2</span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;       &lt;chr&gt;     &lt;dbl&gt; &lt;chr&gt;        &lt;dbl&gt;      &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 patient_001 time_1    1.11  group_1      1.31      -0.361</span></span>
-<span><span class="co">#&gt;  2 patient_001 time_2    2.15  group_1      1.31      -0.361</span></span>
-<span><span class="co">#&gt;  3 patient_001 time_3    2.54  group_1      1.31      -0.361</span></span>
-<span><span class="co">#&gt;  4 patient_001 time_4   -1.73  group_1      1.31      -0.361</span></span>
-<span><span class="co">#&gt;  5 patient_002 time_1    1.11  group_1      0.107     -2.44 </span></span>
-<span><span class="co">#&gt;  6 patient_002 time_2    2.64  group_1      0.107     -2.44 </span></span>
-<span><span class="co">#&gt;  7 patient_002 time_3    1.69  group_1      0.107     -2.44 </span></span>
-<span><span class="co">#&gt;  8 patient_002 time_4    0.783 group_1      0.107     -2.44 </span></span>
-<span><span class="co">#&gt;  9 patient_003 time_1    0.118 group_1      1.44      -0.419</span></span>
-<span><span class="co">#&gt; 10 patient_003 time_2    2.48  group_1      1.44      -0.419</span></span>
-<span><span class="co">#&gt; # ℹ 1,190 more rows</span></span>
-<span><span class="co">#&gt; # ℹ 1 more variable: biomarker3 &lt;dbl&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt;    patient     time   response group   biomarker1 biomarker2 biomarker3</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;       &lt;chr&gt;     &lt;dbl&gt; &lt;chr&gt;        &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 patient_001 time_1    1.11  group_1      1.31      -0.361      1.52 </span></span>
+<span><span class="co">#&gt;  2 patient_001 time_2    2.15  group_1      1.31      -0.361      1.52 </span></span>
+<span><span class="co">#&gt;  3 patient_001 time_3    2.54  group_1      1.31      -0.361      1.52 </span></span>
+<span><span class="co">#&gt;  4 patient_001 time_4   -1.73  group_1      1.31      -0.361      1.52 </span></span>
+<span><span class="co">#&gt;  5 patient_002 time_1    1.11  group_1      0.107     -2.44      -0.139</span></span>
+<span><span class="co">#&gt;  6 patient_002 time_2    2.64  group_1      0.107     -2.44      -0.139</span></span>
+<span><span class="co">#&gt;  7 patient_002 time_3    1.69  group_1      0.107     -2.44      -0.139</span></span>
+<span><span class="co">#&gt;  8 patient_002 time_4    0.783 group_1      0.107     -2.44      -0.139</span></span>
+<span><span class="co">#&gt;  9 patient_003 time_1    0.118 group_1      1.44      -0.419     -1.54 </span></span>
+<span><span class="co">#&gt; 10 patient_003 time_2    2.48  group_1      1.44      -0.419     -1.54 </span></span>
+<span><span class="co">#&gt; # ℹ 1,190 more rows</span></span></code></pre></div>
 <p>It is good practice to convert the time variable to an ordered factor
 so individual discrete time points correctly represent correct
 chronological order.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;Ordered factors usually have polynomial contrasts
@@ -167,24 +166,22 @@ point, and the covariates selected for analysis.</p>
 <span></span>
 <span><span class="va">data</span></span>
 <span><span class="co">#&gt; # A tibble: 1,200 × 7</span></span>
-<span><span class="co">#&gt;    patient     time   response group   biomarker1 biomarker2</span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;       &lt;ord&gt;     &lt;dbl&gt; &lt;chr&gt;        &lt;dbl&gt;      &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 patient_001 time_1    1.11  group_1      1.31      -0.361</span></span>
-<span><span class="co">#&gt;  2 patient_001 time_2    2.15  group_1      1.31      -0.361</span></span>
-<span><span class="co">#&gt;  3 patient_001 time_3    2.54  group_1      1.31      -0.361</span></span>
-<span><span class="co">#&gt;  4 patient_001 time_4   -1.73  group_1      1.31      -0.361</span></span>
-<span><span class="co">#&gt;  5 patient_002 time_1    1.11  group_1      0.107     -2.44 </span></span>
-<span><span class="co">#&gt;  6 patient_002 time_2    2.64  group_1      0.107     -2.44 </span></span>
-<span><span class="co">#&gt;  7 patient_002 time_3    1.69  group_1      0.107     -2.44 </span></span>
-<span><span class="co">#&gt;  8 patient_002 time_4    0.783 group_1      0.107     -2.44 </span></span>
-<span><span class="co">#&gt;  9 patient_003 time_1    0.118 group_1      1.44      -0.419</span></span>
-<span><span class="co">#&gt; 10 patient_003 time_2    2.48  group_1      1.44      -0.419</span></span>
+<span><span class="co">#&gt;    patient     time   response group   biomarker1 biomarker2 biomarker3</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;       &lt;ord&gt;     &lt;dbl&gt; &lt;chr&gt;        &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 patient_001 time_1    1.11  group_1      1.31      -0.361      1.52 </span></span>
+<span><span class="co">#&gt;  2 patient_001 time_2    2.15  group_1      1.31      -0.361      1.52 </span></span>
+<span><span class="co">#&gt;  3 patient_001 time_3    2.54  group_1      1.31      -0.361      1.52 </span></span>
+<span><span class="co">#&gt;  4 patient_001 time_4   -1.73  group_1      1.31      -0.361      1.52 </span></span>
+<span><span class="co">#&gt;  5 patient_002 time_1    1.11  group_1      0.107     -2.44      -0.139</span></span>
+<span><span class="co">#&gt;  6 patient_002 time_2    2.64  group_1      0.107     -2.44      -0.139</span></span>
+<span><span class="co">#&gt;  7 patient_002 time_3    1.69  group_1      0.107     -2.44      -0.139</span></span>
+<span><span class="co">#&gt;  8 patient_002 time_4    0.783 group_1      0.107     -2.44      -0.139</span></span>
+<span><span class="co">#&gt;  9 patient_003 time_1    0.118 group_1      1.44      -0.419     -1.54 </span></span>
+<span><span class="co">#&gt; 10 patient_003 time_2    2.48  group_1      1.44      -0.419     -1.54 </span></span>
 <span><span class="co">#&gt; # ℹ 1,190 more rows</span></span>
-<span><span class="co">#&gt; # ℹ 1 more variable: biomarker3 &lt;dbl&gt;</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "brms_mmrm_data" "tbl_df"         "tbl"           </span></span>
-<span><span class="co">#&gt; [4] "data.frame"</span></span>
+<span><span class="co">#&gt; [1] "brms_mmrm_data" "tbl_df"         "tbl"            "data.frame"</span></span>
 <span></span>
 <span><span class="va">attributes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/attributes.html" class="external-link">attributes</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span>
 <span><span class="va">attributes</span><span class="op">$</span><span class="va">row.names</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
@@ -262,34 +259,20 @@ effects model matrix <code>X</code>. Note the differences in the
 the one above.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">brms</span><span class="fu">::</span><span class="fu"><a href="https://paul-buerkner.github.io/brms/reference/standata.html" class="external-link">make_standata</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="va">formula</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span><span class="op">$</span><span class="va">X</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   Intercept groupgroup_1 groupgroup_2 time2 time3 time4</span></span>
-<span><span class="co">#&gt; 1         1            1            0     0     0     0</span></span>
-<span><span class="co">#&gt; 2         1            1            0     1     0     0</span></span>
-<span><span class="co">#&gt; 3         1            1            0     0     1     0</span></span>
-<span><span class="co">#&gt; 4         1            1            0     0     0     1</span></span>
-<span><span class="co">#&gt; 5         1            1            0     0     0     0</span></span>
-<span><span class="co">#&gt; 6         1            1            0     1     0     0</span></span>
-<span><span class="co">#&gt;   biomarker1 biomarker2 groupgroup_1:time2 groupgroup_2:time2</span></span>
-<span><span class="co">#&gt; 1  1.3126508 -0.3608809                  0                  0</span></span>
-<span><span class="co">#&gt; 2  1.3126508 -0.3608809                  1                  0</span></span>
-<span><span class="co">#&gt; 3  1.3126508 -0.3608809                  0                  0</span></span>
-<span><span class="co">#&gt; 4  1.3126508 -0.3608809                  0                  0</span></span>
-<span><span class="co">#&gt; 5  0.1068624 -2.4441488                  0                  0</span></span>
-<span><span class="co">#&gt; 6  0.1068624 -2.4441488                  1                  0</span></span>
-<span><span class="co">#&gt;   groupgroup_1:time3 groupgroup_2:time3 groupgroup_1:time4</span></span>
-<span><span class="co">#&gt; 1                  0                  0                  0</span></span>
-<span><span class="co">#&gt; 2                  0                  0                  0</span></span>
-<span><span class="co">#&gt; 3                  1                  0                  0</span></span>
-<span><span class="co">#&gt; 4                  0                  0                  1</span></span>
-<span><span class="co">#&gt; 5                  0                  0                  0</span></span>
-<span><span class="co">#&gt; 6                  0                  0                  0</span></span>
-<span><span class="co">#&gt;   groupgroup_2:time4</span></span>
-<span><span class="co">#&gt; 1                  0</span></span>
-<span><span class="co">#&gt; 2                  0</span></span>
-<span><span class="co">#&gt; 3                  0</span></span>
-<span><span class="co">#&gt; 4                  0</span></span>
-<span><span class="co">#&gt; 5                  0</span></span>
-<span><span class="co">#&gt; 6                  0</span></span></code></pre></div>
+<span><span class="co">#&gt;   Intercept groupgroup_1 groupgroup_2 time2 time3 time4 biomarker1 biomarker2 groupgroup_1:time2</span></span>
+<span><span class="co">#&gt; 1         1            1            0     0     0     0  1.3126508 -0.3608809                  0</span></span>
+<span><span class="co">#&gt; 2         1            1            0     1     0     0  1.3126508 -0.3608809                  1</span></span>
+<span><span class="co">#&gt; 3         1            1            0     0     1     0  1.3126508 -0.3608809                  0</span></span>
+<span><span class="co">#&gt; 4         1            1            0     0     0     1  1.3126508 -0.3608809                  0</span></span>
+<span><span class="co">#&gt; 5         1            1            0     0     0     0  0.1068624 -2.4441488                  0</span></span>
+<span><span class="co">#&gt; 6         1            1            0     1     0     0  0.1068624 -2.4441488                  1</span></span>
+<span><span class="co">#&gt;   groupgroup_2:time2 groupgroup_1:time3 groupgroup_2:time3 groupgroup_1:time4 groupgroup_2:time4</span></span>
+<span><span class="co">#&gt; 1                  0                  0                  0                  0                  0</span></span>
+<span><span class="co">#&gt; 2                  0                  0                  0                  0                  0</span></span>
+<span><span class="co">#&gt; 3                  0                  1                  0                  0                  0</span></span>
+<span><span class="co">#&gt; 4                  0                  0                  0                  1                  0</span></span>
+<span><span class="co">#&gt; 5                  0                  0                  0                  0                  0</span></span>
+<span><span class="co">#&gt; 6                  0                  0                  0                  0                  0</span></span></code></pre></div>
 <p>If you choose a different contrast method, a different model matrix
 may result.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
@@ -298,34 +281,20 @@ may result.</p>
 <span><span class="op">)</span></span>
 <span><span class="co"># different model matrix than before:</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">brms</span><span class="fu">::</span><span class="fu"><a href="https://paul-buerkner.github.io/brms/reference/standata.html" class="external-link">make_standata</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="va">formula</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span><span class="op">$</span><span class="va">X</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   Intercept groupgroup_2 groupgroup_3 time2 time3 time4</span></span>
-<span><span class="co">#&gt; 1         1            0            0     0     0     0</span></span>
-<span><span class="co">#&gt; 2         1            0            0     1     0     0</span></span>
-<span><span class="co">#&gt; 3         1            0            0     0     1     0</span></span>
-<span><span class="co">#&gt; 4         1            0            0     0     0     1</span></span>
-<span><span class="co">#&gt; 5         1            0            0     0     0     0</span></span>
-<span><span class="co">#&gt; 6         1            0            0     1     0     0</span></span>
-<span><span class="co">#&gt;   biomarker1 biomarker2 groupgroup_2:time2 groupgroup_3:time2</span></span>
-<span><span class="co">#&gt; 1  1.3126508 -0.3608809                  0                  0</span></span>
-<span><span class="co">#&gt; 2  1.3126508 -0.3608809                  0                  0</span></span>
-<span><span class="co">#&gt; 3  1.3126508 -0.3608809                  0                  0</span></span>
-<span><span class="co">#&gt; 4  1.3126508 -0.3608809                  0                  0</span></span>
-<span><span class="co">#&gt; 5  0.1068624 -2.4441488                  0                  0</span></span>
-<span><span class="co">#&gt; 6  0.1068624 -2.4441488                  0                  0</span></span>
-<span><span class="co">#&gt;   groupgroup_2:time3 groupgroup_3:time3 groupgroup_2:time4</span></span>
-<span><span class="co">#&gt; 1                  0                  0                  0</span></span>
-<span><span class="co">#&gt; 2                  0                  0                  0</span></span>
-<span><span class="co">#&gt; 3                  0                  0                  0</span></span>
-<span><span class="co">#&gt; 4                  0                  0                  0</span></span>
-<span><span class="co">#&gt; 5                  0                  0                  0</span></span>
-<span><span class="co">#&gt; 6                  0                  0                  0</span></span>
-<span><span class="co">#&gt;   groupgroup_3:time4</span></span>
-<span><span class="co">#&gt; 1                  0</span></span>
-<span><span class="co">#&gt; 2                  0</span></span>
-<span><span class="co">#&gt; 3                  0</span></span>
-<span><span class="co">#&gt; 4                  0</span></span>
-<span><span class="co">#&gt; 5                  0</span></span>
-<span><span class="co">#&gt; 6                  0</span></span></code></pre></div>
+<span><span class="co">#&gt;   Intercept groupgroup_2 groupgroup_3 time2 time3 time4 biomarker1 biomarker2 groupgroup_2:time2</span></span>
+<span><span class="co">#&gt; 1         1            0            0     0     0     0  1.3126508 -0.3608809                  0</span></span>
+<span><span class="co">#&gt; 2         1            0            0     1     0     0  1.3126508 -0.3608809                  0</span></span>
+<span><span class="co">#&gt; 3         1            0            0     0     1     0  1.3126508 -0.3608809                  0</span></span>
+<span><span class="co">#&gt; 4         1            0            0     0     0     1  1.3126508 -0.3608809                  0</span></span>
+<span><span class="co">#&gt; 5         1            0            0     0     0     0  0.1068624 -2.4441488                  0</span></span>
+<span><span class="co">#&gt; 6         1            0            0     1     0     0  0.1068624 -2.4441488                  0</span></span>
+<span><span class="co">#&gt;   groupgroup_3:time2 groupgroup_2:time3 groupgroup_3:time3 groupgroup_2:time4 groupgroup_3:time4</span></span>
+<span><span class="co">#&gt; 1                  0                  0                  0                  0                  0</span></span>
+<span><span class="co">#&gt; 2                  0                  0                  0                  0                  0</span></span>
+<span><span class="co">#&gt; 3                  0                  0                  0                  0                  0</span></span>
+<span><span class="co">#&gt; 4                  0                  0                  0                  0                  0</span></span>
+<span><span class="co">#&gt; 5                  0                  0                  0                  0                  0</span></span>
+<span><span class="co">#&gt; 6                  0                  0                  0                  0                  0</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="priors">Priors<a class="anchor" aria-label="anchor" href="#priors"></a>
@@ -341,50 +310,28 @@ the joint prior distribution of your model, you can pass it to the
 dataset and model formula.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">brms</span><span class="fu">::</span><span class="fu"><a href="https://paul-buerkner.github.io/brms/reference/default_prior.html" class="external-link">get_prior</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">data</span>, formula <span class="op">=</span> <span class="va">formula</span><span class="op">)</span></span>
-<span><span class="co">#&gt;                   prior     class               coef group</span></span>
-<span><span class="co">#&gt;                  (flat)         b                         </span></span>
-<span><span class="co">#&gt;                  (flat)         b         biomarker1      </span></span>
-<span><span class="co">#&gt;                  (flat)         b         biomarker2      </span></span>
-<span><span class="co">#&gt;                  (flat)         b       groupgroup_2      </span></span>
-<span><span class="co">#&gt;                  (flat)         b groupgroup_2:time2      </span></span>
-<span><span class="co">#&gt;                  (flat)         b groupgroup_2:time3      </span></span>
-<span><span class="co">#&gt;                  (flat)         b groupgroup_2:time4      </span></span>
-<span><span class="co">#&gt;                  (flat)         b       groupgroup_3      </span></span>
-<span><span class="co">#&gt;                  (flat)         b groupgroup_3:time2      </span></span>
-<span><span class="co">#&gt;                  (flat)         b groupgroup_3:time3      </span></span>
-<span><span class="co">#&gt;                  (flat)         b groupgroup_3:time4      </span></span>
-<span><span class="co">#&gt;                  (flat)         b              time2      </span></span>
-<span><span class="co">#&gt;                  (flat)         b              time3      </span></span>
-<span><span class="co">#&gt;                  (flat)         b              time4      </span></span>
-<span><span class="co">#&gt;                  lkj(1)   cortime                         </span></span>
-<span><span class="co">#&gt;  student_t(3, 0.9, 2.5) Intercept                         </span></span>
-<span><span class="co">#&gt;                  (flat)         b                         </span></span>
-<span><span class="co">#&gt;                  (flat)         b         timetime_1      </span></span>
-<span><span class="co">#&gt;                  (flat)         b         timetime_2      </span></span>
-<span><span class="co">#&gt;                  (flat)         b         timetime_3      </span></span>
-<span><span class="co">#&gt;                  (flat)         b         timetime_4      </span></span>
-<span><span class="co">#&gt;  resp  dpar nlpar lb ub       source</span></span>
-<span><span class="co">#&gt;                              default</span></span>
-<span><span class="co">#&gt;                         (vectorized)</span></span>
-<span><span class="co">#&gt;                         (vectorized)</span></span>
-<span><span class="co">#&gt;                         (vectorized)</span></span>
-<span><span class="co">#&gt;                         (vectorized)</span></span>
-<span><span class="co">#&gt;                         (vectorized)</span></span>
-<span><span class="co">#&gt;                         (vectorized)</span></span>
-<span><span class="co">#&gt;                         (vectorized)</span></span>
-<span><span class="co">#&gt;                         (vectorized)</span></span>
-<span><span class="co">#&gt;                         (vectorized)</span></span>
-<span><span class="co">#&gt;                         (vectorized)</span></span>
-<span><span class="co">#&gt;                         (vectorized)</span></span>
-<span><span class="co">#&gt;                         (vectorized)</span></span>
-<span><span class="co">#&gt;                         (vectorized)</span></span>
-<span><span class="co">#&gt;                              default</span></span>
-<span><span class="co">#&gt;                              default</span></span>
-<span><span class="co">#&gt;       sigma                  default</span></span>
-<span><span class="co">#&gt;       sigma             (vectorized)</span></span>
-<span><span class="co">#&gt;       sigma             (vectorized)</span></span>
-<span><span class="co">#&gt;       sigma             (vectorized)</span></span>
-<span><span class="co">#&gt;       sigma             (vectorized)</span></span></code></pre></div>
+<span><span class="co">#&gt;                   prior     class               coef group resp  dpar nlpar lb ub       source</span></span>
+<span><span class="co">#&gt;                  (flat)         b                                                      default</span></span>
+<span><span class="co">#&gt;                  (flat)         b         biomarker1                              (vectorized)</span></span>
+<span><span class="co">#&gt;                  (flat)         b         biomarker2                              (vectorized)</span></span>
+<span><span class="co">#&gt;                  (flat)         b       groupgroup_2                              (vectorized)</span></span>
+<span><span class="co">#&gt;                  (flat)         b groupgroup_2:time2                              (vectorized)</span></span>
+<span><span class="co">#&gt;                  (flat)         b groupgroup_2:time3                              (vectorized)</span></span>
+<span><span class="co">#&gt;                  (flat)         b groupgroup_2:time4                              (vectorized)</span></span>
+<span><span class="co">#&gt;                  (flat)         b       groupgroup_3                              (vectorized)</span></span>
+<span><span class="co">#&gt;                  (flat)         b groupgroup_3:time2                              (vectorized)</span></span>
+<span><span class="co">#&gt;                  (flat)         b groupgroup_3:time3                              (vectorized)</span></span>
+<span><span class="co">#&gt;                  (flat)         b groupgroup_3:time4                              (vectorized)</span></span>
+<span><span class="co">#&gt;                  (flat)         b              time2                              (vectorized)</span></span>
+<span><span class="co">#&gt;                  (flat)         b              time3                              (vectorized)</span></span>
+<span><span class="co">#&gt;                  (flat)         b              time4                              (vectorized)</span></span>
+<span><span class="co">#&gt;                  lkj(1)   cortime                                                      default</span></span>
+<span><span class="co">#&gt;  student_t(3, 0.9, 2.5) Intercept                                                      default</span></span>
+<span><span class="co">#&gt;                  (flat)         b                               sigma                  default</span></span>
+<span><span class="co">#&gt;                  (flat)         b         timetime_1            sigma             (vectorized)</span></span>
+<span><span class="co">#&gt;                  (flat)         b         timetime_2            sigma             (vectorized)</span></span>
+<span><span class="co">#&gt;                  (flat)         b         timetime_3            sigma             (vectorized)</span></span>
+<span><span class="co">#&gt;                  (flat)         b         timetime_4            sigma             (vectorized)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="model">Model<a class="anchor" aria-label="anchor" href="#model"></a>
@@ -409,60 +356,34 @@ to keep track of the data and formula used to fit the model.</p>
 <span><span class="co">#&gt;          total post-warmup draws = 4000</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Correlation Structures:</span></span>
-<span><span class="co">#&gt;                        Estimate Est.Error l-95% CI u-95% CI</span></span>
-<span><span class="co">#&gt; cortime(time_1,time_2)     0.42      0.05     0.33     0.51</span></span>
-<span><span class="co">#&gt; cortime(time_1,time_3)    -0.80      0.02    -0.84    -0.76</span></span>
-<span><span class="co">#&gt; cortime(time_2,time_3)    -0.54      0.04    -0.62    -0.46</span></span>
-<span><span class="co">#&gt; cortime(time_1,time_4)    -0.29      0.05    -0.39    -0.18</span></span>
-<span><span class="co">#&gt; cortime(time_2,time_4)     0.03      0.06    -0.09     0.14</span></span>
-<span><span class="co">#&gt; cortime(time_3,time_4)    -0.10      0.06    -0.21     0.01</span></span>
-<span><span class="co">#&gt;                        Rhat Bulk_ESS Tail_ESS</span></span>
-<span><span class="co">#&gt; cortime(time_1,time_2) 1.00     3325     2911</span></span>
-<span><span class="co">#&gt; cortime(time_1,time_3) 1.00     2161     2816</span></span>
-<span><span class="co">#&gt; cortime(time_2,time_3) 1.00     3218     3092</span></span>
-<span><span class="co">#&gt; cortime(time_1,time_4) 1.00     4082     2939</span></span>
-<span><span class="co">#&gt; cortime(time_2,time_4) 1.00     3227     2861</span></span>
-<span><span class="co">#&gt; cortime(time_3,time_4) 1.00     3697     2853</span></span>
+<span><span class="co">#&gt;                        Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS</span></span>
+<span><span class="co">#&gt; cortime(time_1,time_2)     0.42      0.05     0.33     0.51 1.00     3516     3008</span></span>
+<span><span class="co">#&gt; cortime(time_1,time_3)    -0.80      0.02    -0.84    -0.76 1.00     2361     2594</span></span>
+<span><span class="co">#&gt; cortime(time_2,time_3)    -0.54      0.04    -0.62    -0.46 1.00     3653     3411</span></span>
+<span><span class="co">#&gt; cortime(time_1,time_4)    -0.29      0.05    -0.39    -0.18 1.00     3964     3061</span></span>
+<span><span class="co">#&gt; cortime(time_2,time_4)     0.03      0.06    -0.09     0.14 1.00     3444     3347</span></span>
+<span><span class="co">#&gt; cortime(time_3,time_4)    -0.10      0.06    -0.21     0.01 1.00     3847     3221</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Regression Coefficients:</span></span>
-<span><span class="co">#&gt;                    Estimate Est.Error l-95% CI u-95% CI Rhat</span></span>
-<span><span class="co">#&gt; Intercept              1.21      0.09     1.04     1.39 1.00</span></span>
-<span><span class="co">#&gt; groupgroup_2          -1.53      0.12    -1.77    -1.29 1.00</span></span>
-<span><span class="co">#&gt; groupgroup_3           0.19      0.13    -0.06     0.44 1.00</span></span>
-<span><span class="co">#&gt; time2                  1.32      0.10     1.11     1.51 1.00</span></span>
-<span><span class="co">#&gt; time3                  0.52      0.17     0.17     0.87 1.00</span></span>
-<span><span class="co">#&gt; time4                 -1.44      0.17    -1.79    -1.11 1.00</span></span>
-<span><span class="co">#&gt; biomarker1            -0.01      0.01    -0.03     0.01 1.00</span></span>
-<span><span class="co">#&gt; biomarker2             0.02      0.01     0.00     0.04 1.00</span></span>
-<span><span class="co">#&gt; groupgroup_2:time2     0.04      0.14    -0.24     0.32 1.00</span></span>
-<span><span class="co">#&gt; groupgroup_3:time2     0.02      0.14    -0.26     0.31 1.00</span></span>
-<span><span class="co">#&gt; groupgroup_2:time3    -0.17      0.25    -0.65     0.31 1.00</span></span>
-<span><span class="co">#&gt; groupgroup_3:time3    -0.21      0.25    -0.69     0.28 1.00</span></span>
-<span><span class="co">#&gt; groupgroup_2:time4    -0.08      0.25    -0.55     0.42 1.00</span></span>
-<span><span class="co">#&gt; groupgroup_3:time4    -0.27      0.25    -0.75     0.21 1.00</span></span>
-<span><span class="co">#&gt; sigma_timetime_1      -0.12      0.04    -0.20    -0.04 1.00</span></span>
-<span><span class="co">#&gt; sigma_timetime_2       0.01      0.04    -0.08     0.09 1.00</span></span>
-<span><span class="co">#&gt; sigma_timetime_3      -0.05      0.04    -0.13     0.03 1.00</span></span>
-<span><span class="co">#&gt; sigma_timetime_4       0.21      0.04     0.13     0.29 1.00</span></span>
-<span><span class="co">#&gt;                    Bulk_ESS Tail_ESS</span></span>
-<span><span class="co">#&gt; Intercept              1319     2071</span></span>
-<span><span class="co">#&gt; groupgroup_2           1394     1918</span></span>
-<span><span class="co">#&gt; groupgroup_3           1386     2158</span></span>
-<span><span class="co">#&gt; time2                  1994     2641</span></span>
-<span><span class="co">#&gt; time3                  1479     2113</span></span>
-<span><span class="co">#&gt; time4                  1484     1840</span></span>
-<span><span class="co">#&gt; biomarker1             6061     2949</span></span>
-<span><span class="co">#&gt; biomarker2             4965     2885</span></span>
-<span><span class="co">#&gt; groupgroup_2:time2     2310     2727</span></span>
-<span><span class="co">#&gt; groupgroup_3:time2     2186     2725</span></span>
-<span><span class="co">#&gt; groupgroup_2:time3     1589     2149</span></span>
-<span><span class="co">#&gt; groupgroup_3:time3     1596     2363</span></span>
-<span><span class="co">#&gt; groupgroup_2:time4     1544     2053</span></span>
-<span><span class="co">#&gt; groupgroup_3:time4     1609     2129</span></span>
-<span><span class="co">#&gt; sigma_timetime_1       2469     2791</span></span>
-<span><span class="co">#&gt; sigma_timetime_2       3347     3135</span></span>
-<span><span class="co">#&gt; sigma_timetime_3       2168     2622</span></span>
-<span><span class="co">#&gt; sigma_timetime_4       3483     2850</span></span>
+<span><span class="co">#&gt;                    Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS</span></span>
+<span><span class="co">#&gt; Intercept              1.22      0.09     1.05     1.39 1.01     1290     2297</span></span>
+<span><span class="co">#&gt; groupgroup_2          -1.54      0.12    -1.77    -1.30 1.01     1524     2563</span></span>
+<span><span class="co">#&gt; groupgroup_3           0.18      0.13    -0.07     0.43 1.01     1248     2097</span></span>
+<span><span class="co">#&gt; time2                  1.31      0.10     1.12     1.51 1.00     1897     2360</span></span>
+<span><span class="co">#&gt; time3                  0.51      0.17     0.17     0.85 1.01     1597     2455</span></span>
+<span><span class="co">#&gt; time4                 -1.45      0.17    -1.78    -1.11 1.01     1393     2103</span></span>
+<span><span class="co">#&gt; biomarker1            -0.01      0.01    -0.03     0.01 1.00     7162     3250</span></span>
+<span><span class="co">#&gt; biomarker2             0.02      0.01     0.00     0.04 1.00     6102     3060</span></span>
+<span><span class="co">#&gt; groupgroup_2:time2     0.04      0.15    -0.25     0.33 1.00     2286     2991</span></span>
+<span><span class="co">#&gt; groupgroup_3:time2     0.02      0.15    -0.27     0.32 1.00     2347     2986</span></span>
+<span><span class="co">#&gt; groupgroup_2:time3    -0.16      0.24    -0.63     0.31 1.01     1733     2596</span></span>
+<span><span class="co">#&gt; groupgroup_3:time3    -0.19      0.25    -0.68     0.29 1.01     1541     2367</span></span>
+<span><span class="co">#&gt; groupgroup_2:time4    -0.06      0.25    -0.55     0.42 1.01     1623     2689</span></span>
+<span><span class="co">#&gt; groupgroup_3:time4    -0.26      0.24    -0.75     0.21 1.00     1517     2562</span></span>
+<span><span class="co">#&gt; sigma_timetime_1      -0.12      0.04    -0.20    -0.04 1.00     2559     2658</span></span>
+<span><span class="co">#&gt; sigma_timetime_2       0.00      0.04    -0.07     0.09 1.00     3796     3159</span></span>
+<span><span class="co">#&gt; sigma_timetime_3      -0.05      0.04    -0.13     0.03 1.00     2346     2891</span></span>
+<span><span class="co">#&gt; sigma_timetime_4       0.21      0.04     0.13     0.29 1.00     3982     3364</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Draws were sampled using sampling(NUTS). For each parameter, Bulk_ESS</span></span>
 <span><span class="co">#&gt; and Tail_ESS are effective sample size measures, and Rhat is the potential</span></span>
@@ -470,20 +391,19 @@ to keep track of the data and formula used to fit the model.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model</span><span class="op">$</span><span class="va">brms.mmrm_data</span></span>
 <span><span class="co">#&gt; # A tibble: 1,200 × 7</span></span>
-<span><span class="co">#&gt;    patient     time   response group   biomarker1 biomarker2</span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;       &lt;ord&gt;     &lt;dbl&gt; &lt;chr&gt;        &lt;dbl&gt;      &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 patient_001 time_1    1.11  group_1      1.31      -0.361</span></span>
-<span><span class="co">#&gt;  2 patient_001 time_2    2.15  group_1      1.31      -0.361</span></span>
-<span><span class="co">#&gt;  3 patient_001 time_3    2.54  group_1      1.31      -0.361</span></span>
-<span><span class="co">#&gt;  4 patient_001 time_4   -1.73  group_1      1.31      -0.361</span></span>
-<span><span class="co">#&gt;  5 patient_002 time_1    1.11  group_1      0.107     -2.44 </span></span>
-<span><span class="co">#&gt;  6 patient_002 time_2    2.64  group_1      0.107     -2.44 </span></span>
-<span><span class="co">#&gt;  7 patient_002 time_3    1.69  group_1      0.107     -2.44 </span></span>
-<span><span class="co">#&gt;  8 patient_002 time_4    0.783 group_1      0.107     -2.44 </span></span>
-<span><span class="co">#&gt;  9 patient_003 time_1    0.118 group_1      1.44      -0.419</span></span>
-<span><span class="co">#&gt; 10 patient_003 time_2    2.48  group_1      1.44      -0.419</span></span>
-<span><span class="co">#&gt; # ℹ 1,190 more rows</span></span>
-<span><span class="co">#&gt; # ℹ 1 more variable: biomarker3 &lt;dbl&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt;    patient     time   response group   biomarker1 biomarker2 biomarker3</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;       &lt;ord&gt;     &lt;dbl&gt; &lt;chr&gt;        &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 patient_001 time_1    1.11  group_1      1.31      -0.361      1.52 </span></span>
+<span><span class="co">#&gt;  2 patient_001 time_2    2.15  group_1      1.31      -0.361      1.52 </span></span>
+<span><span class="co">#&gt;  3 patient_001 time_3    2.54  group_1      1.31      -0.361      1.52 </span></span>
+<span><span class="co">#&gt;  4 patient_001 time_4   -1.73  group_1      1.31      -0.361      1.52 </span></span>
+<span><span class="co">#&gt;  5 patient_002 time_1    1.11  group_1      0.107     -2.44      -0.139</span></span>
+<span><span class="co">#&gt;  6 patient_002 time_2    2.64  group_1      0.107     -2.44      -0.139</span></span>
+<span><span class="co">#&gt;  7 patient_002 time_3    1.69  group_1      0.107     -2.44      -0.139</span></span>
+<span><span class="co">#&gt;  8 patient_002 time_4    0.783 group_1      0.107     -2.44      -0.139</span></span>
+<span><span class="co">#&gt;  9 patient_003 time_1    0.118 group_1      1.44      -0.419     -1.54 </span></span>
+<span><span class="co">#&gt; 10 patient_003 time_2    2.48  group_1      1.44      -0.419     -1.54 </span></span>
+<span><span class="co">#&gt; # ℹ 1,190 more rows</span></span></code></pre></div>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model</span><span class="op">$</span><span class="va">brms.mmrm_formula</span></span>
 <span><span class="co">#&gt; response ~ group + group:time + time + biomarker1 + biomarker2 + unstr(time = time, gr = patient) </span></span>
@@ -501,17 +421,42 @@ alternative solutions described at <a href="https://paul-buerkner.github.io/brms
 <div class="section level3">
 <h3 id="imputation-before-model-fitting">Imputation before model fitting<a class="anchor" aria-label="anchor" href="#imputation-before-model-fitting"></a>
 </h3>
-<p>To impute missing outcomes before model fitting, first use
-<code><a href="https://amices.org/mice/reference/mice.html" class="external-link">mice::mice()</a></code> to create a multiply imputed dataset.</p>
+<p>To impute missing outcomes before model fitting, first use create a
+list of imputed datasets using the multiple imputation method of your
+choice. The <a href="https://insightsengineering.github.io/rbmi/main/" class="external-link"><code>rbmi</code></a>
+package is uniquely suited to the multiple imputation of continuous
+longitudinal clinical trial data.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">imputed</span> <span class="op">&lt;-</span> <span class="fu">mice</span><span class="fu">::</span><span class="fu"><a href="https://amices.org/mice/reference/mice.html" class="external-link">mice</a></span><span class="op">(</span></span>
-<span>  <span class="va">data</span>,</span>
-<span>  m <span class="op">=</span> <span class="fl">200</span>, <span class="co"># number of individual imputed datasets to create</span></span>
-<span>  print <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<p>Next, supply the multiply imputed dataset to the <code>imputed</code>
-argument of <code><a href="../reference/brm_model.html">brm_model()</a></code>. Internally,
-<code><a href="../reference/brm_model.html">brm_model()</a></code> calls
+<code class="sourceCode R"><span><span class="va">variables</span> <span class="op">&lt;-</span> <span class="fu">rbmi</span><span class="fu">::</span><span class="fu">set_vars</span><span class="op">(</span></span>
+<span>  outcome <span class="op">=</span> <span class="st">"response"</span>,</span>
+<span>  visit <span class="op">=</span> <span class="st">"time"</span>,</span>
+<span>  subjid <span class="op">=</span> <span class="st">"patient"</span>,</span>
+<span>  group <span class="op">=</span> <span class="st">"group"</span>,</span>
+<span>  covariates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"biomarker1"</span>, <span class="st">"biomarker2"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">imputation_draws</span> <span class="op">&lt;-</span> <span class="fu">rbmi</span><span class="fu">::</span><span class="fu">draws</span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">data</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
+<span>      patient <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">patient</span><span class="op">)</span>,</span>
+<span>      group <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">group</span><span class="op">)</span></span>
+<span>    <span class="op">)</span>,</span>
+<span>  vars <span class="op">=</span> <span class="va">variables</span>,</span>
+<span>  method <span class="op">=</span> <span class="fu">rbmi</span><span class="fu">::</span><span class="fu">method_condmean</span><span class="op">(</span>type <span class="op">=</span> <span class="st">"jackknife"</span><span class="op">)</span>,</span>
+<span>  quiet <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">imputation_run</span> <span class="op">&lt;-</span> <span class="fu">rbmi</span><span class="fu">::</span><span class="fu">impute</span><span class="op">(</span></span>
+<span>  draws <span class="op">=</span> <span class="va">imputation_draws</span>,</span>
+<span>  references <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    group_1 <span class="op">=</span> <span class="st">"group_1"</span>,</span>
+<span>    group_2 <span class="op">=</span> <span class="st">"group_1"</span>,</span>
+<span>    group_3 <span class="op">=</span> <span class="st">"group_1"</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">imputed_datasets</span> <span class="op">&lt;-</span> <span class="fu">rbmi</span><span class="fu">::</span><span class="fu">extract_imputed_dfs</span><span class="op">(</span><span class="va">imputation_run</span><span class="op">)</span></span></code></pre></div>
+<p>At this point, <code>imputed_datasets</code> is a list of data frames
+with the response variable imputed with multiple imputation. Simply
+supply this list to the <code>imputed</code> argument of
+<code><a href="../reference/brm_model.html">brm_model()</a></code>. Internally, <code><a href="../reference/brm_model.html">brm_model()</a></code> calls
 <code>brms::brm_multiple(data = imputed, formula = formula)</code>
 instead of <code>brms::brm(data = data, formula = formula)</code> to fit
 an MMRM to each of the individual imputed datasets in the
@@ -520,7 +465,7 @@ an MMRM to each of the individual imputed datasets in the
 <code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/brm_model.html">brm_model</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">data</span>, <span class="co"># Yes, please supply the original non-imputed dataset too.</span></span>
 <span>  formula <span class="op">=</span> <span class="va">formula</span>,</span>
-<span>  imputed <span class="op">=</span> <span class="va">imputed</span>,</span>
+<span>  imputed <span class="op">=</span> <span class="va">imputed_datasets</span>,</span>
 <span>  refresh <span class="op">=</span> <span class="fl">0</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>Unless you set <code>combine = FALSE</code> in
@@ -576,154 +521,108 @@ deviation.</li>
 <span><span class="va">draws</span></span>
 <span><span class="co">#&gt; $response</span></span>
 <span><span class="co">#&gt; # A draws_df: 1000 iterations, 4 chains, and 12 variables</span></span>
-<span><span class="co">#&gt;    group_1|time_1 group_1|time_2 group_1|time_3</span></span>
-<span><span class="co">#&gt; 1             1.2            2.5            1.8</span></span>
-<span><span class="co">#&gt; 2             1.2            2.6            1.7</span></span>
-<span><span class="co">#&gt; 3             1.2            2.6            1.8</span></span>
-<span><span class="co">#&gt; 4             1.2            2.6            1.7</span></span>
-<span><span class="co">#&gt; 5             1.2            2.5            1.8</span></span>
-<span><span class="co">#&gt; 6             1.1            2.5            1.8</span></span>
-<span><span class="co">#&gt; 7             1.1            2.4            1.9</span></span>
-<span><span class="co">#&gt; 8             1.2            2.6            1.8</span></span>
-<span><span class="co">#&gt; 9             1.1            2.5            1.7</span></span>
-<span><span class="co">#&gt; 10            1.2            2.6            1.6</span></span>
-<span><span class="co">#&gt;    group_1|time_4 group_2|time_1 group_2|time_2</span></span>
-<span><span class="co">#&gt; 1          -0.386          -0.25           1.05</span></span>
-<span><span class="co">#&gt; 2          -0.083          -0.23           1.16</span></span>
-<span><span class="co">#&gt; 3          -0.278          -0.31           0.99</span></span>
-<span><span class="co">#&gt; 4          -0.150          -0.32           1.12</span></span>
-<span><span class="co">#&gt; 5          -0.160          -0.26           1.02</span></span>
-<span><span class="co">#&gt; 6          -0.288          -0.19           1.00</span></span>
-<span><span class="co">#&gt; 7          -0.181          -0.30           1.08</span></span>
-<span><span class="co">#&gt; 8          -0.207          -0.33           1.01</span></span>
-<span><span class="co">#&gt; 9          -0.070          -0.35           1.16</span></span>
-<span><span class="co">#&gt; 10         -0.022          -0.44           0.91</span></span>
+<span><span class="co">#&gt;    group_1|time_1 group_1|time_2 group_1|time_3 group_1|time_4 group_2|time_1 group_2|time_2</span></span>
+<span><span class="co">#&gt; 1             1.2            2.5            1.8          -0.25          -0.41           0.87</span></span>
+<span><span class="co">#&gt; 2             1.4            2.6            1.6          -0.32          -0.32           1.11</span></span>
+<span><span class="co">#&gt; 3             1.4            2.5            1.6          -0.19          -0.37           1.08</span></span>
+<span><span class="co">#&gt; 4             1.4            2.6            1.6          -0.39          -0.34           0.91</span></span>
+<span><span class="co">#&gt; 5             1.3            2.6            1.7          -0.36          -0.46           1.06</span></span>
+<span><span class="co">#&gt; 6             1.3            2.5            1.7          -0.29          -0.52           0.89</span></span>
+<span><span class="co">#&gt; 7             1.2            2.5            1.6          -0.22          -0.13           0.99</span></span>
+<span><span class="co">#&gt; 8             1.2            2.6            1.8          -0.38          -0.34           0.84</span></span>
+<span><span class="co">#&gt; 9             1.2            2.6            1.7          -0.36          -0.17           1.06</span></span>
+<span><span class="co">#&gt; 10            1.3            2.6            1.6          -0.21          -0.16           1.00</span></span>
 <span><span class="co">#&gt;    group_2|time_3 group_2|time_4</span></span>
-<span><span class="co">#&gt; 1         -0.0050           -1.9</span></span>
-<span><span class="co">#&gt; 2          0.0115           -2.0</span></span>
-<span><span class="co">#&gt; 3          0.0939           -2.0</span></span>
-<span><span class="co">#&gt; 4         -0.0090           -1.9</span></span>
-<span><span class="co">#&gt; 5         -0.0371           -1.8</span></span>
-<span><span class="co">#&gt; 6         -0.0146           -2.0</span></span>
-<span><span class="co">#&gt; 7         -0.1218           -1.7</span></span>
-<span><span class="co">#&gt; 8          0.0043           -1.9</span></span>
-<span><span class="co">#&gt; 9         -0.0098           -1.8</span></span>
-<span><span class="co">#&gt; 10         0.1413           -1.9</span></span>
+<span><span class="co">#&gt; 1           0.101           -1.8</span></span>
+<span><span class="co">#&gt; 2           0.048           -1.8</span></span>
+<span><span class="co">#&gt; 3           0.013           -1.7</span></span>
+<span><span class="co">#&gt; 4           0.109           -1.7</span></span>
+<span><span class="co">#&gt; 5           0.201           -1.8</span></span>
+<span><span class="co">#&gt; 6           0.212           -1.7</span></span>
+<span><span class="co">#&gt; 7          -0.196           -1.7</span></span>
+<span><span class="co">#&gt; 8           0.141           -2.0</span></span>
+<span><span class="co">#&gt; 9          -0.121           -1.9</span></span>
+<span><span class="co">#&gt; 10         -0.086           -2.0</span></span>
 <span><span class="co">#&gt; # ... with 3990 more draws, and 4 more variables</span></span>
 <span><span class="co">#&gt; # ... hidden reserved variables {'.chain', '.iteration', '.draw'}</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $difference_time</span></span>
 <span><span class="co">#&gt; # A draws_df: 1000 iterations, 4 chains, and 9 variables</span></span>
-<span><span class="co">#&gt;    group_1|time_2 group_1|time_3 group_1|time_4</span></span>
-<span><span class="co">#&gt; 1             1.3           0.55           -1.6</span></span>
-<span><span class="co">#&gt; 2             1.3           0.47           -1.3</span></span>
-<span><span class="co">#&gt; 3             1.4           0.59           -1.5</span></span>
-<span><span class="co">#&gt; 4             1.4           0.52           -1.3</span></span>
-<span><span class="co">#&gt; 5             1.4           0.60           -1.3</span></span>
-<span><span class="co">#&gt; 6             1.4           0.68           -1.4</span></span>
-<span><span class="co">#&gt; 7             1.3           0.77           -1.3</span></span>
-<span><span class="co">#&gt; 8             1.4           0.57           -1.4</span></span>
-<span><span class="co">#&gt; 9             1.3           0.61           -1.2</span></span>
-<span><span class="co">#&gt; 10            1.4           0.44           -1.2</span></span>
-<span><span class="co">#&gt;    group_2|time_2 group_2|time_3 group_2|time_4</span></span>
-<span><span class="co">#&gt; 1             1.3           0.25           -1.7</span></span>
-<span><span class="co">#&gt; 2             1.4           0.24           -1.8</span></span>
-<span><span class="co">#&gt; 3             1.3           0.41           -1.7</span></span>
-<span><span class="co">#&gt; 4             1.4           0.31           -1.5</span></span>
-<span><span class="co">#&gt; 5             1.3           0.23           -1.5</span></span>
-<span><span class="co">#&gt; 6             1.2           0.17           -1.9</span></span>
-<span><span class="co">#&gt; 7             1.4           0.18           -1.4</span></span>
-<span><span class="co">#&gt; 8             1.3           0.33           -1.6</span></span>
-<span><span class="co">#&gt; 9             1.5           0.34           -1.4</span></span>
-<span><span class="co">#&gt; 10            1.4           0.58           -1.4</span></span>
+<span><span class="co">#&gt;    group_1|time_2 group_1|time_3 group_1|time_4 group_2|time_2 group_2|time_3 group_2|time_4</span></span>
+<span><span class="co">#&gt; 1             1.4           0.66           -1.4            1.3          0.512           -1.4</span></span>
+<span><span class="co">#&gt; 2             1.2           0.20           -1.7            1.4          0.370           -1.5</span></span>
+<span><span class="co">#&gt; 3             1.1           0.21           -1.6            1.4          0.380           -1.3</span></span>
+<span><span class="co">#&gt; 4             1.2           0.29           -1.7            1.2          0.451           -1.4</span></span>
+<span><span class="co">#&gt; 5             1.3           0.37           -1.7            1.5          0.663           -1.3</span></span>
+<span><span class="co">#&gt; 6             1.2           0.41           -1.6            1.4          0.735           -1.2</span></span>
+<span><span class="co">#&gt; 7             1.3           0.42           -1.4            1.1         -0.066           -1.6</span></span>
+<span><span class="co">#&gt; 8             1.4           0.64           -1.5            1.2          0.481           -1.6</span></span>
+<span><span class="co">#&gt; 9             1.4           0.44           -1.6            1.2          0.049           -1.7</span></span>
+<span><span class="co">#&gt; 10            1.4           0.36           -1.5            1.2          0.072           -1.8</span></span>
 <span><span class="co">#&gt;    group_3|time_2 group_3|time_3</span></span>
-<span><span class="co">#&gt; 1             1.2          0.107</span></span>
-<span><span class="co">#&gt; 2             1.3          0.227</span></span>
-<span><span class="co">#&gt; 3             1.3          0.244</span></span>
-<span><span class="co">#&gt; 4             1.4          0.410</span></span>
-<span><span class="co">#&gt; 5             1.3          0.574</span></span>
-<span><span class="co">#&gt; 6             1.3          0.350</span></span>
-<span><span class="co">#&gt; 7             1.4          0.391</span></span>
-<span><span class="co">#&gt; 8             1.2          0.043</span></span>
-<span><span class="co">#&gt; 9             1.5          0.377</span></span>
-<span><span class="co">#&gt; 10            1.5          0.297</span></span>
+<span><span class="co">#&gt; 1             1.5           0.26</span></span>
+<span><span class="co">#&gt; 2             1.4           0.28</span></span>
+<span><span class="co">#&gt; 3             1.4           0.21</span></span>
+<span><span class="co">#&gt; 4             1.2           0.44</span></span>
+<span><span class="co">#&gt; 5             1.3           0.42</span></span>
+<span><span class="co">#&gt; 6             1.3           0.33</span></span>
+<span><span class="co">#&gt; 7             1.3           0.63</span></span>
+<span><span class="co">#&gt; 8             1.3           0.54</span></span>
+<span><span class="co">#&gt; 9             1.4           0.47</span></span>
+<span><span class="co">#&gt; 10            1.4           0.31</span></span>
 <span><span class="co">#&gt; # ... with 3990 more draws, and 1 more variables</span></span>
 <span><span class="co">#&gt; # ... hidden reserved variables {'.chain', '.iteration', '.draw'}</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $difference_group</span></span>
 <span><span class="co">#&gt; # A draws_df: 1000 iterations, 4 chains, and 6 variables</span></span>
-<span><span class="co">#&gt;    group_2|time_2 group_2|time_3 group_2|time_4</span></span>
-<span><span class="co">#&gt; 1          0.0069          -0.30         -0.028</span></span>
-<span><span class="co">#&gt; 2          0.0631          -0.23         -0.498</span></span>
-<span><span class="co">#&gt; 3         -0.1212          -0.19         -0.173</span></span>
-<span><span class="co">#&gt; 4          0.0026          -0.21         -0.211</span></span>
-<span><span class="co">#&gt; 5         -0.1005          -0.37         -0.212</span></span>
-<span><span class="co">#&gt; 6         -0.2115          -0.51         -0.460</span></span>
-<span><span class="co">#&gt; 7          0.0383          -0.59         -0.153</span></span>
-<span><span class="co">#&gt; 8         -0.1074          -0.24         -0.215</span></span>
-<span><span class="co">#&gt; 9          0.1657          -0.27         -0.214</span></span>
-<span><span class="co">#&gt; 10        -0.0431           0.14         -0.233</span></span>
-<span><span class="co">#&gt;    group_3|time_2 group_3|time_3 group_3|time_4</span></span>
-<span><span class="co">#&gt; 1          -0.089         -0.447          -0.19</span></span>
-<span><span class="co">#&gt; 2           0.016         -0.244          -0.40</span></span>
-<span><span class="co">#&gt; 3          -0.123         -0.347          -0.27</span></span>
-<span><span class="co">#&gt; 4          -0.081         -0.115          -0.53</span></span>
-<span><span class="co">#&gt; 5          -0.037         -0.027          -0.37</span></span>
-<span><span class="co">#&gt; 6          -0.044         -0.329          -0.19</span></span>
-<span><span class="co">#&gt; 7           0.064         -0.377          -0.42</span></span>
-<span><span class="co">#&gt; 8          -0.229         -0.529          -0.47</span></span>
-<span><span class="co">#&gt; 9           0.148         -0.238          -0.38</span></span>
-<span><span class="co">#&gt; 10          0.060         -0.147          -0.40</span></span>
+<span><span class="co">#&gt;    group_2|time_2 group_2|time_3 group_2|time_4 group_3|time_2 group_3|time_3 group_3|time_4</span></span>
+<span><span class="co">#&gt; 1          -0.089          -0.15          0.013         0.1075        -0.4044         -0.332</span></span>
+<span><span class="co">#&gt; 2           0.224           0.17          0.212         0.1637         0.0837         -0.167</span></span>
+<span><span class="co">#&gt; 3           0.311           0.17          0.272         0.2547         0.0047          0.092</span></span>
+<span><span class="co">#&gt; 4           0.020           0.17          0.352         0.0071         0.1494          0.135</span></span>
+<span><span class="co">#&gt; 5           0.243           0.29          0.343         0.0387         0.0480         -0.211</span></span>
+<span><span class="co">#&gt; 6           0.231           0.32          0.410         0.1161        -0.0844         -0.181</span></span>
+<span><span class="co">#&gt; 7          -0.180          -0.48         -0.171         0.0210         0.2130         -0.134</span></span>
+<span><span class="co">#&gt; 8          -0.221          -0.16         -0.094        -0.1073        -0.0997          0.087</span></span>
+<span><span class="co">#&gt; 9          -0.172          -0.39         -0.097        -0.0357         0.0301         -0.188</span></span>
+<span><span class="co">#&gt; 10         -0.212          -0.29         -0.359        -0.0089        -0.0580         -0.018</span></span>
 <span><span class="co">#&gt; # ... with 3990 more draws</span></span>
 <span><span class="co">#&gt; # ... hidden reserved variables {'.chain', '.iteration', '.draw'}</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $effect</span></span>
 <span><span class="co">#&gt; # A draws_df: 1000 iterations, 4 chains, and 6 variables</span></span>
-<span><span class="co">#&gt;    group_2|time_2 group_2|time_3 group_2|time_4</span></span>
-<span><span class="co">#&gt; 1          0.0070          -0.32         -0.022</span></span>
-<span><span class="co">#&gt; 2          0.0624          -0.25         -0.426</span></span>
-<span><span class="co">#&gt; 3         -0.1264          -0.20         -0.138</span></span>
-<span><span class="co">#&gt; 4          0.0026          -0.22         -0.178</span></span>
-<span><span class="co">#&gt; 5         -0.0994          -0.39         -0.183</span></span>
-<span><span class="co">#&gt; 6         -0.2190          -0.58         -0.370</span></span>
-<span><span class="co">#&gt; 7          0.0403          -0.59         -0.128</span></span>
-<span><span class="co">#&gt; 8         -0.1078          -0.25         -0.164</span></span>
-<span><span class="co">#&gt; 9          0.1702          -0.26         -0.192</span></span>
-<span><span class="co">#&gt; 10        -0.0462           0.15         -0.195</span></span>
-<span><span class="co">#&gt;    group_3|time_2 group_3|time_3 group_3|time_4</span></span>
-<span><span class="co">#&gt; 1          -0.090         -0.465          -0.15</span></span>
-<span><span class="co">#&gt; 2           0.016         -0.258          -0.34</span></span>
-<span><span class="co">#&gt; 3          -0.128         -0.373          -0.22</span></span>
-<span><span class="co">#&gt; 4          -0.082         -0.118          -0.45</span></span>
-<span><span class="co">#&gt; 5          -0.036         -0.028          -0.32</span></span>
-<span><span class="co">#&gt; 6          -0.046         -0.375          -0.15</span></span>
-<span><span class="co">#&gt; 7           0.067         -0.379          -0.35</span></span>
-<span><span class="co">#&gt; 8          -0.230         -0.544          -0.36</span></span>
-<span><span class="co">#&gt; 9           0.152         -0.226          -0.34</span></span>
-<span><span class="co">#&gt; 10          0.064         -0.158          -0.33</span></span>
+<span><span class="co">#&gt;    group_2|time_2 group_2|time_3 group_2|time_4 group_3|time_2 group_3|time_3 group_3|time_4</span></span>
+<span><span class="co">#&gt; 1          -0.086          -0.16          0.010          0.104        -0.4215         -0.252</span></span>
+<span><span class="co">#&gt; 2           0.232           0.20          0.186          0.169         0.0946         -0.146</span></span>
+<span><span class="co">#&gt; 3           0.316           0.19          0.221          0.259         0.0051          0.074</span></span>
+<span><span class="co">#&gt; 4           0.019           0.17          0.265          0.007         0.1561          0.102</span></span>
+<span><span class="co">#&gt; 5           0.248           0.32          0.263          0.040         0.0521         -0.162</span></span>
+<span><span class="co">#&gt; 6           0.242           0.34          0.317          0.122        -0.0901         -0.140</span></span>
+<span><span class="co">#&gt; 7          -0.164          -0.48         -0.142          0.019         0.2121         -0.111</span></span>
+<span><span class="co">#&gt; 8          -0.230          -0.16         -0.078         -0.111        -0.1009          0.073</span></span>
+<span><span class="co">#&gt; 9          -0.174          -0.39         -0.087         -0.036         0.0297         -0.168</span></span>
+<span><span class="co">#&gt; 10         -0.213          -0.29         -0.311         -0.009        -0.0582         -0.016</span></span>
 <span><span class="co">#&gt; # ... with 3990 more draws</span></span>
 <span><span class="co">#&gt; # ... hidden reserved variables {'.chain', '.iteration', '.draw'}</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $sigma</span></span>
 <span><span class="co">#&gt; # A tibble: 4,000 × 12</span></span>
-<span><span class="co">#&gt;    `group_1|time_1` `group_1|time_2` `group_1|time_3`</span></span>
-<span><span class="co">#&gt;               &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1            0.908            0.988            0.962</span></span>
-<span><span class="co">#&gt;  2            0.869            1.01             0.949</span></span>
-<span><span class="co">#&gt;  3            0.888            0.959            0.931</span></span>
-<span><span class="co">#&gt;  4            0.883            0.989            0.976</span></span>
-<span><span class="co">#&gt;  5            0.880            1.01             0.967</span></span>
-<span><span class="co">#&gt;  6            0.900            0.966            0.876</span></span>
-<span><span class="co">#&gt;  7            0.847            0.951            0.995</span></span>
-<span><span class="co">#&gt;  8            0.940            0.996            0.973</span></span>
-<span><span class="co">#&gt;  9            0.966            0.973            1.05 </span></span>
-<span><span class="co">#&gt; 10            0.900            0.933            0.925</span></span>
+<span><span class="co">#&gt;    `group_1|time_1` `group_1|time_2` `group_1|time_3` `group_1|time_4` `group_2|time_1`</span></span>
+<span><span class="co">#&gt;               &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1            0.965            1.03             0.959             1.32            0.965</span></span>
+<span><span class="co">#&gt;  2            0.810            0.967            0.885             1.14            0.810</span></span>
+<span><span class="co">#&gt;  3            0.869            0.982            0.916             1.23            0.869</span></span>
+<span><span class="co">#&gt;  4            0.896            1.02             0.957             1.33            0.896</span></span>
+<span><span class="co">#&gt;  5            0.895            0.978            0.921             1.30            0.895</span></span>
+<span><span class="co">#&gt;  6            0.861            0.955            0.937             1.29            0.861</span></span>
+<span><span class="co">#&gt;  7            0.890            1.10             1.00              1.21            0.890</span></span>
+<span><span class="co">#&gt;  8            0.944            0.962            0.989             1.20            0.944</span></span>
+<span><span class="co">#&gt;  9            0.961            0.988            1.01              1.12            0.961</span></span>
+<span><span class="co">#&gt; 10            0.932            0.996            0.996             1.15            0.932</span></span>
 <span><span class="co">#&gt; # ℹ 3,990 more rows</span></span>
-<span><span class="co">#&gt; # ℹ 9 more variables: `group_1|time_4` &lt;dbl&gt;,</span></span>
-<span><span class="co">#&gt; #   `group_2|time_1` &lt;dbl&gt;, `group_2|time_2` &lt;dbl&gt;,</span></span>
-<span><span class="co">#&gt; #   `group_2|time_3` &lt;dbl&gt;, `group_2|time_4` &lt;dbl&gt;,</span></span>
-<span><span class="co">#&gt; #   `group_3|time_1` &lt;dbl&gt;, `group_3|time_2` &lt;dbl&gt;,</span></span>
-<span><span class="co">#&gt; #   `group_3|time_3` &lt;dbl&gt;, `group_3|time_4` &lt;dbl&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt; # ℹ 7 more variables: `group_2|time_2` &lt;dbl&gt;, `group_2|time_3` &lt;dbl&gt;, `group_2|time_4` &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   `group_3|time_1` &lt;dbl&gt;, `group_3|time_2` &lt;dbl&gt;, `group_3|time_3` &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   `group_3|time_4` &lt;dbl&gt;</span></span></code></pre></div>
 <p>If you need samples from these marginals averaged across time points,
 e.g. an “overall effect size”, <code><a href="../reference/brm_marginal_draws_average.html">brm_marginal_draws_average()</a></code>
 can average the draws above across discrete time points (either all or a
@@ -733,64 +632,64 @@ user-defined subset).</p>
 <span><span class="co">#&gt; $response</span></span>
 <span><span class="co">#&gt; # A draws_df: 1000 iterations, 4 chains, and 3 variables</span></span>
 <span><span class="co">#&gt;    group_1|average group_2|average group_3|average</span></span>
-<span><span class="co">#&gt; 1              1.3           -0.28             1.4</span></span>
-<span><span class="co">#&gt; 2              1.4           -0.27             1.4</span></span>
-<span><span class="co">#&gt; 3              1.3           -0.30             1.4</span></span>
+<span><span class="co">#&gt; 1              1.3           -0.31             1.4</span></span>
+<span><span class="co">#&gt; 2              1.3           -0.25             1.4</span></span>
+<span><span class="co">#&gt; 3              1.3           -0.23             1.4</span></span>
 <span><span class="co">#&gt; 4              1.3           -0.27             1.4</span></span>
-<span><span class="co">#&gt; 5              1.3           -0.27             1.3</span></span>
-<span><span class="co">#&gt; 6              1.3           -0.31             1.4</span></span>
-<span><span class="co">#&gt; 7              1.3           -0.27             1.4</span></span>
-<span><span class="co">#&gt; 8              1.3           -0.31             1.4</span></span>
-<span><span class="co">#&gt; 9              1.3           -0.24             1.4</span></span>
-<span><span class="co">#&gt; 10             1.3           -0.32             1.4</span></span>
+<span><span class="co">#&gt; 5              1.3           -0.24             1.4</span></span>
+<span><span class="co">#&gt; 6              1.3           -0.27             1.4</span></span>
+<span><span class="co">#&gt; 7              1.3           -0.26             1.3</span></span>
+<span><span class="co">#&gt; 8              1.3           -0.33             1.4</span></span>
+<span><span class="co">#&gt; 9              1.3           -0.27             1.4</span></span>
+<span><span class="co">#&gt; 10             1.3           -0.31             1.4</span></span>
 <span><span class="co">#&gt; # ... with 3990 more draws</span></span>
 <span><span class="co">#&gt; # ... hidden reserved variables {'.chain', '.iteration', '.draw'}</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $difference_time</span></span>
 <span><span class="co">#&gt; # A draws_df: 1000 iterations, 4 chains, and 3 variables</span></span>
 <span><span class="co">#&gt;    group_1|average group_2|average group_3|average</span></span>
-<span><span class="co">#&gt; 1            0.076          -0.033          -0.165</span></span>
-<span><span class="co">#&gt; 2            0.158          -0.065          -0.052</span></span>
-<span><span class="co">#&gt; 3            0.175           0.015          -0.072</span></span>
-<span><span class="co">#&gt; 4            0.213           0.073          -0.030</span></span>
-<span><span class="co">#&gt; 5            0.216          -0.013           0.073</span></span>
-<span><span class="co">#&gt; 6            0.225          -0.167           0.039</span></span>
-<span><span class="co">#&gt; 7            0.279           0.044           0.033</span></span>
-<span><span class="co">#&gt; 8            0.211           0.024          -0.199</span></span>
-<span><span class="co">#&gt; 9            0.258           0.152           0.103</span></span>
-<span><span class="co">#&gt; 10           0.210           0.163           0.048</span></span>
+<span><span class="co">#&gt; 1           0.2053          0.1296         -0.0043</span></span>
+<span><span class="co">#&gt; 2          -0.1020          0.1010         -0.0752</span></span>
+<span><span class="co">#&gt; 3          -0.0699          0.1812          0.0470</span></span>
+<span><span class="co">#&gt; 4          -0.0767          0.1023          0.0205</span></span>
+<span><span class="co">#&gt; 5          -0.0034          0.2901         -0.0449</span></span>
+<span><span class="co">#&gt; 6           0.0132          0.3334         -0.0367</span></span>
+<span><span class="co">#&gt; 7           0.1032         -0.1752          0.1366</span></span>
+<span><span class="co">#&gt; 8           0.1645          0.0078          0.1245</span></span>
+<span><span class="co">#&gt; 9           0.0810         -0.1391          0.0167</span></span>
+<span><span class="co">#&gt; 10          0.0895         -0.1982          0.0611</span></span>
 <span><span class="co">#&gt; # ... with 3990 more draws</span></span>
 <span><span class="co">#&gt; # ... hidden reserved variables {'.chain', '.iteration', '.draw'}</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $difference_group</span></span>
 <span><span class="co">#&gt; # A draws_df: 1000 iterations, 4 chains, and 2 variables</span></span>
 <span><span class="co">#&gt;    group_2|average group_3|average</span></span>
-<span><span class="co">#&gt; 1           -0.109           -0.24</span></span>
-<span><span class="co">#&gt; 2           -0.223           -0.21</span></span>
-<span><span class="co">#&gt; 3           -0.160           -0.25</span></span>
-<span><span class="co">#&gt; 4           -0.139           -0.24</span></span>
-<span><span class="co">#&gt; 5           -0.229           -0.14</span></span>
-<span><span class="co">#&gt; 6           -0.393           -0.19</span></span>
-<span><span class="co">#&gt; 7           -0.235           -0.25</span></span>
-<span><span class="co">#&gt; 8           -0.187           -0.41</span></span>
-<span><span class="co">#&gt; 9           -0.106           -0.16</span></span>
-<span><span class="co">#&gt; 10          -0.047           -0.16</span></span>
+<span><span class="co">#&gt; 1           -0.076          -0.210</span></span>
+<span><span class="co">#&gt; 2            0.203           0.027</span></span>
+<span><span class="co">#&gt; 3            0.251           0.117</span></span>
+<span><span class="co">#&gt; 4            0.179           0.097</span></span>
+<span><span class="co">#&gt; 5            0.294          -0.042</span></span>
+<span><span class="co">#&gt; 6            0.320          -0.050</span></span>
+<span><span class="co">#&gt; 7           -0.278           0.033</span></span>
+<span><span class="co">#&gt; 8           -0.157          -0.040</span></span>
+<span><span class="co">#&gt; 9           -0.220          -0.064</span></span>
+<span><span class="co">#&gt; 10          -0.288          -0.028</span></span>
 <span><span class="co">#&gt; # ... with 3990 more draws</span></span>
 <span><span class="co">#&gt; # ... hidden reserved variables {'.chain', '.iteration', '.draw'}</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $effect</span></span>
 <span><span class="co">#&gt; # A draws_df: 1000 iterations, 4 chains, and 2 variables</span></span>
 <span><span class="co">#&gt;    group_2|average group_3|average</span></span>
-<span><span class="co">#&gt; 1           -0.110           -0.23</span></span>
-<span><span class="co">#&gt; 2           -0.203           -0.20</span></span>
-<span><span class="co">#&gt; 3           -0.154           -0.24</span></span>
-<span><span class="co">#&gt; 4           -0.130           -0.22</span></span>
-<span><span class="co">#&gt; 5           -0.223           -0.13</span></span>
-<span><span class="co">#&gt; 6           -0.389           -0.19</span></span>
-<span><span class="co">#&gt; 7           -0.227           -0.22</span></span>
-<span><span class="co">#&gt; 8           -0.173           -0.38</span></span>
-<span><span class="co">#&gt; 9           -0.093           -0.14</span></span>
-<span><span class="co">#&gt; 10          -0.032           -0.14</span></span>
+<span><span class="co">#&gt; 1           -0.078          -0.190</span></span>
+<span><span class="co">#&gt; 2            0.204           0.039</span></span>
+<span><span class="co">#&gt; 3            0.241           0.113</span></span>
+<span><span class="co">#&gt; 4            0.152           0.088</span></span>
+<span><span class="co">#&gt; 5            0.277          -0.023</span></span>
+<span><span class="co">#&gt; 6            0.300          -0.036</span></span>
+<span><span class="co">#&gt; 7           -0.263           0.040</span></span>
+<span><span class="co">#&gt; 8           -0.155          -0.047</span></span>
+<span><span class="co">#&gt; 9           -0.216          -0.058</span></span>
+<span><span class="co">#&gt; 10          -0.272          -0.028</span></span>
 <span><span class="co">#&gt; # ... with 3990 more draws</span></span>
 <span><span class="co">#&gt; # ... hidden reserved variables {'.chain', '.iteration', '.draw'}</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -798,16 +697,16 @@ user-defined subset).</p>
 <span><span class="co">#&gt; # A tibble: 4,000 × 3</span></span>
 <span><span class="co">#&gt;    `group_1|average` `group_2|average` `group_3|average`</span></span>
 <span><span class="co">#&gt;                &lt;dbl&gt;             &lt;dbl&gt;             &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1             1.03              1.03              1.03 </span></span>
-<span><span class="co">#&gt;  2             1.00              1.00              1.00 </span></span>
-<span><span class="co">#&gt;  3             1.01              1.01              1.01 </span></span>
-<span><span class="co">#&gt;  4             1.01              1.01              1.01 </span></span>
-<span><span class="co">#&gt;  5             1.00              1.00              1.00 </span></span>
-<span><span class="co">#&gt;  6             0.996             0.996             0.996</span></span>
-<span><span class="co">#&gt;  7             0.998             0.998             0.998</span></span>
-<span><span class="co">#&gt;  8             1.05              1.05              1.05 </span></span>
-<span><span class="co">#&gt;  9             1.03              1.03              1.03 </span></span>
-<span><span class="co">#&gt; 10             0.988             0.988             0.988</span></span>
+<span><span class="co">#&gt;  1             1.07              1.07              1.07 </span></span>
+<span><span class="co">#&gt;  2             0.951             0.951             0.951</span></span>
+<span><span class="co">#&gt;  3             1.00              1.00              1.00 </span></span>
+<span><span class="co">#&gt;  4             1.05              1.05              1.05 </span></span>
+<span><span class="co">#&gt;  5             1.02              1.02              1.02 </span></span>
+<span><span class="co">#&gt;  6             1.01              1.01              1.01 </span></span>
+<span><span class="co">#&gt;  7             1.05              1.05              1.05 </span></span>
+<span><span class="co">#&gt;  8             1.02              1.02              1.02 </span></span>
+<span><span class="co">#&gt;  9             1.02              1.02              1.02 </span></span>
+<span><span class="co">#&gt; 10             1.02              1.02              1.02 </span></span>
 <span><span class="co">#&gt; # ℹ 3,990 more rows</span></span></code></pre></div>
 <p>The <code><a href="../reference/brm_marginal_summaries.html">brm_marginal_summaries()</a></code> function produces posterior
 summaries of these marginals, and it includes the Monte Carlo standard
@@ -819,16 +718,16 @@ error (MCSE) of each estimate.</p>
 <span><span class="co">#&gt; # A tibble: 225 × 6</span></span>
 <span><span class="co">#&gt;    marginal         statistic group   time     value    mcse</span></span>
 <span><span class="co">#&gt;    &lt;chr&gt;            &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt;    &lt;dbl&gt;   &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 difference_group lower     group_2 time_2 -0.240  0.00686</span></span>
-<span><span class="co">#&gt;  2 difference_group lower     group_2 time_3 -0.651  0.0115 </span></span>
-<span><span class="co">#&gt;  3 difference_group lower     group_2 time_4 -0.550  0.00994</span></span>
-<span><span class="co">#&gt;  4 difference_group lower     group_3 time_2 -0.261  0.00608</span></span>
-<span><span class="co">#&gt;  5 difference_group lower     group_3 time_3 -0.691  0.0166 </span></span>
-<span><span class="co">#&gt;  6 difference_group lower     group_3 time_4 -0.751  0.0114 </span></span>
-<span><span class="co">#&gt;  7 difference_group mean      group_2 time_2  0.0372 0.00303</span></span>
-<span><span class="co">#&gt;  8 difference_group mean      group_2 time_3 -0.174  0.00625</span></span>
-<span><span class="co">#&gt;  9 difference_group mean      group_2 time_4 -0.0783 0.00634</span></span>
-<span><span class="co">#&gt; 10 difference_group mean      group_3 time_2  0.0213 0.00307</span></span>
+<span><span class="co">#&gt;  1 difference_group lower     group_2 time_2 -0.251  0.00627</span></span>
+<span><span class="co">#&gt;  2 difference_group lower     group_2 time_3 -0.635  0.0132 </span></span>
+<span><span class="co">#&gt;  3 difference_group lower     group_2 time_4 -0.548  0.0113 </span></span>
+<span><span class="co">#&gt;  4 difference_group lower     group_3 time_2 -0.268  0.0109 </span></span>
+<span><span class="co">#&gt;  5 difference_group lower     group_3 time_3 -0.678  0.0193 </span></span>
+<span><span class="co">#&gt;  6 difference_group lower     group_3 time_4 -0.748  0.0133 </span></span>
+<span><span class="co">#&gt;  7 difference_group mean      group_2 time_2  0.0400 0.00310</span></span>
+<span><span class="co">#&gt;  8 difference_group mean      group_2 time_3 -0.160  0.00589</span></span>
+<span><span class="co">#&gt;  9 difference_group mean      group_2 time_4 -0.0599 0.00625</span></span>
+<span><span class="co">#&gt; 10 difference_group mean      group_3 time_2  0.0242 0.00307</span></span>
 <span><span class="co">#&gt; # ℹ 215 more rows</span></span></code></pre></div>
 <p>The <code><a href="../reference/brm_marginal_probabilities.html">brm_marginal_probabilities()</a></code> function shows
 posterior probabilities of the form,</p>
@@ -852,18 +751,18 @@ posterior probabilities of the form,</p>
 <span><span class="co">#&gt; # A tibble: 12 × 5</span></span>
 <span><span class="co">#&gt;    direction threshold group   time   value</span></span>
 <span><span class="co">#&gt;    &lt;chr&gt;         &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;  &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 greater        -0.1 group_2 time_2 0.828</span></span>
-<span><span class="co">#&gt;  2 greater        -0.1 group_2 time_3 0.375</span></span>
-<span><span class="co">#&gt;  3 greater        -0.1 group_2 time_4 0.532</span></span>
-<span><span class="co">#&gt;  4 greater        -0.1 group_3 time_2 0.814</span></span>
-<span><span class="co">#&gt;  5 greater        -0.1 group_3 time_3 0.324</span></span>
-<span><span class="co">#&gt;  6 greater        -0.1 group_3 time_4 0.242</span></span>
-<span><span class="co">#&gt;  7 less            0.1 group_2 time_2 0.670</span></span>
-<span><span class="co">#&gt;  8 less            0.1 group_2 time_3 0.866</span></span>
-<span><span class="co">#&gt;  9 less            0.1 group_2 time_4 0.761</span></span>
-<span><span class="co">#&gt; 10 less            0.1 group_3 time_2 0.712</span></span>
-<span><span class="co">#&gt; 11 less            0.1 group_3 time_3 0.890</span></span>
-<span><span class="co">#&gt; 12 less            0.1 group_3 time_4 0.936</span></span></code></pre></div>
+<span><span class="co">#&gt;  1 greater        -0.1 group_2 time_2 0.83 </span></span>
+<span><span class="co">#&gt;  2 greater        -0.1 group_2 time_3 0.405</span></span>
+<span><span class="co">#&gt;  3 greater        -0.1 group_2 time_4 0.572</span></span>
+<span><span class="co">#&gt;  4 greater        -0.1 group_3 time_2 0.809</span></span>
+<span><span class="co">#&gt;  5 greater        -0.1 group_3 time_3 0.348</span></span>
+<span><span class="co">#&gt;  6 greater        -0.1 group_3 time_4 0.249</span></span>
+<span><span class="co">#&gt;  7 less            0.1 group_2 time_2 0.665</span></span>
+<span><span class="co">#&gt;  8 less            0.1 group_2 time_3 0.854</span></span>
+<span><span class="co">#&gt;  9 less            0.1 group_2 time_4 0.741</span></span>
+<span><span class="co">#&gt; 10 less            0.1 group_3 time_2 0.709</span></span>
+<span><span class="co">#&gt; 11 less            0.1 group_3 time_3 0.880</span></span>
+<span><span class="co">#&gt; 12 less            0.1 group_3 time_4 0.930</span></span></code></pre></div>
 <p>Finally, <code>brm_marignal_data()</code> computes marginal means and
 confidence intervals on the response variable in the data, along with
 other summary statistics.</p>
