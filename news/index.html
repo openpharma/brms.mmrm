@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">brms.mmrm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1.9009</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1.9010</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -48,7 +48,7 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.0.1.9009" id="brmsmmrm-1019009-development">brms.mmrm 1.0.1.9009 (development)<a class="anchor" aria-label="anchor" href="#brmsmmrm-1019009-development"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.0.1.9010" id="brmsmmrm-1019010-development">brms.mmrm 1.0.1.9010 (development)<a class="anchor" aria-label="anchor" href="#brmsmmrm-1019010-development"></a></h2>
 <ul><li>Add <code><a href="../reference/brm_marginal_grid.html">brm_marginal_grid()</a></code>.</li>
 <li>Show posterior samples of <code>sigma</code> in <code><a href="../reference/brm_marginal_draws.html">brm_marginal_draws()</a></code> and <code><a href="../reference/brm_marginal_summaries.html">brm_marginal_summaries()</a></code>.</li>
 <li>Allow <code>outcome = "response"</code> with <code>reference_time = NULL</code>. Sometimes raw response is analyzed but the data has no baseline time point.</li>
@@ -63,6 +63,7 @@
 <li>Add a new <code>model_missing_outcomes</code> in <code><a href="../reference/brm_formula.html">brm_formula()</a></code> to optionally impute missing values during model fitting as described at <a href="https://paul-buerkner.github.io/brms/articles/brms_missings.html" class="external-link uri">https://paul-buerkner.github.io/brms/articles/brms_missings.html</a> (<a href="https://github.com/openpharma/brms.mmrm/issues/121" class="external-link">#121</a>).</li>
 <li>Add a new <code>imputed</code> argument to accept a <code>mice</code> multiply imputed dataset (“mids”) in <code><a href="../reference/brm_model.html">brm_model()</a></code> (<a href="https://github.com/openpharma/brms.mmrm/issues/121" class="external-link">#121</a>).</li>
 <li>Add a <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> method for <code><a href="../reference/brm_transform_marginal.html">brm_transform_marginal()</a></code> objects.</li>
+<li>Do not recheck the rank of the formula in <code><a href="../reference/brm_transform_marginal.html">brm_transform_marginal()</a></code>.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.0.1" id="brmsmmrm-101">brms.mmrm 1.0.1<a class="anchor" aria-label="anchor" href="#brmsmmrm-101"></a></h2><p class="text-muted">CRAN release: 2024-06-25</p>
