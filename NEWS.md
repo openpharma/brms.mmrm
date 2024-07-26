@@ -1,4 +1,4 @@
-# brms.mmrm 1.0.1.9009 (development)
+# brms.mmrm 1.0.1.9010 (development)
 
 * Add `brm_marginal_grid()`.
 * Show posterior samples of `sigma` in `brm_marginal_draws()` and `brm_marginal_summaries()`.
@@ -14,6 +14,7 @@
 * Add a new `model_missing_outcomes` in `brm_formula()` to optionally impute missing values during model fitting as described at <https://paul-buerkner.github.io/brms/articles/brms_missings.html> (#121).
 * Add a new `imputed` argument to accept a `mice` multiply imputed dataset ("mids") in `brm_model()` (#121).
 * Add a `summary()` method for `brm_transform_marginal()` objects.
+* Do not recheck the rank of the formula in `brm_transform_marginal()`.
 
 # brms.mmrm 1.0.1
 
