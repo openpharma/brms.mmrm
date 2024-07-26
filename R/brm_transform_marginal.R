@@ -236,6 +236,7 @@ transform_marginal_formula <- function(data, formula) {
   names(args) <- gsub(pattern = "^brm_", replacement = "", x = names(args))
   args$data <- data
   args$correlation <- "diagonal"
+  args$check_rank <- FALSE
   do.call(what = brm_formula, args = args)
 }
 
