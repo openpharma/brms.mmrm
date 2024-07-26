@@ -1,4 +1,4 @@
-# brms.mmrm 1.0.1.9010 (development)
+# brms.mmrm 1.1.0
 
 * Add `brm_marginal_grid()`.
 * Show posterior samples of `sigma` in `brm_marginal_draws()` and `brm_marginal_summaries()`.
