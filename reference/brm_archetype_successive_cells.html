@@ -9,7 +9,7 @@ are successive differences between adjacent time points."><meta property="og:ima
 
     <a class="navbar-brand me-2" href="../index.html">brms.mmrm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1.9009</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1.9010</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,6 +67,7 @@ are successive differences between adjacent time points.</p>
 <span>    <span class="st">"brm_subgroup"</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  baseline_time <span class="op">=</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">data</span>, <span class="st">"brm_baseline"</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  covariates <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  clda <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  prefix_interest <span class="op">=</span> <span class="st">"x_"</span>,</span>
 <span>  prefix_nuisance <span class="op">=</span> <span class="st">"nuisance_"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -146,6 +147,22 @@ For informative prior archetypes, this option is set in
 functions like <code>brm_archetype_successive_cells()</code> rather than in
 <code><a href="brm_formula.html">brm_formula()</a></code> in order to make sure columns are appropriately
 centered and the underlying model matrix has full rank.</p></dd>
+
+
+<dt id="arg-clda">clda<a class="anchor" aria-label="anchor" href="#arg-clda"></a></dt>
+<dd><p><code>TRUE</code> to opt into constrained longitudinal data analysis
+(cLDA), <code>FALSE</code> otherwise. To use cLDA, <code>reference_time</code> must have been
+non-<code>NULL</code> in the call to <code><a href="brm_data.html">brm_data()</a></code> used to construct the data.</p>
+<p>Some archetypes cannot support cLDA
+(e.g. <code><a href="brm_archetype_average_cells.html">brm_archetype_average_cells()</a></code> and
+<code><a href="brm_archetype_average_effects.html">brm_archetype_average_effects()</a></code>).</p>
+<p>In cLDA, the fixed effects parameterization
+is restricted such that all treatment groups are pooled at baseline.
+(If you supplied a <code>subgroup</code> variable in <code><a href="brm_data.html">brm_data()</a></code>, then
+this constraint is applied separately within each subgroup variable.)
+cLDA may result in more precise estimates when the <code>time</code> variable
+has a baseline level and the baseline outcomes are recorded
+before randomization in a clinical trial.</p></dd>
 
 
 <dt id="arg-prefix-interest">prefix_interest<a class="anchor" aria-label="anchor" href="#arg-prefix-interest"></a></dt>
