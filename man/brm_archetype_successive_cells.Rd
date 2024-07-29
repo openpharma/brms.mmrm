@@ -14,6 +14,7 @@ brm_archetype_successive_cells(
     "brm_subgroup")),
   baseline_time = !is.null(attr(data, "brm_baseline")),
   covariates = TRUE,
+  clda = FALSE,
   prefix_interest = "x_",
   prefix_nuisance = "nuisance_"
 )
