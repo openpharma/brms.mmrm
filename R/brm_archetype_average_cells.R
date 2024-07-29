@@ -131,7 +131,6 @@ brm_archetype_average_cells <- function(
     !is.null(attr(data, "brm_subgroup")),
   baseline_time = !is.null(attr(data, "brm_baseline")),
   covariates = TRUE,
-  clda = FALSE,
   prefix_interest = "x_",
   prefix_nuisance = "nuisance_"
 ) {
@@ -158,7 +157,6 @@ brm_archetype_average_cells <- function(
     baseline_subgroup_time = baseline_subgroup_time,
     baseline_time = baseline_time,
     covariates = covariates,
-    clda = clda,
     prefix_nuisance = prefix_nuisance,
     subclass = "brms_mmrm_average_cells"
   )
