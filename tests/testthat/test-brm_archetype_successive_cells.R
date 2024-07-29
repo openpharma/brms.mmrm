@@ -595,3 +595,97 @@ test_that("brm_archetype_successive_cells() intercept subgroup", {
     exp
   )
 })
+
+test_that("brm_archetype_successive_cells() clda non-subgroup", {
+  for (intrecept in c(TRUE, FALSE)) {
+    data <- brm_simulate_outline(
+      n_group = 2,
+      n_patient = 100,
+      n_time = 2,
+      rate_dropout = 0,
+      rate_lapse = 0
+    ) |>
+      dplyr::mutate(response = 0)
+    out <- brm_archetype_successive_cells(
+      data, clda = TRUE, intercept = intrecept
+    )
+    full <- brm_archetype_successive_cells(
+      data, clda = FALSE, intercept = intrecept
+    )
+    expect_equal(
+      attr(out, "brm_archetype_interest"),
+      setdiff(attr(full, "brm_archetype_interest"), "x_group_2_time_1")
+    )
+    mapping <- attr(out, "brm_archetype_mapping")
+    mapping_full <- attr(full, "brm_archetype_mapping")
+    expect_equal(
+      mapping,
+      mapping_full[mapping_full$variable != "x_group_2_time_1", ]
+    )
+    equations <- summary(out, message = FALSE)
+    expected <- c(
+      "group_1:time_1 = x_group_1_time_1",
+      "group_1:time_2 = x_group_1_time_1 + x_group_1_time_2", 
+      "group_2:time_1 = x_group_1_time_1",
+      "group_2:time_2 = x_group_1_time_1 + x_group_2_time_2"
+    )
+    expect_equal(equations, expected)
+  }
+})
+
+test_that("brm_archetype_successive_cells() clda subgroup", {
+  set.seed(0L)
+  data <- brm_simulate_outline(
+    n_group = 2,
+    n_subgroup = 2,
+    n_patient = 100,
+    n_time = 2,
+    rate_dropout = 0,
+    rate_lapse = 0
+  ) |>
+    dplyr::mutate(response = 0)
+  out <- brm_archetype_successive_cells(data, clda = TRUE)
+  full <- brm_archetype_successive_cells(data, clda = FALSE)
+  dropped <- c("x_group_2_subgroup_1_time_1", "x_group_2_subgroup_2_time_1")
+  expect_equal(
+    attr(out, "brm_archetype_interest"),
+    setdiff(
+      attr(full, "brm_archetype_interest"),
+      dropped
+    )
+  )
+  mapping <- attr(out, "brm_archetype_mapping")
+  mapping_full <- attr(full, "brm_archetype_mapping")
+  expect_equal(
+    mapping,
+    mapping_full[!(mapping_full$variable %in% dropped), ]
+  )
+  columns <- c(
+    "group", "subgroup", "time",
+    attr(out, "brm_archetype_interest")
+  )
+  equations <- summary(out, message = FALSE)
+  expected <- c(
+    "group_1:subgroup_1:time_1 = x_group_1_subgroup_1_time_1", 
+    paste(
+      "group_1:subgroup_1:time_2 = x_group_1_subgroup_1_time_1 +",
+      "x_group_1_subgroup_1_time_2"
+    ),
+    "group_1:subgroup_2:time_1 = x_group_1_subgroup_2_time_1",
+    paste(
+      "group_1:subgroup_2:time_2 = x_group_1_subgroup_2_time_1 +",
+      "x_group_1_subgroup_2_time_2"
+    ),
+    "group_2:subgroup_1:time_1 = x_group_1_subgroup_1_time_1",
+    paste(
+      "group_2:subgroup_1:time_2 = x_group_1_subgroup_1_time_1 +",
+      "x_group_2_subgroup_1_time_2"
+    ),
+    "group_2:subgroup_2:time_1 = x_group_1_subgroup_2_time_1",
+    paste(
+      "group_2:subgroup_2:time_2 = x_group_1_subgroup_2_time_1 +",
+      "x_group_2_subgroup_2_time_2"
+    )
+  )
+  expect_equal(equations, expected)
+})
