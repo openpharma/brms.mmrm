@@ -61,13 +61,13 @@ The functions listed at <https://openpharma.github.io/brms.mmrm/reference/index.
 archetype <- brm_archetype_successive_cells(data, baseline = FALSE)
 ```
 
-The instance of the archetype is an ordinary tibble, but it adds new columns.
+The instance of the archetype is an ordinary tibble, but it adds new columns with prefixes `"x_"` and `"nuisance_"`. These new columns constitute a custom model matrix to describe the desired parameterization. 
 
 ```{r}
 archetype
 ```
 
-Those new columns constitute a custom model matrix to describe the desired parameterization. We have effects of interest to express successive differences:
+We have effects of interest to express successive differences:
 
 ```{r}
 attr(archetype, "brm_archetype_interest")
@@ -223,7 +223,7 @@ summary(brm_archetype_successive_effects(data, intercept = FALSE))
 
 ## Variations on archetypes
 
-Archetypes can be customized. As an example, consider the simple cell means archtype.
+Archetypes can be customized. As an example, consider the simple cell means archetype.
 
 ```{r}
 summary(brm_archetype_cells(data))
