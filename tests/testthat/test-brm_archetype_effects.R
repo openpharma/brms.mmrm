@@ -418,9 +418,9 @@ test_that("brm_archetype_effects() clda subgroup", {
   out <- brm_archetype_effects(data, clda = TRUE)
   interest <- c(
     "x_group_1_subgroup_1_time_1",
-    "x_group_1_subgroup_1_time_2", 
+    "x_group_1_subgroup_1_time_2",
     "x_group_1_subgroup_2_time_1",
-    "x_group_1_subgroup_2_time_2", 
+    "x_group_1_subgroup_2_time_2",
     "x_group_2_subgroup_1_time_2",
     "x_group_2_subgroup_2_time_2"
   )

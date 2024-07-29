@@ -78,6 +78,21 @@
 #'   to help the MCMC runs smoothly. If `intercept = TRUE` for informative
 #'   prior archetypes, the intercept will be called something else, and
 #'   `brms` cannot auto-generate a sensible default prior.
+#' @param clda `TRUE` to opt into constrained longitudinal data analysis
+#'   (cLDA), `FALSE` otherwise. To use cLDA, `reference_time` must have been
+#'   non-`NULL` in the call to [brm_data()] used to construct the data.
+#'
+#'   Some archetypes cannot support cLDA
+#'   (e.g. [brm_archetype_average_cells()] and
+#'   [brm_archetype_average_effects()]).
+#'
+#'   In cLDA, the fixed effects parameterization
+#'   is restricted such that all treatment groups are pooled at baseline.
+#'   (If you supplied a `subgroup` variable in [brm_data()], then
+#'   this constraint is applied separately within each subgroup variable.)
+#'   cLDA may result in more precise estimates when the `time` variable
+#'   has a baseline level and the baseline outcomes are recorded
+#'   before randomization in a clinical trial.
 #' @examples
 #' set.seed(0L)
 #' data <- brm_simulate_outline(

@@ -78,6 +78,22 @@ functions like \code{\link[=brm_archetype_successive_cells]{brm_archetype_succes
 \code{\link[=brm_formula]{brm_formula()}} in order to make sure columns are appropriately
 centered and the underlying model matrix has full rank.}
 
+\item{clda}{\code{TRUE} to opt into constrained longitudinal data analysis
+(cLDA), \code{FALSE} otherwise. To use cLDA, \code{reference_time} must have been
+non-\code{NULL} in the call to \code{\link[=brm_data]{brm_data()}} used to construct the data.
+
+Some archetypes cannot support cLDA
+(e.g. \code{\link[=brm_archetype_average_cells]{brm_archetype_average_cells()}} and
+\code{\link[=brm_archetype_average_effects]{brm_archetype_average_effects()}}).
+
+In cLDA, the fixed effects parameterization
+is restricted such that all treatment groups are pooled at baseline.
+(If you supplied a \code{subgroup} variable in \code{\link[=brm_data]{brm_data()}}, then
+this constraint is applied separately within each subgroup variable.)
+cLDA may result in more precise estimates when the \code{time} variable
+has a baseline level and the baseline outcomes are recorded
+before randomization in a clinical trial.}
+
 \item{prefix_interest}{Character string to prepend to the new columns
 of generated fixed effects of interest (relating to group, subgroup,
 and/or time).

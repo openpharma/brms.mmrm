@@ -625,7 +625,7 @@ test_that("brm_archetype_successive_cells() clda non-subgroup", {
     equations <- summary(out, message = FALSE)
     expected <- c(
       "group_1:time_1 = x_group_1_time_1",
-      "group_1:time_2 = x_group_1_time_1 + x_group_1_time_2", 
+      "group_1:time_2 = x_group_1_time_1 + x_group_1_time_2",
       "group_2:time_1 = x_group_1_time_1",
       "group_2:time_2 = x_group_1_time_1 + x_group_2_time_2"
     )
@@ -666,7 +666,7 @@ test_that("brm_archetype_successive_cells() clda subgroup", {
   )
   equations <- summary(out, message = FALSE)
   expected <- c(
-    "group_1:subgroup_1:time_1 = x_group_1_subgroup_1_time_1", 
+    "group_1:subgroup_1:time_1 = x_group_1_subgroup_1_time_1",
     paste(
       "group_1:subgroup_1:time_2 = x_group_1_subgroup_1_time_1 +",
       "x_group_1_subgroup_1_time_2"

@@ -85,12 +85,6 @@ The factors of interest linearly map to marginal means. To see the mapping, call
 summary(archetype)
 ```
 
-Note: the parameterization includes no intercept in the model. To include an intercept, set `intercept = TRUE` in `brm_archetype_successive_cells()`.
-
-```{r}
-summary(brm_archetype_successive_cells(data, intercept = TRUE))
-```
-
 Above, `x_PBO_VIS1` serves as the intercept, and `x_TRT_VIS1` is defined relative to `x_TRT_VIS1`. The rest of the parameters keep their original interpretations.
 
 ## Informative priors
@@ -225,4 +219,24 @@ There is also a treatment effect version of the successive differences archetype
 
 ```{r}
 summary(brm_archetype_successive_effects(data, intercept = FALSE))
+```
+
+## Variations on archetypes
+
+Archetypes can be customized. As an example, consider the simple cell means archtype.
+
+```{r}
+summary(brm_archetype_cells(data))
+```
+
+To include an intercept term which all the marginal means share, set `intercept = TRUE`.
+
+```{r}
+summary(brm_archetype_cells(data, intercept = TRUE))
+```
+
+To set up constrained longitudinal data analysis (cLDA), set `clda = TRUE`. This constraint pools all treatment groups at baseline, and it can help model clinical trials where a baseline measurement is observed before randomization. Some archetypes cannot support cLDA (e.g. `brm_archetype_average_cells()` and `brm_archetype_average_effects()`).
+
+```{r}
+summary(brm_archetype_cells(data, clda = TRUE))
 ```

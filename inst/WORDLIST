@@ -35,6 +35,7 @@ Vehtari
 WAIC
 al
 brm
+cLDA
 brms
 cdot
 cmdstanr

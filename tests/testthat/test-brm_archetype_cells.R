@@ -360,7 +360,7 @@ test_that("brm_archetype_cells() clda non_intercept non-subgroup", {
   columns <- c("group", "time", attr(out, "brm_archetype_interest"))
   grid <- dplyr::arrange(dplyr::distinct(out[, columns]), group, time)
   grid2 <- dplyr::arrange(dplyr::distinct(full[, columns]), group, time)
-  grid2[grid2$group == "group_2" & grid2$time == "time_1", ] <- 
+  grid2[grid2$group == "group_2" & grid2$time == "time_1", ] <-
     grid2[grid2$group == "group_1" & grid2$time == "time_1", ]
   expect_equal(
     as.matrix(grid)[, attr(out, "brm_archetype_interest")],
@@ -369,11 +369,11 @@ test_that("brm_archetype_cells() clda non_intercept non-subgroup", {
   equations <- summary(out, message = FALSE)
   expected <- c(
     "group_1:time_1 = x_group_1_time_1",
-    "group_1:time_2 = x_group_1_time_2", 
+    "group_1:time_2 = x_group_1_time_2",
     "group_1:time_3 = x_group_1_time_3",
-    "group_1:time_4 = x_group_1_time_4", 
+    "group_1:time_4 = x_group_1_time_4",
     "group_2:time_1 = x_group_1_time_1",
-    "group_2:time_2 = x_group_2_time_2", 
+    "group_2:time_2 = x_group_2_time_2",
     "group_2:time_3 = x_group_2_time_3",
     "group_2:time_4 = x_group_2_time_4"
   )
@@ -404,7 +404,7 @@ test_that("brm_archetype_cells() clda intercept non-subgroup", {
   columns <- c("group", "time", attr(out, "brm_archetype_interest"))
   grid <- dplyr::arrange(dplyr::distinct(out[, columns]), group, time)
   grid2 <- dplyr::arrange(dplyr::distinct(full[, columns]), group, time)
-  grid2[grid2$group == "group_2" & grid2$time == "time_1", ] <- 
+  grid2[grid2$group == "group_2" & grid2$time == "time_1", ] <-
     grid2[grid2$group == "group_1" & grid2$time == "time_1", ]
   expect_equal(
     as.matrix(grid)[, attr(out, "brm_archetype_interest")],
@@ -413,11 +413,11 @@ test_that("brm_archetype_cells() clda intercept non-subgroup", {
   equations <- summary(out, message = FALSE)
   expected <- c(
     "group_1:time_1 = x_group_1_time_1",
-    "group_1:time_2 = x_group_1_time_1 + x_group_1_time_2", 
+    "group_1:time_2 = x_group_1_time_1 + x_group_1_time_2",
     "group_1:time_3 = x_group_1_time_1 + x_group_1_time_3",
-    "group_1:time_4 = x_group_1_time_1 + x_group_1_time_4", 
+    "group_1:time_4 = x_group_1_time_1 + x_group_1_time_4",
     "group_2:time_1 = x_group_1_time_1",
-    "group_2:time_2 = x_group_1_time_1 + x_group_2_time_2", 
+    "group_2:time_2 = x_group_1_time_1 + x_group_2_time_2",
     "group_2:time_3 = x_group_1_time_1 + x_group_2_time_3",
     "group_2:time_4 = x_group_1_time_1 + x_group_2_time_4"
   )
@@ -472,13 +472,13 @@ test_that("brm_archetype_cells() clda subgroup", {
   )
   equations <- summary(out, message = FALSE)
   expected <- c(
-    "group_1:subgroup_1:time_1 = x_group_1_subgroup_1_time_1", 
+    "group_1:subgroup_1:time_1 = x_group_1_subgroup_1_time_1",
     "group_1:subgroup_1:time_2 = x_group_1_subgroup_1_time_2",
-    "group_1:subgroup_2:time_1 = x_group_1_subgroup_2_time_1", 
+    "group_1:subgroup_2:time_1 = x_group_1_subgroup_2_time_1",
     "group_1:subgroup_2:time_2 = x_group_1_subgroup_2_time_2",
-    "group_2:subgroup_1:time_1 = x_group_1_subgroup_1_time_1", 
+    "group_2:subgroup_1:time_1 = x_group_1_subgroup_1_time_1",
     "group_2:subgroup_1:time_2 = x_group_2_subgroup_1_time_2",
-    "group_2:subgroup_2:time_1 = x_group_1_subgroup_2_time_1", 
+    "group_2:subgroup_2:time_1 = x_group_1_subgroup_2_time_1",
     "group_2:subgroup_2:time_2 = x_group_2_subgroup_2_time_2"
   )
   expect_equal(equations, expected)
