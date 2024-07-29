@@ -154,11 +154,11 @@ brm_data_validate.brms_mmrm_archetype <- function(data) {
     assert(
       mapping$subgroup ==
         rep(rep(subgroups, times = n_group), each = n_time),
-      message = "malformed or misordered mapping group levels"
+      message = "malformed or misordered mapping subgroup levels"
     )
     assert(
       mapping$time == rep(times, times = n_group * n_subgroup),
-      message = "malformed or misordered mapping group levels"
+      message = "malformed or misordered mapping time levels"
     )
   } else {
     assert(
@@ -167,7 +167,7 @@ brm_data_validate.brms_mmrm_archetype <- function(data) {
     )
     assert(
       mapping$time == rep(times, times = n_group),
-      message = "malformed or misordered mapping group levels"
+      message = "malformed or misordered mapping time levels"
     )
   }
   NextMethod()
