@@ -127,47 +127,35 @@ brm_archetype_effects <- function(
     !is.null(attr(data, "brm_subgroup")),
   baseline_time = !is.null(attr(data, "brm_baseline")),
   covariates = TRUE,
+  clda = FALSE,
   prefix_interest = "x_",
   prefix_nuisance = "nuisance_"
 ) {
   brm_data_validate.default(data)
   data <- brm_data_remove_archetype(data)
   data <- brm_data_fill(data)
-  assert_chr(
-    prefix_interest %||nzchar% "x",
-    "prefix_interest must be a single character string"
-  )
-  assert_chr(
-    prefix_nuisance %||nzchar% "x",
-    "prefix_nuisance must be a single character string"
-  )
-  assert(
-    prefix_interest != prefix_nuisance,
-    message = "prefix_interest and prefix_nuisance must be different"
+  brm_archetype_assert_prefixes(
+    prefix_interest = prefix_interest,
+    prefix_nuisance = prefix_nuisance
   )
   archetype <- if_any(
     brm_data_has_subgroup(data),
     archetype_effects_subgroup(data, prefix_interest),
     archetype_effects(data, prefix_interest)
   )
-  if (intercept) {
-    archetype$interest[[1L]] <- 1L
-  }
-  nuisance <- archetype_nuisance(
-    data = data,
-    interest = archetype$interest,
-    prefix = prefix_nuisance,
-    covariates = covariates,
-    baseline = baseline,
-    baseline_subgroup = baseline_subgroup,
-    baseline_subgroup_time = baseline_subgroup_time,
-    baseline_time = baseline_time
-  )
   brm_archetype_init(
     data = data,
     interest = archetype$interest,
     nuisance = nuisance,
     mapping = archetype$mapping,
+    intercept = intercept,
+    baseline = baseline,
+    baseline_subgroup = baseline_subgroup,
+    baseline_subgroup_time = baseline_subgroup_time,
+    baseline_time = baseline_time,
+    covariates = covariates,
+    clda = clda,
+    prefix_nuisance = prefix_nuisance,
     subclass = "brms_mmrm_effects"
   )
 }
