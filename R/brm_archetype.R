@@ -14,6 +14,7 @@ brm_archetype_init <- function(
   subclass
 ) {
   assert_lgl(intercept, "intercept must be TRUE or FALSE")
+  assert_lgl(clda, "clda must be TRUE or FALSE")
   if (intercept) {
     interest[[1L]] <- 1L
   }
