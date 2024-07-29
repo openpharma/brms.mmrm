@@ -1,4 +1,4 @@
-# brms.mmrm 1.0.1.9009 (development)
+# brms.mmrm 1.0.1.9010 (development)
 
 * Add `brm_marginal_grid()`.
 * Show posterior samples of `sigma` in `brm_marginal_draws()` and `brm_marginal_summaries()`.
@@ -15,6 +15,7 @@
 * Add a new `imputed` argument to accept a `mice` multiply imputed dataset ("mids") in `brm_model()` (#121).
 * Add a `summary()` method for `brm_transform_marginal()` objects.
 * Do not recheck the rank of the formula in `brm_transform_marginal()`.
+* Support constrained longitudinal data analysis (cLDA) for informative prior archetypes `brm_archetype_cells()`, `brm_archetype_effects()`,  `brm_archetype_successive_cells()`, and  `brm_archetype_successive_effects()` (#125). We cannot support cLDA for `brm_archetype_average_cells()` or  `brm_archetype_average_effects()` because then some parameters would no longer be averages of others.
 
 # brms.mmrm 1.0.1
 

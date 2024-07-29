@@ -135,62 +135,49 @@ brm_archetype_successive_effects <- function(
     !is.null(attr(data, "brm_subgroup")),
   baseline_time = !is.null(attr(data, "brm_baseline")),
   covariates = TRUE,
+  clda = FALSE,
   prefix_interest = "x_",
   prefix_nuisance = "nuisance_"
 ) {
   brm_data_validate.default(data)
   data <- brm_data_remove_archetype(data)
   data <- brm_data_fill(data)
-  assert_chr(
-    prefix_interest %||nzchar% "x",
-    "prefix_interest must be a single character string"
-  )
-  assert_chr(
-    prefix_nuisance %||nzchar% "x",
-    "prefix_nuisance must be a single character string"
-  )
-  assert(
-    prefix_interest != prefix_nuisance,
-    message = "prefix_interest and prefix_nuisance must be different"
+  brm_archetype_assert_prefixes(
+    prefix_interest = prefix_interest,
+    prefix_nuisance = prefix_nuisance
   )
   archetype <- if_any(
     brm_data_has_subgroup(data),
-    archetype_successive_effects_subgroup(data, prefix_interest),
-    archetype_successive_effects(data, prefix_interest)
-  )
-  if (intercept) {
-    archetype$interest[[1L]] <- 1L
-  }
-  nuisance <- archetype_nuisance(
-    data = data,
-    interest = archetype$interest,
-    prefix = prefix_nuisance,
-    covariates = covariates,
-    baseline = baseline,
-    baseline_subgroup = baseline_subgroup,
-    baseline_subgroup_time = baseline_subgroup_time,
-    baseline_time = baseline_time
+    archetype_successive_effects_subgroup(data, clda, prefix_interest),
+    archetype_successive_effects(data, clda, prefix_interest)
   )
   brm_archetype_init(
     data = data,
     interest = archetype$interest,
-    nuisance = nuisance,
     mapping = archetype$mapping,
+    intercept = intercept,
+    baseline = baseline,
+    baseline_subgroup = baseline_subgroup,
+    baseline_subgroup_time = baseline_subgroup_time,
+    baseline_time = baseline_time,
+    covariates = covariates,
+    prefix_nuisance = prefix_nuisance,
     subclass = "brms_mmrm_successive_effects"
   )
 }
 
-archetype_successive_effects <- function(data, prefix) {
+archetype_successive_effects <- function(data, clda, prefix) {
   group <- attr(data, "brm_group")
   time <- attr(data, "brm_time")
   levels_group <- brm_levels(data[[group]])
   levels_time <- brm_levels(data[[time]])
-  reference <- attr(data, "brm_reference_group")
+  reference_group <- attr(data, "brm_reference_group")
+  reference_time <- attr(data, "brm_reference_time")
   n_time <- length(levels_time)
   data_first <- data[data[[time]] == data[[time]][1L], ]
   matrix_group <- NULL
   for (name_group in levels_group) {
-    if (name_group == reference) {
+    if (name_group == reference_group) {
       column <- rep(1L, nrow(data_first))
     } else {
       column <- data_first[[group]] == name_group
@@ -209,17 +196,31 @@ archetype_successive_effects <- function(data, prefix) {
     time = names_time,
     variable = names
   )
+  if (clda) {
+    index_keep <- mapping$group == reference_group &
+      mapping$time == reference_time
+    keep <- mapping$variable[index_keep]
+    for (name_group in setdiff(levels_group, reference_group)) {
+      index_drop <- mapping$group == name_group &
+        mapping$time == reference_time
+      drop <- mapping$variable[index_drop]
+      interest[[keep]] <- as.integer(interest[[keep]] | interest[[drop]])
+      interest[[drop]] <- NULL
+      mapping <- mapping[mapping$variable != drop,, drop = FALSE] # nolint
+    }
+  }
   list(interest = interest, mapping = mapping)
 }
 
-archetype_successive_effects_subgroup <- function(data, prefix) {
+archetype_successive_effects_subgroup <- function(data, clda, prefix) {
   group <- attr(data, "brm_group")
   subgroup <- attr(data, "brm_subgroup")
   time <- attr(data, "brm_time")
   levels_group <- brm_levels(data[[group]])
   levels_subgroup <- brm_levels(data[[subgroup]])
   levels_time <- brm_levels(data[[time]])
-  reference <- attr(data, "brm_reference_group")
+  reference_group <- attr(data, "brm_reference_group")
+  reference_time <- attr(data, "brm_reference_time")
   n_group <- length(levels_group)
   n_subgroup <- length(levels_subgroup)
   n_time <- length(levels_time)
@@ -227,7 +228,7 @@ archetype_successive_effects_subgroup <- function(data, prefix) {
   matrix_group <- NULL
   for (name_group in levels_group) {
     for (name_subgroup in levels_subgroup) {
-      if (name_group == reference) {
+      if (name_group == reference_group) {
         in_group_subgroup <- (data_first[[subgroup]] == name_subgroup)
       } else {
         in_group_subgroup <- (data_first[[group]] == name_group) &
@@ -253,5 +254,22 @@ archetype_successive_effects_subgroup <- function(data, prefix) {
     time = names_time,
     variable = names
   )
+  if (clda) {
+    for (name_subgroup in levels_subgroup) {
+      index_keep <- mapping$group == reference_group &
+        mapping$subgroup == name_subgroup &
+        mapping$time == reference_time
+      keep <- mapping$variable[index_keep]
+      for (name_group in setdiff(levels_group, reference_group)) {
+        index_drop <- mapping$group == name_group &
+          mapping$subgroup == name_subgroup &
+          mapping$time == reference_time
+        drop <- mapping$variable[index_drop]
+        interest[[keep]] <- as.integer(interest[[keep]] | interest[[drop]])
+        interest[[drop]] <- NULL
+        mapping <- mapping[mapping$variable != drop,, drop = FALSE] # nolint
+      }
+    }
+  }
   list(interest = interest, mapping = mapping)
 }

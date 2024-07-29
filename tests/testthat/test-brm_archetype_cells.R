@@ -335,3 +335,151 @@ test_that("brm_archetype_cells() intercept subgroup", {
   exp[, 1L] <- 1L
   expect_equal(unname(as.matrix(grid[, seq(4L, 21L)])), exp)
 })
+
+test_that("brm_archetype_cells() clda non_intercept non-subgroup", {
+  data <- brm_simulate_outline(
+    n_group = 2,
+    n_patient = 100,
+    n_time = 4,
+    rate_dropout = 0,
+    rate_lapse = 0
+  ) |>
+    dplyr::mutate(response = 0)
+  out <- brm_archetype_cells(data, clda = TRUE, intercept = FALSE)
+  full <- brm_archetype_cells(data, clda = FALSE, intercept = FALSE)
+  expect_equal(
+    attr(out, "brm_archetype_interest"),
+    setdiff(attr(full, "brm_archetype_interest"), "x_group_2_time_1")
+  )
+  mapping <- attr(out, "brm_archetype_mapping")
+  mapping_full <- attr(full, "brm_archetype_mapping")
+  expect_equal(
+    mapping,
+    mapping_full[mapping_full$variable != "x_group_2_time_1", ]
+  )
+  columns <- c("group", "time", attr(out, "brm_archetype_interest"))
+  grid <- dplyr::arrange(dplyr::distinct(out[, columns]), group, time)
+  grid2 <- dplyr::arrange(dplyr::distinct(full[, columns]), group, time)
+  grid2[grid2$group == "group_2" & grid2$time == "time_1", ] <-
+    grid2[grid2$group == "group_1" & grid2$time == "time_1", ]
+  expect_equal(
+    as.matrix(grid)[, attr(out, "brm_archetype_interest")],
+    as.matrix(grid2)[, attr(out, "brm_archetype_interest")]
+  )
+  equations <- summary(out, message = FALSE)
+  expected <- c(
+    "group_1:time_1 = x_group_1_time_1",
+    "group_1:time_2 = x_group_1_time_2",
+    "group_1:time_3 = x_group_1_time_3",
+    "group_1:time_4 = x_group_1_time_4",
+    "group_2:time_1 = x_group_1_time_1",
+    "group_2:time_2 = x_group_2_time_2",
+    "group_2:time_3 = x_group_2_time_3",
+    "group_2:time_4 = x_group_2_time_4"
+  )
+  expect_equal(equations, expected)
+})
+
+test_that("brm_archetype_cells() clda intercept non-subgroup", {
+  data <- brm_simulate_outline(
+    n_group = 2,
+    n_patient = 100,
+    n_time = 4,
+    rate_dropout = 0,
+    rate_lapse = 0
+  ) |>
+    dplyr::mutate(response = 0)
+  out <- brm_archetype_cells(data, clda = TRUE, intercept = TRUE)
+  full <- brm_archetype_cells(data, clda = FALSE, intercept = TRUE)
+  expect_equal(
+    attr(out, "brm_archetype_interest"),
+    setdiff(attr(full, "brm_archetype_interest"), "x_group_2_time_1")
+  )
+  mapping <- attr(out, "brm_archetype_mapping")
+  mapping_full <- attr(full, "brm_archetype_mapping")
+  expect_equal(
+    mapping,
+    mapping_full[mapping_full$variable != "x_group_2_time_1", ]
+  )
+  columns <- c("group", "time", attr(out, "brm_archetype_interest"))
+  grid <- dplyr::arrange(dplyr::distinct(out[, columns]), group, time)
+  grid2 <- dplyr::arrange(dplyr::distinct(full[, columns]), group, time)
+  grid2[grid2$group == "group_2" & grid2$time == "time_1", ] <-
+    grid2[grid2$group == "group_1" & grid2$time == "time_1", ]
+  expect_equal(
+    as.matrix(grid)[, attr(out, "brm_archetype_interest")],
+    as.matrix(grid2)[, attr(out, "brm_archetype_interest")]
+  )
+  equations <- summary(out, message = FALSE)
+  expected <- c(
+    "group_1:time_1 = x_group_1_time_1",
+    "group_1:time_2 = x_group_1_time_1 + x_group_1_time_2",
+    "group_1:time_3 = x_group_1_time_1 + x_group_1_time_3",
+    "group_1:time_4 = x_group_1_time_1 + x_group_1_time_4",
+    "group_2:time_1 = x_group_1_time_1",
+    "group_2:time_2 = x_group_1_time_1 + x_group_2_time_2",
+    "group_2:time_3 = x_group_1_time_1 + x_group_2_time_3",
+    "group_2:time_4 = x_group_1_time_1 + x_group_2_time_4"
+  )
+  expect_equal(equations, expected)
+})
+
+test_that("brm_archetype_cells() clda subgroup", {
+  set.seed(0L)
+  data <- brm_simulate_outline(
+    n_group = 2,
+    n_subgroup = 2,
+    n_patient = 100,
+    n_time = 2,
+    rate_dropout = 0,
+    rate_lapse = 0
+  ) |>
+    dplyr::mutate(response = 0)
+  out <- brm_archetype_cells(data, clda = TRUE)
+  full <- brm_archetype_cells(data, clda = FALSE)
+  dropped <- c("x_group_2_subgroup_1_time_1", "x_group_2_subgroup_2_time_1")
+  expect_equal(
+    attr(out, "brm_archetype_interest"),
+    setdiff(
+      attr(full, "brm_archetype_interest"),
+      dropped
+    )
+  )
+  mapping <- attr(out, "brm_archetype_mapping")
+  mapping_full <- attr(full, "brm_archetype_mapping")
+  expect_equal(
+    mapping,
+    mapping_full[!(mapping_full$variable %in% dropped), ]
+  )
+  columns <- c(
+    "group", "subgroup", "time",
+    attr(out, "brm_archetype_interest")
+  )
+  grid <- dplyr::arrange(dplyr::distinct(out[, columns]), group, time)
+  grid2 <- dplyr::arrange(dplyr::distinct(full[, columns]), group, time)
+  for (subgroup in c("subgroup_1", "subgroup_2")) {
+    index1 <- grid2$group == "group_2" &
+      grid2$subgroup == subgroup &
+      grid2$time == "time_1"
+    index2 <- grid2$group == "group_1" &
+      grid2$subgroup == subgroup &
+      grid2$time == "time_1"
+    grid2[index1, ] <- grid2[index2, ]
+  }
+  expect_equal(
+    as.matrix(grid)[, attr(out, "brm_archetype_interest")],
+    as.matrix(grid2)[, attr(out, "brm_archetype_interest")]
+  )
+  equations <- summary(out, message = FALSE)
+  expected <- c(
+    "group_1:subgroup_1:time_1 = x_group_1_subgroup_1_time_1",
+    "group_1:subgroup_1:time_2 = x_group_1_subgroup_1_time_2",
+    "group_1:subgroup_2:time_1 = x_group_1_subgroup_2_time_1",
+    "group_1:subgroup_2:time_2 = x_group_1_subgroup_2_time_2",
+    "group_2:subgroup_1:time_1 = x_group_1_subgroup_1_time_1",
+    "group_2:subgroup_1:time_2 = x_group_2_subgroup_1_time_2",
+    "group_2:subgroup_2:time_1 = x_group_1_subgroup_2_time_1",
+    "group_2:subgroup_2:time_2 = x_group_2_subgroup_2_time_2"
+  )
+  expect_equal(equations, expected)
+})

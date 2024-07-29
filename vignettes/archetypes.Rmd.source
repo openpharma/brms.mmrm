@@ -61,13 +61,13 @@ The functions listed at <https://openpharma.github.io/brms.mmrm/reference/index.
 archetype <- brm_archetype_successive_cells(data, baseline = FALSE)
 ```
 
-The instance of the archetype is an ordinary tibble, but it adds new columns.
+The instance of the archetype is an ordinary tibble, but it adds new columns with prefixes `"x_"` and `"nuisance_"`. These new columns constitute a custom model matrix to describe the desired parameterization. 
 
 ```{r}
 archetype
 ```
 
-Those new columns constitute a custom model matrix to describe the desired parameterization. We have effects of interest to express successive differences:
+We have effects of interest to express successive differences:
 
 ```{r}
 attr(archetype, "brm_archetype_interest")
@@ -83,12 +83,6 @@ The factors of interest linearly map to marginal means. To see the mapping, call
 
 ```{r}
 summary(archetype)
-```
-
-Note: the parameterization includes no intercept in the model. To include an intercept, set `intercept = TRUE` in `brm_archetype_successive_cells()`.
-
-```{r}
-summary(brm_archetype_successive_cells(data, intercept = TRUE))
 ```
 
 Above, `x_PBO_VIS1` serves as the intercept, and `x_TRT_VIS1` is defined relative to `x_TRT_VIS1`. The rest of the parameters keep their original interpretations.
@@ -225,4 +219,24 @@ There is also a treatment effect version of the successive differences archetype
 
 ```{r}
 summary(brm_archetype_successive_effects(data, intercept = FALSE))
+```
+
+## Variations on archetypes
+
+Archetypes can be customized. As an example, consider the simple cell means archetype.
+
+```{r}
+summary(brm_archetype_cells(data))
+```
+
+To include an intercept term which all the marginal means share, set `intercept = TRUE`.
+
+```{r}
+summary(brm_archetype_cells(data, intercept = TRUE))
+```
+
+To set up constrained longitudinal data analysis (cLDA), set `clda = TRUE`. This constraint pools all treatment groups at baseline, and it can help model clinical trials where a baseline measurement is observed before randomization. Some archetypes cannot support cLDA (e.g. `brm_archetype_average_cells()` and `brm_archetype_average_effects()`).
+
+```{r}
+summary(brm_archetype_cells(data, clda = TRUE))
 ```

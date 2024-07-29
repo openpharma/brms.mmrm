@@ -1,10 +1,30 @@
 brm_archetype_init <- function(
   data,
   interest,
-  nuisance,
   mapping,
+  intercept,
+  baseline,
+  baseline_subgroup,
+  baseline_subgroup_time,
+  baseline_time,
+  covariates,
+  prefix_nuisance,
   subclass
 ) {
+  assert_lgl(intercept, "intercept must be TRUE or FALSE")
+  if (intercept) {
+    interest[[1L]] <- 1L
+  }
+  nuisance <- archetype_nuisance(
+    data = data,
+    interest = interest,
+    prefix = prefix_nuisance,
+    covariates = covariates,
+    baseline = baseline,
+    baseline_subgroup = baseline_subgroup,
+    baseline_subgroup_time = baseline_subgroup_time,
+    baseline_time = baseline_time
+  )
   data_interest <- intersect(colnames(data), colnames(interest))
   data_nuisance <- intersect(colnames(data), colnames(nuisance))
   interest_nuisance <- intersect(colnames(interest), colnames(nuisance))
@@ -125,26 +145,25 @@ brm_data_validate.brms_mmrm_archetype <- function(data) {
   n_time <- length(times)
   if (brm_data_has_subgroup(data)) {
     assert(
-      mapping$group == rep(groups, each = n_subgroup * n_time),
-      message = "malformed or misordered mapping group levels"
+      all(mapping$group %in% groups),
+      message = "informative prior archetype mapping has bad group levels"
     )
     assert(
-      mapping$subgroup ==
-        rep(rep(subgroups, times = n_group), each = n_time),
-      message = "malformed or misordered mapping group levels"
+      all(mapping$subgroup %in% subgroups),
+      message = "informative prior archetype mapping has bad subgroup levels"
     )
     assert(
-      mapping$time == rep(times, times = n_group * n_subgroup),
-      message = "malformed or misordered mapping group levels"
+      all(mapping$time %in% times),
+      message = "informative prior archetype mapping has bad time levels"
     )
   } else {
     assert(
-      mapping$group == rep(groups, each = n_time),
-      message = "malformed or misordered mapping group levels"
+      all(mapping$group %in% groups),
+      message = "informative prior archetype mapping has bad group levels"
     )
     assert(
-      mapping$time == rep(times, times = n_group),
-      message = "malformed or misordered mapping group levels"
+      all(mapping$time %in% times),
+      message = "informative prior archetype mapping has bad time levels"
     )
   }
   NextMethod()
@@ -237,4 +256,19 @@ summary.brms_mmrm_archetype <- function(object, message = TRUE, ...) {
   } else {
     out
   }
+}
+
+brm_archetype_assert_prefixes <- function(prefix_interest, prefix_nuisance) {
+  assert_chr(
+    prefix_interest %||nzchar% "x",
+    "prefix_interest must be a single character string"
+  )
+  assert_chr(
+    prefix_nuisance %||nzchar% "x",
+    "prefix_nuisance must be a single character string"
+  )
+  assert(
+    prefix_interest != prefix_nuisance,
+    message = "prefix_interest and prefix_nuisance must be different"
+  )
 }
