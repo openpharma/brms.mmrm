@@ -1,7 +1,6 @@
 brm_archetype_init <- function(
   data,
   interest,
-  nuisance,
   mapping,
   intercept,
   baseline,

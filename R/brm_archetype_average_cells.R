@@ -149,7 +149,6 @@ brm_archetype_average_cells <- function(
   brm_archetype_init(
     data = data,
     interest = archetype$interest,
-    nuisance = nuisance,
     mapping = archetype$mapping,
     intercept = intercept,
     baseline = baseline,
