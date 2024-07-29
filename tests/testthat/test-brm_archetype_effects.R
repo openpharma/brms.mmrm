@@ -346,3 +346,116 @@ test_that("brm_archetype_effects() intercept subgroup", {
     exp
   )
 })
+
+test_that("brm_archetype_effects() clda non-subgroup non-intercept", {
+  data <- brm_simulate_outline(
+    n_group = 2,
+    n_patient = 100,
+    n_time = 2,
+    rate_dropout = 0,
+    rate_lapse = 0
+  ) |>
+    dplyr::mutate(response = 0)
+  out <- brm_archetype_effects(data, clda = TRUE, intercept = FALSE)
+  interest <- c("x_group_1_time_1", "x_group_1_time_2", "x_group_2_time_2")
+  expect_equal(
+    interest,
+    attr(out, "brm_archetype_interest")
+  )
+  mapping <- attr(out, "brm_archetype_mapping")
+  expect_equal(mapping$variable, interest)
+  expect_equal(mapping$group, c("group_1", "group_1", "group_2"))
+  expect_equal(mapping$time, c("time_1", "time_2", "time_2"))
+  equations <- summary(out, message = FALSE)
+  expected <- c(
+    "group_1:time_1 = x_group_1_time_1",
+    "group_1:time_2 = x_group_1_time_2",
+    "group_2:time_1 = x_group_1_time_1",
+    "group_2:time_2 = x_group_1_time_2 + x_group_2_time_2"
+  )
+  expect_equal(equations, expected)
+})
+
+test_that("brm_archetype_effects() clda non-subgroup intercept", {
+  data <- brm_simulate_outline(
+    n_group = 2,
+    n_patient = 100,
+    n_time = 2,
+    rate_dropout = 0,
+    rate_lapse = 0
+  ) |>
+    dplyr::mutate(response = 0)
+  out <- brm_archetype_effects(data, clda = TRUE, intercept = TRUE)
+  interest <- c("x_group_1_time_1", "x_group_1_time_2", "x_group_2_time_2")
+  expect_equal(
+    interest,
+    attr(out, "brm_archetype_interest")
+  )
+  mapping <- attr(out, "brm_archetype_mapping")
+  expect_equal(mapping$variable, interest)
+  expect_equal(mapping$group, c("group_1", "group_1", "group_2"))
+  expect_equal(mapping$time, c("time_1", "time_2", "time_2"))
+  equations <- summary(out, message = FALSE)
+  expected <- c(
+    "group_1:time_1 = x_group_1_time_1",
+    "group_1:time_2 = x_group_1_time_1 + x_group_1_time_2",
+    "group_2:time_1 = x_group_1_time_1",
+    "group_2:time_2 = x_group_1_time_1 + x_group_1_time_2 + x_group_2_time_2"
+  )
+  expect_equal(equations, expected)
+})
+
+test_that("brm_archetype_effects() clda subgroup", {
+  data <- brm_simulate_outline(
+    n_group = 2,
+    n_subgroup = 2,
+    n_patient = 100,
+    n_time = 2,
+    rate_dropout = 0,
+    rate_lapse = 0
+  ) |>
+    dplyr::mutate(response = 0)
+  out <- brm_archetype_effects(data, clda = TRUE)
+  interest <- c(
+    "x_group_1_subgroup_1_time_1",
+    "x_group_1_subgroup_1_time_2", 
+    "x_group_1_subgroup_2_time_1",
+    "x_group_1_subgroup_2_time_2", 
+    "x_group_2_subgroup_1_time_2",
+    "x_group_2_subgroup_2_time_2"
+  )
+  expect_equal(
+    interest,
+    attr(out, "brm_archetype_interest")
+  )
+  mapping <- attr(out, "brm_archetype_mapping")
+  expect_equal(mapping$variable, interest)
+  expect_equal(
+    mapping$variable,
+    paste(
+      "x",
+      mapping$group,
+      mapping$subgroup,
+      mapping$time,
+      sep = "_"
+    )
+  )
+  equations <- summary(out, message = FALSE)
+  expected <- c(
+    "group_1:subgroup_1:time_1 = x_group_1_subgroup_1_time_1",
+    "group_1:subgroup_1:time_2 = x_group_1_subgroup_1_time_2",
+    "group_1:subgroup_2:time_1 = x_group_1_subgroup_2_time_1",
+    "group_1:subgroup_2:time_2 = x_group_1_subgroup_2_time_2",
+    "group_2:subgroup_1:time_1 = x_group_1_subgroup_1_time_1",
+    paste(
+      "group_2:subgroup_1:time_2 = x_group_1_subgroup_1_time_2 +",
+      "x_group_2_subgroup_1_time_2"
+    ),
+    "group_2:subgroup_2:time_1 = x_group_1_subgroup_2_time_1",
+    paste(
+      "group_2:subgroup_2:time_2 = x_group_1_subgroup_2_time_2 +",
+      "x_group_2_subgroup_2_time_2"
+    )
+  )
+  expect_equal(equations, expected)
+})

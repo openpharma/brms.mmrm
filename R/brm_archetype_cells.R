@@ -199,7 +199,7 @@ archetype_cells_subgroup <- function(data, clda, prefix) {
       for (name_time in levels_time) {
         if (clda && (name_time == reference_time)) {
           if (name_group == reference_group) {
-            column <- column <- (data[[subgroup]] == name_subgroup) &
+            column <- (data[[subgroup]] == name_subgroup) &
               (data[[time]] == name_time)
           } else {
             next

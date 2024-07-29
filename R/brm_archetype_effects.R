@@ -131,6 +131,13 @@ brm_archetype_effects <- function(
   prefix_interest = "x_",
   prefix_nuisance = "nuisance_"
 ) {
+  assert_lgl(clda, "clda must be TRUE or FALSE")
+  if (clda) {
+    assert(
+      !is.null(attr(data, "brm_reference_time")),
+      message = "clda = TRUE requires non-NULL reference_time in brm_data()"
+    )
+  }
   brm_data_validate.default(data)
   data <- brm_data_remove_archetype(data)
   data <- brm_data_fill(data)
@@ -140,8 +147,8 @@ brm_archetype_effects <- function(
   )
   archetype <- if_any(
     brm_data_has_subgroup(data),
-    archetype_effects_subgroup(data, prefix_interest),
-    archetype_effects(data, prefix_interest)
+    archetype_effects_subgroup(data, clda, prefix_interest),
+    archetype_effects(data, clda, prefix_interest)
   )
   brm_archetype_init(
     data = data,
@@ -154,31 +161,35 @@ brm_archetype_effects <- function(
     baseline_subgroup_time = baseline_subgroup_time,
     baseline_time = baseline_time,
     covariates = covariates,
-    clda = clda,
     prefix_nuisance = prefix_nuisance,
     subclass = "brms_mmrm_effects"
   )
 }
 
-archetype_effects <- function(data, prefix) {
+archetype_effects <- function(data, clda, prefix) {
   group <- attr(data, "brm_group")
   time <- attr(data, "brm_time")
   levels_group <- brm_levels(data[[group]])
   levels_time <- brm_levels(data[[time]])
-  reference <- attr(data, "brm_reference_group")
+  reference_group <- attr(data, "brm_reference_group")
+  reference_time <- attr(data, "brm_reference_time")
   matrix <- NULL
+  names_group <- character(0L)
+  names_time <- character(0L)
   for (name_group in levels_group) {
     for (name_time in levels_time) {
-      if (name_group == reference) {
+      if (name_group == reference_group) {
         column <- data[[time]] == name_time
+      } else if (clda && (name_time == reference_time)) {
+        next
       } else {
         column <- (data[[group]] == name_group) & (data[[time]] == name_time)
       }
       matrix <- cbind(matrix, as.integer(column))
+      names_group <- c(names_group, name_group)
+      names_time <- c(names_time, name_time)
     }
   }
-  names_group <- rep(levels_group, each = length(levels_time))
-  names_time <- rep(levels_time, times = length(levels_group))
   names <- paste0(prefix, paste(names_group, names_time, sep = "_"))
   colnames(matrix) <- names
   interest <- tibble::as_tibble(as.data.frame(matrix))
@@ -190,36 +201,42 @@ archetype_effects <- function(data, prefix) {
   list(interest = interest, mapping = mapping)
 }
 
-archetype_effects_subgroup <- function(data, prefix) {
+archetype_effects_subgroup <- function(data, clda, prefix) {
   group <- attr(data, "brm_group")
   subgroup <- attr(data, "brm_subgroup")
   time <- attr(data, "brm_time")
   levels_group <- brm_levels(data[[group]])
   levels_subgroup <- brm_levels(data[[subgroup]])
   levels_time <- brm_levels(data[[time]])
-  reference <- attr(data, "brm_reference_group")
+  reference_group <- attr(data, "brm_reference_group")
+  reference_time <- attr(data, "brm_reference_time")
   n_group <- length(levels_group)
   n_subgroup <- length(levels_subgroup)
   n_time <- length(levels_time)
   matrix <- NULL
+  names_group <- character(0L)
+  names_subgroup <- character(0L)
+  names_time <- character(0L)
   for (name_group in levels_group) {
     for (name_subgroup in levels_subgroup) {
       for (name_time in levels_time) {
-        if (name_group == reference) {
+        if (name_group == reference_group) {
           column <- (data[[subgroup]] == name_subgroup) &
             (data[[time]] == name_time)
+        } else if (clda && (name_time == reference_time)) {
+          next
         } else {
           column <- (data[[group]] == name_group) &
             (data[[subgroup]] == name_subgroup) &
             (data[[time]] == name_time)
         }
         matrix <- cbind(matrix, as.integer(column))
+        names_group <- c(names_group, name_group)
+        names_subgroup <- c(names_subgroup, name_subgroup)
+        names_time <- c(names_time, name_time)
       }
     }
   }
-  names_group <- rep(levels_group, each = n_time * n_subgroup)
-  names_subgroup <- rep(rep(levels_subgroup, times = n_group), each = n_time)
-  names_time <- rep(levels_time, times = n_group * n_subgroup)
   names <- paste0(
     prefix,
     paste(names_group, names_subgroup, names_time, sep = "_")
