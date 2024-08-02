@@ -9,7 +9,7 @@ tar_option_set(
   garbage_collection = TRUE,
   workspace_on_error = TRUE,
   controller = crew.cluster::crew_controller_sge(
-    workers = 250L,
+    workers = 50L,
     seconds_idle = 120,
     seconds_interval = 10,
     seconds_timeout = 120,
