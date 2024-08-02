@@ -353,14 +353,14 @@
     },
     "brms.mmrm": {
       "Package": "brms.mmrm",
-      "Version": "0.1.0.9005",
+      "Version": "1.1.0.9000",
       "Source": "GitHub",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
       "RemoteRepo": "brms.mmrm",
       "RemoteUsername": "openpharma",
       "RemoteRef": "HEAD",
-      "RemoteSha": "039f33657d8b8fc75ba2c38fac3c1b8923664da4",
+      "RemoteSha": "152da189bac94eb3636ae84e584dc4605c10a618",
       "Requirements": [
         "MASS",
         "R",
@@ -379,7 +379,7 @@
         "utils",
         "zoo"
       ],
-      "Hash": "ff59eca6d24b35aefd864514e76fa9b1"
+      "Hash": "03c069f626aea3ec580761440aef4625"
     },
     "bslib": {
       "Package": "bslib",
@@ -515,9 +515,14 @@
     },
     "crew": {
       "Package": "crew",
-      "Version": "0.9.3",
-      "Source": "Repository",
-      "Repository": "RSPM",
+      "Version": "0.9.5.9007",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "crew",
+      "RemoteUsername": "wlandau",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "ff2b9c1908609795c2d87a573a51a1b81e6edf48",
       "Requirements": [
         "R",
         "R6",
@@ -537,7 +542,7 @@
         "tools",
         "utils"
       ],
-      "Hash": "d4b0dca9b6c0b3c0e6b70507f28bdfc1"
+      "Hash": "2fbffa233f43499299b94e4813228895"
     },
     "crew.aws.batch": {
       "Package": "crew.aws.batch",
@@ -560,9 +565,14 @@
     },
     "crew.cluster": {
       "Package": "crew.cluster",
-      "Version": "0.3.1",
-      "Source": "Repository",
-      "Repository": "RSPM",
+      "Version": "0.3.2.9004",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "crew.cluster",
+      "RemoteUsername": "wlandau",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "a35c967004cccd947e7011fdf6f7fef674154c48",
       "Requirements": [
         "R",
         "R6",
@@ -575,7 +585,7 @@
         "xml2",
         "yaml"
       ],
-      "Hash": "4a6a569e1f2b56ce2419d412598ab1b4"
+      "Hash": "c055f35219a542d172d1b3fadddc75a2"
     },
     "curl": {
       "Package": "curl",
@@ -1262,14 +1272,19 @@
     },
     "mirai": {
       "Package": "mirai",
-      "Version": "0.13.2",
-      "Source": "Repository",
-      "Repository": "CRAN",
+      "Version": "1.1.1.9012",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "mirai",
+      "RemoteUsername": "shikokuchuo",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "484ed82bae8c69997bc058f578164311cfa0d593",
       "Requirements": [
         "R",
         "nanonext"
       ],
-      "Hash": "12a6c1acf684492a0f604407f9aacbf6"
+      "Hash": "d4b7acaaefb091a23f82983e208964b6"
     },
     "munsell": {
       "Package": "munsell",
@@ -1295,13 +1310,18 @@
     },
     "nanonext": {
       "Package": "nanonext",
-      "Version": "0.13.5.2",
-      "Source": "Repository",
-      "Repository": "RSPM",
+      "Version": "1.1.1.9015",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "nanonext",
+      "RemoteUsername": "shikokuchuo",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "2a58df56ee9d5a2a14a9caca214c5dc1888ea3b2",
       "Requirements": [
         "R"
       ],
-      "Hash": "73bb5ffe0dcc72aac343674bd65e02ad"
+      "Hash": "800ed5af4545629d6382144dd037d5f9"
     },
     "nleqslv": {
       "Package": "nleqslv",
@@ -1817,9 +1837,14 @@
     },
     "tarchetypes": {
       "Package": "tarchetypes",
-      "Version": "0.9.0",
-      "Source": "Repository",
-      "Repository": "RSPM",
+      "Version": "0.9.1.9000",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "tarchetypes",
+      "RemoteUsername": "ropensci",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "ce61fbc3f213d9b20c0fc79df71f2feb462ec2e6",
       "Requirements": [
         "R",
         "dplyr",
@@ -1834,13 +1859,18 @@
         "vctrs",
         "withr"
       ],
-      "Hash": "094a74cdaa048b727d52aebf4c80ed7a"
+      "Hash": "d692d28496a32089fd45e84f6687751d"
     },
     "targets": {
       "Package": "targets",
-      "Version": "1.7.0",
-      "Source": "Repository",
-      "Repository": "RSPM",
+      "Version": "1.7.1.9005",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "targets",
+      "RemoteUsername": "ropensci",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "3c850abece5cb868c3959939ae3cf7cb0b616554",
       "Requirements": [
         "R",
         "R6",
@@ -1862,7 +1892,7 @@
         "vctrs",
         "yaml"
       ],
-      "Hash": "27ee47827a89430be0d38b78c0cb8fb7"
+      "Hash": "d44bade4db1d8135062885c37b2d8a1a"
     },
     "tensorA": {
       "Package": "tensorA",

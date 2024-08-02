@@ -11,6 +11,8 @@ tar_option_set(
   controller = crew.cluster::crew_controller_sge(
     workers = 250L,
     seconds_idle = 120,
+    seconds_interval = 10,
+    seconds_timeout = 120,
     log_resources = "memory.txt",
     sge_cores = 3L,
     sge_memory_gigabytes_required = 32,
