@@ -1272,19 +1272,19 @@
     },
     "mirai": {
       "Package": "mirai",
-      "Version": "1.1.1.9012",
+      "Version": "1.1.1.9014",
       "Source": "GitHub",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
       "RemoteRepo": "mirai",
       "RemoteUsername": "shikokuchuo",
       "RemoteRef": "HEAD",
-      "RemoteSha": "484ed82bae8c69997bc058f578164311cfa0d593",
+      "RemoteSha": "4103d4fc86bbd8fb88d953ab07424027610f15ed",
       "Requirements": [
         "R",
         "nanonext"
       ],
-      "Hash": "d4b7acaaefb091a23f82983e208964b6"
+      "Hash": "ecfddaed0521fe16f2cdca6677829777"
     },
     "munsell": {
       "Package": "munsell",
@@ -1310,18 +1310,18 @@
     },
     "nanonext": {
       "Package": "nanonext",
-      "Version": "1.1.1.9015",
+      "Version": "1.1.1.9016",
       "Source": "GitHub",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
       "RemoteRepo": "nanonext",
       "RemoteUsername": "shikokuchuo",
       "RemoteRef": "HEAD",
-      "RemoteSha": "2a58df56ee9d5a2a14a9caca214c5dc1888ea3b2",
+      "RemoteSha": "a9b6a8b33d557ea61c03f04bb54d7889706fd499",
       "Requirements": [
         "R"
       ],
-      "Hash": "800ed5af4545629d6382144dd037d5f9"
+      "Hash": "f114297128eabac81c7f364c25fa2c73"
     },
     "nleqslv": {
       "Package": "nleqslv",
