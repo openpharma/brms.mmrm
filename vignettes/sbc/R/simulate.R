@@ -15,7 +15,7 @@ run_simulation <- function(
     formula = formula,
     prior = prior
   )
-  model <- brms.mmrm::brm_model(
+  brms.mmrm::brm_model(
     data = dplyr::filter(simulation$data, !is.na(response)),
     formula = formula,
     prior = as_brms_prior(prior),
@@ -24,8 +24,6 @@ run_simulation <- function(
     iter = iter,
     warmup = warmup
   )
-  assert_equal_priors(as_brms_prior(prior), brms::prior_summary(model))
-  get_sbc_ranks(model, simulation)
 }
 
 get_sbc_ranks <- function(model, simulation) {

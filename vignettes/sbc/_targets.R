@@ -33,8 +33,9 @@ list(
     values = scenarios,
     names = tidyselect::any_of("name"),
     tar_target(prior, setup_prior(scenario)),
-    tar_rep(
-      name = ranks,
+    tar_target(rep, seq_len(1000L)),
+    tar_target(
+      model1,
       run_simulation(
         scenario = scenario,
         prior = prior,
@@ -42,13 +43,9 @@ list(
         warmup = 4000L,
         iter = 8000L
       ),
-      batches = 1000,
-      reps = 1
+      pattern = map(rep)
     ),
-    tar_target(
-      results,
-      save_fst(ranks, sprintf("results/%s.fst", name)),
-      deployment = "main"
-    )
+    tar_target(model2, model1, pattern = map(model1)),
+    tar_target(model3, model2, pattern = map(model2))
   )
 )
