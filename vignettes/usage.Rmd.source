@@ -25,7 +25,10 @@ knitr::opts_chunk$set(
 )
 library(brms.mmrm)
 library(dplyr)
-library(magrittr)
+library(distributional)
+library(ggdist)
+library(ggplot2)
+library(posterior)
 ```
 
 A mixed model of repeated measures (MMRM) analyzes longitudinal clinical trial data. In a longitudinal dataset, there are multiple patients, and each patient has multiple observations at a common set of discrete points in time.
@@ -227,6 +230,8 @@ summaries_data
 
 # Visualization
 
+## Comparing models and data
+
 Suppose we fit a second model which omits baseline.
 
 ```{r}
@@ -270,7 +275,9 @@ brm_plot_compare(
 )
 ```
 
-Finally, `brm_plot_draws()` can plot the posterior draws of the response, change from baseline, or treatment difference.
+## Plotting draws
+
+`brm_plot_draws()` can plot the posterior draws of the response, change from baseline, or treatment difference.
 
 ```{r draws}
 brm_plot_draws(draws = draws$difference_group)
@@ -284,6 +291,32 @@ brm_plot_draws(
   axis = "group",
   facet = "time"
 )
+```
+
+## Comparing priors and posteriors
+
+Suppose we want to compare the prior on the intercept term to its marginal posterior. `brms` automatically assigns a mildly informative Student t prior to help the MCMC converge:
+
+```{r}
+brms::prior_summary(model) |>
+  filter(class == "Intercept")
+```
+
+To compare the prior and posterior, we express the prior using the `distributional` package, extract posterior samples from the `brms` model, and visualize them together with the `ggdist` package. Below, the shaded gray region is the posterior density, and the blue line is the prior density.
+
+```{r priorvsposterior}
+library(distributional)
+library(ggdist)
+library(ggplot2)
+library(posterior)
+
+prior <- dist_student_t(3, 1.9, 11.8)
+posterior <- as_draws_df(model)
+
+ggplot() +
+  stat_halfeye(aes(x = b_Intercept), data = posterior) +
+  stat_slab(aes(xdist = prior), color = "blue", fill = NA) +
+  scale_thickness_shared()
 ```
 
 # Appendix A: Contrasts

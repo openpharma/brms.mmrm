@@ -214,54 +214,54 @@ model
 #> 
 #> Correlation Structures:
 #>                    Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-#> cortime(VIS1,VIS2)     0.36      0.09     0.18     0.52 1.00     6153     2428
-#> cortime(VIS1,VIS3)     0.14      0.10    -0.06     0.34 1.00     6431     3391
-#> cortime(VIS2,VIS3)     0.04      0.11    -0.16     0.25 1.00     5621     2925
-#> cortime(VIS1,VIS4)     0.16      0.11    -0.07     0.38 1.00     5015     2799
-#> cortime(VIS2,VIS4)     0.11      0.09    -0.07     0.29 1.00     6577     3138
-#> cortime(VIS3,VIS4)     0.00      0.10    -0.20     0.20 1.00     6798     2787
+#> cortime(VIS1,VIS2)     0.36      0.09     0.17     0.51 1.00     5926     2988
+#> cortime(VIS1,VIS3)     0.14      0.10    -0.06     0.33 1.00     5214     3152
+#> cortime(VIS2,VIS3)     0.04      0.10    -0.16     0.25 1.00     5495     2706
+#> cortime(VIS1,VIS4)     0.17      0.11    -0.06     0.38 1.00     5762     2816
+#> cortime(VIS2,VIS4)     0.11      0.09    -0.07     0.28 1.00     5909     2829
+#> cortime(VIS3,VIS4)     0.00      0.10    -0.19     0.20 1.00     5305     3018
 #> 
 #> Regression Coefficients:
 #>                            Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS
-#> Intercept                     23.40      2.59    18.29    28.55 1.00     1415
-#> FEV1_BL                       -0.82      0.06    -0.93    -0.70 1.00     1532
-#> ARMCDTRT                       4.04      1.10     1.85     6.19 1.00     2510
-#> AVISIT2                        4.36      2.75    -0.99     9.78 1.00     1543
-#> AVISIT3                       12.45      2.93     6.70    18.20 1.00     1562
-#> AVISIT4                       15.49      4.41     6.92    24.02 1.00     2026
-#> RACEBlackorAfricanAmerican     1.45      0.59     0.33     2.61 1.00     5680
-#> RACEWhite                      5.46      0.60     4.26     6.66 1.00     4780
-#> SEXFemale                      0.39      0.52    -0.62     1.38 1.00     6438
-#> FEV1_BL:AVISIT2                0.01      0.06    -0.12     0.14 1.00     1643
-#> FEV1_BL:AVISIT3               -0.05      0.07    -0.19     0.09 1.00     1673
-#> FEV1_BL:AVISIT4               -0.01      0.10    -0.22     0.20 1.00     2070
-#> ARMCDTRT:AVISIT2              -0.09      1.19    -2.37     2.32 1.00     2767
-#> ARMCDTRT:AVISIT3              -1.04      1.22    -3.41     1.37 1.00     2750
-#> ARMCDTRT:AVISIT4               0.36      1.93    -3.48     4.06 1.00     3788
-#> sigma_AVISITVIS1               1.83      0.06     1.71     1.96 1.00     5110
-#> sigma_AVISITVIS2               1.59      0.06     1.48     1.71 1.00     6180
-#> sigma_AVISITVIS3               1.33      0.06     1.21     1.46 1.00     5677
-#> sigma_AVISITVIS4               2.28      0.06     2.16     2.41 1.00     6378
+#> Intercept                     23.36      2.55    18.40    28.51 1.00     1814
+#> FEV1_BL                       -0.82      0.06    -0.94    -0.70 1.00     1876
+#> ARMCDTRT                       4.00      1.06     1.97     6.09 1.00     2505
+#> AVISIT2                        4.46      2.73    -0.87     9.73 1.00     2058
+#> AVISIT3                       12.54      2.92     6.78    18.33 1.00     1967
+#> AVISIT4                       15.52      4.45     6.74    24.29 1.00     2576
+#> RACEBlackorAfricanAmerican     1.45      0.59     0.32     2.63 1.00     5718
+#> RACEWhite                      5.45      0.63     4.23     6.68 1.00     5124
+#> SEXFemale                      0.38      0.52    -0.63     1.40 1.00     5439
+#> FEV1_BL:AVISIT2                0.01      0.06    -0.12     0.14 1.00     2221
+#> FEV1_BL:AVISIT3               -0.05      0.07    -0.19     0.08 1.00     2041
+#> FEV1_BL:AVISIT4               -0.01      0.11    -0.21     0.20 1.00     2686
+#> ARMCDTRT:AVISIT2              -0.03      1.16    -2.26     2.24 1.00     2710
+#> ARMCDTRT:AVISIT3              -0.99      1.20    -3.42     1.37 1.00     2490
+#> ARMCDTRT:AVISIT4               0.44      1.87    -3.15     4.03 1.00     4022
+#> sigma_AVISITVIS1               1.83      0.06     1.71     1.95 1.00     5914
+#> sigma_AVISITVIS2               1.59      0.06     1.47     1.71 1.00     5225
+#> sigma_AVISITVIS3               1.33      0.06     1.21     1.46 1.00     5779
+#> sigma_AVISITVIS4               2.28      0.06     2.16     2.41 1.00     5354
 #>                            Tail_ESS
-#> Intercept                      1792
-#> FEV1_BL                        2424
-#> ARMCDTRT                       2808
-#> AVISIT2                        2289
-#> AVISIT3                        2019
-#> AVISIT4                        2501
-#> RACEBlackorAfricanAmerican     3204
-#> RACEWhite                      2856
-#> SEXFemale                      3025
-#> FEV1_BL:AVISIT2                2181
-#> FEV1_BL:AVISIT3                2184
-#> FEV1_BL:AVISIT4                2559
-#> ARMCDTRT:AVISIT2               3209
-#> ARMCDTRT:AVISIT3               2948
-#> ARMCDTRT:AVISIT4               2638
-#> sigma_AVISITVIS1               3184
-#> sigma_AVISITVIS2               2912
-#> sigma_AVISITVIS3               2704
-#> sigma_AVISITVIS4               3141
+#> Intercept                      2393
+#> FEV1_BL                        2622
+#> ARMCDTRT                       2533
+#> AVISIT2                        2730
+#> AVISIT3                        2769
+#> AVISIT4                        2669
+#> RACEBlackorAfricanAmerican     2829
+#> RACEWhite                      3019
+#> SEXFemale                      2912
+#> FEV1_BL:AVISIT2                2831
+#> FEV1_BL:AVISIT3                2685
+#> FEV1_BL:AVISIT4                2691
+#> ARMCDTRT:AVISIT2               3198
+#> ARMCDTRT:AVISIT3               2866
+#> ARMCDTRT:AVISIT4               2956
+#> sigma_AVISITVIS1               3225
+#> sigma_AVISITVIS2               3257
+#> sigma_AVISITVIS3               3047
+#> sigma_AVISITVIS4               2741
 #> 
 #> Draws were sampled using sampling(NUTS). For each parameter, Bulk_ESS
 #> and Tail_ESS are effective sample size measures, and Rhat is the potential
@@ -316,16 +316,16 @@ names(draws)
 draws$difference_group
 #> # A draws_df: 1000 iterations, 4 chains, and 3 variables
 #>    TRT|VIS2 TRT|VIS3 TRT|VIS4
-#> 1      0.19    -1.21     5.83
-#> 2      0.38    -1.45     1.90
-#> 3      0.55     0.56     0.59
-#> 4     -2.19    -1.73    -0.67
-#> 5     -0.95    -1.37    -0.94
-#> 6     -0.77    -1.57    -0.82
-#> 7     -1.08    -1.63    -0.08
-#> 8     -0.42    -1.84    -0.58
-#> 9     -0.22    -1.69    -0.28
-#> 10    -1.44    -3.62    -2.40
+#> 1      0.63    -1.33    -1.03
+#> 2     -1.09    -1.03    -1.18
+#> 3      0.26    -0.39    -0.38
+#> 4      0.22    -1.27     0.50
+#> 5     -0.55    -1.49    -0.14
+#> 6     -0.28    -0.91    -3.35
+#> 7      0.29    -0.89     1.28
+#> 8     -0.11    -0.99    -1.68
+#> 9     -0.56    -0.81     1.64
+#> 10     0.91    -0.30     0.91
 #> # ... with 3990 more draws
 #> # ... hidden reserved variables {'.chain', '.iteration', '.draw'}
 ```
@@ -343,16 +343,16 @@ names(draws_average)
 draws_average$difference_group
 #> # A draws_df: 1000 iterations, 4 chains, and 1 variables
 #>    TRT|average
-#> 1         1.60
-#> 2         0.28
-#> 3         0.57
-#> 4        -1.53
-#> 5        -1.08
-#> 6        -1.05
-#> 7        -0.93
-#> 8        -0.94
-#> 9        -0.73
-#> 10       -2.49
+#> 1       -0.576
+#> 2       -1.101
+#> 3       -0.170
+#> 4       -0.187
+#> 5       -0.726
+#> 6       -1.514
+#> 7        0.224
+#> 8       -0.928
+#> 9        0.094
+#> 10       0.507
 #> # ... with 3990 more draws
 #> # ... hidden reserved variables {'.chain', '.iteration', '.draw'}
 ```
@@ -367,16 +367,16 @@ summaries
 #> # A tibble: 140 × 6
 #>    marginal         statistic group time    value   mcse
 #>    <chr>            <chr>     <chr> <chr>   <dbl>  <dbl>
-#>  1 difference_group lower     TRT   VIS2  -2.37   0.0423
-#>  2 difference_group lower     TRT   VIS3  -3.41   0.0832
-#>  3 difference_group lower     TRT   VIS4  -3.48   0.155 
-#>  4 difference_group mean      TRT   VIS2  -0.0893 0.0228
-#>  5 difference_group mean      TRT   VIS3  -1.04   0.0235
-#>  6 difference_group mean      TRT   VIS4   0.363  0.0317
-#>  7 difference_group median    TRT   VIS2  -0.0987 0.0244
-#>  8 difference_group median    TRT   VIS3  -1.04   0.0304
-#>  9 difference_group median    TRT   VIS4   0.373  0.0475
-#> 10 difference_group sd        TRT   VIS2   1.19   0.0164
+#>  1 difference_group lower     TRT   VIS2  -2.26   0.0563
+#>  2 difference_group lower     TRT   VIS3  -3.42   0.0653
+#>  3 difference_group lower     TRT   VIS4  -3.15   0.0801
+#>  4 difference_group mean      TRT   VIS2  -0.0350 0.0225
+#>  5 difference_group mean      TRT   VIS3  -0.990  0.0244
+#>  6 difference_group mean      TRT   VIS4   0.442  0.0297
+#>  7 difference_group median    TRT   VIS2  -0.0433 0.0243
+#>  8 difference_group median    TRT   VIS3  -0.975  0.0296
+#>  9 difference_group median    TRT   VIS4   0.471  0.0349
+#> 10 difference_group sd        TRT   VIS2   1.16   0.0152
 #> # ℹ 130 more rows
 ```
 
@@ -406,12 +406,12 @@ brm_marginal_probabilities(
 #> # A tibble: 6 × 5
 #>   direction threshold group time  value
 #>   <chr>         <dbl> <chr> <chr> <dbl>
-#> 1 greater        -0.1 TRT   VIS2  0.500
-#> 2 greater        -0.1 TRT   VIS3  0.212
-#> 3 greater        -0.1 TRT   VIS4  0.600
-#> 4 less            0.1 TRT   VIS2  0.564
-#> 5 less            0.1 TRT   VIS3  0.830
-#> 6 less            0.1 TRT   VIS4  0.443
+#> 1 greater        -0.1 TRT   VIS2  0.520
+#> 2 greater        -0.1 TRT   VIS3  0.227
+#> 3 greater        -0.1 TRT   VIS4  0.619
+#> 4 less            0.1 TRT   VIS2  0.547
+#> 5 less            0.1 TRT   VIS3  0.829
+#> 6 less            0.1 TRT   VIS4  0.421
 ```
 
 Finally, `brm_marignal_data()` computes marginal means and confidence intervals on the response variable in the data, along with other summary statistics.
@@ -439,6 +439,8 @@ summaries_data
 
 # Visualization
 
+## Comparing models and data
+
 Suppose we fit a second model which omits baseline.
 
 
@@ -463,7 +465,7 @@ brm_plot_compare(
 )
 ```
 
-![plot of chunk response](usage/response-1.png)
+![](usage/response-1.png)
 
 If you omit the marginals of the data, you can show inference on change from baseline or the treatment effect.
 
@@ -476,7 +478,7 @@ brm_plot_compare(
 )
 ```
 
-![plot of chunk difference](usage/difference-1.png)
+![](usage/difference-1.png)
 
 Additional arguments let you control the primary comparison of interest (the color aesthetic), the horizontal axis, and the faceting variable.
 
@@ -492,16 +494,18 @@ brm_plot_compare(
 )
 ```
 
-![plot of chunk differencecustom](usage/differencecustom-1.png)
+![](usage/differencecustom-1.png)
 
-Finally, `brm_plot_draws()` can plot the posterior draws of the response, change from baseline, or treatment difference.
+## Plotting draws
+
+`brm_plot_draws()` can plot the posterior draws of the response, change from baseline, or treatment difference.
 
 
 ``` r
 brm_plot_draws(draws = draws$difference_group)
 ```
 
-![plot of chunk draws](usage/draws-1.png)
+![](usage/draws-1.png)
 
 The `axis` and `facet` arguments customize the horizontal axis and faceting variable, respectively.
 
@@ -514,7 +518,38 @@ brm_plot_draws(
 )
 ```
 
-![plot of chunk drawscustom](usage/drawscustom-1.png)
+![](usage/drawscustom-1.png)
+
+## Comparing priors and posteriors
+
+Suppose we want to compare the prior on the intercept term to its marginal posterior. `brms` automatically assigns a mildly informative Student t prior to help the MCMC converge:
+
+
+``` r
+brms::prior_summary(model) |>
+  filter(class == "Intercept")
+#> Intercept ~ student_t(3, 1.9, 11.8)
+```
+
+To compare the prior and posterior, we express the prior using the `distributional` package, extract posterior samples from the `brms` model, and visualize them together with the `ggdist` package. Below, the shaded gray region is the posterior density, and the blue line is the prior density.
+
+
+``` r
+library(distributional)
+library(ggdist)
+library(ggplot2)
+library(posterior)
+
+prior <- dist_student_t(3, 1.9, 11.8)
+posterior <- as_draws_df(model)
+
+ggplot() +
+  stat_halfeye(aes(x = b_Intercept), data = posterior) +
+  stat_slab(aes(xdist = prior), color = "blue", fill = NA) +
+  scale_thickness_shared()
+```
+
+![](usage/priorvsposterior-1.png)
 
 # Appendix A: Contrasts
 

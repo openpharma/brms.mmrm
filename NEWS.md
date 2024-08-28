@@ -1,6 +1,7 @@
-# brms.mmrm 1.1.0.9001 (development)
+# brms.mmrm 1.1.0.9002 (development)
 
 * Use FEV data in usage vignette.
+* Show how to prior vs posterior in the usage vignette.
 
 # brms.mmrm 1.1.0
 
