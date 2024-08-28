@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">brms.mmrm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0.9001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -87,214 +87,146 @@ clinical trial data. In a longitudinal dataset, there are multiple
 patients, and each patient has multiple observations at a common set of
 discrete points in time.</p>
 <div class="section level2">
-<h2 id="data">Data<a class="anchor" aria-label="anchor" href="#data"></a>
+<h2 id="raw-data">Raw data<a class="anchor" aria-label="anchor" href="#raw-data"></a>
 </h2>
 <p>To use the <code>brms.mmrm</code> package, begin with a longitudinal
 dataset with one row per patient observation and columns for the
 response variable, treatment group indicator, discrete time point
 indicator, patient ID variable, and optional baseline covariates such as
-age and region. If you do not have a real dataset of your own, you can
-simulate one from the package. The following dataset has the raw
-response variable, the essential factor variables, and continuous
-baseline covariates.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;Covariates can be categorical too.&lt;/p&gt;"><sup>1</sup></a> In general, the outcome variable can either
-be the raw response or change from baseline.</p>
+age and gender. As an example, consider the <code>fev_dat</code> dataset
+from the <code>mmrm</code> package.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://openpharma.github.io/brms.mmrm/" class="external-link">brms.mmrm</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://magrittr.tidyverse.org" class="external-link">magrittr</a></span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">0L</span><span class="op">)</span></span>
-<span><span class="va">raw_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/brm_simulate_simple.html">brm_simulate_simple</a></span><span class="op">(</span></span>
-<span>  n_group <span class="op">=</span> <span class="fl">3</span>,</span>
-<span>  n_patient <span class="op">=</span> <span class="fl">100</span>,</span>
-<span>  n_time <span class="op">=</span> <span class="fl">4</span></span>
-<span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://magrittr.tidyverse.org/reference/aliases.html" class="external-link">extract2</a></span><span class="op">(</span><span class="st">"data"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/brm_simulate_continuous.html">brm_simulate_continuous</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"biomarker1"</span>, <span class="st">"biomarker2"</span>, <span class="st">"biomarker3"</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">raw_data</span></span>
-<span><span class="co">#&gt; # A tibble: 1,200 × 7</span></span>
-<span><span class="co">#&gt;    patient     time   response group   biomarker1 biomarker2 biomarker3</span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;       &lt;chr&gt;     &lt;dbl&gt; &lt;chr&gt;        &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 patient_001 time_1    1.11  group_1      1.31      -0.361      1.52 </span></span>
-<span><span class="co">#&gt;  2 patient_001 time_2    2.15  group_1      1.31      -0.361      1.52 </span></span>
-<span><span class="co">#&gt;  3 patient_001 time_3    2.54  group_1      1.31      -0.361      1.52 </span></span>
-<span><span class="co">#&gt;  4 patient_001 time_4   -1.73  group_1      1.31      -0.361      1.52 </span></span>
-<span><span class="co">#&gt;  5 patient_002 time_1    1.11  group_1      0.107     -2.44      -0.139</span></span>
-<span><span class="co">#&gt;  6 patient_002 time_2    2.64  group_1      0.107     -2.44      -0.139</span></span>
-<span><span class="co">#&gt;  7 patient_002 time_3    1.69  group_1      0.107     -2.44      -0.139</span></span>
-<span><span class="co">#&gt;  8 patient_002 time_4    0.783 group_1      0.107     -2.44      -0.139</span></span>
-<span><span class="co">#&gt;  9 patient_003 time_1    0.118 group_1      1.44      -0.419     -1.54 </span></span>
-<span><span class="co">#&gt; 10 patient_003 time_2    2.48  group_1      1.44      -0.419     -1.54 </span></span>
-<span><span class="co">#&gt; # ℹ 1,190 more rows</span></span></code></pre></div>
-<p>It is good practice to convert the time variable to an ordered factor
-so individual discrete time points correctly represent correct
-chronological order.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;Ordered factors usually have polynomial contrasts
-(&lt;code&gt;&lt;a href="https://rdrr.io/r/stats/contrast.html" class="external-link"&gt;contr.poly()&lt;/a&gt;&lt;/code&gt;), which makes the fixed effect
-parameterization counterintuitive. However, &lt;code&gt;&lt;a href="../reference/brm_data.html"&gt;brm_data()&lt;/a&gt;&lt;/code&gt;
-manually sets the contrasts of the time variable to be treatment
-contrasts (&lt;code&gt;&lt;a href="https://rdrr.io/r/stats/contrast.html" class="external-link"&gt;contr.treatment()&lt;/a&gt;&lt;/code&gt;) so there are individual fixed
-effects for individual discrete time points. To revert back to
-polynomial contrasts, use &lt;code&gt;&lt;a href="https://rdrr.io/r/stats/contrast.html" class="external-link"&gt;contr.poly()&lt;/a&gt;&lt;/code&gt; after the call to
-&lt;code&gt;&lt;a href="../reference/brm_data.html"&gt;brm_data()&lt;/a&gt;&lt;/code&gt;.&lt;/p&gt;'><sup>2</sup></a></p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">fev_data</span>, package <span class="op">=</span> <span class="st">"mmrm"</span><span class="op">)</span></span></code></pre></div>
+<p>It is an artificial (simulated) dataset of a clinical trial
+investigating the effect of an active treatment on <code>FEV1</code>
+(forced expired volume in one second), compared to placebo.
+<code>FEV1</code> is a measure of how quickly the lungs can be emptied
+and low levels may indicate chronic obstructive pulmonary disease
+(COPD).</p>
+<p>The dataset is a <code>tibble</code> with 800 rows and the following
+notable variables:</p>
+<ul>
+<li>
+<code>USUBJID</code> (subject ID)</li>
+<li>
+<code>AVISIT</code> (visit number, factor)</li>
+<li>
+<code>VISITN</code> (visit number, numeric)</li>
+<li>
+<code>ARMCD</code> (treatment, <code>TRT</code> or
+<code>PBO</code>)</li>
+<li>
+<code>RACE</code> (3-category race)</li>
+<li>
+<code>SEX</code> (female or male)</li>
+<li>
+<code>FEV1_BL</code> (FEV1 at baseline, %)</li>
+<li>
+<code>FEV1</code> (FEV1 at study visits)</li>
+<li>
+<code>WEIGHT</code> (weighting variable)</li>
+</ul>
+<p>For this vignette, we derive the response variable
+<code>FEV1_CHG</code> as the change from baseline of
+<code>FEV1</code>.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">raw_data</span> <span class="op">&lt;-</span> <span class="va">raw_data</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="../reference/brm_data_chronologize.html">brm_data_chronologize</a></span><span class="op">(</span>time <span class="op">=</span> <span class="st">"time"</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"time_"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">raw_data</span><span class="op">$</span><span class="va">time</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  Ord.factor w/ 4 levels "time_1"&lt;"time_2"&lt;..: 1 2 3 4 1 2 3 4 1 2 ...</span></span>
-<span><span class="co">#&gt;  - attr(*, "contrasts")= num [1:4, 1:3] 0 1 0 0 0 0 1 0 0 0 ...</span></span>
-<span><span class="co">#&gt;   ..- attr(*, "dimnames")=List of 2</span></span>
-<span><span class="co">#&gt;   .. ..$ : chr [1:4] "time_1" "time_2" "time_3" "time_4"</span></span>
-<span><span class="co">#&gt;   .. ..$ : chr [1:3] "2" "3" "4"</span></span></code></pre></div>
-<p>Next, create a special classed dataset that the package will
-recognize. The classed data object contains a pre-processed version of
-the data, along with attributes to declare the outcome variable, whether
-the outcome is response or change from baseline, the treatment group
-variable, the discrete time point variable, control group, baseline time
-point, and the covariates selected for analysis.</p>
+<code class="sourceCode R"><span><span class="va">fev_data</span> <span class="op">&lt;-</span> <span class="va">fev_data</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>FEV1_CHG <span class="op">=</span> <span class="va">FEV1</span> <span class="op">-</span> <span class="va">FEV1_BL</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="preprocessing">Preprocessing<a class="anchor" aria-label="anchor" href="#preprocessing"></a>
+</h2>
+<p>We use the <code><a href="../reference/brm_data.html">brm_data()</a></code> function to preprocess the raw
+data and express it in a special classed data frame for
+<code>brms.mmrm</code>. <code><a href="../reference/brm_data.html">brm_data()</a></code> stores arguments
+<code>outcome</code>, <code>group</code>, <code>time</code>, etc. as
+attributes which the downstream post-processing functions will
+recognize.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/brm_data.html">brm_data</a></span><span class="op">(</span></span>
-<span>  data <span class="op">=</span> <span class="va">raw_data</span>,</span>
-<span>  outcome <span class="op">=</span> <span class="st">"response"</span>,</span>
-<span>  group <span class="op">=</span> <span class="st">"group"</span>,</span>
-<span>  patient <span class="op">=</span> <span class="st">"patient"</span>,</span>
-<span>  time <span class="op">=</span> <span class="st">"time"</span>,</span>
-<span>  covariates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"biomarker1"</span>, <span class="st">"biomarker2"</span><span class="op">)</span>,</span>
-<span>  reference_group <span class="op">=</span> <span class="st">"group_1"</span>,</span>
-<span>  reference_time <span class="op">=</span> <span class="st">"time_1"</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">data</span></span>
-<span><span class="co">#&gt; # A tibble: 1,200 × 7</span></span>
-<span><span class="co">#&gt;    patient     time   response group   biomarker1 biomarker2 biomarker3</span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;       &lt;ord&gt;     &lt;dbl&gt; &lt;chr&gt;        &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 patient_001 time_1    1.11  group_1      1.31      -0.361      1.52 </span></span>
-<span><span class="co">#&gt;  2 patient_001 time_2    2.15  group_1      1.31      -0.361      1.52 </span></span>
-<span><span class="co">#&gt;  3 patient_001 time_3    2.54  group_1      1.31      -0.361      1.52 </span></span>
-<span><span class="co">#&gt;  4 patient_001 time_4   -1.73  group_1      1.31      -0.361      1.52 </span></span>
-<span><span class="co">#&gt;  5 patient_002 time_1    1.11  group_1      0.107     -2.44      -0.139</span></span>
-<span><span class="co">#&gt;  6 patient_002 time_2    2.64  group_1      0.107     -2.44      -0.139</span></span>
-<span><span class="co">#&gt;  7 patient_002 time_3    1.69  group_1      0.107     -2.44      -0.139</span></span>
-<span><span class="co">#&gt;  8 patient_002 time_4    0.783 group_1      0.107     -2.44      -0.139</span></span>
-<span><span class="co">#&gt;  9 patient_003 time_1    0.118 group_1      1.44      -0.419     -1.54 </span></span>
-<span><span class="co">#&gt; 10 patient_003 time_2    2.48  group_1      1.44      -0.419     -1.54 </span></span>
-<span><span class="co">#&gt; # ℹ 1,190 more rows</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "brms_mmrm_data" "tbl_df"         "tbl"            "data.frame"</span></span>
-<span></span>
-<span><span class="va">attributes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/attributes.html" class="external-link">attributes</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span>
-<span><span class="va">attributes</span><span class="op">$</span><span class="va">row.names</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">attributes</span><span class="op">)</span></span>
-<span><span class="co">#&gt; List of 9</span></span>
-<span><span class="co">#&gt;  $ names              : chr [1:7] "patient" "time" "response" "group" ...</span></span>
-<span><span class="co">#&gt;  $ brm_outcome        : chr "response"</span></span>
-<span><span class="co">#&gt;  $ brm_group          : chr "group"</span></span>
-<span><span class="co">#&gt;  $ brm_time           : chr "time"</span></span>
-<span><span class="co">#&gt;  $ brm_patient        : chr "patient"</span></span>
-<span><span class="co">#&gt;  $ brm_covariates     : chr [1:2] "biomarker1" "biomarker2"</span></span>
-<span><span class="co">#&gt;  $ brm_reference_group: chr "group_1"</span></span>
-<span><span class="co">#&gt;  $ brm_reference_time : chr "time_1"</span></span>
-<span><span class="co">#&gt;  $ class              : chr [1:4] "brms_mmrm_data" "tbl_df" "tbl" "data.frame"</span></span></code></pre></div>
+<span>  data <span class="op">=</span> <span class="va">fev_data</span>,</span>
+<span>  outcome <span class="op">=</span> <span class="st">"FEV1_CHG"</span>,</span>
+<span>  group <span class="op">=</span> <span class="st">"ARMCD"</span>,</span>
+<span>  time <span class="op">=</span> <span class="st">"AVISIT"</span>,</span>
+<span>  patient <span class="op">=</span> <span class="st">"USUBJID"</span>,</span>
+<span>  baseline <span class="op">=</span> <span class="st">"FEV1_BL"</span>,</span>
+<span>  reference_group <span class="op">=</span> <span class="st">"PBO"</span>,</span>
+<span>  reference_time <span class="op">=</span> <span class="st">"VIS1"</span>,</span>
+<span>  covariates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"RACE"</span>, <span class="st">"SEX"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">data</span></span>
+<span><span class="co">#&gt; # A tibble: 800 × 11</span></span>
+<span><span class="co">#&gt;    USUBJID AVISIT ARMCD RACE  SEX   FEV1_BL  FEV1 WEIGHT VISITN VISITN2 FEV1_CHG</span></span>
+<span><span class="co">#&gt;    &lt;fct&gt;   &lt;fct&gt;  &lt;fct&gt; &lt;fct&gt; &lt;fct&gt;   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;  &lt;int&gt;   &lt;dbl&gt;    &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 PT2     VIS1   PBO   Asian Male     45.0  NA    0.465      1  0.330     NA   </span></span>
+<span><span class="co">#&gt;  2 PT2     VIS2   PBO   Asian Male     45.0  31.5  0.233      2 -0.820    -13.6 </span></span>
+<span><span class="co">#&gt;  3 PT2     VIS3   PBO   Asian Male     45.0  36.9  0.360      3  0.487     -8.15</span></span>
+<span><span class="co">#&gt;  4 PT2     VIS4   PBO   Asian Male     45.0  48.8  0.507      4  0.738      3.78</span></span>
+<span><span class="co">#&gt;  5 PT3     VIS1   PBO   Blac… Fema…    43.5  NA    0.682      1  0.576     NA   </span></span>
+<span><span class="co">#&gt;  6 PT3     VIS2   PBO   Blac… Fema…    43.5  36.0  0.892      2 -0.305     -7.51</span></span>
+<span><span class="co">#&gt;  7 PT3     VIS3   PBO   Blac… Fema…    43.5  NA    0.128      3  1.51      NA   </span></span>
+<span><span class="co">#&gt;  8 PT3     VIS4   PBO   Blac… Fema…    43.5  37.2  0.222      4  0.390     -6.34</span></span>
+<span><span class="co">#&gt;  9 PT5     VIS1   PBO   Blac… Male     43.6  32.3  0.411      1 -0.0162   -11.3 </span></span>
+<span><span class="co">#&gt; 10 PT5     VIS2   PBO   Blac… Male     43.6  NA    0.422      2  0.944     NA   </span></span>
+<span><span class="co">#&gt; # ℹ 790 more rows</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/attributes.html" class="external-link">attributes</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; List of 11</span></span>
+<span><span class="co">#&gt;  $ row.names          : int [1:800] 1 2 3 4 5 6 7 8 9 10 ...</span></span>
+<span><span class="co">#&gt;  $ names              : chr [1:11] "USUBJID" "AVISIT" "ARMCD" "RACE" ...</span></span>
+<span><span class="co">#&gt;  $ class              : chr [1:4] "brms_mmrm_data" "tbl_df" "tbl" "data.frame"</span></span>
+<span><span class="co">#&gt;  $ brm_outcome        : chr "FEV1_CHG"</span></span>
+<span><span class="co">#&gt;  $ brm_baseline       : chr "FEV1_BL"</span></span>
+<span><span class="co">#&gt;  $ brm_group          : chr "ARMCD"</span></span>
+<span><span class="co">#&gt;  $ brm_time           : chr "AVISIT"</span></span>
+<span><span class="co">#&gt;  $ brm_patient        : chr "USUBJID"</span></span>
+<span><span class="co">#&gt;  $ brm_covariates     : chr [1:2] "RACE" "SEX"</span></span>
+<span><span class="co">#&gt;  $ brm_reference_group: chr "PBO"</span></span>
+<span><span class="co">#&gt;  $ brm_reference_time : chr "VIS1"</span></span></code></pre></div>
+<p>In addition, we convert the discrete time variable
+<code>AVISIT</code> to an ordered factor whose levels respect the
+chronological order given by the continuous time variable
+<code>VISITN</code>.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="va">data</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/brm_data_chronologize.html">brm_data_chronologize</a></span><span class="op">(</span>order <span class="op">=</span> <span class="st">"VISITN"</span><span class="op">)</span></span></code></pre></div>
+<p><code>AVISIT</code> has a special <code>contrasts</code> attribute
+generated by <code><a href="https://rdrr.io/r/stats/contrast.html" class="external-link">contr.treatment()</a></code> to prevent base R from
+automatically assigning the default but inappropriate
+<code><a href="https://rdrr.io/r/stats/contrast.html" class="external-link">contr.poly()</a></code> polynomial contrasts.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">AVISIT</span><span class="op">)</span></span>
+<span><span class="co">#&gt;  Ord.factor w/ 4 levels "VIS1"&lt;"VIS2"&lt;..: 1 2 3 4 1 2 3 4 1 2 ...</span></span>
+<span><span class="co">#&gt;  - attr(*, "contrasts")= num [1:4, 1:3] 0 1 0 0 0 0 1 0 0 0 ...</span></span>
+<span><span class="co">#&gt;   ..- attr(*, "dimnames")=List of 2</span></span>
+<span><span class="co">#&gt;   .. ..$ : chr [1:4] "VIS1" "VIS2" "VIS3" "VIS4"</span></span>
+<span><span class="co">#&gt;   .. ..$ : chr [1:3] "2" "3" "4"</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="formula">Formula<a class="anchor" aria-label="anchor" href="#formula"></a>
 </h2>
 <p>Next, choose a <code>brms</code> model formula for the fixed effect
 and variance parameters. The <code><a href="../reference/brm_formula.html">brm_formula()</a></code> function from
-<code>brms.mmrm</code> makes this process easier. A cell means
-parameterization for this particular model can be expressed as follows.
-It specifies one fixed effect parameter for each combination of
-treatment group and time point, and it makes the specification of
-informative priors straightforward through the <code>prior</code>
-argument of <code><a href="../reference/brm_model.html">brm_model()</a></code>.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code>brms.mmrm</code> makes this process easier. For example, here is a
+formula that omits baseline response and interaction terms.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/brm_formula.html">brm_formula</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">data</span>,</span>
-<span>  intercept <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  baseline <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  group <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  time <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  baseline_time <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  group_time <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  group_time <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; response ~ 0 + group:time + biomarker1 + biomarker2 + unstr(time = time, gr = patient) </span></span>
-<span><span class="co">#&gt; sigma ~ 0 + time</span></span></code></pre></div>
+<span><span class="co">#&gt; FEV1_CHG ~ ARMCD + AVISIT + RACE + SEX + unstr(time = AVISIT, gr = USUBJID) </span></span>
+<span><span class="co">#&gt; sigma ~ 0 + AVISIT</span></span></code></pre></div>
 <p>For the purposes of our example, we choose a fully parameterized
 analysis of the raw response.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">formula</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/brm_formula.html">brm_formula</a></span><span class="op">(</span></span>
-<span>  data <span class="op">=</span> <span class="va">data</span>,</span>
-<span>  intercept <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  baseline <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  group <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  time <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  baseline_time <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  group_time <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span><span class="op">)</span></span>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">formula</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/brm_formula.html">brm_formula</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">data</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">formula</span></span>
-<span><span class="co">#&gt; response ~ group + group:time + time + biomarker1 + biomarker2 + unstr(time = time, gr = patient) </span></span>
-<span><span class="co">#&gt; sigma ~ 0 + time</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="parameterization">Parameterization<a class="anchor" aria-label="anchor" href="#parameterization"></a>
-</h2>
-<p>The formula is not the only factor that ultimately determines the
-fixed effect parameterization. The ordering of the categorical variables
-in the data, as well as the <code>contrast</code> option in R, affect
-the construction of the model matrix. To see the model matrix that will
-ultimately be used in <code><a href="../reference/brm_model.html">brm_model()</a></code>, run
-<code><a href="https://paul-buerkner.github.io/brms/reference/standata.html" class="external-link">brms::make_standata()</a></code> and examine the <code>X</code>
-element of the returned list.</p>
-<p>The <code>contrast</code> option accepts a named vector of two
-character vectors which govern <code><a href="https://rdrr.io/r/stats/model.matrix.html" class="external-link">model.matrix()</a></code> contrasts for
-unordered and ordered variables, respectively.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>contrasts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>unordered <span class="op">=</span> <span class="st">"contr.SAS"</span>, ordered <span class="op">=</span> <span class="st">"contr.poly"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>The <code><a href="https://paul-buerkner.github.io/brms/reference/standata.html" class="external-link">make_standata()</a></code> function lets you see the data that
-<code>brms</code> will generate for Stan. This includes the fixed
-effects model matrix <code>X</code>. Note the differences in the
-<code>groupgroup_*</code> additive terms between the matrix below and
-the one above.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">brms</span><span class="fu">::</span><span class="fu"><a href="https://paul-buerkner.github.io/brms/reference/standata.html" class="external-link">make_standata</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="va">formula</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span><span class="op">$</span><span class="va">X</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   Intercept groupgroup_1 groupgroup_2 time2 time3 time4 biomarker1 biomarker2 groupgroup_1:time2</span></span>
-<span><span class="co">#&gt; 1         1            1            0     0     0     0  1.3126508 -0.3608809                  0</span></span>
-<span><span class="co">#&gt; 2         1            1            0     1     0     0  1.3126508 -0.3608809                  1</span></span>
-<span><span class="co">#&gt; 3         1            1            0     0     1     0  1.3126508 -0.3608809                  0</span></span>
-<span><span class="co">#&gt; 4         1            1            0     0     0     1  1.3126508 -0.3608809                  0</span></span>
-<span><span class="co">#&gt; 5         1            1            0     0     0     0  0.1068624 -2.4441488                  0</span></span>
-<span><span class="co">#&gt; 6         1            1            0     1     0     0  0.1068624 -2.4441488                  1</span></span>
-<span><span class="co">#&gt;   groupgroup_2:time2 groupgroup_1:time3 groupgroup_2:time3 groupgroup_1:time4 groupgroup_2:time4</span></span>
-<span><span class="co">#&gt; 1                  0                  0                  0                  0                  0</span></span>
-<span><span class="co">#&gt; 2                  0                  0                  0                  0                  0</span></span>
-<span><span class="co">#&gt; 3                  0                  1                  0                  0                  0</span></span>
-<span><span class="co">#&gt; 4                  0                  0                  0                  1                  0</span></span>
-<span><span class="co">#&gt; 5                  0                  0                  0                  0                  0</span></span>
-<span><span class="co">#&gt; 6                  0                  0                  0                  0                  0</span></span></code></pre></div>
-<p>If you choose a different contrast method, a different model matrix
-may result.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span></span>
-<span>  contrasts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>unordered <span class="op">=</span> <span class="st">"contr.treatment"</span>, ordered <span class="op">=</span> <span class="st">"contr.poly"</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span><span class="co"># different model matrix than before:</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">brms</span><span class="fu">::</span><span class="fu"><a href="https://paul-buerkner.github.io/brms/reference/standata.html" class="external-link">make_standata</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="va">formula</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span><span class="op">$</span><span class="va">X</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   Intercept groupgroup_2 groupgroup_3 time2 time3 time4 biomarker1 biomarker2 groupgroup_2:time2</span></span>
-<span><span class="co">#&gt; 1         1            0            0     0     0     0  1.3126508 -0.3608809                  0</span></span>
-<span><span class="co">#&gt; 2         1            0            0     1     0     0  1.3126508 -0.3608809                  0</span></span>
-<span><span class="co">#&gt; 3         1            0            0     0     1     0  1.3126508 -0.3608809                  0</span></span>
-<span><span class="co">#&gt; 4         1            0            0     0     0     1  1.3126508 -0.3608809                  0</span></span>
-<span><span class="co">#&gt; 5         1            0            0     0     0     0  0.1068624 -2.4441488                  0</span></span>
-<span><span class="co">#&gt; 6         1            0            0     1     0     0  0.1068624 -2.4441488                  0</span></span>
-<span><span class="co">#&gt;   groupgroup_3:time2 groupgroup_2:time3 groupgroup_3:time3 groupgroup_2:time4 groupgroup_3:time4</span></span>
-<span><span class="co">#&gt; 1                  0                  0                  0                  0                  0</span></span>
-<span><span class="co">#&gt; 2                  0                  0                  0                  0                  0</span></span>
-<span><span class="co">#&gt; 3                  0                  0                  0                  0                  0</span></span>
-<span><span class="co">#&gt; 4                  0                  0                  0                  0                  0</span></span>
-<span><span class="co">#&gt; 5                  0                  0                  0                  0                  0</span></span>
-<span><span class="co">#&gt; 6                  0                  0                  0                  0                  0</span></span></code></pre></div>
+<span><span class="co">#&gt; FEV1_CHG ~ FEV1_BL + FEV1_BL:AVISIT + ARMCD + ARMCD:AVISIT + AVISIT + RACE + SEX + unstr(time = AVISIT, gr = USUBJID) </span></span>
+<span><span class="co">#&gt; sigma ~ 0 + AVISIT</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="priors">Priors<a class="anchor" aria-label="anchor" href="#priors"></a>
@@ -308,30 +240,33 @@ the joint prior distribution of your model, you can pass it to the
 <code><a href="../reference/brm_model.html">brm_model()</a></code> function described below. The
 <code><a href="https://paul-buerkner.github.io/brms/reference/default_prior.html" class="external-link">get_prior()</a></code> function shows the default priors for a given
 dataset and model formula.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">brms</span><span class="fu">::</span><span class="fu"><a href="https://paul-buerkner.github.io/brms/reference/default_prior.html" class="external-link">get_prior</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">data</span>, formula <span class="op">=</span> <span class="va">formula</span><span class="op">)</span></span>
-<span><span class="co">#&gt;                   prior     class               coef group resp  dpar nlpar lb ub       source</span></span>
-<span><span class="co">#&gt;                  (flat)         b                                                      default</span></span>
-<span><span class="co">#&gt;                  (flat)         b         biomarker1                              (vectorized)</span></span>
-<span><span class="co">#&gt;                  (flat)         b         biomarker2                              (vectorized)</span></span>
-<span><span class="co">#&gt;                  (flat)         b       groupgroup_2                              (vectorized)</span></span>
-<span><span class="co">#&gt;                  (flat)         b groupgroup_2:time2                              (vectorized)</span></span>
-<span><span class="co">#&gt;                  (flat)         b groupgroup_2:time3                              (vectorized)</span></span>
-<span><span class="co">#&gt;                  (flat)         b groupgroup_2:time4                              (vectorized)</span></span>
-<span><span class="co">#&gt;                  (flat)         b       groupgroup_3                              (vectorized)</span></span>
-<span><span class="co">#&gt;                  (flat)         b groupgroup_3:time2                              (vectorized)</span></span>
-<span><span class="co">#&gt;                  (flat)         b groupgroup_3:time3                              (vectorized)</span></span>
-<span><span class="co">#&gt;                  (flat)         b groupgroup_3:time4                              (vectorized)</span></span>
-<span><span class="co">#&gt;                  (flat)         b              time2                              (vectorized)</span></span>
-<span><span class="co">#&gt;                  (flat)         b              time3                              (vectorized)</span></span>
-<span><span class="co">#&gt;                  (flat)         b              time4                              (vectorized)</span></span>
-<span><span class="co">#&gt;                  lkj(1)   cortime                                                      default</span></span>
-<span><span class="co">#&gt;  student_t(3, 0.9, 2.5) Intercept                                                      default</span></span>
-<span><span class="co">#&gt;                  (flat)         b                               sigma                  default</span></span>
-<span><span class="co">#&gt;                  (flat)         b         timetime_1            sigma             (vectorized)</span></span>
-<span><span class="co">#&gt;                  (flat)         b         timetime_2            sigma             (vectorized)</span></span>
-<span><span class="co">#&gt;                  (flat)         b         timetime_3            sigma             (vectorized)</span></span>
-<span><span class="co">#&gt;                  (flat)         b         timetime_4            sigma             (vectorized)</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">brms</span><span class="fu">::</span><span class="fu"><a href="https://paul-buerkner.github.io/brms/reference/default_prior.html" class="external-link">get_prior</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">data</span>, formula <span class="op">=</span> <span class="va">formula</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/all_of.html" class="external-link">any_of</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"group"</span>, <span class="st">"resp"</span>, <span class="st">"nlpar"</span>, <span class="st">"lb"</span>, <span class="st">"ub"</span>, <span class="st">"source"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;                      prior     class                       coef  dpar</span></span>
+<span><span class="co">#&gt; 1                                  b                                 </span></span>
+<span><span class="co">#&gt; 2                                  b                   ARMCDTRT      </span></span>
+<span><span class="co">#&gt; 3                                  b           ARMCDTRT:AVISIT2      </span></span>
+<span><span class="co">#&gt; 4                                  b           ARMCDTRT:AVISIT3      </span></span>
+<span><span class="co">#&gt; 5                                  b           ARMCDTRT:AVISIT4      </span></span>
+<span><span class="co">#&gt; 6                                  b                    AVISIT2      </span></span>
+<span><span class="co">#&gt; 7                                  b                    AVISIT3      </span></span>
+<span><span class="co">#&gt; 8                                  b                    AVISIT4      </span></span>
+<span><span class="co">#&gt; 9                                  b                    FEV1_BL      </span></span>
+<span><span class="co">#&gt; 10                                 b            FEV1_BL:AVISIT2      </span></span>
+<span><span class="co">#&gt; 11                                 b            FEV1_BL:AVISIT3      </span></span>
+<span><span class="co">#&gt; 12                                 b            FEV1_BL:AVISIT4      </span></span>
+<span><span class="co">#&gt; 13                                 b RACEBlackorAfricanAmerican      </span></span>
+<span><span class="co">#&gt; 14                                 b                  RACEWhite      </span></span>
+<span><span class="co">#&gt; 15                                 b                  SEXFemale      </span></span>
+<span><span class="co">#&gt; 16                  lkj(1)   cortime                                 </span></span>
+<span><span class="co">#&gt; 17 student_t(3, 1.9, 11.8) Intercept                                 </span></span>
+<span><span class="co">#&gt; 18                                 b                            sigma</span></span>
+<span><span class="co">#&gt; 19                                 b                 AVISITVIS1 sigma</span></span>
+<span><span class="co">#&gt; 20                                 b                 AVISITVIS2 sigma</span></span>
+<span><span class="co">#&gt; 21                                 b                 AVISITVIS3 sigma</span></span>
+<span><span class="co">#&gt; 22                                 b                 AVISITVIS4 sigma</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="model">Model<a class="anchor" aria-label="anchor" href="#model"></a>
@@ -340,77 +275,398 @@ dataset and model formula.</p>
 function calls <code><a href="https://paul-buerkner.github.io/brms/reference/brm.html" class="external-link">brms::brm()</a></code> behind the scenes, using the
 formula and prior you set in the <code>formula</code> and
 <code>prior</code> arguments.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/brm_model.html">brm_model</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">data</span>, formula <span class="op">=</span> <span class="va">formula</span>, refresh <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/brm_model.html">brm_model</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">data</span>, formula <span class="op">=</span> <span class="va">formula</span>, refresh <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Compiling Stan program...</span></span>
+<span><span class="co">#&gt; Start sampling</span></span></code></pre></div>
 <p>The result is a <code>brms</code> model object with extra list
 elements <code>brms.mmrm_data</code> and <code>brms.mmrm_formula</code>
 to keep track of the data and formula used to fit the model.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model</span></span>
 <span><span class="co">#&gt;  Family: gaussian </span></span>
 <span><span class="co">#&gt;   Links: mu = identity; sigma = log </span></span>
-<span><span class="co">#&gt; Formula: response ~ group + group:time + time + biomarker1 + biomarker2 + unstr(time = time, gr = patient) </span></span>
-<span><span class="co">#&gt;          sigma ~ 0 + time</span></span>
-<span><span class="co">#&gt;    Data: modeled_data (Number of observations: 1200) </span></span>
+<span><span class="co">#&gt; Formula: FEV1_CHG ~ FEV1_BL + FEV1_BL:AVISIT + ARMCD + ARMCD:AVISIT + AVISIT + RACE + SEX + unstr(time = AVISIT, gr = USUBJID) </span></span>
+<span><span class="co">#&gt;          sigma ~ 0 + AVISIT</span></span>
+<span><span class="co">#&gt;    Data: modeled_data (Number of observations: 537) </span></span>
 <span><span class="co">#&gt;   Draws: 4 chains, each with iter = 2000; warmup = 1000; thin = 1;</span></span>
 <span><span class="co">#&gt;          total post-warmup draws = 4000</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Correlation Structures:</span></span>
-<span><span class="co">#&gt;                        Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS</span></span>
-<span><span class="co">#&gt; cortime(time_1,time_2)     0.42      0.05     0.33     0.51 1.00     3516     3008</span></span>
-<span><span class="co">#&gt; cortime(time_1,time_3)    -0.80      0.02    -0.84    -0.76 1.00     2361     2594</span></span>
-<span><span class="co">#&gt; cortime(time_2,time_3)    -0.54      0.04    -0.62    -0.46 1.00     3653     3411</span></span>
-<span><span class="co">#&gt; cortime(time_1,time_4)    -0.29      0.05    -0.39    -0.18 1.00     3964     3061</span></span>
-<span><span class="co">#&gt; cortime(time_2,time_4)     0.03      0.06    -0.09     0.14 1.00     3444     3347</span></span>
-<span><span class="co">#&gt; cortime(time_3,time_4)    -0.10      0.06    -0.21     0.01 1.00     3847     3221</span></span>
+<span><span class="co">#&gt;                    Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS</span></span>
+<span><span class="co">#&gt; cortime(VIS1,VIS2)     0.36      0.09     0.18     0.52 1.00     6153     2428</span></span>
+<span><span class="co">#&gt; cortime(VIS1,VIS3)     0.14      0.10    -0.06     0.34 1.00     6431     3391</span></span>
+<span><span class="co">#&gt; cortime(VIS2,VIS3)     0.04      0.11    -0.16     0.25 1.00     5621     2925</span></span>
+<span><span class="co">#&gt; cortime(VIS1,VIS4)     0.16      0.11    -0.07     0.38 1.00     5015     2799</span></span>
+<span><span class="co">#&gt; cortime(VIS2,VIS4)     0.11      0.09    -0.07     0.29 1.00     6577     3138</span></span>
+<span><span class="co">#&gt; cortime(VIS3,VIS4)     0.00      0.10    -0.20     0.20 1.00     6798     2787</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Regression Coefficients:</span></span>
-<span><span class="co">#&gt;                    Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS</span></span>
-<span><span class="co">#&gt; Intercept              1.22      0.09     1.05     1.39 1.01     1290     2297</span></span>
-<span><span class="co">#&gt; groupgroup_2          -1.54      0.12    -1.77    -1.30 1.01     1524     2563</span></span>
-<span><span class="co">#&gt; groupgroup_3           0.18      0.13    -0.07     0.43 1.01     1248     2097</span></span>
-<span><span class="co">#&gt; time2                  1.31      0.10     1.12     1.51 1.00     1897     2360</span></span>
-<span><span class="co">#&gt; time3                  0.51      0.17     0.17     0.85 1.01     1597     2455</span></span>
-<span><span class="co">#&gt; time4                 -1.45      0.17    -1.78    -1.11 1.01     1393     2103</span></span>
-<span><span class="co">#&gt; biomarker1            -0.01      0.01    -0.03     0.01 1.00     7162     3250</span></span>
-<span><span class="co">#&gt; biomarker2             0.02      0.01     0.00     0.04 1.00     6102     3060</span></span>
-<span><span class="co">#&gt; groupgroup_2:time2     0.04      0.15    -0.25     0.33 1.00     2286     2991</span></span>
-<span><span class="co">#&gt; groupgroup_3:time2     0.02      0.15    -0.27     0.32 1.00     2347     2986</span></span>
-<span><span class="co">#&gt; groupgroup_2:time3    -0.16      0.24    -0.63     0.31 1.01     1733     2596</span></span>
-<span><span class="co">#&gt; groupgroup_3:time3    -0.19      0.25    -0.68     0.29 1.01     1541     2367</span></span>
-<span><span class="co">#&gt; groupgroup_2:time4    -0.06      0.25    -0.55     0.42 1.01     1623     2689</span></span>
-<span><span class="co">#&gt; groupgroup_3:time4    -0.26      0.24    -0.75     0.21 1.00     1517     2562</span></span>
-<span><span class="co">#&gt; sigma_timetime_1      -0.12      0.04    -0.20    -0.04 1.00     2559     2658</span></span>
-<span><span class="co">#&gt; sigma_timetime_2       0.00      0.04    -0.07     0.09 1.00     3796     3159</span></span>
-<span><span class="co">#&gt; sigma_timetime_3      -0.05      0.04    -0.13     0.03 1.00     2346     2891</span></span>
-<span><span class="co">#&gt; sigma_timetime_4       0.21      0.04     0.13     0.29 1.00     3982     3364</span></span>
+<span><span class="co">#&gt;                            Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS</span></span>
+<span><span class="co">#&gt; Intercept                     23.40      2.59    18.29    28.55 1.00     1415</span></span>
+<span><span class="co">#&gt; FEV1_BL                       -0.82      0.06    -0.93    -0.70 1.00     1532</span></span>
+<span><span class="co">#&gt; ARMCDTRT                       4.04      1.10     1.85     6.19 1.00     2510</span></span>
+<span><span class="co">#&gt; AVISIT2                        4.36      2.75    -0.99     9.78 1.00     1543</span></span>
+<span><span class="co">#&gt; AVISIT3                       12.45      2.93     6.70    18.20 1.00     1562</span></span>
+<span><span class="co">#&gt; AVISIT4                       15.49      4.41     6.92    24.02 1.00     2026</span></span>
+<span><span class="co">#&gt; RACEBlackorAfricanAmerican     1.45      0.59     0.33     2.61 1.00     5680</span></span>
+<span><span class="co">#&gt; RACEWhite                      5.46      0.60     4.26     6.66 1.00     4780</span></span>
+<span><span class="co">#&gt; SEXFemale                      0.39      0.52    -0.62     1.38 1.00     6438</span></span>
+<span><span class="co">#&gt; FEV1_BL:AVISIT2                0.01      0.06    -0.12     0.14 1.00     1643</span></span>
+<span><span class="co">#&gt; FEV1_BL:AVISIT3               -0.05      0.07    -0.19     0.09 1.00     1673</span></span>
+<span><span class="co">#&gt; FEV1_BL:AVISIT4               -0.01      0.10    -0.22     0.20 1.00     2070</span></span>
+<span><span class="co">#&gt; ARMCDTRT:AVISIT2              -0.09      1.19    -2.37     2.32 1.00     2767</span></span>
+<span><span class="co">#&gt; ARMCDTRT:AVISIT3              -1.04      1.22    -3.41     1.37 1.00     2750</span></span>
+<span><span class="co">#&gt; ARMCDTRT:AVISIT4               0.36      1.93    -3.48     4.06 1.00     3788</span></span>
+<span><span class="co">#&gt; sigma_AVISITVIS1               1.83      0.06     1.71     1.96 1.00     5110</span></span>
+<span><span class="co">#&gt; sigma_AVISITVIS2               1.59      0.06     1.48     1.71 1.00     6180</span></span>
+<span><span class="co">#&gt; sigma_AVISITVIS3               1.33      0.06     1.21     1.46 1.00     5677</span></span>
+<span><span class="co">#&gt; sigma_AVISITVIS4               2.28      0.06     2.16     2.41 1.00     6378</span></span>
+<span><span class="co">#&gt;                            Tail_ESS</span></span>
+<span><span class="co">#&gt; Intercept                      1792</span></span>
+<span><span class="co">#&gt; FEV1_BL                        2424</span></span>
+<span><span class="co">#&gt; ARMCDTRT                       2808</span></span>
+<span><span class="co">#&gt; AVISIT2                        2289</span></span>
+<span><span class="co">#&gt; AVISIT3                        2019</span></span>
+<span><span class="co">#&gt; AVISIT4                        2501</span></span>
+<span><span class="co">#&gt; RACEBlackorAfricanAmerican     3204</span></span>
+<span><span class="co">#&gt; RACEWhite                      2856</span></span>
+<span><span class="co">#&gt; SEXFemale                      3025</span></span>
+<span><span class="co">#&gt; FEV1_BL:AVISIT2                2181</span></span>
+<span><span class="co">#&gt; FEV1_BL:AVISIT3                2184</span></span>
+<span><span class="co">#&gt; FEV1_BL:AVISIT4                2559</span></span>
+<span><span class="co">#&gt; ARMCDTRT:AVISIT2               3209</span></span>
+<span><span class="co">#&gt; ARMCDTRT:AVISIT3               2948</span></span>
+<span><span class="co">#&gt; ARMCDTRT:AVISIT4               2638</span></span>
+<span><span class="co">#&gt; sigma_AVISITVIS1               3184</span></span>
+<span><span class="co">#&gt; sigma_AVISITVIS2               2912</span></span>
+<span><span class="co">#&gt; sigma_AVISITVIS3               2704</span></span>
+<span><span class="co">#&gt; sigma_AVISITVIS4               3141</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Draws were sampled using sampling(NUTS). For each parameter, Bulk_ESS</span></span>
 <span><span class="co">#&gt; and Tail_ESS are effective sample size measures, and Rhat is the potential</span></span>
 <span><span class="co">#&gt; scale reduction factor on split chains (at convergence, Rhat = 1).</span></span></code></pre></div>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">model</span><span class="op">$</span><span class="va">brms.mmrm_data</span></span>
-<span><span class="co">#&gt; # A tibble: 1,200 × 7</span></span>
-<span><span class="co">#&gt;    patient     time   response group   biomarker1 biomarker2 biomarker3</span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;       &lt;ord&gt;     &lt;dbl&gt; &lt;chr&gt;        &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 patient_001 time_1    1.11  group_1      1.31      -0.361      1.52 </span></span>
-<span><span class="co">#&gt;  2 patient_001 time_2    2.15  group_1      1.31      -0.361      1.52 </span></span>
-<span><span class="co">#&gt;  3 patient_001 time_3    2.54  group_1      1.31      -0.361      1.52 </span></span>
-<span><span class="co">#&gt;  4 patient_001 time_4   -1.73  group_1      1.31      -0.361      1.52 </span></span>
-<span><span class="co">#&gt;  5 patient_002 time_1    1.11  group_1      0.107     -2.44      -0.139</span></span>
-<span><span class="co">#&gt;  6 patient_002 time_2    2.64  group_1      0.107     -2.44      -0.139</span></span>
-<span><span class="co">#&gt;  7 patient_002 time_3    1.69  group_1      0.107     -2.44      -0.139</span></span>
-<span><span class="co">#&gt;  8 patient_002 time_4    0.783 group_1      0.107     -2.44      -0.139</span></span>
-<span><span class="co">#&gt;  9 patient_003 time_1    0.118 group_1      1.44      -0.419     -1.54 </span></span>
-<span><span class="co">#&gt; 10 patient_003 time_2    2.48  group_1      1.44      -0.419     -1.54 </span></span>
-<span><span class="co">#&gt; # ℹ 1,190 more rows</span></span></code></pre></div>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">model</span><span class="op">$</span><span class="va">brms.mmrm_data</span></span>
+<span><span class="co">#&gt; # A tibble: 800 × 11</span></span>
+<span><span class="co">#&gt;    USUBJID AVISIT ARMCD RACE  SEX   FEV1_BL  FEV1 WEIGHT VISITN VISITN2 FEV1_CHG</span></span>
+<span><span class="co">#&gt;    &lt;fct&gt;   &lt;ord&gt;  &lt;fct&gt; &lt;fct&gt; &lt;fct&gt;   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;  &lt;int&gt;   &lt;dbl&gt;    &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 PT2     VIS1   PBO   Asian Male     45.0  NA    0.465      1  0.330     NA   </span></span>
+<span><span class="co">#&gt;  2 PT2     VIS2   PBO   Asian Male     45.0  31.5  0.233      2 -0.820    -13.6 </span></span>
+<span><span class="co">#&gt;  3 PT2     VIS3   PBO   Asian Male     45.0  36.9  0.360      3  0.487     -8.15</span></span>
+<span><span class="co">#&gt;  4 PT2     VIS4   PBO   Asian Male     45.0  48.8  0.507      4  0.738      3.78</span></span>
+<span><span class="co">#&gt;  5 PT3     VIS1   PBO   Blac… Fema…    43.5  NA    0.682      1  0.576     NA   </span></span>
+<span><span class="co">#&gt;  6 PT3     VIS2   PBO   Blac… Fema…    43.5  36.0  0.892      2 -0.305     -7.51</span></span>
+<span><span class="co">#&gt;  7 PT3     VIS3   PBO   Blac… Fema…    43.5  NA    0.128      3  1.51      NA   </span></span>
+<span><span class="co">#&gt;  8 PT3     VIS4   PBO   Blac… Fema…    43.5  37.2  0.222      4  0.390     -6.34</span></span>
+<span><span class="co">#&gt;  9 PT5     VIS1   PBO   Blac… Male     43.6  32.3  0.411      1 -0.0162   -11.3 </span></span>
+<span><span class="co">#&gt; 10 PT5     VIS2   PBO   Blac… Male     43.6  NA    0.422      2  0.944     NA   </span></span>
+<span><span class="co">#&gt; # ℹ 790 more rows</span></span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model</span><span class="op">$</span><span class="va">brms.mmrm_formula</span></span>
-<span><span class="co">#&gt; response ~ group + group:time + time + biomarker1 + biomarker2 + unstr(time = time, gr = patient) </span></span>
-<span><span class="co">#&gt; sigma ~ 0 + time</span></span></code></pre></div>
+<span><span class="co">#&gt; FEV1_CHG ~ FEV1_BL + FEV1_BL:AVISIT + ARMCD + ARMCD:AVISIT + AVISIT + RACE + SEX + unstr(time = AVISIT, gr = USUBJID) </span></span>
+<span><span class="co">#&gt; sigma ~ 0 + AVISIT</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="imputation-of-missing-outcomes">Imputation of missing outcomes<a class="anchor" aria-label="anchor" href="#imputation-of-missing-outcomes"></a>
+<h2 id="marginals">Marginals<a class="anchor" aria-label="anchor" href="#marginals"></a>
+</h2>
+<p>Regardless of the choice of fixed effects formula,
+<code>brms.mmrm</code> performs inference on the marginal distributions
+at each treatment group and time point of the mean of the following
+quantities:</p>
+<ol style="list-style-type: decimal">
+<li>Response.</li>
+<li>Change from baseline. Only reported if you originally declared a
+baseline time point with the <code>reference_time</code> argument of
+<code><a href="../reference/brm_data.html">brm_data()</a></code>.</li>
+<li>Treatment difference. If you declared a baseline in (2), then
+treatment difference is calculated in terms of change from baseline.
+Otherwise, it is calculated in terms of raw response.</li>
+<li>Effect size: treatment difference divided by the residual standard
+deviation.</li>
+</ol>
+<p>To derive posterior draws of these marginals, use the
+<code><a href="../reference/brm_marginal_draws.html">brm_marginal_draws()</a></code> function.</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">draws</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/brm_marginal_draws.html">brm_marginal_draws</a></span><span class="op">(</span>model <span class="op">=</span> <span class="va">model</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">draws</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "response"         "difference_time"  "difference_group" "effect"          </span></span>
+<span><span class="co">#&gt; [5] "sigma"</span></span>
+<span></span>
+<span><span class="va">draws</span><span class="op">$</span><span class="va">difference_group</span></span>
+<span><span class="co">#&gt; # A draws_df: 1000 iterations, 4 chains, and 3 variables</span></span>
+<span><span class="co">#&gt;    TRT|VIS2 TRT|VIS3 TRT|VIS4</span></span>
+<span><span class="co">#&gt; 1      0.19    -1.21     5.83</span></span>
+<span><span class="co">#&gt; 2      0.38    -1.45     1.90</span></span>
+<span><span class="co">#&gt; 3      0.55     0.56     0.59</span></span>
+<span><span class="co">#&gt; 4     -2.19    -1.73    -0.67</span></span>
+<span><span class="co">#&gt; 5     -0.95    -1.37    -0.94</span></span>
+<span><span class="co">#&gt; 6     -0.77    -1.57    -0.82</span></span>
+<span><span class="co">#&gt; 7     -1.08    -1.63    -0.08</span></span>
+<span><span class="co">#&gt; 8     -0.42    -1.84    -0.58</span></span>
+<span><span class="co">#&gt; 9     -0.22    -1.69    -0.28</span></span>
+<span><span class="co">#&gt; 10    -1.44    -3.62    -2.40</span></span>
+<span><span class="co">#&gt; # ... with 3990 more draws</span></span>
+<span><span class="co">#&gt; # ... hidden reserved variables {'.chain', '.iteration', '.draw'}</span></span></code></pre></div>
+<p>If you need samples from these marginals averaged across time points,
+e.g. an “overall effect size”, <code><a href="../reference/brm_marginal_draws_average.html">brm_marginal_draws_average()</a></code>
+can average the draws above across discrete time points (either all or a
+user-defined subset).</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">draws_average</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/brm_marginal_draws_average.html">brm_marginal_draws_average</a></span><span class="op">(</span>draws <span class="op">=</span> <span class="va">draws</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">draws_average</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "response"         "difference_time"  "difference_group" "effect"          </span></span>
+<span><span class="co">#&gt; [5] "sigma"</span></span>
+<span></span>
+<span><span class="va">draws_average</span><span class="op">$</span><span class="va">difference_group</span></span>
+<span><span class="co">#&gt; # A draws_df: 1000 iterations, 4 chains, and 1 variables</span></span>
+<span><span class="co">#&gt;    TRT|average</span></span>
+<span><span class="co">#&gt; 1         1.60</span></span>
+<span><span class="co">#&gt; 2         0.28</span></span>
+<span><span class="co">#&gt; 3         0.57</span></span>
+<span><span class="co">#&gt; 4        -1.53</span></span>
+<span><span class="co">#&gt; 5        -1.08</span></span>
+<span><span class="co">#&gt; 6        -1.05</span></span>
+<span><span class="co">#&gt; 7        -0.93</span></span>
+<span><span class="co">#&gt; 8        -0.94</span></span>
+<span><span class="co">#&gt; 9        -0.73</span></span>
+<span><span class="co">#&gt; 10       -2.49</span></span>
+<span><span class="co">#&gt; # ... with 3990 more draws</span></span>
+<span><span class="co">#&gt; # ... hidden reserved variables {'.chain', '.iteration', '.draw'}</span></span></code></pre></div>
+<p>The <code><a href="../reference/brm_marginal_summaries.html">brm_marginal_summaries()</a></code> function produces posterior
+summaries of these marginals, and it includes the Monte Carlo standard
+error (MCSE) of each estimate.</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">summaries</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/brm_marginal_summaries.html">brm_marginal_summaries</a></span><span class="op">(</span><span class="va">draws</span>, level <span class="op">=</span> <span class="fl">0.95</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">summaries</span></span>
+<span><span class="co">#&gt; # A tibble: 140 × 6</span></span>
+<span><span class="co">#&gt;    marginal         statistic group time    value   mcse</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;            &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt;   &lt;dbl&gt;  &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 difference_group lower     TRT   VIS2  -2.37   0.0423</span></span>
+<span><span class="co">#&gt;  2 difference_group lower     TRT   VIS3  -3.41   0.0832</span></span>
+<span><span class="co">#&gt;  3 difference_group lower     TRT   VIS4  -3.48   0.155 </span></span>
+<span><span class="co">#&gt;  4 difference_group mean      TRT   VIS2  -0.0893 0.0228</span></span>
+<span><span class="co">#&gt;  5 difference_group mean      TRT   VIS3  -1.04   0.0235</span></span>
+<span><span class="co">#&gt;  6 difference_group mean      TRT   VIS4   0.363  0.0317</span></span>
+<span><span class="co">#&gt;  7 difference_group median    TRT   VIS2  -0.0987 0.0244</span></span>
+<span><span class="co">#&gt;  8 difference_group median    TRT   VIS3  -1.04   0.0304</span></span>
+<span><span class="co">#&gt;  9 difference_group median    TRT   VIS4   0.373  0.0475</span></span>
+<span><span class="co">#&gt; 10 difference_group sd        TRT   VIS2   1.19   0.0164</span></span>
+<span><span class="co">#&gt; # ℹ 130 more rows</span></span></code></pre></div>
+<p>The <code><a href="../reference/brm_marginal_probabilities.html">brm_marginal_probabilities()</a></code> function shows
+posterior probabilities of the form,</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"><mtext mathvariant="normal">Prob</mtext><mrow><mo stretchy="true" form="prefix">(</mo><mtext mathvariant="normal">treatment effect</mtext><mo>&gt;</mo><mtext mathvariant="normal">threshold</mtext><mo stretchy="true" form="postfix">)</mo></mrow></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{aligned}
+\text{Prob}(\text{treatment effect} &gt; \text{threshold})
+\end{aligned}
+</annotation></semantics></math></p>
+<p>or</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"><mtext mathvariant="normal">Prob</mtext><mrow><mo stretchy="true" form="prefix">(</mo><mtext mathvariant="normal">treatment effect</mtext><mo>&lt;</mo><mtext mathvariant="normal">threshold</mtext><mo stretchy="true" form="postfix">)</mo></mrow></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{aligned}
+\text{Prob}(\text{treatment effect} &lt; \text{threshold})
+\end{aligned}
+</annotation></semantics></math></p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/brm_marginal_probabilities.html">brm_marginal_probabilities</a></span><span class="op">(</span></span>
+<span>  draws <span class="op">=</span> <span class="va">draws</span>,</span>
+<span>  threshold <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.1</span>, <span class="fl">0.1</span><span class="op">)</span>,</span>
+<span>  direction <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"greater"</span>, <span class="st">"less"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 6 × 5</span></span>
+<span><span class="co">#&gt;   direction threshold group time  value</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;         &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1 greater        -0.1 TRT   VIS2  0.500</span></span>
+<span><span class="co">#&gt; 2 greater        -0.1 TRT   VIS3  0.212</span></span>
+<span><span class="co">#&gt; 3 greater        -0.1 TRT   VIS4  0.600</span></span>
+<span><span class="co">#&gt; 4 less            0.1 TRT   VIS2  0.564</span></span>
+<span><span class="co">#&gt; 5 less            0.1 TRT   VIS3  0.830</span></span>
+<span><span class="co">#&gt; 6 less            0.1 TRT   VIS4  0.443</span></span></code></pre></div>
+<p>Finally, <code>brm_marignal_data()</code> computes marginal means and
+confidence intervals on the response variable in the data, along with
+other summary statistics.</p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">summaries_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/brm_marginal_data.html">brm_marginal_data</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">data</span>, level <span class="op">=</span> <span class="fl">0.95</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">summaries_data</span></span>
+<span><span class="co">#&gt; # A tibble: 56 × 4</span></span>
+<span><span class="co">#&gt;    statistic group time   value</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;     &lt;fct&gt; &lt;ord&gt;  &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 lower     PBO   VIS1  -5.86 </span></span>
+<span><span class="co">#&gt;  2 lower     PBO   VIS2  -1.44 </span></span>
+<span><span class="co">#&gt;  3 lower     PBO   VIS3   4.33 </span></span>
+<span><span class="co">#&gt;  4 lower     PBO   VIS4  11.1  </span></span>
+<span><span class="co">#&gt;  5 lower     TRT   VIS1   0.423</span></span>
+<span><span class="co">#&gt;  6 lower     TRT   VIS2   3.96 </span></span>
+<span><span class="co">#&gt;  7 lower     TRT   VIS3   7.67 </span></span>
+<span><span class="co">#&gt;  8 lower     TRT   VIS4  16.0  </span></span>
+<span><span class="co">#&gt;  9 mean      PBO   VIS1  -8.09 </span></span>
+<span><span class="co">#&gt; 10 mean      PBO   VIS2  -3.38 </span></span>
+<span><span class="co">#&gt; # ℹ 46 more rows</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="visualization">Visualization<a class="anchor" aria-label="anchor" href="#visualization"></a>
+</h2>
+<p>Suppose we fit a second model which omits baseline.</p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">summaries_no_baseline</span> <span class="op">&lt;-</span> <span class="va">data</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/brm_formula.html">brm_formula</a></span><span class="op">(</span>baseline <span class="op">=</span> <span class="cn">FALSE</span>, baseline_time <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/brm_model.html">brm_model</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">data</span>, refresh <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/brm_marginal_draws.html">brm_marginal_draws</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/brm_marginal_summaries.html">brm_marginal_summaries</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Compiling Stan program...</span></span>
+<span><span class="co">#&gt; Start sampling</span></span></code></pre></div>
+<p>The <code><a href="../reference/brm_plot_compare.html">brm_plot_compare()</a></code> function compares means and
+intervals from different models and data sources in the same plot.</p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/brm_plot_compare.html">brm_plot_compare</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">summaries_data</span>,</span>
+<span>  no_baseline <span class="op">=</span> <span class="va">summaries_no_baseline</span>,</span>
+<span>  with_baseline <span class="op">=</span> <span class="va">summaries</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<div class="float">
+<img src="usage/response-1.png" alt="plot of chunk response"><div class="figcaption">plot of chunk response</div>
+</div>
+<p>If you omit the marginals of the data, you can show inference on
+change from baseline or the treatment effect.</p>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/brm_plot_compare.html">brm_plot_compare</a></span><span class="op">(</span></span>
+<span>  no_baseline <span class="op">=</span> <span class="va">summaries_no_baseline</span>,</span>
+<span>  with_baseline <span class="op">=</span> <span class="va">summaries</span>,</span>
+<span>  marginal <span class="op">=</span> <span class="st">"difference_group"</span> <span class="co"># treatment effect</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<div class="float">
+<img src="usage/difference-1.png" alt="plot of chunk difference"><div class="figcaption">plot of chunk difference</div>
+</div>
+<p>Additional arguments let you control the primary comparison of
+interest (the color aesthetic), the horizontal axis, and the faceting
+variable.</p>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/brm_plot_compare.html">brm_plot_compare</a></span><span class="op">(</span></span>
+<span>  no_baseline <span class="op">=</span> <span class="va">summaries_no_baseline</span>,</span>
+<span>  with_baseline <span class="op">=</span> <span class="va">summaries</span>,</span>
+<span>  marginal <span class="op">=</span> <span class="st">"difference_group"</span>,</span>
+<span>  compare <span class="op">=</span> <span class="st">"group"</span>,</span>
+<span>  axis <span class="op">=</span> <span class="st">"time"</span>,</span>
+<span>  facet <span class="op">=</span> <span class="st">"source"</span> <span class="co"># model1 vs model2</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<div class="float">
+<img src="usage/differencecustom-1.png" alt="plot of chunk differencecustom"><div class="figcaption">plot of chunk differencecustom</div>
+</div>
+<p>Finally, <code><a href="../reference/brm_plot_draws.html">brm_plot_draws()</a></code> can plot the posterior draws
+of the response, change from baseline, or treatment difference.</p>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/brm_plot_draws.html">brm_plot_draws</a></span><span class="op">(</span>draws <span class="op">=</span> <span class="va">draws</span><span class="op">$</span><span class="va">difference_group</span><span class="op">)</span></span></code></pre></div>
+<div class="float">
+<img src="usage/draws-1.png" alt="plot of chunk draws"><div class="figcaption">plot of chunk draws</div>
+</div>
+<p>The <code>axis</code> and <code>facet</code> arguments customize the
+horizontal axis and faceting variable, respectively.</p>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/brm_plot_draws.html">brm_plot_draws</a></span><span class="op">(</span></span>
+<span>  draws <span class="op">=</span> <span class="va">draws</span><span class="op">$</span><span class="va">difference_group</span>,</span>
+<span>  axis <span class="op">=</span> <span class="st">"group"</span>,</span>
+<span>  facet <span class="op">=</span> <span class="st">"time"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<div class="float">
+<img src="usage/drawscustom-1.png" alt="plot of chunk drawscustom"><div class="figcaption">plot of chunk drawscustom</div>
+</div>
+</div>
+<div class="section level2">
+<h2 id="appendix-a-contrasts">Appendix A: Contrasts<a class="anchor" aria-label="anchor" href="#appendix-a-contrasts"></a>
+</h2>
+<p>The formula is not the only factor that ultimately determines the
+fixed effect parameterization. The ordering of the categorical variables
+in the data, as well as the <code>contrast</code> option in R, affect
+the construction of the model matrix. To see the model matrix that will
+ultimately be used in <code><a href="../reference/brm_model.html">brm_model()</a></code>, run
+<code><a href="https://paul-buerkner.github.io/brms/reference/standata.html" class="external-link">brms::make_standata()</a></code> and examine the <code>X</code>
+element of the returned list.</p>
+<p>The <code>contrast</code> option accepts a named vector of two
+character vectors which govern <code><a href="https://rdrr.io/r/stats/model.matrix.html" class="external-link">model.matrix()</a></code> contrasts for
+unordered and ordered variables, respectively.</p>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>contrasts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>unordered <span class="op">=</span> <span class="st">"contr.SAS"</span>, ordered <span class="op">=</span> <span class="st">"contr.poly"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>The <code><a href="https://paul-buerkner.github.io/brms/reference/standata.html" class="external-link">make_standata()</a></code> function lets you see the data that
+<code>brms</code> will generate for Stan. This includes the fixed
+effects model matrix <code>X</code>. Note the differences in the
+<code>groupgroup_*</code> additive terms between the matrix below and
+the one above.</p>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">brms</span><span class="fu">::</span><span class="fu"><a href="https://paul-buerkner.github.io/brms/reference/standata.html" class="external-link">make_standata</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="va">formula</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span><span class="op">$</span><span class="va">X</span><span class="op">)</span></span>
+<span><span class="co">#&gt;     Intercept  FEV1_BL ARMCDPBO AVISIT2 AVISIT3 AVISIT4 RACEAsian</span></span>
+<span><span class="co">#&gt; 422         1 25.27144        0       1       0       0         0</span></span>
+<span><span class="co">#&gt; 424         1 25.27144        0       0       0       1         0</span></span>
+<span><span class="co">#&gt; 2           1 45.02477        1       1       0       0         1</span></span>
+<span><span class="co">#&gt; 3           1 45.02477        1       0       1       0         1</span></span>
+<span><span class="co">#&gt; 4           1 45.02477        1       0       0       1         1</span></span>
+<span><span class="co">#&gt; 6           1 43.50070        1       1       0       0         0</span></span>
+<span><span class="co">#&gt;     RACEBlackorAfricanAmerican SEXMale FEV1_BL:AVISIT2 FEV1_BL:AVISIT3</span></span>
+<span><span class="co">#&gt; 422                          1       0        25.27144         0.00000</span></span>
+<span><span class="co">#&gt; 424                          1       0         0.00000         0.00000</span></span>
+<span><span class="co">#&gt; 2                            0       1        45.02477         0.00000</span></span>
+<span><span class="co">#&gt; 3                            0       1         0.00000        45.02477</span></span>
+<span><span class="co">#&gt; 4                            0       1         0.00000         0.00000</span></span>
+<span><span class="co">#&gt; 6                            1       0        43.50070         0.00000</span></span>
+<span><span class="co">#&gt;     FEV1_BL:AVISIT4 ARMCDPBO:AVISIT2 ARMCDPBO:AVISIT3 ARMCDPBO:AVISIT4</span></span>
+<span><span class="co">#&gt; 422         0.00000                0                0                0</span></span>
+<span><span class="co">#&gt; 424        25.27144                0                0                0</span></span>
+<span><span class="co">#&gt; 2           0.00000                1                0                0</span></span>
+<span><span class="co">#&gt; 3           0.00000                0                1                0</span></span>
+<span><span class="co">#&gt; 4          45.02477                0                0                1</span></span>
+<span><span class="co">#&gt; 6           0.00000                1                0                0</span></span></code></pre></div>
+<p>If you choose a different contrast method, a different model matrix
+may result.</p>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span></span>
+<span>  contrasts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>unordered <span class="op">=</span> <span class="st">"contr.treatment"</span>, ordered <span class="op">=</span> <span class="st">"contr.poly"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co"># different model matrix than before:</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">brms</span><span class="fu">::</span><span class="fu"><a href="https://paul-buerkner.github.io/brms/reference/standata.html" class="external-link">make_standata</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="va">formula</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span><span class="op">$</span><span class="va">X</span><span class="op">)</span></span>
+<span><span class="co">#&gt;     Intercept  FEV1_BL ARMCDTRT AVISIT2 AVISIT3 AVISIT4</span></span>
+<span><span class="co">#&gt; 422         1 25.27144        1       1       0       0</span></span>
+<span><span class="co">#&gt; 424         1 25.27144        1       0       0       1</span></span>
+<span><span class="co">#&gt; 2           1 45.02477        0       1       0       0</span></span>
+<span><span class="co">#&gt; 3           1 45.02477        0       0       1       0</span></span>
+<span><span class="co">#&gt; 4           1 45.02477        0       0       0       1</span></span>
+<span><span class="co">#&gt; 6           1 43.50070        0       1       0       0</span></span>
+<span><span class="co">#&gt;     RACEBlackorAfricanAmerican RACEWhite SEXFemale FEV1_BL:AVISIT2</span></span>
+<span><span class="co">#&gt; 422                          1         0         1        25.27144</span></span>
+<span><span class="co">#&gt; 424                          1         0         1         0.00000</span></span>
+<span><span class="co">#&gt; 2                            0         0         0        45.02477</span></span>
+<span><span class="co">#&gt; 3                            0         0         0         0.00000</span></span>
+<span><span class="co">#&gt; 4                            0         0         0         0.00000</span></span>
+<span><span class="co">#&gt; 6                            1         0         1        43.50070</span></span>
+<span><span class="co">#&gt;     FEV1_BL:AVISIT3 FEV1_BL:AVISIT4 ARMCDTRT:AVISIT2 ARMCDTRT:AVISIT3</span></span>
+<span><span class="co">#&gt; 422         0.00000         0.00000                1                0</span></span>
+<span><span class="co">#&gt; 424         0.00000        25.27144                0                0</span></span>
+<span><span class="co">#&gt; 2           0.00000         0.00000                0                0</span></span>
+<span><span class="co">#&gt; 3          45.02477         0.00000                0                0</span></span>
+<span><span class="co">#&gt; 4           0.00000        45.02477                0                0</span></span>
+<span><span class="co">#&gt; 6           0.00000         0.00000                0                0</span></span>
+<span><span class="co">#&gt;     ARMCDTRT:AVISIT4</span></span>
+<span><span class="co">#&gt; 422                0</span></span>
+<span><span class="co">#&gt; 424                1</span></span>
+<span><span class="co">#&gt; 2                  0</span></span>
+<span><span class="co">#&gt; 3                  0</span></span>
+<span><span class="co">#&gt; 4                  0</span></span>
+<span><span class="co">#&gt; 6                  0</span></span></code></pre></div>
+<p>Recall from earlier that <code><a href="../reference/brm_data_chronologize.html">brm_data_chronologize()</a></code>
+protects the discrete time variable (in our case, <code>AVISIT</code>)
+from the <code>contrasts</code> option by assigning a
+<code>contrasts</code> attribute of its own.</p>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">AVISIT</span><span class="op">)</span></span>
+<span><span class="co">#&gt;  Ord.factor w/ 4 levels "VIS1"&lt;"VIS2"&lt;..: 1 2 3 4 1 2 3 4 1 2 ...</span></span>
+<span><span class="co">#&gt;  - attr(*, "contrasts")= num [1:4, 1:3] 0 1 0 0 0 0 1 0 0 0 ...</span></span>
+<span><span class="co">#&gt;   ..- attr(*, "dimnames")=List of 2</span></span>
+<span><span class="co">#&gt;   .. ..$ : chr [1:4] "VIS1" "VIS2" "VIS3" "VIS4"</span></span>
+<span><span class="co">#&gt;   .. ..$ : chr [1:3] "2" "3" "4"</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="appendix-b-imputation-of-missing-outcomes">Appendix B: Imputation of missing outcomes<a class="anchor" aria-label="anchor" href="#appendix-b-imputation-of-missing-outcomes"></a>
 </h2>
 <p>Under the missing at random (MAR) assumptions, MMRMs do not require
 imputation (<span class="citation">Holzhauer and Weber (2024)</span>).
@@ -426,19 +682,19 @@ list of imputed datasets using the multiple imputation method of your
 choice. The <a href="https://insightsengineering.github.io/rbmi/main/" class="external-link"><code>rbmi</code></a>
 package is uniquely suited to the multiple imputation of continuous
 longitudinal clinical trial data.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">variables</span> <span class="op">&lt;-</span> <span class="fu">rbmi</span><span class="fu">::</span><span class="fu">set_vars</span><span class="op">(</span></span>
-<span>  outcome <span class="op">=</span> <span class="st">"response"</span>,</span>
-<span>  visit <span class="op">=</span> <span class="st">"time"</span>,</span>
-<span>  subjid <span class="op">=</span> <span class="st">"patient"</span>,</span>
-<span>  group <span class="op">=</span> <span class="st">"group"</span>,</span>
-<span>  covariates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"biomarker1"</span>, <span class="st">"biomarker2"</span><span class="op">)</span></span>
+<span>  outcome <span class="op">=</span> <span class="st">"FEV1_CHG"</span>,</span>
+<span>  visit <span class="op">=</span> <span class="st">"AVISIT"</span>,</span>
+<span>  subjid <span class="op">=</span> <span class="st">"USUBJID"</span>,</span>
+<span>  group <span class="op">=</span> <span class="st">"ARMCD"</span>,</span>
+<span>  covariates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"RACE"</span>, <span class="st">"SEX"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">imputation_draws</span> <span class="op">&lt;-</span> <span class="fu">rbmi</span><span class="fu">::</span><span class="fu">draws</span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">data</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
-<span>      patient <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">patient</span><span class="op">)</span>,</span>
-<span>      group <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">group</span><span class="op">)</span></span>
+<span>      USUBJID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">USUBJID</span><span class="op">)</span>,</span>
+<span>      AVISIT <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">AVISIT</span><span class="op">)</span></span>
 <span>    <span class="op">)</span>,</span>
 <span>  vars <span class="op">=</span> <span class="va">variables</span>,</span>
 <span>  method <span class="op">=</span> <span class="fu">rbmi</span><span class="fu">::</span><span class="fu">method_condmean</span><span class="op">(</span>type <span class="op">=</span> <span class="st">"jackknife"</span><span class="op">)</span>,</span>
@@ -447,9 +703,8 @@ longitudinal clinical trial data.</p>
 <span><span class="va">imputation_run</span> <span class="op">&lt;-</span> <span class="fu">rbmi</span><span class="fu">::</span><span class="fu">impute</span><span class="op">(</span></span>
 <span>  draws <span class="op">=</span> <span class="va">imputation_draws</span>,</span>
 <span>  references <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>    group_1 <span class="op">=</span> <span class="st">"group_1"</span>,</span>
-<span>    group_2 <span class="op">=</span> <span class="st">"group_1"</span>,</span>
-<span>    group_3 <span class="op">=</span> <span class="st">"group_1"</span></span>
+<span>    placebo <span class="op">=</span> <span class="st">"PBO"</span>,</span>
+<span>    treatment <span class="op">=</span> <span class="st">"TRT"</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">imputed_datasets</span> <span class="op">&lt;-</span> <span class="fu">rbmi</span><span class="fu">::</span><span class="fu">extract_imputed_dfs</span><span class="op">(</span><span class="va">imputation_run</span><span class="op">)</span></span></code></pre></div>
@@ -460,8 +715,9 @@ supply this list to the <code>imputed</code> argument of
 <code>brms::brm_multiple(data = imputed, formula = formula)</code>
 instead of <code>brms::brm(data = data, formula = formula)</code> to fit
 an MMRM to each of the individual imputed datasets in the
-<code>imputed</code> object.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code>imputed</code> object. The computation could take several hours
+because it requires many fitted MMRM.</p>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/brm_model.html">brm_model</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">data</span>, <span class="co"># Yes, please supply the original non-imputed dataset too.</span></span>
 <span>  formula <span class="op">=</span> <span class="va">formula</span>,</span>
@@ -485,364 +741,14 @@ the left-hand side to tell <code>brms</code> to model each missing
 outcome as a model parameter. To use this type of imputation, simply
 supply the returned formula object to the <code>formula</code> argument
 of <code><a href="../reference/brm_model.html">brm_model()</a></code>.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/brm_formula.html">brm_formula</a></span><span class="op">(</span><span class="va">data</span>, model_missing_outcomes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; response | mi() ~ group + group:time + time + biomarker1 + biomarker2 + unstr(time = time, gr = patient) </span></span>
-<span><span class="co">#&gt; sigma ~ 0 + time</span></span></code></pre></div>
+<span><span class="co">#&gt; FEV1_CHG | mi() ~ FEV1_BL + FEV1_BL:AVISIT + ARMCD + ARMCD:AVISIT + AVISIT + RACE + SEX + unstr(time = AVISIT, gr = USUBJID) </span></span>
+<span><span class="co">#&gt; sigma ~ 0 + AVISIT</span></span></code></pre></div>
 <p>Unlike imputation before model fitting, this approach requires only
 one fit of the model. However, that model will sample posterior draws
 for each missing outcome as if it were a model parameter, so the MCMC
 may run slower and produce a larger output object.</p>
-</div>
-</div>
-<div class="section level2">
-<h2 id="marginals">Marginals<a class="anchor" aria-label="anchor" href="#marginals"></a>
-</h2>
-<p>Regardless of the choice of fixed effects formula,
-<code>brms.mmrm</code> performs inference on the marginal distributions
-at each treatment group and time point of the mean of the following
-quantities:</p>
-<ol style="list-style-type: decimal">
-<li>Response.</li>
-<li>Change from baseline. Only reported if you originally declared a
-baseline time point with the <code>reference_time</code> argument of
-<code><a href="../reference/brm_data.html">brm_data()</a></code>.</li>
-<li>Treatment difference. If you declared a baseline in (2), then
-treatment difference is calculated in terms of change from baseline.
-Otherwise, it is calculated in terms of raw response.</li>
-<li>Effect size: treatment difference divided by the residual standard
-deviation.</li>
-</ol>
-<p>To derive posterior draws of these marginals, use the
-<code><a href="../reference/brm_marginal_draws.html">brm_marginal_draws()</a></code> function.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">draws</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/brm_marginal_draws.html">brm_marginal_draws</a></span><span class="op">(</span>model <span class="op">=</span> <span class="va">model</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">draws</span></span>
-<span><span class="co">#&gt; $response</span></span>
-<span><span class="co">#&gt; # A draws_df: 1000 iterations, 4 chains, and 12 variables</span></span>
-<span><span class="co">#&gt;    group_1|time_1 group_1|time_2 group_1|time_3 group_1|time_4 group_2|time_1 group_2|time_2</span></span>
-<span><span class="co">#&gt; 1             1.2            2.5            1.8          -0.25          -0.41           0.87</span></span>
-<span><span class="co">#&gt; 2             1.4            2.6            1.6          -0.32          -0.32           1.11</span></span>
-<span><span class="co">#&gt; 3             1.4            2.5            1.6          -0.19          -0.37           1.08</span></span>
-<span><span class="co">#&gt; 4             1.4            2.6            1.6          -0.39          -0.34           0.91</span></span>
-<span><span class="co">#&gt; 5             1.3            2.6            1.7          -0.36          -0.46           1.06</span></span>
-<span><span class="co">#&gt; 6             1.3            2.5            1.7          -0.29          -0.52           0.89</span></span>
-<span><span class="co">#&gt; 7             1.2            2.5            1.6          -0.22          -0.13           0.99</span></span>
-<span><span class="co">#&gt; 8             1.2            2.6            1.8          -0.38          -0.34           0.84</span></span>
-<span><span class="co">#&gt; 9             1.2            2.6            1.7          -0.36          -0.17           1.06</span></span>
-<span><span class="co">#&gt; 10            1.3            2.6            1.6          -0.21          -0.16           1.00</span></span>
-<span><span class="co">#&gt;    group_2|time_3 group_2|time_4</span></span>
-<span><span class="co">#&gt; 1           0.101           -1.8</span></span>
-<span><span class="co">#&gt; 2           0.048           -1.8</span></span>
-<span><span class="co">#&gt; 3           0.013           -1.7</span></span>
-<span><span class="co">#&gt; 4           0.109           -1.7</span></span>
-<span><span class="co">#&gt; 5           0.201           -1.8</span></span>
-<span><span class="co">#&gt; 6           0.212           -1.7</span></span>
-<span><span class="co">#&gt; 7          -0.196           -1.7</span></span>
-<span><span class="co">#&gt; 8           0.141           -2.0</span></span>
-<span><span class="co">#&gt; 9          -0.121           -1.9</span></span>
-<span><span class="co">#&gt; 10         -0.086           -2.0</span></span>
-<span><span class="co">#&gt; # ... with 3990 more draws, and 4 more variables</span></span>
-<span><span class="co">#&gt; # ... hidden reserved variables {'.chain', '.iteration', '.draw'}</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $difference_time</span></span>
-<span><span class="co">#&gt; # A draws_df: 1000 iterations, 4 chains, and 9 variables</span></span>
-<span><span class="co">#&gt;    group_1|time_2 group_1|time_3 group_1|time_4 group_2|time_2 group_2|time_3 group_2|time_4</span></span>
-<span><span class="co">#&gt; 1             1.4           0.66           -1.4            1.3          0.512           -1.4</span></span>
-<span><span class="co">#&gt; 2             1.2           0.20           -1.7            1.4          0.370           -1.5</span></span>
-<span><span class="co">#&gt; 3             1.1           0.21           -1.6            1.4          0.380           -1.3</span></span>
-<span><span class="co">#&gt; 4             1.2           0.29           -1.7            1.2          0.451           -1.4</span></span>
-<span><span class="co">#&gt; 5             1.3           0.37           -1.7            1.5          0.663           -1.3</span></span>
-<span><span class="co">#&gt; 6             1.2           0.41           -1.6            1.4          0.735           -1.2</span></span>
-<span><span class="co">#&gt; 7             1.3           0.42           -1.4            1.1         -0.066           -1.6</span></span>
-<span><span class="co">#&gt; 8             1.4           0.64           -1.5            1.2          0.481           -1.6</span></span>
-<span><span class="co">#&gt; 9             1.4           0.44           -1.6            1.2          0.049           -1.7</span></span>
-<span><span class="co">#&gt; 10            1.4           0.36           -1.5            1.2          0.072           -1.8</span></span>
-<span><span class="co">#&gt;    group_3|time_2 group_3|time_3</span></span>
-<span><span class="co">#&gt; 1             1.5           0.26</span></span>
-<span><span class="co">#&gt; 2             1.4           0.28</span></span>
-<span><span class="co">#&gt; 3             1.4           0.21</span></span>
-<span><span class="co">#&gt; 4             1.2           0.44</span></span>
-<span><span class="co">#&gt; 5             1.3           0.42</span></span>
-<span><span class="co">#&gt; 6             1.3           0.33</span></span>
-<span><span class="co">#&gt; 7             1.3           0.63</span></span>
-<span><span class="co">#&gt; 8             1.3           0.54</span></span>
-<span><span class="co">#&gt; 9             1.4           0.47</span></span>
-<span><span class="co">#&gt; 10            1.4           0.31</span></span>
-<span><span class="co">#&gt; # ... with 3990 more draws, and 1 more variables</span></span>
-<span><span class="co">#&gt; # ... hidden reserved variables {'.chain', '.iteration', '.draw'}</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $difference_group</span></span>
-<span><span class="co">#&gt; # A draws_df: 1000 iterations, 4 chains, and 6 variables</span></span>
-<span><span class="co">#&gt;    group_2|time_2 group_2|time_3 group_2|time_4 group_3|time_2 group_3|time_3 group_3|time_4</span></span>
-<span><span class="co">#&gt; 1          -0.089          -0.15          0.013         0.1075        -0.4044         -0.332</span></span>
-<span><span class="co">#&gt; 2           0.224           0.17          0.212         0.1637         0.0837         -0.167</span></span>
-<span><span class="co">#&gt; 3           0.311           0.17          0.272         0.2547         0.0047          0.092</span></span>
-<span><span class="co">#&gt; 4           0.020           0.17          0.352         0.0071         0.1494          0.135</span></span>
-<span><span class="co">#&gt; 5           0.243           0.29          0.343         0.0387         0.0480         -0.211</span></span>
-<span><span class="co">#&gt; 6           0.231           0.32          0.410         0.1161        -0.0844         -0.181</span></span>
-<span><span class="co">#&gt; 7          -0.180          -0.48         -0.171         0.0210         0.2130         -0.134</span></span>
-<span><span class="co">#&gt; 8          -0.221          -0.16         -0.094        -0.1073        -0.0997          0.087</span></span>
-<span><span class="co">#&gt; 9          -0.172          -0.39         -0.097        -0.0357         0.0301         -0.188</span></span>
-<span><span class="co">#&gt; 10         -0.212          -0.29         -0.359        -0.0089        -0.0580         -0.018</span></span>
-<span><span class="co">#&gt; # ... with 3990 more draws</span></span>
-<span><span class="co">#&gt; # ... hidden reserved variables {'.chain', '.iteration', '.draw'}</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $effect</span></span>
-<span><span class="co">#&gt; # A draws_df: 1000 iterations, 4 chains, and 6 variables</span></span>
-<span><span class="co">#&gt;    group_2|time_2 group_2|time_3 group_2|time_4 group_3|time_2 group_3|time_3 group_3|time_4</span></span>
-<span><span class="co">#&gt; 1          -0.086          -0.16          0.010          0.104        -0.4215         -0.252</span></span>
-<span><span class="co">#&gt; 2           0.232           0.20          0.186          0.169         0.0946         -0.146</span></span>
-<span><span class="co">#&gt; 3           0.316           0.19          0.221          0.259         0.0051          0.074</span></span>
-<span><span class="co">#&gt; 4           0.019           0.17          0.265          0.007         0.1561          0.102</span></span>
-<span><span class="co">#&gt; 5           0.248           0.32          0.263          0.040         0.0521         -0.162</span></span>
-<span><span class="co">#&gt; 6           0.242           0.34          0.317          0.122        -0.0901         -0.140</span></span>
-<span><span class="co">#&gt; 7          -0.164          -0.48         -0.142          0.019         0.2121         -0.111</span></span>
-<span><span class="co">#&gt; 8          -0.230          -0.16         -0.078         -0.111        -0.1009          0.073</span></span>
-<span><span class="co">#&gt; 9          -0.174          -0.39         -0.087         -0.036         0.0297         -0.168</span></span>
-<span><span class="co">#&gt; 10         -0.213          -0.29         -0.311         -0.009        -0.0582         -0.016</span></span>
-<span><span class="co">#&gt; # ... with 3990 more draws</span></span>
-<span><span class="co">#&gt; # ... hidden reserved variables {'.chain', '.iteration', '.draw'}</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $sigma</span></span>
-<span><span class="co">#&gt; # A tibble: 4,000 × 12</span></span>
-<span><span class="co">#&gt;    `group_1|time_1` `group_1|time_2` `group_1|time_3` `group_1|time_4` `group_2|time_1`</span></span>
-<span><span class="co">#&gt;               &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1            0.965            1.03             0.959             1.32            0.965</span></span>
-<span><span class="co">#&gt;  2            0.810            0.967            0.885             1.14            0.810</span></span>
-<span><span class="co">#&gt;  3            0.869            0.982            0.916             1.23            0.869</span></span>
-<span><span class="co">#&gt;  4            0.896            1.02             0.957             1.33            0.896</span></span>
-<span><span class="co">#&gt;  5            0.895            0.978            0.921             1.30            0.895</span></span>
-<span><span class="co">#&gt;  6            0.861            0.955            0.937             1.29            0.861</span></span>
-<span><span class="co">#&gt;  7            0.890            1.10             1.00              1.21            0.890</span></span>
-<span><span class="co">#&gt;  8            0.944            0.962            0.989             1.20            0.944</span></span>
-<span><span class="co">#&gt;  9            0.961            0.988            1.01              1.12            0.961</span></span>
-<span><span class="co">#&gt; 10            0.932            0.996            0.996             1.15            0.932</span></span>
-<span><span class="co">#&gt; # ℹ 3,990 more rows</span></span>
-<span><span class="co">#&gt; # ℹ 7 more variables: `group_2|time_2` &lt;dbl&gt;, `group_2|time_3` &lt;dbl&gt;, `group_2|time_4` &lt;dbl&gt;,</span></span>
-<span><span class="co">#&gt; #   `group_3|time_1` &lt;dbl&gt;, `group_3|time_2` &lt;dbl&gt;, `group_3|time_3` &lt;dbl&gt;,</span></span>
-<span><span class="co">#&gt; #   `group_3|time_4` &lt;dbl&gt;</span></span></code></pre></div>
-<p>If you need samples from these marginals averaged across time points,
-e.g. an “overall effect size”, <code><a href="../reference/brm_marginal_draws_average.html">brm_marginal_draws_average()</a></code>
-can average the draws above across discrete time points (either all or a
-user-defined subset).</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/brm_marginal_draws_average.html">brm_marginal_draws_average</a></span><span class="op">(</span>draws <span class="op">=</span> <span class="va">draws</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $response</span></span>
-<span><span class="co">#&gt; # A draws_df: 1000 iterations, 4 chains, and 3 variables</span></span>
-<span><span class="co">#&gt;    group_1|average group_2|average group_3|average</span></span>
-<span><span class="co">#&gt; 1              1.3           -0.31             1.4</span></span>
-<span><span class="co">#&gt; 2              1.3           -0.25             1.4</span></span>
-<span><span class="co">#&gt; 3              1.3           -0.23             1.4</span></span>
-<span><span class="co">#&gt; 4              1.3           -0.27             1.4</span></span>
-<span><span class="co">#&gt; 5              1.3           -0.24             1.4</span></span>
-<span><span class="co">#&gt; 6              1.3           -0.27             1.4</span></span>
-<span><span class="co">#&gt; 7              1.3           -0.26             1.3</span></span>
-<span><span class="co">#&gt; 8              1.3           -0.33             1.4</span></span>
-<span><span class="co">#&gt; 9              1.3           -0.27             1.4</span></span>
-<span><span class="co">#&gt; 10             1.3           -0.31             1.4</span></span>
-<span><span class="co">#&gt; # ... with 3990 more draws</span></span>
-<span><span class="co">#&gt; # ... hidden reserved variables {'.chain', '.iteration', '.draw'}</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $difference_time</span></span>
-<span><span class="co">#&gt; # A draws_df: 1000 iterations, 4 chains, and 3 variables</span></span>
-<span><span class="co">#&gt;    group_1|average group_2|average group_3|average</span></span>
-<span><span class="co">#&gt; 1           0.2053          0.1296         -0.0043</span></span>
-<span><span class="co">#&gt; 2          -0.1020          0.1010         -0.0752</span></span>
-<span><span class="co">#&gt; 3          -0.0699          0.1812          0.0470</span></span>
-<span><span class="co">#&gt; 4          -0.0767          0.1023          0.0205</span></span>
-<span><span class="co">#&gt; 5          -0.0034          0.2901         -0.0449</span></span>
-<span><span class="co">#&gt; 6           0.0132          0.3334         -0.0367</span></span>
-<span><span class="co">#&gt; 7           0.1032         -0.1752          0.1366</span></span>
-<span><span class="co">#&gt; 8           0.1645          0.0078          0.1245</span></span>
-<span><span class="co">#&gt; 9           0.0810         -0.1391          0.0167</span></span>
-<span><span class="co">#&gt; 10          0.0895         -0.1982          0.0611</span></span>
-<span><span class="co">#&gt; # ... with 3990 more draws</span></span>
-<span><span class="co">#&gt; # ... hidden reserved variables {'.chain', '.iteration', '.draw'}</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $difference_group</span></span>
-<span><span class="co">#&gt; # A draws_df: 1000 iterations, 4 chains, and 2 variables</span></span>
-<span><span class="co">#&gt;    group_2|average group_3|average</span></span>
-<span><span class="co">#&gt; 1           -0.076          -0.210</span></span>
-<span><span class="co">#&gt; 2            0.203           0.027</span></span>
-<span><span class="co">#&gt; 3            0.251           0.117</span></span>
-<span><span class="co">#&gt; 4            0.179           0.097</span></span>
-<span><span class="co">#&gt; 5            0.294          -0.042</span></span>
-<span><span class="co">#&gt; 6            0.320          -0.050</span></span>
-<span><span class="co">#&gt; 7           -0.278           0.033</span></span>
-<span><span class="co">#&gt; 8           -0.157          -0.040</span></span>
-<span><span class="co">#&gt; 9           -0.220          -0.064</span></span>
-<span><span class="co">#&gt; 10          -0.288          -0.028</span></span>
-<span><span class="co">#&gt; # ... with 3990 more draws</span></span>
-<span><span class="co">#&gt; # ... hidden reserved variables {'.chain', '.iteration', '.draw'}</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $effect</span></span>
-<span><span class="co">#&gt; # A draws_df: 1000 iterations, 4 chains, and 2 variables</span></span>
-<span><span class="co">#&gt;    group_2|average group_3|average</span></span>
-<span><span class="co">#&gt; 1           -0.078          -0.190</span></span>
-<span><span class="co">#&gt; 2            0.204           0.039</span></span>
-<span><span class="co">#&gt; 3            0.241           0.113</span></span>
-<span><span class="co">#&gt; 4            0.152           0.088</span></span>
-<span><span class="co">#&gt; 5            0.277          -0.023</span></span>
-<span><span class="co">#&gt; 6            0.300          -0.036</span></span>
-<span><span class="co">#&gt; 7           -0.263           0.040</span></span>
-<span><span class="co">#&gt; 8           -0.155          -0.047</span></span>
-<span><span class="co">#&gt; 9           -0.216          -0.058</span></span>
-<span><span class="co">#&gt; 10          -0.272          -0.028</span></span>
-<span><span class="co">#&gt; # ... with 3990 more draws</span></span>
-<span><span class="co">#&gt; # ... hidden reserved variables {'.chain', '.iteration', '.draw'}</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $sigma</span></span>
-<span><span class="co">#&gt; # A tibble: 4,000 × 3</span></span>
-<span><span class="co">#&gt;    `group_1|average` `group_2|average` `group_3|average`</span></span>
-<span><span class="co">#&gt;                &lt;dbl&gt;             &lt;dbl&gt;             &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1             1.07              1.07              1.07 </span></span>
-<span><span class="co">#&gt;  2             0.951             0.951             0.951</span></span>
-<span><span class="co">#&gt;  3             1.00              1.00              1.00 </span></span>
-<span><span class="co">#&gt;  4             1.05              1.05              1.05 </span></span>
-<span><span class="co">#&gt;  5             1.02              1.02              1.02 </span></span>
-<span><span class="co">#&gt;  6             1.01              1.01              1.01 </span></span>
-<span><span class="co">#&gt;  7             1.05              1.05              1.05 </span></span>
-<span><span class="co">#&gt;  8             1.02              1.02              1.02 </span></span>
-<span><span class="co">#&gt;  9             1.02              1.02              1.02 </span></span>
-<span><span class="co">#&gt; 10             1.02              1.02              1.02 </span></span>
-<span><span class="co">#&gt; # ℹ 3,990 more rows</span></span></code></pre></div>
-<p>The <code><a href="../reference/brm_marginal_summaries.html">brm_marginal_summaries()</a></code> function produces posterior
-summaries of these marginals, and it includes the Monte Carlo standard
-error (MCSE) of each estimate.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">summaries</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/brm_marginal_summaries.html">brm_marginal_summaries</a></span><span class="op">(</span><span class="va">draws</span>, level <span class="op">=</span> <span class="fl">0.95</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">summaries</span></span>
-<span><span class="co">#&gt; # A tibble: 225 × 6</span></span>
-<span><span class="co">#&gt;    marginal         statistic group   time     value    mcse</span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;            &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt;    &lt;dbl&gt;   &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 difference_group lower     group_2 time_2 -0.251  0.00627</span></span>
-<span><span class="co">#&gt;  2 difference_group lower     group_2 time_3 -0.635  0.0132 </span></span>
-<span><span class="co">#&gt;  3 difference_group lower     group_2 time_4 -0.548  0.0113 </span></span>
-<span><span class="co">#&gt;  4 difference_group lower     group_3 time_2 -0.268  0.0109 </span></span>
-<span><span class="co">#&gt;  5 difference_group lower     group_3 time_3 -0.678  0.0193 </span></span>
-<span><span class="co">#&gt;  6 difference_group lower     group_3 time_4 -0.748  0.0133 </span></span>
-<span><span class="co">#&gt;  7 difference_group mean      group_2 time_2  0.0400 0.00310</span></span>
-<span><span class="co">#&gt;  8 difference_group mean      group_2 time_3 -0.160  0.00589</span></span>
-<span><span class="co">#&gt;  9 difference_group mean      group_2 time_4 -0.0599 0.00625</span></span>
-<span><span class="co">#&gt; 10 difference_group mean      group_3 time_2  0.0242 0.00307</span></span>
-<span><span class="co">#&gt; # ℹ 215 more rows</span></span></code></pre></div>
-<p>The <code><a href="../reference/brm_marginal_probabilities.html">brm_marginal_probabilities()</a></code> function shows
-posterior probabilities of the form,</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"><mtext mathvariant="normal">Prob</mtext><mrow><mo stretchy="true" form="prefix">(</mo><mtext mathvariant="normal">treatment effect</mtext><mo>&gt;</mo><mtext mathvariant="normal">threshold</mtext><mo stretchy="true" form="postfix">)</mo></mrow></mtd></mtr></mtable><annotation encoding="application/x-tex">
-\begin{aligned}
-\text{Prob}(\text{treatment effect} &gt; \text{threshold})
-\end{aligned}
-</annotation></semantics></math></p>
-<p>or</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"><mtext mathvariant="normal">Prob</mtext><mrow><mo stretchy="true" form="prefix">(</mo><mtext mathvariant="normal">treatment effect</mtext><mo>&lt;</mo><mtext mathvariant="normal">threshold</mtext><mo stretchy="true" form="postfix">)</mo></mrow></mtd></mtr></mtable><annotation encoding="application/x-tex">
-\begin{aligned}
-\text{Prob}(\text{treatment effect} &lt; \text{threshold})
-\end{aligned}
-</annotation></semantics></math></p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/brm_marginal_probabilities.html">brm_marginal_probabilities</a></span><span class="op">(</span></span>
-<span>  draws <span class="op">=</span> <span class="va">draws</span>,</span>
-<span>  threshold <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.1</span>, <span class="fl">0.1</span><span class="op">)</span>,</span>
-<span>  direction <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"greater"</span>, <span class="st">"less"</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 12 × 5</span></span>
-<span><span class="co">#&gt;    direction threshold group   time   value</span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;         &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;  &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 greater        -0.1 group_2 time_2 0.83 </span></span>
-<span><span class="co">#&gt;  2 greater        -0.1 group_2 time_3 0.405</span></span>
-<span><span class="co">#&gt;  3 greater        -0.1 group_2 time_4 0.572</span></span>
-<span><span class="co">#&gt;  4 greater        -0.1 group_3 time_2 0.809</span></span>
-<span><span class="co">#&gt;  5 greater        -0.1 group_3 time_3 0.348</span></span>
-<span><span class="co">#&gt;  6 greater        -0.1 group_3 time_4 0.249</span></span>
-<span><span class="co">#&gt;  7 less            0.1 group_2 time_2 0.665</span></span>
-<span><span class="co">#&gt;  8 less            0.1 group_2 time_3 0.854</span></span>
-<span><span class="co">#&gt;  9 less            0.1 group_2 time_4 0.741</span></span>
-<span><span class="co">#&gt; 10 less            0.1 group_3 time_2 0.709</span></span>
-<span><span class="co">#&gt; 11 less            0.1 group_3 time_3 0.880</span></span>
-<span><span class="co">#&gt; 12 less            0.1 group_3 time_4 0.930</span></span></code></pre></div>
-<p>Finally, <code>brm_marignal_data()</code> computes marginal means and
-confidence intervals on the response variable in the data, along with
-other summary statistics.</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">summaries_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/brm_marginal_data.html">brm_marginal_data</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">data</span>, level <span class="op">=</span> <span class="fl">0.95</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">summaries_data</span></span>
-<span><span class="co">#&gt; # A tibble: 84 × 4</span></span>
-<span><span class="co">#&gt;    statistic group   time     value</span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;     &lt;chr&gt;   &lt;ord&gt;    &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 lower     group_1 time_1  1.40  </span></span>
-<span><span class="co">#&gt;  2 lower     group_1 time_2  2.71  </span></span>
-<span><span class="co">#&gt;  3 lower     group_1 time_3  1.91  </span></span>
-<span><span class="co">#&gt;  4 lower     group_1 time_4  0.0151</span></span>
-<span><span class="co">#&gt;  5 lower     group_2 time_1 -0.150 </span></span>
-<span><span class="co">#&gt;  6 lower     group_2 time_2  1.23  </span></span>
-<span><span class="co">#&gt;  7 lower     group_2 time_3  0.218 </span></span>
-<span><span class="co">#&gt;  8 lower     group_2 time_4 -1.59  </span></span>
-<span><span class="co">#&gt;  9 lower     group_3 time_1  1.57  </span></span>
-<span><span class="co">#&gt; 10 lower     group_3 time_2  2.95  </span></span>
-<span><span class="co">#&gt; # ℹ 74 more rows</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="visualization">Visualization<a class="anchor" aria-label="anchor" href="#visualization"></a>
-</h2>
-<p>The <code><a href="../reference/brm_plot_compare.html">brm_plot_compare()</a></code> function compares means and
-intervals from many different models and data sources in the same plot.
-First, we need the marginals of the data.</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/brm_plot_compare.html">brm_plot_compare</a></span><span class="op">(</span></span>
-<span>  data <span class="op">=</span> <span class="va">summaries_data</span>,</span>
-<span>  model1 <span class="op">=</span> <span class="va">summaries</span>,</span>
-<span>  model2 <span class="op">=</span> <span class="va">summaries</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<div class="float">
-<img src="usage/response-1.png" alt="plot of chunk response"><div class="figcaption">plot of chunk response</div>
-</div>
-<p>If you omit the marginals of the data, you can show inference on
-change from baseline or the treatment effect.</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/brm_plot_compare.html">brm_plot_compare</a></span><span class="op">(</span></span>
-<span>  model1 <span class="op">=</span> <span class="va">summaries</span>,</span>
-<span>  model2 <span class="op">=</span> <span class="va">summaries</span>,</span>
-<span>  marginal <span class="op">=</span> <span class="st">"difference_group"</span> <span class="co"># treatment effect</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<div class="float">
-<img src="usage/difference-1.png" alt="plot of chunk difference"><div class="figcaption">plot of chunk difference</div>
-</div>
-<p>Additional arguments let you control the primary comparison of
-interest (the color aesthetic), the horizontal axis, and the faceting
-variable.</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/brm_plot_compare.html">brm_plot_compare</a></span><span class="op">(</span></span>
-<span>  model1 <span class="op">=</span> <span class="va">summaries</span>,</span>
-<span>  model2 <span class="op">=</span> <span class="va">summaries</span>,</span>
-<span>  marginal <span class="op">=</span> <span class="st">"difference_group"</span>,</span>
-<span>  compare <span class="op">=</span> <span class="st">"group"</span>,</span>
-<span>  axis <span class="op">=</span> <span class="st">"time"</span>,</span>
-<span>  facet <span class="op">=</span> <span class="st">"source"</span> <span class="co"># model1 vs model2</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<div class="float">
-<img src="usage/differencecustom-1.png" alt="plot of chunk differencecustom"><div class="figcaption">plot of chunk differencecustom</div>
-</div>
-<p>Finally, <code><a href="../reference/brm_plot_draws.html">brm_plot_draws()</a></code> can plot the posterior draws
-of the response, change from baseline, or treatment difference.</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/brm_plot_draws.html">brm_plot_draws</a></span><span class="op">(</span>draws <span class="op">=</span> <span class="va">draws</span><span class="op">$</span><span class="va">difference_group</span><span class="op">)</span></span></code></pre></div>
-<div class="float">
-<img src="usage/draws-1.png" alt="plot of chunk draws"><div class="figcaption">plot of chunk draws</div>
-</div>
-<p>The <code>axis</code> and <code>facet</code> arguments customize the
-horizontal axis and faceting variable, respectively.</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/brm_plot_draws.html">brm_plot_draws</a></span><span class="op">(</span></span>
-<span>  draws <span class="op">=</span> <span class="va">draws</span><span class="op">$</span><span class="va">difference_group</span>,</span>
-<span>  axis <span class="op">=</span> <span class="st">"group"</span>,</span>
-<span>  facet <span class="op">=</span> <span class="st">"time"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<div class="float">
-<img src="usage/drawscustom-1.png" alt="plot of chunk drawscustom"><div class="figcaption">plot of chunk drawscustom</div>
 </div>
 </div>
 <div class="section level2">
@@ -856,7 +762,6 @@ Modeling in Drug Development</span></em>, <span>Novartis AG</span>.
 </div>
 </div>
 </div>
-
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>
