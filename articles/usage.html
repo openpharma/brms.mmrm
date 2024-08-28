@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">brms.mmrm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0.9002</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -294,54 +294,54 @@ to keep track of the data and formula used to fit the model.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Correlation Structures:</span></span>
 <span><span class="co">#&gt;                    Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS</span></span>
-<span><span class="co">#&gt; cortime(VIS1,VIS2)     0.36      0.09     0.18     0.52 1.00     6153     2428</span></span>
-<span><span class="co">#&gt; cortime(VIS1,VIS3)     0.14      0.10    -0.06     0.34 1.00     6431     3391</span></span>
-<span><span class="co">#&gt; cortime(VIS2,VIS3)     0.04      0.11    -0.16     0.25 1.00     5621     2925</span></span>
-<span><span class="co">#&gt; cortime(VIS1,VIS4)     0.16      0.11    -0.07     0.38 1.00     5015     2799</span></span>
-<span><span class="co">#&gt; cortime(VIS2,VIS4)     0.11      0.09    -0.07     0.29 1.00     6577     3138</span></span>
-<span><span class="co">#&gt; cortime(VIS3,VIS4)     0.00      0.10    -0.20     0.20 1.00     6798     2787</span></span>
+<span><span class="co">#&gt; cortime(VIS1,VIS2)     0.36      0.09     0.17     0.51 1.00     5926     2988</span></span>
+<span><span class="co">#&gt; cortime(VIS1,VIS3)     0.14      0.10    -0.06     0.33 1.00     5214     3152</span></span>
+<span><span class="co">#&gt; cortime(VIS2,VIS3)     0.04      0.10    -0.16     0.25 1.00     5495     2706</span></span>
+<span><span class="co">#&gt; cortime(VIS1,VIS4)     0.17      0.11    -0.06     0.38 1.00     5762     2816</span></span>
+<span><span class="co">#&gt; cortime(VIS2,VIS4)     0.11      0.09    -0.07     0.28 1.00     5909     2829</span></span>
+<span><span class="co">#&gt; cortime(VIS3,VIS4)     0.00      0.10    -0.19     0.20 1.00     5305     3018</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Regression Coefficients:</span></span>
 <span><span class="co">#&gt;                            Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS</span></span>
-<span><span class="co">#&gt; Intercept                     23.40      2.59    18.29    28.55 1.00     1415</span></span>
-<span><span class="co">#&gt; FEV1_BL                       -0.82      0.06    -0.93    -0.70 1.00     1532</span></span>
-<span><span class="co">#&gt; ARMCDTRT                       4.04      1.10     1.85     6.19 1.00     2510</span></span>
-<span><span class="co">#&gt; AVISIT2                        4.36      2.75    -0.99     9.78 1.00     1543</span></span>
-<span><span class="co">#&gt; AVISIT3                       12.45      2.93     6.70    18.20 1.00     1562</span></span>
-<span><span class="co">#&gt; AVISIT4                       15.49      4.41     6.92    24.02 1.00     2026</span></span>
-<span><span class="co">#&gt; RACEBlackorAfricanAmerican     1.45      0.59     0.33     2.61 1.00     5680</span></span>
-<span><span class="co">#&gt; RACEWhite                      5.46      0.60     4.26     6.66 1.00     4780</span></span>
-<span><span class="co">#&gt; SEXFemale                      0.39      0.52    -0.62     1.38 1.00     6438</span></span>
-<span><span class="co">#&gt; FEV1_BL:AVISIT2                0.01      0.06    -0.12     0.14 1.00     1643</span></span>
-<span><span class="co">#&gt; FEV1_BL:AVISIT3               -0.05      0.07    -0.19     0.09 1.00     1673</span></span>
-<span><span class="co">#&gt; FEV1_BL:AVISIT4               -0.01      0.10    -0.22     0.20 1.00     2070</span></span>
-<span><span class="co">#&gt; ARMCDTRT:AVISIT2              -0.09      1.19    -2.37     2.32 1.00     2767</span></span>
-<span><span class="co">#&gt; ARMCDTRT:AVISIT3              -1.04      1.22    -3.41     1.37 1.00     2750</span></span>
-<span><span class="co">#&gt; ARMCDTRT:AVISIT4               0.36      1.93    -3.48     4.06 1.00     3788</span></span>
-<span><span class="co">#&gt; sigma_AVISITVIS1               1.83      0.06     1.71     1.96 1.00     5110</span></span>
-<span><span class="co">#&gt; sigma_AVISITVIS2               1.59      0.06     1.48     1.71 1.00     6180</span></span>
-<span><span class="co">#&gt; sigma_AVISITVIS3               1.33      0.06     1.21     1.46 1.00     5677</span></span>
-<span><span class="co">#&gt; sigma_AVISITVIS4               2.28      0.06     2.16     2.41 1.00     6378</span></span>
+<span><span class="co">#&gt; Intercept                     23.36      2.55    18.40    28.51 1.00     1814</span></span>
+<span><span class="co">#&gt; FEV1_BL                       -0.82      0.06    -0.94    -0.70 1.00     1876</span></span>
+<span><span class="co">#&gt; ARMCDTRT                       4.00      1.06     1.97     6.09 1.00     2505</span></span>
+<span><span class="co">#&gt; AVISIT2                        4.46      2.73    -0.87     9.73 1.00     2058</span></span>
+<span><span class="co">#&gt; AVISIT3                       12.54      2.92     6.78    18.33 1.00     1967</span></span>
+<span><span class="co">#&gt; AVISIT4                       15.52      4.45     6.74    24.29 1.00     2576</span></span>
+<span><span class="co">#&gt; RACEBlackorAfricanAmerican     1.45      0.59     0.32     2.63 1.00     5718</span></span>
+<span><span class="co">#&gt; RACEWhite                      5.45      0.63     4.23     6.68 1.00     5124</span></span>
+<span><span class="co">#&gt; SEXFemale                      0.38      0.52    -0.63     1.40 1.00     5439</span></span>
+<span><span class="co">#&gt; FEV1_BL:AVISIT2                0.01      0.06    -0.12     0.14 1.00     2221</span></span>
+<span><span class="co">#&gt; FEV1_BL:AVISIT3               -0.05      0.07    -0.19     0.08 1.00     2041</span></span>
+<span><span class="co">#&gt; FEV1_BL:AVISIT4               -0.01      0.11    -0.21     0.20 1.00     2686</span></span>
+<span><span class="co">#&gt; ARMCDTRT:AVISIT2              -0.03      1.16    -2.26     2.24 1.00     2710</span></span>
+<span><span class="co">#&gt; ARMCDTRT:AVISIT3              -0.99      1.20    -3.42     1.37 1.00     2490</span></span>
+<span><span class="co">#&gt; ARMCDTRT:AVISIT4               0.44      1.87    -3.15     4.03 1.00     4022</span></span>
+<span><span class="co">#&gt; sigma_AVISITVIS1               1.83      0.06     1.71     1.95 1.00     5914</span></span>
+<span><span class="co">#&gt; sigma_AVISITVIS2               1.59      0.06     1.47     1.71 1.00     5225</span></span>
+<span><span class="co">#&gt; sigma_AVISITVIS3               1.33      0.06     1.21     1.46 1.00     5779</span></span>
+<span><span class="co">#&gt; sigma_AVISITVIS4               2.28      0.06     2.16     2.41 1.00     5354</span></span>
 <span><span class="co">#&gt;                            Tail_ESS</span></span>
-<span><span class="co">#&gt; Intercept                      1792</span></span>
-<span><span class="co">#&gt; FEV1_BL                        2424</span></span>
-<span><span class="co">#&gt; ARMCDTRT                       2808</span></span>
-<span><span class="co">#&gt; AVISIT2                        2289</span></span>
-<span><span class="co">#&gt; AVISIT3                        2019</span></span>
-<span><span class="co">#&gt; AVISIT4                        2501</span></span>
-<span><span class="co">#&gt; RACEBlackorAfricanAmerican     3204</span></span>
-<span><span class="co">#&gt; RACEWhite                      2856</span></span>
-<span><span class="co">#&gt; SEXFemale                      3025</span></span>
-<span><span class="co">#&gt; FEV1_BL:AVISIT2                2181</span></span>
-<span><span class="co">#&gt; FEV1_BL:AVISIT3                2184</span></span>
-<span><span class="co">#&gt; FEV1_BL:AVISIT4                2559</span></span>
-<span><span class="co">#&gt; ARMCDTRT:AVISIT2               3209</span></span>
-<span><span class="co">#&gt; ARMCDTRT:AVISIT3               2948</span></span>
-<span><span class="co">#&gt; ARMCDTRT:AVISIT4               2638</span></span>
-<span><span class="co">#&gt; sigma_AVISITVIS1               3184</span></span>
-<span><span class="co">#&gt; sigma_AVISITVIS2               2912</span></span>
-<span><span class="co">#&gt; sigma_AVISITVIS3               2704</span></span>
-<span><span class="co">#&gt; sigma_AVISITVIS4               3141</span></span>
+<span><span class="co">#&gt; Intercept                      2393</span></span>
+<span><span class="co">#&gt; FEV1_BL                        2622</span></span>
+<span><span class="co">#&gt; ARMCDTRT                       2533</span></span>
+<span><span class="co">#&gt; AVISIT2                        2730</span></span>
+<span><span class="co">#&gt; AVISIT3                        2769</span></span>
+<span><span class="co">#&gt; AVISIT4                        2669</span></span>
+<span><span class="co">#&gt; RACEBlackorAfricanAmerican     2829</span></span>
+<span><span class="co">#&gt; RACEWhite                      3019</span></span>
+<span><span class="co">#&gt; SEXFemale                      2912</span></span>
+<span><span class="co">#&gt; FEV1_BL:AVISIT2                2831</span></span>
+<span><span class="co">#&gt; FEV1_BL:AVISIT3                2685</span></span>
+<span><span class="co">#&gt; FEV1_BL:AVISIT4                2691</span></span>
+<span><span class="co">#&gt; ARMCDTRT:AVISIT2               3198</span></span>
+<span><span class="co">#&gt; ARMCDTRT:AVISIT3               2866</span></span>
+<span><span class="co">#&gt; ARMCDTRT:AVISIT4               2956</span></span>
+<span><span class="co">#&gt; sigma_AVISITVIS1               3225</span></span>
+<span><span class="co">#&gt; sigma_AVISITVIS2               3257</span></span>
+<span><span class="co">#&gt; sigma_AVISITVIS3               3047</span></span>
+<span><span class="co">#&gt; sigma_AVISITVIS4               2741</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Draws were sampled using sampling(NUTS). For each parameter, Bulk_ESS</span></span>
 <span><span class="co">#&gt; and Tail_ESS are effective sample size measures, and Rhat is the potential</span></span>
@@ -397,16 +397,16 @@ deviation.</li>
 <span><span class="va">draws</span><span class="op">$</span><span class="va">difference_group</span></span>
 <span><span class="co">#&gt; # A draws_df: 1000 iterations, 4 chains, and 3 variables</span></span>
 <span><span class="co">#&gt;    TRT|VIS2 TRT|VIS3 TRT|VIS4</span></span>
-<span><span class="co">#&gt; 1      0.19    -1.21     5.83</span></span>
-<span><span class="co">#&gt; 2      0.38    -1.45     1.90</span></span>
-<span><span class="co">#&gt; 3      0.55     0.56     0.59</span></span>
-<span><span class="co">#&gt; 4     -2.19    -1.73    -0.67</span></span>
-<span><span class="co">#&gt; 5     -0.95    -1.37    -0.94</span></span>
-<span><span class="co">#&gt; 6     -0.77    -1.57    -0.82</span></span>
-<span><span class="co">#&gt; 7     -1.08    -1.63    -0.08</span></span>
-<span><span class="co">#&gt; 8     -0.42    -1.84    -0.58</span></span>
-<span><span class="co">#&gt; 9     -0.22    -1.69    -0.28</span></span>
-<span><span class="co">#&gt; 10    -1.44    -3.62    -2.40</span></span>
+<span><span class="co">#&gt; 1      0.63    -1.33    -1.03</span></span>
+<span><span class="co">#&gt; 2     -1.09    -1.03    -1.18</span></span>
+<span><span class="co">#&gt; 3      0.26    -0.39    -0.38</span></span>
+<span><span class="co">#&gt; 4      0.22    -1.27     0.50</span></span>
+<span><span class="co">#&gt; 5     -0.55    -1.49    -0.14</span></span>
+<span><span class="co">#&gt; 6     -0.28    -0.91    -3.35</span></span>
+<span><span class="co">#&gt; 7      0.29    -0.89     1.28</span></span>
+<span><span class="co">#&gt; 8     -0.11    -0.99    -1.68</span></span>
+<span><span class="co">#&gt; 9     -0.56    -0.81     1.64</span></span>
+<span><span class="co">#&gt; 10     0.91    -0.30     0.91</span></span>
 <span><span class="co">#&gt; # ... with 3990 more draws</span></span>
 <span><span class="co">#&gt; # ... hidden reserved variables {'.chain', '.iteration', '.draw'}</span></span></code></pre></div>
 <p>If you need samples from these marginals averaged across time points,
@@ -423,16 +423,16 @@ user-defined subset).</p>
 <span><span class="va">draws_average</span><span class="op">$</span><span class="va">difference_group</span></span>
 <span><span class="co">#&gt; # A draws_df: 1000 iterations, 4 chains, and 1 variables</span></span>
 <span><span class="co">#&gt;    TRT|average</span></span>
-<span><span class="co">#&gt; 1         1.60</span></span>
-<span><span class="co">#&gt; 2         0.28</span></span>
-<span><span class="co">#&gt; 3         0.57</span></span>
-<span><span class="co">#&gt; 4        -1.53</span></span>
-<span><span class="co">#&gt; 5        -1.08</span></span>
-<span><span class="co">#&gt; 6        -1.05</span></span>
-<span><span class="co">#&gt; 7        -0.93</span></span>
-<span><span class="co">#&gt; 8        -0.94</span></span>
-<span><span class="co">#&gt; 9        -0.73</span></span>
-<span><span class="co">#&gt; 10       -2.49</span></span>
+<span><span class="co">#&gt; 1       -0.576</span></span>
+<span><span class="co">#&gt; 2       -1.101</span></span>
+<span><span class="co">#&gt; 3       -0.170</span></span>
+<span><span class="co">#&gt; 4       -0.187</span></span>
+<span><span class="co">#&gt; 5       -0.726</span></span>
+<span><span class="co">#&gt; 6       -1.514</span></span>
+<span><span class="co">#&gt; 7        0.224</span></span>
+<span><span class="co">#&gt; 8       -0.928</span></span>
+<span><span class="co">#&gt; 9        0.094</span></span>
+<span><span class="co">#&gt; 10       0.507</span></span>
 <span><span class="co">#&gt; # ... with 3990 more draws</span></span>
 <span><span class="co">#&gt; # ... hidden reserved variables {'.chain', '.iteration', '.draw'}</span></span></code></pre></div>
 <p>The <code><a href="../reference/brm_marginal_summaries.html">brm_marginal_summaries()</a></code> function produces posterior
@@ -445,16 +445,16 @@ error (MCSE) of each estimate.</p>
 <span><span class="co">#&gt; # A tibble: 140 × 6</span></span>
 <span><span class="co">#&gt;    marginal         statistic group time    value   mcse</span></span>
 <span><span class="co">#&gt;    &lt;chr&gt;            &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt;   &lt;dbl&gt;  &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 difference_group lower     TRT   VIS2  -2.37   0.0423</span></span>
-<span><span class="co">#&gt;  2 difference_group lower     TRT   VIS3  -3.41   0.0832</span></span>
-<span><span class="co">#&gt;  3 difference_group lower     TRT   VIS4  -3.48   0.155 </span></span>
-<span><span class="co">#&gt;  4 difference_group mean      TRT   VIS2  -0.0893 0.0228</span></span>
-<span><span class="co">#&gt;  5 difference_group mean      TRT   VIS3  -1.04   0.0235</span></span>
-<span><span class="co">#&gt;  6 difference_group mean      TRT   VIS4   0.363  0.0317</span></span>
-<span><span class="co">#&gt;  7 difference_group median    TRT   VIS2  -0.0987 0.0244</span></span>
-<span><span class="co">#&gt;  8 difference_group median    TRT   VIS3  -1.04   0.0304</span></span>
-<span><span class="co">#&gt;  9 difference_group median    TRT   VIS4   0.373  0.0475</span></span>
-<span><span class="co">#&gt; 10 difference_group sd        TRT   VIS2   1.19   0.0164</span></span>
+<span><span class="co">#&gt;  1 difference_group lower     TRT   VIS2  -2.26   0.0563</span></span>
+<span><span class="co">#&gt;  2 difference_group lower     TRT   VIS3  -3.42   0.0653</span></span>
+<span><span class="co">#&gt;  3 difference_group lower     TRT   VIS4  -3.15   0.0801</span></span>
+<span><span class="co">#&gt;  4 difference_group mean      TRT   VIS2  -0.0350 0.0225</span></span>
+<span><span class="co">#&gt;  5 difference_group mean      TRT   VIS3  -0.990  0.0244</span></span>
+<span><span class="co">#&gt;  6 difference_group mean      TRT   VIS4   0.442  0.0297</span></span>
+<span><span class="co">#&gt;  7 difference_group median    TRT   VIS2  -0.0433 0.0243</span></span>
+<span><span class="co">#&gt;  8 difference_group median    TRT   VIS3  -0.975  0.0296</span></span>
+<span><span class="co">#&gt;  9 difference_group median    TRT   VIS4   0.471  0.0349</span></span>
+<span><span class="co">#&gt; 10 difference_group sd        TRT   VIS2   1.16   0.0152</span></span>
 <span><span class="co">#&gt; # ℹ 130 more rows</span></span></code></pre></div>
 <p>The <code><a href="../reference/brm_marginal_probabilities.html">brm_marginal_probabilities()</a></code> function shows
 posterior probabilities of the form,</p>
@@ -478,12 +478,12 @@ posterior probabilities of the form,</p>
 <span><span class="co">#&gt; # A tibble: 6 × 5</span></span>
 <span><span class="co">#&gt;   direction threshold group time  value</span></span>
 <span><span class="co">#&gt;   &lt;chr&gt;         &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 greater        -0.1 TRT   VIS2  0.500</span></span>
-<span><span class="co">#&gt; 2 greater        -0.1 TRT   VIS3  0.212</span></span>
-<span><span class="co">#&gt; 3 greater        -0.1 TRT   VIS4  0.600</span></span>
-<span><span class="co">#&gt; 4 less            0.1 TRT   VIS2  0.564</span></span>
-<span><span class="co">#&gt; 5 less            0.1 TRT   VIS3  0.830</span></span>
-<span><span class="co">#&gt; 6 less            0.1 TRT   VIS4  0.443</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 greater        -0.1 TRT   VIS2  0.520</span></span>
+<span><span class="co">#&gt; 2 greater        -0.1 TRT   VIS3  0.227</span></span>
+<span><span class="co">#&gt; 3 greater        -0.1 TRT   VIS4  0.619</span></span>
+<span><span class="co">#&gt; 4 less            0.1 TRT   VIS2  0.547</span></span>
+<span><span class="co">#&gt; 5 less            0.1 TRT   VIS3  0.829</span></span>
+<span><span class="co">#&gt; 6 less            0.1 TRT   VIS4  0.421</span></span></code></pre></div>
 <p>Finally, <code>brm_marignal_data()</code> computes marginal means and
 confidence intervals on the response variable in the data, along with
 other summary statistics.</p>
@@ -509,6 +509,9 @@ other summary statistics.</p>
 <div class="section level2">
 <h2 id="visualization">Visualization<a class="anchor" aria-label="anchor" href="#visualization"></a>
 </h2>
+<div class="section level3">
+<h3 id="comparing-models-and-data">Comparing models and data<a class="anchor" aria-label="anchor" href="#comparing-models-and-data"></a>
+</h3>
 <p>Suppose we fit a second model which omits baseline.</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">summaries_no_baseline</span> <span class="op">&lt;-</span> <span class="va">data</span> <span class="op">|&gt;</span></span>
@@ -526,9 +529,7 @@ intervals from different models and data sources in the same plot.</p>
 <span>  no_baseline <span class="op">=</span> <span class="va">summaries_no_baseline</span>,</span>
 <span>  with_baseline <span class="op">=</span> <span class="va">summaries</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<div class="float">
-<img src="usage/response-1.png" alt="plot of chunk response"><div class="figcaption">plot of chunk response</div>
-</div>
+<p><img src="usage/response-1.png"></p>
 <p>If you omit the marginals of the data, you can show inference on
 change from baseline or the treatment effect.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
@@ -537,9 +538,7 @@ change from baseline or the treatment effect.</p>
 <span>  with_baseline <span class="op">=</span> <span class="va">summaries</span>,</span>
 <span>  marginal <span class="op">=</span> <span class="st">"difference_group"</span> <span class="co"># treatment effect</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<div class="float">
-<img src="usage/difference-1.png" alt="plot of chunk difference"><div class="figcaption">plot of chunk difference</div>
-</div>
+<p><img src="usage/difference-1.png"></p>
 <p>Additional arguments let you control the primary comparison of
 interest (the color aesthetic), the horizontal axis, and the faceting
 variable.</p>
@@ -552,16 +551,16 @@ variable.</p>
 <span>  axis <span class="op">=</span> <span class="st">"time"</span>,</span>
 <span>  facet <span class="op">=</span> <span class="st">"source"</span> <span class="co"># model1 vs model2</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<div class="float">
-<img src="usage/differencecustom-1.png" alt="plot of chunk differencecustom"><div class="figcaption">plot of chunk differencecustom</div>
+<p><img src="usage/differencecustom-1.png"></p>
 </div>
-<p>Finally, <code><a href="../reference/brm_plot_draws.html">brm_plot_draws()</a></code> can plot the posterior draws
-of the response, change from baseline, or treatment difference.</p>
+<div class="section level3">
+<h3 id="plotting-draws">Plotting draws<a class="anchor" aria-label="anchor" href="#plotting-draws"></a>
+</h3>
+<p><code><a href="../reference/brm_plot_draws.html">brm_plot_draws()</a></code> can plot the posterior draws of the
+response, change from baseline, or treatment difference.</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/brm_plot_draws.html">brm_plot_draws</a></span><span class="op">(</span>draws <span class="op">=</span> <span class="va">draws</span><span class="op">$</span><span class="va">difference_group</span><span class="op">)</span></span></code></pre></div>
-<div class="float">
-<img src="usage/draws-1.png" alt="plot of chunk draws"><div class="figcaption">plot of chunk draws</div>
-</div>
+<p><img src="usage/draws-1.png"></p>
 <p>The <code>axis</code> and <code>facet</code> arguments customize the
 horizontal axis and faceting variable, respectively.</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
@@ -570,8 +569,37 @@ horizontal axis and faceting variable, respectively.</p>
 <span>  axis <span class="op">=</span> <span class="st">"group"</span>,</span>
 <span>  facet <span class="op">=</span> <span class="st">"time"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<div class="float">
-<img src="usage/drawscustom-1.png" alt="plot of chunk drawscustom"><div class="figcaption">plot of chunk drawscustom</div>
+<p><img src="usage/drawscustom-1.png"></p>
+</div>
+<div class="section level3">
+<h3 id="comparing-priors-and-posteriors">Comparing priors and posteriors<a class="anchor" aria-label="anchor" href="#comparing-priors-and-posteriors"></a>
+</h3>
+<p>Suppose we want to compare the prior on the intercept term to its
+marginal posterior. <code>brms</code> automatically assigns a mildly
+informative Student t prior to help the MCMC converge:</p>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">brms</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/rstantools/reference/prior_summary.html" class="external-link">prior_summary</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">class</span> <span class="op">==</span> <span class="st">"Intercept"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Intercept ~ student_t(3, 1.9, 11.8)</span></span></code></pre></div>
+<p>To compare the prior and posterior, we express the prior using the
+<code>distributional</code> package, extract posterior samples from the
+<code>brms</code> model, and visualize them together with the
+<code>ggdist</code> package. Below, the shaded gray region is the
+posterior density, and the blue line is the prior density.</p>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://pkg.mitchelloharawild.com/distributional/" class="external-link">distributional</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://mjskay.github.io/ggdist/" class="external-link">ggdist</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://mc-stan.org/posterior/" class="external-link">posterior</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">prior</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://pkg.mitchelloharawild.com/distributional/reference/dist_student_t.html" class="external-link">dist_student_t</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">1.9</span>, <span class="fl">11.8</span><span class="op">)</span></span>
+<span><span class="va">posterior</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://mc-stan.org/posterior/reference/draws_df.html" class="external-link">as_draws_df</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="http://mjskay.github.io/ggdist/reference/stat_halfeye.html" class="external-link">stat_halfeye</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">b_Intercept</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">posterior</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="http://mjskay.github.io/ggdist/reference/stat_slab.html" class="external-link">stat_slab</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>xdist <span class="op">=</span> <span class="va">prior</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"blue"</span>, fill <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="http://mjskay.github.io/ggdist/reference/scale_thickness.html" class="external-link">scale_thickness_shared</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p><img src="usage/priorvsposterior-1.png"></p>
 </div>
 </div>
 <div class="section level2">
@@ -587,14 +615,14 @@ element of the returned list.</p>
 <p>The <code>contrast</code> option accepts a named vector of two
 character vectors which govern <code><a href="https://rdrr.io/r/stats/model.matrix.html" class="external-link">model.matrix()</a></code> contrasts for
 unordered and ordered variables, respectively.</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>contrasts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>unordered <span class="op">=</span> <span class="st">"contr.SAS"</span>, ordered <span class="op">=</span> <span class="st">"contr.poly"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>The <code><a href="https://paul-buerkner.github.io/brms/reference/standata.html" class="external-link">make_standata()</a></code> function lets you see the data that
 <code>brms</code> will generate for Stan. This includes the fixed
 effects model matrix <code>X</code>. Note the differences in the
 <code>groupgroup_*</code> additive terms between the matrix below and
 the one above.</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">brms</span><span class="fu">::</span><span class="fu"><a href="https://paul-buerkner.github.io/brms/reference/standata.html" class="external-link">make_standata</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="va">formula</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span><span class="op">$</span><span class="va">X</span><span class="op">)</span></span>
 <span><span class="co">#&gt;     Intercept  FEV1_BL ARMCDPBO AVISIT2 AVISIT3 AVISIT4 RACEAsian</span></span>
 <span><span class="co">#&gt; 422         1 25.27144        0       1       0       0         0</span></span>
@@ -619,7 +647,7 @@ the one above.</p>
 <span><span class="co">#&gt; 6           0.00000                1                0                0</span></span></code></pre></div>
 <p>If you choose a different contrast method, a different model matrix
 may result.</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span></span>
 <span>  contrasts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>unordered <span class="op">=</span> <span class="st">"contr.treatment"</span>, ordered <span class="op">=</span> <span class="st">"contr.poly"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
@@ -657,7 +685,7 @@ may result.</p>
 protects the discrete time variable (in our case, <code>AVISIT</code>)
 from the <code>contrasts</code> option by assigning a
 <code>contrasts</code> attribute of its own.</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">AVISIT</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  Ord.factor w/ 4 levels "VIS1"&lt;"VIS2"&lt;..: 1 2 3 4 1 2 3 4 1 2 ...</span></span>
 <span><span class="co">#&gt;  - attr(*, "contrasts")= num [1:4, 1:3] 0 1 0 0 0 0 1 0 0 0 ...</span></span>
@@ -682,7 +710,7 @@ list of imputed datasets using the multiple imputation method of your
 choice. The <a href="https://insightsengineering.github.io/rbmi/main/" class="external-link"><code>rbmi</code></a>
 package is uniquely suited to the multiple imputation of continuous
 longitudinal clinical trial data.</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">variables</span> <span class="op">&lt;-</span> <span class="fu">rbmi</span><span class="fu">::</span><span class="fu">set_vars</span><span class="op">(</span></span>
 <span>  outcome <span class="op">=</span> <span class="st">"FEV1_CHG"</span>,</span>
 <span>  visit <span class="op">=</span> <span class="st">"AVISIT"</span>,</span>
@@ -717,7 +745,7 @@ instead of <code>brms::brm(data = data, formula = formula)</code> to fit
 an MMRM to each of the individual imputed datasets in the
 <code>imputed</code> object. The computation could take several hours
 because it requires many fitted MMRM.</p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/brm_model.html">brm_model</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">data</span>, <span class="co"># Yes, please supply the original non-imputed dataset too.</span></span>
 <span>  formula <span class="op">=</span> <span class="va">formula</span>,</span>
@@ -741,7 +769,7 @@ the left-hand side to tell <code>brms</code> to model each missing
 outcome as a model parameter. To use this type of imputation, simply
 supply the returned formula object to the <code>formula</code> argument
 of <code><a href="../reference/brm_model.html">brm_model()</a></code>.</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/brm_formula.html">brm_formula</a></span><span class="op">(</span><span class="va">data</span>, model_missing_outcomes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; FEV1_CHG | mi() ~ FEV1_BL + FEV1_BL:AVISIT + ARMCD + ARMCD:AVISIT + AVISIT + RACE + SEX + unstr(time = AVISIT, gr = USUBJID) </span></span>
 <span><span class="co">#&gt; sigma ~ 0 + AVISIT</span></span></code></pre></div>
