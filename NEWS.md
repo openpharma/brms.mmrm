@@ -1,6 +1,6 @@
-# brms.mmrm 1.1.0.9000 (development)
+# brms.mmrm 1.1.0.9001 (development)
 
-
+* Use FEV data in usage vignette.
 
 # brms.mmrm 1.1.0
 

@@ -109,7 +109,7 @@ As described in the next section, `brms.mmrm` has a convenient function `brm_sim
 
 ```{r}
 library(brms)
-formula <- brm_formula(data = data)
+formula <- brm_formula(data = mutate(data, response = 0))
 formula
 
 stan_data <- make_standata(

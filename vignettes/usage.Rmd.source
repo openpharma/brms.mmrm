@@ -19,6 +19,8 @@ knitr::opts_chunk$set(
   fig.width = 7,
   fig.height = 5,
   fig.path = "usage/",
+  warning = FALSE,
+  paged.print = FALSE,
   eval = identical(tolower(Sys.getenv("NOT_CRAN", unset = "")), "true")
 )
 library(brms.mmrm)
@@ -28,91 +30,263 @@ library(magrittr)
 
 A mixed model of repeated measures (MMRM) analyzes longitudinal clinical trial data. In a longitudinal dataset, there are multiple patients, and each patient has multiple observations at a common set of discrete points in time.
 
-# Data
+# Raw data
 
-To use the `brms.mmrm` package, begin with a longitudinal dataset with one row per patient observation and columns for the response variable, treatment group indicator, discrete time point indicator, patient ID variable, and optional baseline covariates such as age and region. If you do not have a real dataset of your own, you can simulate one from the package. The following dataset has the raw response variable, the  essential factor variables, and continuous baseline covariates.^[Covariates can be categorical too.] In general, the outcome variable can either be the raw response or change from baseline.
-
-```{r}
-library(brms.mmrm)
-library(dplyr)
-library(magrittr)
-set.seed(0L)
-raw_data <- brm_simulate_simple(
-  n_group = 3,
-  n_patient = 100,
-  n_time = 4
-) %>%
-  extract2("data") %>%
-  brm_simulate_continuous(c("biomarker1", "biomarker2", "biomarker3"))
-
-raw_data
-```
-
-It is good practice to convert the time variable to an ordered factor so individual discrete time points correctly represent correct chronological order.^[Ordered factors usually have polynomial contrasts (`contr.poly()`), which makes the fixed effect parameterization counterintuitive. However, `brm_data()` manually sets the contrasts of the time variable to be treatment contrasts (`contr.treatment()`) so there are individual fixed effects for individual discrete time points. To revert back to polynomial contrasts, use `contr.poly()` after the call to `brm_data()`.]
+To use the `brms.mmrm` package, begin with a longitudinal dataset with one row per patient observation and columns for the response variable, treatment group indicator, discrete time point indicator, patient ID variable, and optional baseline covariates such as age and gender. As an example, consider the `fev_dat` dataset from the `mmrm` package.
 
 ```{r}
-raw_data <- raw_data |>
-  brm_data_chronologize(time = "time", levels = paste0("time_", seq_len(4)))
-
-str(raw_data$time)
+data(fev_data, package = "mmrm")
 ```
 
-Next, create a special classed dataset that the package will recognize. The classed data object contains a pre-processed version of the data, along with attributes to declare the outcome variable, whether the outcome is response or change from baseline, the treatment group variable, the discrete time point variable, control group, baseline time point, and the covariates selected for analysis.
+
+It is an artificial (simulated) dataset of a clinical trial investigating the 
+effect of an active treatment on `FEV1` (forced expired volume in one second),
+compared to placebo. `FEV1` is a measure of how quickly the lungs can be 
+emptied and low levels may indicate chronic obstructive pulmonary disease 
+(COPD). 
+
+The dataset is a `tibble` with 800 rows and the following notable variables:
+
+* `USUBJID` (subject ID)
+* `AVISIT` (visit number, factor)
+* `VISITN` (visit number, numeric)
+* `ARMCD` (treatment, `TRT` or `PBO`)
+* `RACE` (3-category race)
+* `SEX` (female or male)
+* `FEV1_BL` (FEV1 at baseline, %)
+* `FEV1` (FEV1 at study visits)
+* `WEIGHT` (weighting variable)
+
+For this vignette, we derive the response variable `FEV1_CHG` as the change from baseline of `FEV1`.
+
+```{r}
+fev_data <- fev_data |>
+  mutate(FEV1_CHG = FEV1 - FEV1_BL)
+```
+
+# Preprocessing
+
+We use the `brm_data()` function to preprocess the raw data and express it in a special classed data frame for `brms.mmrm`. `brm_data()` stores arguments `outcome`, `group`, `time`, etc. as attributes which the downstream post-processing functions will recognize.
 
 ```{r}
 data <- brm_data(
-  data = raw_data,
-  outcome = "response",
-  group = "group",
-  patient = "patient",
-  time = "time",
-  covariates = c("biomarker1", "biomarker2"),
-  reference_group = "group_1",
-  reference_time = "time_1"
+  data = fev_data,
+  outcome = "FEV1_CHG",
+  group = "ARMCD",
+  time = "AVISIT",
+  patient = "USUBJID",
+  baseline = "FEV1_BL",
+  reference_group = "PBO",
+  reference_time = "VIS1",
+  covariates = c("RACE", "SEX")
 )
+```
 
+```{r}
 data
+```
 
-class(data)
+```{r}
+str(attributes(data))
+```
 
-attributes <- attributes(data)
-attributes$row.names <- NULL
-str(attributes)
+In addition, we convert the discrete time variable `AVISIT` to an ordered factor whose levels respect the chronological order given by the continuous time variable `VISITN`.
+
+```{r}
+data <- data |>
+  brm_data_chronologize(order = "VISITN")
+```
+
+`AVISIT` has a special `contrasts` attribute generated by `contr.treatment()` to prevent base R from automatically assigning the default but inappropriate `contr.poly()` polynomial contrasts.
+
+```{r}
+str(data$AVISIT)
 ```
 
 # Formula
 
-Next, choose a `brms` model formula for the fixed effect and variance parameters. The `brm_formula()` function from `brms.mmrm` makes this process easier. A cell means parameterization for this particular model can be expressed as follows. It specifies one fixed effect parameter for each combination of treatment group and time point, and it makes the specification of informative priors straightforward through the `prior` argument of `brm_model()`.
+Next, choose a `brms` model formula for the fixed effect and variance parameters. The `brm_formula()` function from `brms.mmrm` makes this process easier. For example, here is a formula that omits baseline response and interaction terms. 
 
 ```{r}
 brm_formula(
   data = data,
-  intercept = FALSE,
   baseline = FALSE,
-  group = FALSE,
-  time = FALSE,
   baseline_time = FALSE,
-  group_time = TRUE
+  group_time = FALSE
 )
 ```
 
 For the purposes of our example, we choose a fully parameterized analysis of the raw response.
 
 ```{r}
-formula <- brm_formula(
-  data = data,
-  intercept = TRUE,
-  baseline = FALSE,
-  group = TRUE,
-  time = TRUE,
-  baseline_time = FALSE,
-  group_time = TRUE
-)
+formula <- brm_formula(data = data)
 
 formula
 ```
 
-# Parameterization
+# Priors
+
+Some analyses require informative priors, others require non-informative ones. Please use [`brms`](https://paul-buerkner.github.io/brms/) to construct a prior suitable for your analysis. The [`brms`](https://paul-buerkner.github.io/brms/) package has documentation on how its default priors are constructed and how to set your own priors. Once you have an R object that represents the joint prior distribution of your model, you can pass it to the `brm_model()` function described below. The `get_prior()` function shows the default priors for a given dataset and model formula.
+
+```{r}
+brms::get_prior(data = data, formula = formula) |>
+  as.data.frame() |>
+  select(-any_of(c("group", "resp", "nlpar", "lb", "ub", "source")))
+```
+
+# Model
+
+To run an MMRM, use the `brm_model()` function. This function calls `brms::brm()` behind the scenes, using the formula and prior you set in the `formula` and `prior` arguments.
+
+```{r}
+model <- brm_model(data = data, formula = formula, refresh = 0)
+```
+
+The result is a `brms` model object with extra list elements `brms.mmrm_data` and `brms.mmrm_formula` to keep track of the data and formula used to fit the model.
+
+```{r}
+model
+```
+
+```{r}
+model$brms.mmrm_data
+```
+
+```{r}
+model$brms.mmrm_formula
+```
+
+# Marginals
+
+Regardless of the choice of fixed effects formula, `brms.mmrm` performs inference on the marginal distributions at each treatment group and time point of the mean of the following quantities:
+
+1. Response.
+2. Change from baseline. Only reported if you originally declared a baseline time point with the `reference_time` argument of `brm_data()`.
+3. Treatment difference. If you declared a baseline in (2), then treatment difference is calculated in terms of change from baseline. Otherwise, it is calculated in terms of raw response.
+4. Effect size: treatment difference divided by the residual standard deviation.
+
+To derive posterior draws of these marginals, use the `brm_marginal_draws()` function.
+
+```{r}
+draws <- brm_marginal_draws(model = model)
+
+names(draws)
+
+draws$difference_group
+```
+
+If you need samples from these marginals averaged across time points, e.g. an "overall effect size", `brm_marginal_draws_average()` can average the draws above across discrete time points (either all or a user-defined subset).
+
+```{r}
+draws_average <- brm_marginal_draws_average(draws = draws, data = data)
+
+names(draws_average)
+
+draws_average$difference_group
+```
+
+The `brm_marginal_summaries()` function produces posterior summaries of these marginals, and it includes the Monte Carlo standard error (MCSE) of each estimate.
+
+```{r}
+summaries <- brm_marginal_summaries(draws, level = 0.95)
+
+summaries
+```
+
+The `brm_marginal_probabilities()` function shows posterior probabilities of the form, 
+
+$$
+\begin{aligned}
+\text{Prob}(\text{treatment effect} > \text{threshold})
+\end{aligned}
+$$
+
+or 
+
+$$
+\begin{aligned}
+\text{Prob}(\text{treatment effect} < \text{threshold})
+\end{aligned}
+$$
+
+```{r}
+brm_marginal_probabilities(
+  draws = draws,
+  threshold = c(-0.1, 0.1),
+  direction = c("greater", "less")
+)
+```
+
+Finally, `brm_marignal_data()` computes marginal means and confidence intervals on the response variable in the data, along with other summary statistics.
+
+```{r}
+summaries_data <- brm_marginal_data(data = data, level = 0.95)
+
+summaries_data
+```
+
+# Visualization
+
+Suppose we fit a second model which omits baseline.
+
+```{r}
+summaries_no_baseline <- data |>
+  brm_formula(baseline = FALSE, baseline_time = FALSE) |>
+  brm_model(data = data, refresh = 0) |>
+  brm_marginal_draws() |>
+  brm_marginal_summaries()
+```
+
+The `brm_plot_compare()` function compares means and intervals from different models and data sources in the same plot.
+
+```{r response}
+brm_plot_compare(
+  data = summaries_data,
+  no_baseline = summaries_no_baseline,
+  with_baseline = summaries
+)
+```
+
+If you omit the marginals of the data, you can show inference on change from baseline or the treatment effect.
+
+```{r difference}
+brm_plot_compare(
+  no_baseline = summaries_no_baseline,
+  with_baseline = summaries,
+  marginal = "difference_group" # treatment effect
+)
+```
+
+Additional arguments let you control the primary comparison of interest (the color aesthetic), the horizontal axis, and the faceting variable.
+
+```{r differencecustom}
+brm_plot_compare(
+  no_baseline = summaries_no_baseline,
+  with_baseline = summaries,
+  marginal = "difference_group",
+  compare = "group",
+  axis = "time",
+  facet = "source" # model1 vs model2
+)
+```
+
+Finally, `brm_plot_draws()` can plot the posterior draws of the response, change from baseline, or treatment difference.
+
+```{r draws}
+brm_plot_draws(draws = draws$difference_group)
+```
+
+The `axis` and `facet` arguments customize the horizontal axis and faceting variable, respectively.
+
+```{r drawscustom}
+brm_plot_draws(
+  draws = draws$difference_group,
+  axis = "group",
+  facet = "time"
+)
+```
+
+# Appendix A: Contrasts
 
 The formula is not the only factor
 that ultimately determines the fixed effect parameterization.
@@ -145,41 +319,13 @@ options(
 head(brms::make_standata(formula = formula, data = data)$X)
 ```
 
-# Priors
-
-Some analyses require informative priors, others require non-informative ones. Please use [`brms`](https://paul-buerkner.github.io/brms/) to construct a prior suitable for your analysis. The [`brms`](https://paul-buerkner.github.io/brms/) package has documentation on how its default priors are constructed and how to set your own priors. Once you have an R object that represents the joint prior distribution of your model, you can pass it to the `brm_model()` function described below. The `get_prior()` function shows the default priors for a given dataset and model formula.
-
-```{r, paged.print = FALSE}
-brms::get_prior(data = data, formula = formula)
-```
-
-# Model
-
-To run an MMRM, use the `brm_model()` function. This function calls `brms::brm()` behind the scenes, using the formula and prior you set in the `formula` and `prior` arguments.
-
-```{r, eval = FALSE}
-model <- brm_model(data = data, formula = formula, refresh = 0)
-```
-
-```{r, include = FALSE}
-model <- brm_model(data = data, formula = formula, refresh = 0)
-```
-
-The result is a `brms` model object with extra list elements `brms.mmrm_data` and `brms.mmrm_formula` to keep track of the data and formula used to fit the model.
+Recall from earlier that `brm_data_chronologize()` protects the discrete time variable (in our case, `AVISIT`) from the `contrasts` option by assigning a `contrasts` attribute of its own.
 
 ```{r}
-model
+str(data$AVISIT)
 ```
 
-```{r}
-model$brms.mmrm_data
-```
-
-```{r}
-model$brms.mmrm_formula
-```
-
-# Imputation of missing outcomes
+# Appendix B: Imputation of missing outcomes
 
 Under the missing at random (MAR) assumptions, MMRMs do not require imputation (@bamdd). However, if the outcomes in your data are not missing at random, or if you are targeting an alternative estimand, then you may need to impute missing outcomes. `brms.mmrm` can leverage either of the two alternative solutions described at <https://paul-buerkner.github.io/brms/articles/brms_missings.html>. 
 
@@ -189,17 +335,17 @@ To impute missing outcomes before model fitting, first use create a list of impu
 
 ```{r, eval = FALSE}
 variables <- rbmi::set_vars(
-  outcome = "response",
-  visit = "time",
-  subjid = "patient",
-  group = "group",
-  covariates = c("biomarker1", "biomarker2")
+  outcome = "FEV1_CHG",
+  visit = "AVISIT",
+  subjid = "USUBJID",
+  group = "ARMCD",
+  covariates = c("RACE", "SEX")
 )
 imputation_draws <- rbmi::draws(
   data = data |>
     mutate(
-      patient = as.factor(patient),
-      group = as.factor(group)
+      USUBJID = as.factor(USUBJID),
+      AVISIT = as.factor(AVISIT)
     ),
   vars = variables,
   method = rbmi::method_condmean(type = "jackknife"),
@@ -208,15 +354,14 @@ imputation_draws <- rbmi::draws(
 imputation_run <- rbmi::impute(
   draws = imputation_draws,
   references = c(
-    group_1 = "group_1",
-    group_2 = "group_1",
-    group_3 = "group_1"
+    placebo = "PBO",
+    treatment = "TRT"
   )
 )
 imputed_datasets <- rbmi::extract_imputed_dfs(imputation_run)
 ```
 
-At this point, `imputed_datasets` is a list of data frames with the response variable imputed with multiple imputation. Simply supply this list to the `imputed` argument of `brm_model()`. Internally, `brm_model()` calls `brms::brm_multiple(data = imputed, formula = formula)` instead of `brms::brm(data = data, formula = formula)` to fit an MMRM to each of the individual imputed datasets in the `imputed` object.
+At this point, `imputed_datasets` is a list of data frames with the response variable imputed with multiple imputation. Simply supply this list to the `imputed` argument of `brm_model()`. Internally, `brm_model()` calls `brms::brm_multiple(data = imputed, formula = formula)` instead of `brms::brm(data = data, formula = formula)` to fit an MMRM to each of the individual imputed datasets in the `imputed` object. The computation could take several hours because it requires many fitted MMRM.
 
 ```{r, eval = FALSE}
 model <- brm_model(
@@ -238,119 +383,5 @@ brm_formula(data, model_missing_outcomes = TRUE)
 ```
 
 Unlike imputation before model fitting, this approach requires only one fit of the model. However, that model will sample posterior draws for each missing outcome as if it were a model parameter, so the MCMC may run slower and produce a larger output object.
-
-# Marginals
-
-Regardless of the choice of fixed effects formula, `brms.mmrm` performs inference on the marginal distributions at each treatment group and time point of the mean of the following quantities:
-
-1. Response.
-2. Change from baseline. Only reported if you originally declared a baseline time point with the `reference_time` argument of `brm_data()`.
-3. Treatment difference. If you declared a baseline in (2), then treatment difference is calculated in terms of change from baseline. Otherwise, it is calculated in terms of raw response.
-4. Effect size: treatment difference divided by the residual standard deviation.
-
-To derive posterior draws of these marginals, use the `brm_marginal_draws()` function.
-
-```{r, paged.print = FALSE}
-draws <- brm_marginal_draws(model = model)
-
-draws
-```
-
-If you need samples from these marginals averaged across time points, e.g. an "overall effect size", `brm_marginal_draws_average()` can average the draws above across discrete time points (either all or a user-defined subset).
-
-```{r, paged.print = FALSE}
-brm_marginal_draws_average(draws = draws, data = data)
-```
-
-The `brm_marginal_summaries()` function produces posterior summaries of these marginals, and it includes the Monte Carlo standard error (MCSE) of each estimate.
-
-```{r, paged.print = FALSE}
-summaries <- brm_marginal_summaries(draws, level = 0.95)
-
-summaries
-```
-
-The `brm_marginal_probabilities()` function shows posterior probabilities of the form, 
-
-$$
-\begin{aligned}
-\text{Prob}(\text{treatment effect} > \text{threshold})
-\end{aligned}
-$$
-
-or 
-
-$$
-\begin{aligned}
-\text{Prob}(\text{treatment effect} < \text{threshold})
-\end{aligned}
-$$
-
-```{r}
-brm_marginal_probabilities(
-  draws = draws,
-  threshold = c(-0.1, 0.1),
-  direction = c("greater", "less")
-)
-```
-
-Finally, `brm_marignal_data()` computes marginal means and confidence intervals on the response variable in the data, along with other summary statistics.
-
-```{r, paged.print = FALSE}
-summaries_data <- brm_marginal_data(data = data, level = 0.95)
-
-summaries_data
-```
-
-# Visualization
-
-The `brm_plot_compare()` function compares means and intervals from many different models and data sources in the same plot. First, we need the marginals of the data.
-
-```{r response}
-brm_plot_compare(
-  data = summaries_data,
-  model1 = summaries,
-  model2 = summaries
-)
-```
-
-If you omit the marginals of the data, you can show inference on change from baseline or the treatment effect.
-
-```{r difference}
-brm_plot_compare(
-  model1 = summaries,
-  model2 = summaries,
-  marginal = "difference_group" # treatment effect
-)
-```
-
-Additional arguments let you control the primary comparison of interest (the color aesthetic), the horizontal axis, and the faceting variable.
-
-```{r differencecustom}
-brm_plot_compare(
-  model1 = summaries,
-  model2 = summaries,
-  marginal = "difference_group",
-  compare = "group",
-  axis = "time",
-  facet = "source" # model1 vs model2
-)
-```
-
-Finally, `brm_plot_draws()` can plot the posterior draws of the response, change from baseline, or treatment difference.
-
-```{r draws}
-brm_plot_draws(draws = draws$difference_group)
-```
-
-The `axis` and `facet` arguments customize the horizontal axis and faceting variable, respectively.
-
-```{r drawscustom}
-brm_plot_draws(
-  draws = draws$difference_group,
-  axis = "group",
-  facet = "time"
-)
-```
 
 # References
