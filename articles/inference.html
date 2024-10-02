@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">brms.mmrm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0.9002</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -201,7 +201,9 @@ involved.</p>
 <code class="sourceCode R"><span><span class="va">base_formula</span></span>
 <span><span class="co">#&gt; FEV1_CHG ~ FEV1_BL + FEV1_BL:AVISIT + ARMCD + ARMCD:AVISIT + </span></span>
 <span><span class="co">#&gt;     AVISIT + RACE + SEX + WEIGHT</span></span>
-<span><span class="co">#&gt; &lt;environment: 0x55db422a01f0&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt; attr(,"center")</span></span>
+<span><span class="co">#&gt; [1] TRUE</span></span>
+<span><span class="co">#&gt; &lt;environment: 0x55b8eff59730&gt;</span></span></code></pre></div>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/model.matrix.html" class="external-link">model.matrix</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">base_formula</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  [1] "(Intercept)"                   "FEV1_BL"                      </span></span>
@@ -220,11 +222,11 @@ interesting parameters and average out the uninteresting parameters.</p>
 <div class="section level2">
 <h2 id="existing-capabilities">Existing capabilities<a class="anchor" aria-label="anchor" href="#existing-capabilities"></a>
 </h2>
-<p><code><a href="../reference/brm_model.html">brms.mmrm::brm_model()</a></code> returns a fitted <a href="https://paul-buerkner.github.io/brms/" class="external-link"><code>brms</code></a>
-model, and <a href="https://paul-buerkner.github.io/brms/" class="external-link"><code>brms</code></a>
-already has tools for posterior inference. Through a combination of
-native functions and S3 methods, <a href="https://paul-buerkner.github.io/brms/" class="external-link"><code>brms</code></a>
-integrates not only with <a href="https://mc-stan.org/posterior/" class="external-link"><code>posterior</code></a> and <a href="https://mc-stan.org/loo/" class="external-link"><code>loo</code></a>, but also <a href="https://cran.r-project.org/package=emmeans" class="external-link"><code>emmeans</code></a>
+<p><code><a href="../reference/brm_model.html">brms.mmrm::brm_model()</a></code> returns a fitted <a href="https://paulbuerkner.com/brms/" class="external-link"><code>brms</code></a> model, and
+<a href="https://paulbuerkner.com/brms/" class="external-link"><code>brms</code></a> already
+has tools for posterior inference. Through a combination of native
+functions and S3 methods, <a href="https://paulbuerkner.com/brms/" class="external-link"><code>brms</code></a> integrates
+not only with <a href="https://mc-stan.org/posterior/" class="external-link"><code>posterior</code></a> and <a href="https://mc-stan.org/loo/" class="external-link"><code>loo</code></a>, but also <a href="https://cran.r-project.org/package=emmeans" class="external-link"><code>emmeans</code></a>
 for the estimation of marginal means and downstream contrasts.</p>
 <p>Despite the existing features in <code>brms</code>,
 <code>brms.mmrm</code> implements custom code to transform model
@@ -847,7 +849,7 @@ least squares means,”</span> <em>The American Statistician</em>, 34,
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>

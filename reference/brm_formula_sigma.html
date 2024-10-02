@@ -9,7 +9,7 @@ a formula for the sigma argument of brm_formula()."><meta property="og:image" co
 
     <a class="navbar-brand me-2" href="../index.html">brms.mmrm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0.9002</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -180,7 +180,7 @@ This formula controls the parameterization of <code>sigma</code>, the linear-sca
     <p>In <code>brms</code>, the standard deviations of the residuals are
 modeled through a parameter vector called <code>sigma</code>. <code>brms.mmrm</code>
 always treats <code>sigma</code> as a distributional parameter
-(<a href="https://paul-buerkner.github.io/brms/articles/brms_distreg.html" class="external-link">https://paul-buerkner.github.io/brms/articles/brms_distreg.html</a>).
+(<a href="https://paulbuerkner.com/brms/articles/brms_distreg.html" class="external-link">https://paulbuerkner.com/brms/articles/brms_distreg.html</a>).
 <code>brm_formula_sigma()</code> lets you control the parameterization of <code>sigma</code>.
 The output of <code>brm_formula_sigma()</code> serves as input to the <code>sigma</code>
 argument of <code><a href="brm_formula.html">brm_formula()</a></code>.</p>
@@ -224,12 +224,12 @@ for this uncommon scenario.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> sigma ~ 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"brm_allow_effect_size")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x559128182300&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55616377ce60&gt;</span>
 <span class="r-in"><span><span class="va">by_group</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> sigma ~ group + time</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"brm_allow_effect_size")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55912747faf0&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x556163018e20&gt;</span>
 <span class="r-in"><span><span class="fu"><a href="brm_formula.html">brm_formula</a></span><span class="op">(</span><span class="va">data</span>, sigma <span class="op">=</span> <span class="va">homogeneous</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> response ~ group + group:time + time + unstr(time = time, gr = patient) </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> sigma ~ 1</span>
@@ -247,7 +247,7 @@ for this uncommon scenario.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer></div>

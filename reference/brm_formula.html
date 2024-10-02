@@ -9,7 +9,7 @@ brm_data() dataset or an informative prior archetype."><meta property="og:image"
 
     <a class="navbar-brand me-2" href="../index.html">brms.mmrm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0.9002</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -94,6 +94,7 @@ brm_data() dataset or an informative prior archetype."><meta property="og:image"
 <span>  subgroup <span class="op">=</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">data</span>, <span class="st">"brm_subgroup"</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  subgroup_time <span class="op">=</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">data</span>, <span class="st">"brm_subgroup"</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  time <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  center <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  <span class="va">...</span>,</span>
 <span>  effect_baseline <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  effect_group <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -130,7 +131,7 @@ prior archetype from a function like <code><a href="brm_archetype_successive_cel
 <dd><p>Logical of length 1, <code>TRUE</code>
 to impute missing outcomes during model fitting as described in the
 "Imputation during model fitting" section of
-<a href="https://paul-buerkner.github.io/brms/articles/brms_missings.html" class="external-link">https://paul-buerkner.github.io/brms/articles/brms_missings.html</a>.
+<a href="https://paulbuerkner.com/brms/articles/brms_missings.html" class="external-link">https://paulbuerkner.com/brms/articles/brms_missings.html</a>.
 Specifically, if the outcome variable is <code>y</code>, then the formula will
 begin with <code>y | mi() ~ ...</code> instead of simply <code>y ~ ...</code>.
 Set to <code>FALSE</code> (default) to forgo this kind of imputation
@@ -163,7 +164,7 @@ This matrix describes the correlations between time points in the same
 patient, as modeled in the residuals. Different patients are modeled
 as independent. The <code>correlation</code> argument controls how this matrix
 is parameterized, and the choices given by <code>brms</code> are listed at
-<a href="https://paul-buerkner.github.io/brms/reference/autocor-terms.html" class="external-link">https://paul-buerkner.github.io/brms/reference/autocor-terms.html</a>,
+<a href="https://paulbuerkner.com/brms/reference/autocor-terms.html" class="external-link">https://paulbuerkner.com/brms/reference/autocor-terms.html</a>,
 and the choice is ultimately encoded in the main body of the
 output formula through terms like <code>unstru()</code> and <code>arma()</code>, some
 of which are configurable through arguments
@@ -172,16 +173,16 @@ of which are configurable through arguments
 Choices in <code>brms.mmrm</code>:</p><ul><li><p><code>"unstructured"</code>: the default/recommended option, a fully parameterized
 covariance matrix with a unique scalar parameter for each unique pair
 of discrete time points. C.f.
-<a href="https://paul-buerkner.github.io/brms/reference/unstr.html" class="external-link">https://paul-buerkner.github.io/brms/reference/unstr.html</a>.</p></li>
+<a href="https://paulbuerkner.com/brms/reference/unstr.html" class="external-link">https://paulbuerkner.com/brms/reference/unstr.html</a>.</p></li>
 <li><p><code>"autoregressive_moving_average"</code>: autoregressive moving
 average (ARMA), c.f.
-<a href="https://paul-buerkner.github.io/brms/reference/arma.html" class="external-link">https://paul-buerkner.github.io/brms/reference/arma.html</a>.</p></li>
+<a href="https://paulbuerkner.com/brms/reference/arma.html" class="external-link">https://paulbuerkner.com/brms/reference/arma.html</a>.</p></li>
 <li><p><code>"autoregressive"</code>: autoregressive (AR), c.f.
-<a href="https://paul-buerkner.github.io/brms/reference/ar.html" class="external-link">https://paul-buerkner.github.io/brms/reference/ar.html</a>.</p></li>
+<a href="https://paulbuerkner.com/brms/reference/ar.html" class="external-link">https://paulbuerkner.com/brms/reference/ar.html</a>.</p></li>
 <li><p><code>"moving_average"</code>: moving average (MA), c.f.
-<a href="https://paul-buerkner.github.io/brms/reference/ma.html" class="external-link">https://paul-buerkner.github.io/brms/reference/ma.html</a>.</p></li>
+<a href="https://paulbuerkner.com/brms/reference/ma.html" class="external-link">https://paulbuerkner.com/brms/reference/ma.html</a>.</p></li>
 <li><p><code>"compound_symmetry</code>: compound symmetry, c.f.
-<a href="https://paul-buerkner.github.io/brms/reference/cosy.html" class="external-link">https://paul-buerkner.github.io/brms/reference/cosy.html</a>.</p></li>
+<a href="https://paulbuerkner.com/brms/reference/cosy.html" class="external-link">https://paulbuerkner.com/brms/reference/cosy.html</a>.</p></li>
 <li><p><code>"diagonal"</code>: declare independent time points within patients.</p></li>
 </ul></dd>
 
@@ -204,7 +205,7 @@ whether to estimate ARMA effects using residual covariance matrices.
 Directly supplied to the <code>cov</code> argument in <code>brms</code> for
 <code>"autoregressive_moving_average"</code>, <code>"autoregressive"</code>, and
 <code>"moving_average"</code> correlation structures. C.f.
-<a href="https://paul-buerkner.github.io/brms/reference/arma.html" class="external-link">https://paul-buerkner.github.io/brms/reference/arma.html</a>.</p></dd>
+<a href="https://paulbuerkner.com/brms/reference/arma.html" class="external-link">https://paulbuerkner.com/brms/reference/arma.html</a>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -315,6 +316,20 @@ variable in the dataset.</p></dd>
 <code>FALSE</code> to omit.</p></dd>
 
 
+<dt id="arg-center">center<a class="anchor" aria-label="anchor" href="#arg-center"></a></dt>
+<dd><p><code>TRUE</code> to center the columns of the model matrix before
+fitting the model if the model formula includes an intercept
+term controlled by <code>brms</code>. <code>FALSE</code> to skip centering. Centering usually
+leads to more computationally efficient sampling in the presence
+of an intercept, but it changes
+the interpretation of the intercept parameter if included in the model
+(as explained in the help file of <code><a href="https://paulbuerkner.com/brms/reference/brmsformula.html" class="external-link">brms::brmsformula()</a></code>).
+Informative prior archetypes always use <code>center = FALSE</code>
+and use an intercept not controlled by <code>brms.mmrm</code> to ensure the
+intercept parameter is interpretable and compatible with
+user-defined priors.</p></dd>
+
+
 <dt id="arg-effect-baseline">effect_baseline<a class="anchor" aria-label="anchor" href="#arg-effect-baseline"></a></dt>
 <dd><p>Deprecated on 2024-01-16 (version 0.0.2.9002).
 Use <code>baseline</code> instead.</p></dd>
@@ -349,7 +364,7 @@ to throw a warning if ignored arguments are specified,
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>An object of class <code>"brmsformula"</code> returned from
-<code><a href="https://paul-buerkner.github.io/brms/reference/brmsformula.html" class="external-link">brms::brmsformula()</a></code>. It contains the fixed effect mapping,
+<code><a href="https://paulbuerkner.com/brms/reference/brmsformula.html" class="external-link">brms::brmsformula()</a></code>. It contains the fixed effect mapping,
 correlation structure, and residual variance structure.</p>
     </div>
     <div class="section level2">
@@ -396,7 +411,7 @@ The ordering of the categorical variables in the data,
 as well as the <code>contrast</code> option in R, affect the
 construction of the model matrix. To see the model
 matrix that will ultimately be used in <code><a href="brm_model.html">brm_model()</a></code>,
-run <code><a href="https://paul-buerkner.github.io/brms/reference/standata.html" class="external-link">brms::make_standata()</a></code> and examine the <code>X</code> element
+run <code><a href="https://paulbuerkner.com/brms/reference/standata.html" class="external-link">brms::make_standata()</a></code> and examine the <code>X</code> element
 of the returned list. See the examples below for a
 demonstration.</p>
     </div>
@@ -442,12 +457,12 @@ demonstration.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> sigma ~ 0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"brm_allow_effect_size")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x5591308c4b38&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55615fe03c50&gt;</span>
 <span class="r-in"><span><span class="va">by_group</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> sigma ~ group + time</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"brm_allow_effect_size")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x559130a348f8&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55615fb2b580&gt;</span>
 <span class="r-in"><span><span class="fu">brm_formula</span><span class="op">(</span><span class="va">data</span>, sigma <span class="op">=</span> <span class="va">homogeneous</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> response ~ group + group:time + time + unstr(time = time, gr = patient) </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> sigma ~ 0</span>
@@ -457,7 +472,7 @@ demonstration.</p>
 <span class="r-in"><span><span class="co"># Optional: set the contrast option, which determines the model matrix.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>contrasts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>unordered <span class="op">=</span> <span class="st">"contr.SAS"</span>, ordered <span class="op">=</span> <span class="st">"contr.poly"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># See the fixed effect mapping you get from the data:</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">brms</span><span class="fu">::</span><span class="fu"><a href="https://paul-buerkner.github.io/brms/reference/standata.html" class="external-link">make_standata</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="va">formula</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span><span class="op">$</span><span class="va">X</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">brms</span><span class="fu">::</span><span class="fu"><a href="https://paulbuerkner.com/brms/reference/standata.html" class="external-link">make_standata</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="va">formula</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span><span class="op">$</span><span class="va">X</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   timetime_1 timetime_2 timetime_3 timetime_4 timetime_1:groupgroup_1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1          1          0          0          0                       1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2          0          1          0          0                       0</span>
@@ -478,7 +493,7 @@ demonstration.</p>
 <span class="r-in"><span>  contrasts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>unordered <span class="op">=</span> <span class="st">"contr.treatment"</span>, ordered <span class="op">=</span> <span class="st">"contr.poly"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># different model matrix than before:</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">brms</span><span class="fu">::</span><span class="fu"><a href="https://paul-buerkner.github.io/brms/reference/standata.html" class="external-link">make_standata</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="va">formula</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span><span class="op">$</span><span class="va">X</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">brms</span><span class="fu">::</span><span class="fu"><a href="https://paulbuerkner.com/brms/reference/standata.html" class="external-link">make_standata</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="va">formula</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span><span class="op">$</span><span class="va">X</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   timetime_1 timetime_2 timetime_3 timetime_4 timetime_1:groupgroup_2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1          1          0          0          0                       0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2          0          1          0          0                       0</span>
@@ -524,7 +539,7 @@ demonstration.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer></div>

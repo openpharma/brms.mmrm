@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">brms.mmrm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0.9002</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -157,18 +157,18 @@ recognize.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data</span></span>
 <span><span class="co">#&gt; # A tibble: 800 × 11</span></span>
-<span><span class="co">#&gt;    USUBJID AVISIT ARMCD RACE  SEX   FEV1_BL  FEV1 WEIGHT VISITN VISITN2 FEV1_CHG</span></span>
-<span><span class="co">#&gt;    &lt;fct&gt;   &lt;fct&gt;  &lt;fct&gt; &lt;fct&gt; &lt;fct&gt;   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;  &lt;int&gt;   &lt;dbl&gt;    &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 PT2     VIS1   PBO   Asian Male     45.0  NA    0.465      1  0.330     NA   </span></span>
-<span><span class="co">#&gt;  2 PT2     VIS2   PBO   Asian Male     45.0  31.5  0.233      2 -0.820    -13.6 </span></span>
-<span><span class="co">#&gt;  3 PT2     VIS3   PBO   Asian Male     45.0  36.9  0.360      3  0.487     -8.15</span></span>
-<span><span class="co">#&gt;  4 PT2     VIS4   PBO   Asian Male     45.0  48.8  0.507      4  0.738      3.78</span></span>
-<span><span class="co">#&gt;  5 PT3     VIS1   PBO   Blac… Fema…    43.5  NA    0.682      1  0.576     NA   </span></span>
-<span><span class="co">#&gt;  6 PT3     VIS2   PBO   Blac… Fema…    43.5  36.0  0.892      2 -0.305     -7.51</span></span>
-<span><span class="co">#&gt;  7 PT3     VIS3   PBO   Blac… Fema…    43.5  NA    0.128      3  1.51      NA   </span></span>
-<span><span class="co">#&gt;  8 PT3     VIS4   PBO   Blac… Fema…    43.5  37.2  0.222      4  0.390     -6.34</span></span>
-<span><span class="co">#&gt;  9 PT5     VIS1   PBO   Blac… Male     43.6  32.3  0.411      1 -0.0162   -11.3 </span></span>
-<span><span class="co">#&gt; 10 PT5     VIS2   PBO   Blac… Male     43.6  NA    0.422      2  0.944     NA   </span></span>
+<span><span class="co">#&gt;    USUBJID AVISIT ARMCD RACE            SEX   FEV1_BL  FEV1 WEIGHT VISITN VISITN2 FEV1_CHG</span></span>
+<span><span class="co">#&gt;    &lt;fct&gt;   &lt;fct&gt;  &lt;fct&gt; &lt;fct&gt;           &lt;fct&gt;   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;  &lt;int&gt;   &lt;dbl&gt;    &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 PT2     VIS1   PBO   Asian           Male     45.0  NA    0.465      1  0.330     NA   </span></span>
+<span><span class="co">#&gt;  2 PT2     VIS2   PBO   Asian           Male     45.0  31.5  0.233      2 -0.820    -13.6 </span></span>
+<span><span class="co">#&gt;  3 PT2     VIS3   PBO   Asian           Male     45.0  36.9  0.360      3  0.487     -8.15</span></span>
+<span><span class="co">#&gt;  4 PT2     VIS4   PBO   Asian           Male     45.0  48.8  0.507      4  0.738      3.78</span></span>
+<span><span class="co">#&gt;  5 PT3     VIS1   PBO   Black or Afric… Fema…    43.5  NA    0.682      1  0.576     NA   </span></span>
+<span><span class="co">#&gt;  6 PT3     VIS2   PBO   Black or Afric… Fema…    43.5  36.0  0.892      2 -0.305     -7.51</span></span>
+<span><span class="co">#&gt;  7 PT3     VIS3   PBO   Black or Afric… Fema…    43.5  NA    0.128      3  1.51      NA   </span></span>
+<span><span class="co">#&gt;  8 PT3     VIS4   PBO   Black or Afric… Fema…    43.5  37.2  0.222      4  0.390     -6.34</span></span>
+<span><span class="co">#&gt;  9 PT5     VIS1   PBO   Black or Afric… Male     43.6  32.3  0.411      1 -0.0162   -11.3 </span></span>
+<span><span class="co">#&gt; 10 PT5     VIS2   PBO   Black or Afric… Male     43.6  NA    0.422      2  0.944     NA   </span></span>
 <span><span class="co">#&gt; # ℹ 790 more rows</span></span></code></pre></div>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/attributes.html" class="external-link">attributes</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span><span class="op">)</span></span>
@@ -232,16 +232,19 @@ analysis of the raw response.</p>
 <h2 id="priors">Priors<a class="anchor" aria-label="anchor" href="#priors"></a>
 </h2>
 <p>Some analyses require informative priors, others require
-non-informative ones. Please use <a href="https://paul-buerkner.github.io/brms/" class="external-link"><code>brms</code></a> to
-construct a prior suitable for your analysis. The <a href="https://paul-buerkner.github.io/brms/" class="external-link"><code>brms</code></a>
-package has documentation on how its default priors are constructed and
-how to set your own priors. Once you have an R object that represents
+non-informative ones. Please use <a href="https://paulbuerkner.com/brms/" class="external-link"><code>brms</code></a> to construct
+a prior suitable for your analysis. The <a href="https://paulbuerkner.com/brms/" class="external-link"><code>brms</code></a> package has
+documentation on how its default priors are constructed and how to set
+your own priors.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;Please consult the documentation on automatic centering
+in &lt;code&gt;brms&lt;/code&gt; if you plan to set a prior on the intercept:
+&lt;code&gt;&lt;a href="https://paulbuerkner.com/brms/reference/brmsformula.html" class="external-link"&gt;?brms::brmsformula&lt;/a&gt;&lt;/code&gt;. Automatic centering changes the
+interpretation of the intercept parameter.&lt;/p&gt;'><sup>1</sup></a> Once you have an R object that represents
 the joint prior distribution of your model, you can pass it to the
 <code><a href="../reference/brm_model.html">brm_model()</a></code> function described below. The
-<code><a href="https://paul-buerkner.github.io/brms/reference/default_prior.html" class="external-link">get_prior()</a></code> function shows the default priors for a given
+<code><a href="https://paulbuerkner.com/brms/reference/default_prior.html" class="external-link">get_prior()</a></code> function shows the default priors for a given
 dataset and model formula.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">brms</span><span class="fu">::</span><span class="fu"><a href="https://paul-buerkner.github.io/brms/reference/default_prior.html" class="external-link">get_prior</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">data</span>, formula <span class="op">=</span> <span class="va">formula</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<code class="sourceCode R"><span><span class="fu">brms</span><span class="fu">::</span><span class="fu"><a href="https://paulbuerkner.com/brms/reference/default_prior.html" class="external-link">get_prior</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">data</span>, formula <span class="op">=</span> <span class="va">formula</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/all_of.html" class="external-link">any_of</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"group"</span>, <span class="st">"resp"</span>, <span class="st">"nlpar"</span>, <span class="st">"lb"</span>, <span class="st">"ub"</span>, <span class="st">"source"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                      prior     class                       coef  dpar</span></span>
@@ -272,7 +275,7 @@ dataset and model formula.</p>
 <h2 id="model">Model<a class="anchor" aria-label="anchor" href="#model"></a>
 </h2>
 <p>To run an MMRM, use the <code><a href="../reference/brm_model.html">brm_model()</a></code> function. This
-function calls <code><a href="https://paul-buerkner.github.io/brms/reference/brm.html" class="external-link">brms::brm()</a></code> behind the scenes, using the
+function calls <code><a href="https://paulbuerkner.com/brms/reference/brm.html" class="external-link">brms::brm()</a></code> behind the scenes, using the
 formula and prior you set in the <code>formula</code> and
 <code>prior</code> arguments.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
@@ -294,54 +297,34 @@ to keep track of the data and formula used to fit the model.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Correlation Structures:</span></span>
 <span><span class="co">#&gt;                    Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS</span></span>
-<span><span class="co">#&gt; cortime(VIS1,VIS2)     0.36      0.09     0.17     0.51 1.00     5926     2988</span></span>
-<span><span class="co">#&gt; cortime(VIS1,VIS3)     0.14      0.10    -0.06     0.33 1.00     5214     3152</span></span>
-<span><span class="co">#&gt; cortime(VIS2,VIS3)     0.04      0.10    -0.16     0.25 1.00     5495     2706</span></span>
-<span><span class="co">#&gt; cortime(VIS1,VIS4)     0.17      0.11    -0.06     0.38 1.00     5762     2816</span></span>
-<span><span class="co">#&gt; cortime(VIS2,VIS4)     0.11      0.09    -0.07     0.28 1.00     5909     2829</span></span>
-<span><span class="co">#&gt; cortime(VIS3,VIS4)     0.00      0.10    -0.19     0.20 1.00     5305     3018</span></span>
+<span><span class="co">#&gt; cortime(VIS1,VIS2)     0.36      0.08     0.19     0.51 1.00     5330     3117</span></span>
+<span><span class="co">#&gt; cortime(VIS1,VIS3)     0.14      0.10    -0.06     0.32 1.00     5545     2626</span></span>
+<span><span class="co">#&gt; cortime(VIS2,VIS3)     0.04      0.10    -0.15     0.24 1.00     5103     3078</span></span>
+<span><span class="co">#&gt; cortime(VIS1,VIS4)     0.16      0.12    -0.08     0.38 1.00     5353     2866</span></span>
+<span><span class="co">#&gt; cortime(VIS2,VIS4)     0.11      0.09    -0.06     0.28 1.00     6012     3087</span></span>
+<span><span class="co">#&gt; cortime(VIS3,VIS4)     0.01      0.10    -0.19     0.21 1.00     4506     2771</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Regression Coefficients:</span></span>
-<span><span class="co">#&gt;                            Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS</span></span>
-<span><span class="co">#&gt; Intercept                     23.36      2.55    18.40    28.51 1.00     1814</span></span>
-<span><span class="co">#&gt; FEV1_BL                       -0.82      0.06    -0.94    -0.70 1.00     1876</span></span>
-<span><span class="co">#&gt; ARMCDTRT                       4.00      1.06     1.97     6.09 1.00     2505</span></span>
-<span><span class="co">#&gt; AVISIT2                        4.46      2.73    -0.87     9.73 1.00     2058</span></span>
-<span><span class="co">#&gt; AVISIT3                       12.54      2.92     6.78    18.33 1.00     1967</span></span>
-<span><span class="co">#&gt; AVISIT4                       15.52      4.45     6.74    24.29 1.00     2576</span></span>
-<span><span class="co">#&gt; RACEBlackorAfricanAmerican     1.45      0.59     0.32     2.63 1.00     5718</span></span>
-<span><span class="co">#&gt; RACEWhite                      5.45      0.63     4.23     6.68 1.00     5124</span></span>
-<span><span class="co">#&gt; SEXFemale                      0.38      0.52    -0.63     1.40 1.00     5439</span></span>
-<span><span class="co">#&gt; FEV1_BL:AVISIT2                0.01      0.06    -0.12     0.14 1.00     2221</span></span>
-<span><span class="co">#&gt; FEV1_BL:AVISIT3               -0.05      0.07    -0.19     0.08 1.00     2041</span></span>
-<span><span class="co">#&gt; FEV1_BL:AVISIT4               -0.01      0.11    -0.21     0.20 1.00     2686</span></span>
-<span><span class="co">#&gt; ARMCDTRT:AVISIT2              -0.03      1.16    -2.26     2.24 1.00     2710</span></span>
-<span><span class="co">#&gt; ARMCDTRT:AVISIT3              -0.99      1.20    -3.42     1.37 1.00     2490</span></span>
-<span><span class="co">#&gt; ARMCDTRT:AVISIT4               0.44      1.87    -3.15     4.03 1.00     4022</span></span>
-<span><span class="co">#&gt; sigma_AVISITVIS1               1.83      0.06     1.71     1.95 1.00     5914</span></span>
-<span><span class="co">#&gt; sigma_AVISITVIS2               1.59      0.06     1.47     1.71 1.00     5225</span></span>
-<span><span class="co">#&gt; sigma_AVISITVIS3               1.33      0.06     1.21     1.46 1.00     5779</span></span>
-<span><span class="co">#&gt; sigma_AVISITVIS4               2.28      0.06     2.16     2.41 1.00     5354</span></span>
-<span><span class="co">#&gt;                            Tail_ESS</span></span>
-<span><span class="co">#&gt; Intercept                      2393</span></span>
-<span><span class="co">#&gt; FEV1_BL                        2622</span></span>
-<span><span class="co">#&gt; ARMCDTRT                       2533</span></span>
-<span><span class="co">#&gt; AVISIT2                        2730</span></span>
-<span><span class="co">#&gt; AVISIT3                        2769</span></span>
-<span><span class="co">#&gt; AVISIT4                        2669</span></span>
-<span><span class="co">#&gt; RACEBlackorAfricanAmerican     2829</span></span>
-<span><span class="co">#&gt; RACEWhite                      3019</span></span>
-<span><span class="co">#&gt; SEXFemale                      2912</span></span>
-<span><span class="co">#&gt; FEV1_BL:AVISIT2                2831</span></span>
-<span><span class="co">#&gt; FEV1_BL:AVISIT3                2685</span></span>
-<span><span class="co">#&gt; FEV1_BL:AVISIT4                2691</span></span>
-<span><span class="co">#&gt; ARMCDTRT:AVISIT2               3198</span></span>
-<span><span class="co">#&gt; ARMCDTRT:AVISIT3               2866</span></span>
-<span><span class="co">#&gt; ARMCDTRT:AVISIT4               2956</span></span>
-<span><span class="co">#&gt; sigma_AVISITVIS1               3225</span></span>
-<span><span class="co">#&gt; sigma_AVISITVIS2               3257</span></span>
-<span><span class="co">#&gt; sigma_AVISITVIS3               3047</span></span>
-<span><span class="co">#&gt; sigma_AVISITVIS4               2741</span></span>
+<span><span class="co">#&gt;                            Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS</span></span>
+<span><span class="co">#&gt; Intercept                     23.32      2.57    18.30    28.46 1.00     1595     2142</span></span>
+<span><span class="co">#&gt; FEV1_BL                       -0.82      0.06    -0.93    -0.70 1.00     1720     2210</span></span>
+<span><span class="co">#&gt; ARMCDTRT                       4.04      1.07     1.97     6.20 1.00     2694     3113</span></span>
+<span><span class="co">#&gt; AVISIT2                        4.43      2.75    -1.15     9.82 1.00     2037     2470</span></span>
+<span><span class="co">#&gt; AVISIT3                       12.55      2.93     6.74    18.27 1.00     1852     2195</span></span>
+<span><span class="co">#&gt; AVISIT4                       15.59      4.23     7.38    23.91 1.00     2489     2521</span></span>
+<span><span class="co">#&gt; RACEBlackorAfricanAmerican     1.45      0.59     0.28     2.65 1.00     5262     3112</span></span>
+<span><span class="co">#&gt; RACEWhite                      5.46      0.61     4.26     6.68 1.00     5172     3218</span></span>
+<span><span class="co">#&gt; SEXFemale                      0.38      0.51    -0.62     1.40 1.00     5881     3056</span></span>
+<span><span class="co">#&gt; FEV1_BL:AVISIT2                0.01      0.06    -0.12     0.14 1.00     2069     2704</span></span>
+<span><span class="co">#&gt; FEV1_BL:AVISIT3               -0.05      0.07    -0.19     0.08 1.00     1898     2215</span></span>
+<span><span class="co">#&gt; FEV1_BL:AVISIT4               -0.01      0.10    -0.21     0.19 1.00     2596     2762</span></span>
+<span><span class="co">#&gt; ARMCDTRT:AVISIT2              -0.06      1.15    -2.31     2.17 1.00     2894     3132</span></span>
+<span><span class="co">#&gt; ARMCDTRT:AVISIT3              -1.02      1.20    -3.37     1.38 1.00     3078     3105</span></span>
+<span><span class="co">#&gt; ARMCDTRT:AVISIT4               0.35      1.88    -3.30     3.93 1.00     3810     3176</span></span>
+<span><span class="co">#&gt; sigma_AVISITVIS1               1.83      0.06     1.71     1.95 1.00     5127     3300</span></span>
+<span><span class="co">#&gt; sigma_AVISITVIS2               1.59      0.06     1.47     1.71 1.00     5574     3239</span></span>
+<span><span class="co">#&gt; sigma_AVISITVIS3               1.33      0.06     1.21     1.45 1.00     5217     3072</span></span>
+<span><span class="co">#&gt; sigma_AVISITVIS4               2.28      0.06     2.16     2.41 1.00     6592     3198</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Draws were sampled using sampling(NUTS). For each parameter, Bulk_ESS</span></span>
 <span><span class="co">#&gt; and Tail_ESS are effective sample size measures, and Rhat is the potential</span></span>
@@ -349,18 +332,18 @@ to keep track of the data and formula used to fit the model.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model</span><span class="op">$</span><span class="va">brms.mmrm_data</span></span>
 <span><span class="co">#&gt; # A tibble: 800 × 11</span></span>
-<span><span class="co">#&gt;    USUBJID AVISIT ARMCD RACE  SEX   FEV1_BL  FEV1 WEIGHT VISITN VISITN2 FEV1_CHG</span></span>
-<span><span class="co">#&gt;    &lt;fct&gt;   &lt;ord&gt;  &lt;fct&gt; &lt;fct&gt; &lt;fct&gt;   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;  &lt;int&gt;   &lt;dbl&gt;    &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 PT2     VIS1   PBO   Asian Male     45.0  NA    0.465      1  0.330     NA   </span></span>
-<span><span class="co">#&gt;  2 PT2     VIS2   PBO   Asian Male     45.0  31.5  0.233      2 -0.820    -13.6 </span></span>
-<span><span class="co">#&gt;  3 PT2     VIS3   PBO   Asian Male     45.0  36.9  0.360      3  0.487     -8.15</span></span>
-<span><span class="co">#&gt;  4 PT2     VIS4   PBO   Asian Male     45.0  48.8  0.507      4  0.738      3.78</span></span>
-<span><span class="co">#&gt;  5 PT3     VIS1   PBO   Blac… Fema…    43.5  NA    0.682      1  0.576     NA   </span></span>
-<span><span class="co">#&gt;  6 PT3     VIS2   PBO   Blac… Fema…    43.5  36.0  0.892      2 -0.305     -7.51</span></span>
-<span><span class="co">#&gt;  7 PT3     VIS3   PBO   Blac… Fema…    43.5  NA    0.128      3  1.51      NA   </span></span>
-<span><span class="co">#&gt;  8 PT3     VIS4   PBO   Blac… Fema…    43.5  37.2  0.222      4  0.390     -6.34</span></span>
-<span><span class="co">#&gt;  9 PT5     VIS1   PBO   Blac… Male     43.6  32.3  0.411      1 -0.0162   -11.3 </span></span>
-<span><span class="co">#&gt; 10 PT5     VIS2   PBO   Blac… Male     43.6  NA    0.422      2  0.944     NA   </span></span>
+<span><span class="co">#&gt;    USUBJID AVISIT ARMCD RACE            SEX   FEV1_BL  FEV1 WEIGHT VISITN VISITN2 FEV1_CHG</span></span>
+<span><span class="co">#&gt;    &lt;fct&gt;   &lt;ord&gt;  &lt;fct&gt; &lt;fct&gt;           &lt;fct&gt;   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;  &lt;int&gt;   &lt;dbl&gt;    &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 PT2     VIS1   PBO   Asian           Male     45.0  NA    0.465      1  0.330     NA   </span></span>
+<span><span class="co">#&gt;  2 PT2     VIS2   PBO   Asian           Male     45.0  31.5  0.233      2 -0.820    -13.6 </span></span>
+<span><span class="co">#&gt;  3 PT2     VIS3   PBO   Asian           Male     45.0  36.9  0.360      3  0.487     -8.15</span></span>
+<span><span class="co">#&gt;  4 PT2     VIS4   PBO   Asian           Male     45.0  48.8  0.507      4  0.738      3.78</span></span>
+<span><span class="co">#&gt;  5 PT3     VIS1   PBO   Black or Afric… Fema…    43.5  NA    0.682      1  0.576     NA   </span></span>
+<span><span class="co">#&gt;  6 PT3     VIS2   PBO   Black or Afric… Fema…    43.5  36.0  0.892      2 -0.305     -7.51</span></span>
+<span><span class="co">#&gt;  7 PT3     VIS3   PBO   Black or Afric… Fema…    43.5  NA    0.128      3  1.51      NA   </span></span>
+<span><span class="co">#&gt;  8 PT3     VIS4   PBO   Black or Afric… Fema…    43.5  37.2  0.222      4  0.390     -6.34</span></span>
+<span><span class="co">#&gt;  9 PT5     VIS1   PBO   Black or Afric… Male     43.6  32.3  0.411      1 -0.0162   -11.3 </span></span>
+<span><span class="co">#&gt; 10 PT5     VIS2   PBO   Black or Afric… Male     43.6  NA    0.422      2  0.944     NA   </span></span>
 <span><span class="co">#&gt; # ℹ 790 more rows</span></span></code></pre></div>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model</span><span class="op">$</span><span class="va">brms.mmrm_formula</span></span>
@@ -397,16 +380,16 @@ deviation.</li>
 <span><span class="va">draws</span><span class="op">$</span><span class="va">difference_group</span></span>
 <span><span class="co">#&gt; # A draws_df: 1000 iterations, 4 chains, and 3 variables</span></span>
 <span><span class="co">#&gt;    TRT|VIS2 TRT|VIS3 TRT|VIS4</span></span>
-<span><span class="co">#&gt; 1      0.63    -1.33    -1.03</span></span>
-<span><span class="co">#&gt; 2     -1.09    -1.03    -1.18</span></span>
-<span><span class="co">#&gt; 3      0.26    -0.39    -0.38</span></span>
-<span><span class="co">#&gt; 4      0.22    -1.27     0.50</span></span>
-<span><span class="co">#&gt; 5     -0.55    -1.49    -0.14</span></span>
-<span><span class="co">#&gt; 6     -0.28    -0.91    -3.35</span></span>
-<span><span class="co">#&gt; 7      0.29    -0.89     1.28</span></span>
-<span><span class="co">#&gt; 8     -0.11    -0.99    -1.68</span></span>
-<span><span class="co">#&gt; 9     -0.56    -0.81     1.64</span></span>
-<span><span class="co">#&gt; 10     0.91    -0.30     0.91</span></span>
+<span><span class="co">#&gt; 1     0.251    -2.24    1.149</span></span>
+<span><span class="co">#&gt; 2    -0.662    -1.33   -0.804</span></span>
+<span><span class="co">#&gt; 3    -0.129    -1.57    2.736</span></span>
+<span><span class="co">#&gt; 4    -0.370    -2.00    1.231</span></span>
+<span><span class="co">#&gt; 5    -0.964    -1.91   -1.026</span></span>
+<span><span class="co">#&gt; 6    -0.939    -1.15    0.258</span></span>
+<span><span class="co">#&gt; 7    -0.026    -1.15   -0.047</span></span>
+<span><span class="co">#&gt; 8     0.052    -1.48    1.239</span></span>
+<span><span class="co">#&gt; 9    -0.929    -0.81   -0.791</span></span>
+<span><span class="co">#&gt; 10   -0.437    -1.16    2.233</span></span>
 <span><span class="co">#&gt; # ... with 3990 more draws</span></span>
 <span><span class="co">#&gt; # ... hidden reserved variables {'.chain', '.iteration', '.draw'}</span></span></code></pre></div>
 <p>If you need samples from these marginals averaged across time points,
@@ -423,16 +406,16 @@ user-defined subset).</p>
 <span><span class="va">draws_average</span><span class="op">$</span><span class="va">difference_group</span></span>
 <span><span class="co">#&gt; # A draws_df: 1000 iterations, 4 chains, and 1 variables</span></span>
 <span><span class="co">#&gt;    TRT|average</span></span>
-<span><span class="co">#&gt; 1       -0.576</span></span>
-<span><span class="co">#&gt; 2       -1.101</span></span>
-<span><span class="co">#&gt; 3       -0.170</span></span>
-<span><span class="co">#&gt; 4       -0.187</span></span>
-<span><span class="co">#&gt; 5       -0.726</span></span>
-<span><span class="co">#&gt; 6       -1.514</span></span>
-<span><span class="co">#&gt; 7        0.224</span></span>
-<span><span class="co">#&gt; 8       -0.928</span></span>
-<span><span class="co">#&gt; 9        0.094</span></span>
-<span><span class="co">#&gt; 10       0.507</span></span>
+<span><span class="co">#&gt; 1       -0.281</span></span>
+<span><span class="co">#&gt; 2       -0.932</span></span>
+<span><span class="co">#&gt; 3        0.347</span></span>
+<span><span class="co">#&gt; 4       -0.380</span></span>
+<span><span class="co">#&gt; 5       -1.300</span></span>
+<span><span class="co">#&gt; 6       -0.610</span></span>
+<span><span class="co">#&gt; 7       -0.407</span></span>
+<span><span class="co">#&gt; 8       -0.064</span></span>
+<span><span class="co">#&gt; 9       -0.845</span></span>
+<span><span class="co">#&gt; 10       0.212</span></span>
 <span><span class="co">#&gt; # ... with 3990 more draws</span></span>
 <span><span class="co">#&gt; # ... hidden reserved variables {'.chain', '.iteration', '.draw'}</span></span></code></pre></div>
 <p>The <code><a href="../reference/brm_marginal_summaries.html">brm_marginal_summaries()</a></code> function produces posterior
@@ -445,16 +428,16 @@ error (MCSE) of each estimate.</p>
 <span><span class="co">#&gt; # A tibble: 140 × 6</span></span>
 <span><span class="co">#&gt;    marginal         statistic group time    value   mcse</span></span>
 <span><span class="co">#&gt;    &lt;chr&gt;            &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt;   &lt;dbl&gt;  &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 difference_group lower     TRT   VIS2  -2.26   0.0563</span></span>
-<span><span class="co">#&gt;  2 difference_group lower     TRT   VIS3  -3.42   0.0653</span></span>
-<span><span class="co">#&gt;  3 difference_group lower     TRT   VIS4  -3.15   0.0801</span></span>
-<span><span class="co">#&gt;  4 difference_group mean      TRT   VIS2  -0.0350 0.0225</span></span>
-<span><span class="co">#&gt;  5 difference_group mean      TRT   VIS3  -0.990  0.0244</span></span>
-<span><span class="co">#&gt;  6 difference_group mean      TRT   VIS4   0.442  0.0297</span></span>
-<span><span class="co">#&gt;  7 difference_group median    TRT   VIS2  -0.0433 0.0243</span></span>
-<span><span class="co">#&gt;  8 difference_group median    TRT   VIS3  -0.975  0.0296</span></span>
-<span><span class="co">#&gt;  9 difference_group median    TRT   VIS4   0.471  0.0349</span></span>
-<span><span class="co">#&gt; 10 difference_group sd        TRT   VIS2   1.16   0.0152</span></span>
+<span><span class="co">#&gt;  1 difference_group lower     TRT   VIS2  -2.31   0.0465</span></span>
+<span><span class="co">#&gt;  2 difference_group lower     TRT   VIS3  -3.37   0.0668</span></span>
+<span><span class="co">#&gt;  3 difference_group lower     TRT   VIS4  -3.30   0.0688</span></span>
+<span><span class="co">#&gt;  4 difference_group mean      TRT   VIS2  -0.0638 0.0216</span></span>
+<span><span class="co">#&gt;  5 difference_group mean      TRT   VIS3  -1.02   0.0219</span></span>
+<span><span class="co">#&gt;  6 difference_group mean      TRT   VIS4   0.348  0.0311</span></span>
+<span><span class="co">#&gt;  7 difference_group median    TRT   VIS2  -0.0714 0.0249</span></span>
+<span><span class="co">#&gt;  8 difference_group median    TRT   VIS3  -1.02   0.0252</span></span>
+<span><span class="co">#&gt;  9 difference_group median    TRT   VIS4   0.381  0.0320</span></span>
+<span><span class="co">#&gt; 10 difference_group sd        TRT   VIS2   1.15   0.0161</span></span>
 <span><span class="co">#&gt; # ℹ 130 more rows</span></span></code></pre></div>
 <p>The <code><a href="../reference/brm_marginal_probabilities.html">brm_marginal_probabilities()</a></code> function shows
 posterior probabilities of the form,</p>
@@ -478,12 +461,12 @@ posterior probabilities of the form,</p>
 <span><span class="co">#&gt; # A tibble: 6 × 5</span></span>
 <span><span class="co">#&gt;   direction threshold group time  value</span></span>
 <span><span class="co">#&gt;   &lt;chr&gt;         &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 greater        -0.1 TRT   VIS2  0.520</span></span>
-<span><span class="co">#&gt; 2 greater        -0.1 TRT   VIS3  0.227</span></span>
-<span><span class="co">#&gt; 3 greater        -0.1 TRT   VIS4  0.619</span></span>
-<span><span class="co">#&gt; 4 less            0.1 TRT   VIS2  0.547</span></span>
-<span><span class="co">#&gt; 5 less            0.1 TRT   VIS3  0.829</span></span>
-<span><span class="co">#&gt; 6 less            0.1 TRT   VIS4  0.421</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 greater        -0.1 TRT   VIS2  0.511</span></span>
+<span><span class="co">#&gt; 2 greater        -0.1 TRT   VIS3  0.220</span></span>
+<span><span class="co">#&gt; 3 greater        -0.1 TRT   VIS4  0.594</span></span>
+<span><span class="co">#&gt; 4 less            0.1 TRT   VIS2  0.56 </span></span>
+<span><span class="co">#&gt; 5 less            0.1 TRT   VIS3  0.827</span></span>
+<span><span class="co">#&gt; 6 less            0.1 TRT   VIS4  0.443</span></span></code></pre></div>
 <p>Finally, <code>brm_marignal_data()</code> computes marginal means and
 confidence intervals on the response variable in the data, along with
 other summary statistics.</p>
@@ -529,7 +512,7 @@ intervals from different models and data sources in the same plot.</p>
 <span>  no_baseline <span class="op">=</span> <span class="va">summaries_no_baseline</span>,</span>
 <span>  with_baseline <span class="op">=</span> <span class="va">summaries</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="usage/response-1.png"></p>
+<p><img src="usage%2Fresponse-1.png"></p>
 <p>If you omit the marginals of the data, you can show inference on
 change from baseline or the treatment effect.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
@@ -538,7 +521,7 @@ change from baseline or the treatment effect.</p>
 <span>  with_baseline <span class="op">=</span> <span class="va">summaries</span>,</span>
 <span>  marginal <span class="op">=</span> <span class="st">"difference_group"</span> <span class="co"># treatment effect</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="usage/difference-1.png"></p>
+<p><img src="usage%2Fdifference-1.png"></p>
 <p>Additional arguments let you control the primary comparison of
 interest (the color aesthetic), the horizontal axis, and the faceting
 variable.</p>
@@ -551,7 +534,7 @@ variable.</p>
 <span>  axis <span class="op">=</span> <span class="st">"time"</span>,</span>
 <span>  facet <span class="op">=</span> <span class="st">"source"</span> <span class="co"># model1 vs model2</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="usage/differencecustom-1.png"></p>
+<p><img src="usage%2Fdifferencecustom-1.png"></p>
 </div>
 <div class="section level3">
 <h3 id="plotting-draws">Plotting draws<a class="anchor" aria-label="anchor" href="#plotting-draws"></a>
@@ -560,7 +543,7 @@ variable.</p>
 response, change from baseline, or treatment difference.</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/brm_plot_draws.html">brm_plot_draws</a></span><span class="op">(</span>draws <span class="op">=</span> <span class="va">draws</span><span class="op">$</span><span class="va">difference_group</span><span class="op">)</span></span></code></pre></div>
-<p><img src="usage/draws-1.png"></p>
+<p><img src="usage%2Fdraws-1.png"></p>
 <p>The <code>axis</code> and <code>facet</code> arguments customize the
 horizontal axis and faceting variable, respectively.</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
@@ -569,19 +552,25 @@ horizontal axis and faceting variable, respectively.</p>
 <span>  axis <span class="op">=</span> <span class="st">"group"</span>,</span>
 <span>  facet <span class="op">=</span> <span class="st">"time"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="usage/drawscustom-1.png"></p>
+<p><img src="usage%2Fdrawscustom-1.png"></p>
 </div>
 <div class="section level3">
 <h3 id="comparing-priors-and-posteriors">Comparing priors and posteriors<a class="anchor" aria-label="anchor" href="#comparing-priors-and-posteriors"></a>
 </h3>
-<p>Suppose we want to compare the prior on the intercept term to its
-marginal posterior. <code>brms</code> automatically assigns a mildly
-informative Student t prior to help the MCMC converge:</p>
+<p>For a model with an intercept term and with automatic centering in
+<code>brms</code> turned on, <code>brms</code> by default assigns a
+mildly informative Student t prior to help the MCMC converge.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;With automatic centering in &lt;code&gt;brms&lt;/code&gt;, the prior
+on the intercept applies to the term &lt;code&gt;Intercept&lt;/code&gt; is the term
+which gets the prior, and &lt;code&gt;b_Intercept&lt;/code&gt; is a generated
+quantity representing the intercept without centering. See the
+&lt;code&gt;center&lt;/code&gt; argument and the “Parameterization of the
+population-level intercept” sub-section of “Details” at &lt;a href="https://paulbuerkner.com/brms/reference/brmsformula.html" class="external-link uri"&gt;https://paulbuerkner.com/brms/reference/brmsformula.html&lt;/a&gt;.&lt;/p&gt;'><sup>2</sup></a></p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">brms</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/rstantools/reference/prior_summary.html" class="external-link">prior_summary</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">class</span> <span class="op">==</span> <span class="st">"Intercept"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Intercept ~ student_t(3, 1.9, 11.8)</span></span></code></pre></div>
-<p>To compare the prior and posterior, we express the prior using the
+<p>Suppose we want to compare the prior on <code>Intercept</code> to its
+marginal posterior. To begin, we express the prior using the
 <code>distributional</code> package, extract posterior samples from the
 <code>brms</code> model, and visualize them together with the
 <code>ggdist</code> package. Below, the shaded gray region is the
@@ -596,10 +585,10 @@ posterior density, and the blue line is the prior density.</p>
 <span><span class="va">posterior</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://mc-stan.org/posterior/reference/draws_df.html" class="external-link">as_draws_df</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="http://mjskay.github.io/ggdist/reference/stat_halfeye.html" class="external-link">stat_halfeye</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">b_Intercept</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">posterior</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="http://mjskay.github.io/ggdist/reference/stat_halfeye.html" class="external-link">stat_halfeye</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">Intercept</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">posterior</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="http://mjskay.github.io/ggdist/reference/stat_slab.html" class="external-link">stat_slab</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>xdist <span class="op">=</span> <span class="va">prior</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"blue"</span>, fill <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="http://mjskay.github.io/ggdist/reference/scale_thickness.html" class="external-link">scale_thickness_shared</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="usage/priorvsposterior-1.png"></p>
+<p><img src="usage%2Fpriorvsposterior-1.png"></p>
 </div>
 </div>
 <div class="section level2">
@@ -610,20 +599,20 @@ fixed effect parameterization. The ordering of the categorical variables
 in the data, as well as the <code>contrast</code> option in R, affect
 the construction of the model matrix. To see the model matrix that will
 ultimately be used in <code><a href="../reference/brm_model.html">brm_model()</a></code>, run
-<code><a href="https://paul-buerkner.github.io/brms/reference/standata.html" class="external-link">brms::make_standata()</a></code> and examine the <code>X</code>
+<code><a href="https://paulbuerkner.com/brms/reference/standata.html" class="external-link">brms::make_standata()</a></code> and examine the <code>X</code>
 element of the returned list.</p>
 <p>The <code>contrast</code> option accepts a named vector of two
 character vectors which govern <code><a href="https://rdrr.io/r/stats/model.matrix.html" class="external-link">model.matrix()</a></code> contrasts for
 unordered and ordered variables, respectively.</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>contrasts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>unordered <span class="op">=</span> <span class="st">"contr.SAS"</span>, ordered <span class="op">=</span> <span class="st">"contr.poly"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>The <code><a href="https://paul-buerkner.github.io/brms/reference/standata.html" class="external-link">make_standata()</a></code> function lets you see the data that
+<p>The <code><a href="https://paulbuerkner.com/brms/reference/standata.html" class="external-link">make_standata()</a></code> function lets you see the data that
 <code>brms</code> will generate for Stan. This includes the fixed
 effects model matrix <code>X</code>. Note the differences in the
 <code>groupgroup_*</code> additive terms between the matrix below and
 the one above.</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">brms</span><span class="fu">::</span><span class="fu"><a href="https://paul-buerkner.github.io/brms/reference/standata.html" class="external-link">make_standata</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="va">formula</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span><span class="op">$</span><span class="va">X</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">brms</span><span class="fu">::</span><span class="fu"><a href="https://paulbuerkner.com/brms/reference/standata.html" class="external-link">make_standata</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="va">formula</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span><span class="op">$</span><span class="va">X</span><span class="op">)</span></span>
 <span><span class="co">#&gt;     Intercept  FEV1_BL ARMCDPBO AVISIT2 AVISIT3 AVISIT4 RACEAsian</span></span>
 <span><span class="co">#&gt; 422         1 25.27144        0       1       0       0         0</span></span>
 <span><span class="co">#&gt; 424         1 25.27144        0       0       0       1         0</span></span>
@@ -631,20 +620,20 @@ the one above.</p>
 <span><span class="co">#&gt; 3           1 45.02477        1       0       1       0         1</span></span>
 <span><span class="co">#&gt; 4           1 45.02477        1       0       0       1         1</span></span>
 <span><span class="co">#&gt; 6           1 43.50070        1       1       0       0         0</span></span>
-<span><span class="co">#&gt;     RACEBlackorAfricanAmerican SEXMale FEV1_BL:AVISIT2 FEV1_BL:AVISIT3</span></span>
-<span><span class="co">#&gt; 422                          1       0        25.27144         0.00000</span></span>
-<span><span class="co">#&gt; 424                          1       0         0.00000         0.00000</span></span>
-<span><span class="co">#&gt; 2                            0       1        45.02477         0.00000</span></span>
-<span><span class="co">#&gt; 3                            0       1         0.00000        45.02477</span></span>
-<span><span class="co">#&gt; 4                            0       1         0.00000         0.00000</span></span>
-<span><span class="co">#&gt; 6                            1       0        43.50070         0.00000</span></span>
-<span><span class="co">#&gt;     FEV1_BL:AVISIT4 ARMCDPBO:AVISIT2 ARMCDPBO:AVISIT3 ARMCDPBO:AVISIT4</span></span>
-<span><span class="co">#&gt; 422         0.00000                0                0                0</span></span>
-<span><span class="co">#&gt; 424        25.27144                0                0                0</span></span>
-<span><span class="co">#&gt; 2           0.00000                1                0                0</span></span>
-<span><span class="co">#&gt; 3           0.00000                0                1                0</span></span>
-<span><span class="co">#&gt; 4          45.02477                0                0                1</span></span>
-<span><span class="co">#&gt; 6           0.00000                1                0                0</span></span></code></pre></div>
+<span><span class="co">#&gt;     RACEBlackorAfricanAmerican SEXMale FEV1_BL:AVISIT2 FEV1_BL:AVISIT3 FEV1_BL:AVISIT4</span></span>
+<span><span class="co">#&gt; 422                          1       0        25.27144         0.00000         0.00000</span></span>
+<span><span class="co">#&gt; 424                          1       0         0.00000         0.00000        25.27144</span></span>
+<span><span class="co">#&gt; 2                            0       1        45.02477         0.00000         0.00000</span></span>
+<span><span class="co">#&gt; 3                            0       1         0.00000        45.02477         0.00000</span></span>
+<span><span class="co">#&gt; 4                            0       1         0.00000         0.00000        45.02477</span></span>
+<span><span class="co">#&gt; 6                            1       0        43.50070         0.00000         0.00000</span></span>
+<span><span class="co">#&gt;     ARMCDPBO:AVISIT2 ARMCDPBO:AVISIT3 ARMCDPBO:AVISIT4</span></span>
+<span><span class="co">#&gt; 422                0                0                0</span></span>
+<span><span class="co">#&gt; 424                0                0                0</span></span>
+<span><span class="co">#&gt; 2                  1                0                0</span></span>
+<span><span class="co">#&gt; 3                  0                1                0</span></span>
+<span><span class="co">#&gt; 4                  0                0                1</span></span>
+<span><span class="co">#&gt; 6                  1                0                0</span></span></code></pre></div>
 <p>If you choose a different contrast method, a different model matrix
 may result.</p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
@@ -652,35 +641,28 @@ may result.</p>
 <span>  contrasts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>unordered <span class="op">=</span> <span class="st">"contr.treatment"</span>, ordered <span class="op">=</span> <span class="st">"contr.poly"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co"># different model matrix than before:</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">brms</span><span class="fu">::</span><span class="fu"><a href="https://paul-buerkner.github.io/brms/reference/standata.html" class="external-link">make_standata</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="va">formula</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span><span class="op">$</span><span class="va">X</span><span class="op">)</span></span>
-<span><span class="co">#&gt;     Intercept  FEV1_BL ARMCDTRT AVISIT2 AVISIT3 AVISIT4</span></span>
-<span><span class="co">#&gt; 422         1 25.27144        1       1       0       0</span></span>
-<span><span class="co">#&gt; 424         1 25.27144        1       0       0       1</span></span>
-<span><span class="co">#&gt; 2           1 45.02477        0       1       0       0</span></span>
-<span><span class="co">#&gt; 3           1 45.02477        0       0       1       0</span></span>
-<span><span class="co">#&gt; 4           1 45.02477        0       0       0       1</span></span>
-<span><span class="co">#&gt; 6           1 43.50070        0       1       0       0</span></span>
-<span><span class="co">#&gt;     RACEBlackorAfricanAmerican RACEWhite SEXFemale FEV1_BL:AVISIT2</span></span>
-<span><span class="co">#&gt; 422                          1         0         1        25.27144</span></span>
-<span><span class="co">#&gt; 424                          1         0         1         0.00000</span></span>
-<span><span class="co">#&gt; 2                            0         0         0        45.02477</span></span>
-<span><span class="co">#&gt; 3                            0         0         0         0.00000</span></span>
-<span><span class="co">#&gt; 4                            0         0         0         0.00000</span></span>
-<span><span class="co">#&gt; 6                            1         0         1        43.50070</span></span>
-<span><span class="co">#&gt;     FEV1_BL:AVISIT3 FEV1_BL:AVISIT4 ARMCDTRT:AVISIT2 ARMCDTRT:AVISIT3</span></span>
-<span><span class="co">#&gt; 422         0.00000         0.00000                1                0</span></span>
-<span><span class="co">#&gt; 424         0.00000        25.27144                0                0</span></span>
-<span><span class="co">#&gt; 2           0.00000         0.00000                0                0</span></span>
-<span><span class="co">#&gt; 3          45.02477         0.00000                0                0</span></span>
-<span><span class="co">#&gt; 4           0.00000        45.02477                0                0</span></span>
-<span><span class="co">#&gt; 6           0.00000         0.00000                0                0</span></span>
-<span><span class="co">#&gt;     ARMCDTRT:AVISIT4</span></span>
-<span><span class="co">#&gt; 422                0</span></span>
-<span><span class="co">#&gt; 424                1</span></span>
-<span><span class="co">#&gt; 2                  0</span></span>
-<span><span class="co">#&gt; 3                  0</span></span>
-<span><span class="co">#&gt; 4                  0</span></span>
-<span><span class="co">#&gt; 6                  0</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">brms</span><span class="fu">::</span><span class="fu"><a href="https://paulbuerkner.com/brms/reference/standata.html" class="external-link">make_standata</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="va">formula</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span><span class="op">$</span><span class="va">X</span><span class="op">)</span></span>
+<span><span class="co">#&gt;     Intercept  FEV1_BL ARMCDTRT AVISIT2 AVISIT3 AVISIT4 RACEBlackorAfricanAmerican</span></span>
+<span><span class="co">#&gt; 422         1 25.27144        1       1       0       0                          1</span></span>
+<span><span class="co">#&gt; 424         1 25.27144        1       0       0       1                          1</span></span>
+<span><span class="co">#&gt; 2           1 45.02477        0       1       0       0                          0</span></span>
+<span><span class="co">#&gt; 3           1 45.02477        0       0       1       0                          0</span></span>
+<span><span class="co">#&gt; 4           1 45.02477        0       0       0       1                          0</span></span>
+<span><span class="co">#&gt; 6           1 43.50070        0       1       0       0                          1</span></span>
+<span><span class="co">#&gt;     RACEWhite SEXFemale FEV1_BL:AVISIT2 FEV1_BL:AVISIT3 FEV1_BL:AVISIT4 ARMCDTRT:AVISIT2</span></span>
+<span><span class="co">#&gt; 422         0         1        25.27144         0.00000         0.00000                1</span></span>
+<span><span class="co">#&gt; 424         0         1         0.00000         0.00000        25.27144                0</span></span>
+<span><span class="co">#&gt; 2           0         0        45.02477         0.00000         0.00000                0</span></span>
+<span><span class="co">#&gt; 3           0         0         0.00000        45.02477         0.00000                0</span></span>
+<span><span class="co">#&gt; 4           0         0         0.00000         0.00000        45.02477                0</span></span>
+<span><span class="co">#&gt; 6           0         1        43.50070         0.00000         0.00000                0</span></span>
+<span><span class="co">#&gt;     ARMCDTRT:AVISIT3 ARMCDTRT:AVISIT4</span></span>
+<span><span class="co">#&gt; 422                0                0</span></span>
+<span><span class="co">#&gt; 424                0                1</span></span>
+<span><span class="co">#&gt; 2                  0                0</span></span>
+<span><span class="co">#&gt; 3                  0                0</span></span>
+<span><span class="co">#&gt; 4                  0                0</span></span>
+<span><span class="co">#&gt; 6                  0                0</span></span></code></pre></div>
 <p>Recall from earlier that <code><a href="../reference/brm_data_chronologize.html">brm_data_chronologize()</a></code>
 protects the discrete time variable (in our case, <code>AVISIT</code>)
 from the <code>contrasts</code> option by assigning a
@@ -701,7 +683,7 @@ imputation (<span class="citation">Holzhauer and Weber (2024)</span>).
 However, if the outcomes in your data are not missing at random, or if
 you are targeting an alternative estimand, then you may need to impute
 missing outcomes. <code>brms.mmrm</code> can leverage either of the two
-alternative solutions described at <a href="https://paul-buerkner.github.io/brms/articles/brms_missings.html" class="external-link uri">https://paul-buerkner.github.io/brms/articles/brms_missings.html</a>.</p>
+alternative solutions described at <a href="https://paulbuerkner.com/brms/articles/brms_missings.html" class="external-link uri">https://paulbuerkner.com/brms/articles/brms_missings.html</a>.</p>
 <div class="section level3">
 <h3 id="imputation-before-model-fitting">Imputation before model fitting<a class="anchor" aria-label="anchor" href="#imputation-before-model-fitting"></a>
 </h3>
@@ -790,6 +772,7 @@ Modeling in Drug Development</span></em>, <span>Novartis AG</span>.
 </div>
 </div>
 </div>
+
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>
@@ -801,7 +784,7 @@ Modeling in Drug Development</span></em>, <span>Novartis AG</span>.
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>

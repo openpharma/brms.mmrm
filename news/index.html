@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">brms.mmrm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0.9002</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -48,9 +48,10 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.1.0.9002" id="brmsmmrm-1109002-development">brms.mmrm 1.1.0.9002 (development)<a class="anchor" aria-label="anchor" href="#brmsmmrm-1109002-development"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.1.1" id="brmsmmrm-111">brms.mmrm 1.1.1<a class="anchor" aria-label="anchor" href="#brmsmmrm-111"></a></h2>
 <ul><li>Use FEV data in usage vignette.</li>
-<li>Show how to prior vs posterior in the usage vignette.</li>
+<li>Show how to visualize prior vs posterior in the usage vignette.</li>
+<li>Add a <code>center</code> argument to <code>brms_formula.default()</code> and explain intercept parameter interpretation concerns (<a href="https://github.com/openpharma/brms.mmrm/issues/128" class="external-link">#128</a>).</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.1.0" id="brmsmmrm-110">brms.mmrm 1.1.0<a class="anchor" aria-label="anchor" href="#brmsmmrm-110"></a></h2><p class="text-muted">CRAN release: 2024-07-29</p>
@@ -65,7 +66,7 @@
 <li>Set the default value of <code>effect_size</code> to <code>attr(formula, "brm_allow_effect_size")</code>.</li>
 <li>Remove defaults from some arguments to <code><a href="../reference/brm_data.html">brm_data()</a></code> and document examples.</li>
 <li>Deprecate the <code>role</code> argument of <code><a href="../reference/brm_data.html">brm_data()</a></code> in favor of <code>reference_time</code> (<a href="https://github.com/openpharma/brms.mmrm/issues/119" class="external-link">#119</a>).</li>
-<li>Add a new <code>model_missing_outcomes</code> in <code><a href="../reference/brm_formula.html">brm_formula()</a></code> to optionally impute missing values during model fitting as described at <a href="https://paul-buerkner.github.io/brms/articles/brms_missings.html" class="external-link uri">https://paul-buerkner.github.io/brms/articles/brms_missings.html</a> (<a href="https://github.com/openpharma/brms.mmrm/issues/121" class="external-link">#121</a>).</li>
+<li>Add a new <code>model_missing_outcomes</code> in <code><a href="../reference/brm_formula.html">brm_formula()</a></code> to optionally impute missing values during model fitting as described at <a href="https://paulbuerkner.com/brms/articles/brms_missings.html" class="external-link uri">https://paulbuerkner.com/brms/articles/brms_missings.html</a> (<a href="https://github.com/openpharma/brms.mmrm/issues/121" class="external-link">#121</a>).</li>
 <li>Add a new <code>imputed</code> argument to accept a <code>mice</code> multiply imputed dataset (“mids”) in <code><a href="../reference/brm_model.html">brm_model()</a></code> (<a href="https://github.com/openpharma/brms.mmrm/issues/121" class="external-link">#121</a>).</li>
 <li>Add a <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> method for <code><a href="../reference/brm_transform_marginal.html">brm_transform_marginal()</a></code> objects.</li>
 <li>Do not recheck the rank of the formula in <code><a href="../reference/brm_transform_marginal.html">brm_transform_marginal()</a></code>.</li>
@@ -142,7 +143,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer></div>

@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">brms.mmrm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0.9002</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -183,7 +183,7 @@ desired parameterization.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">archetype</span>, <span class="st">"brm_archetype_interest"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "x_PBO_VIS1" "x_PBO_VIS2" "x_PBO_VIS3" "x_PBO_VIS4" "x_TRT_VIS1" "x_TRT_VIS2"</span></span>
 <span><span class="co">#&gt; [7] "x_TRT_VIS3" "x_TRT_VIS4"</span></span></code></pre></div>
-<p>In addition, we have nuisance variables. Some nuisance variables are
+<p>We also have nuisance variables. Some nuisance variables are
 continuous covariates, while others are levels of one-hot-encoded
 concomitant factors or interactions of those concomitant factors with
 baseline and/or subgroup. All nuisance variables are centered at their
@@ -191,9 +191,12 @@ means so the reference level of the model is at the “center” of the data
 and not implicitly conditional on a subset of the data.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;&lt;code&gt;&lt;a href="../reference/brm_recenter_nuisance.html"&gt;brm_recenter_nuisance()&lt;/a&gt;&lt;/code&gt; can retroactively
 recenter a nuisance column to a fixed value other than its mean.&lt;/p&gt;'><sup>1</sup></a> In addition, some
 nuisance variables are automatically dropped in order to ensure the
-model matrix is full-rank. This is critically important to preserve the
-interpretation of the columns of interest and make sure the informative
-priors behave as expected.</p>
+model matrix is full-rank, and automatic centering in <code>brms</code>
+is disabled<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;&lt;code&gt;&lt;a href="../reference/brm_formula.html"&gt;brm_formula()&lt;/a&gt;&lt;/code&gt; assigns
+&lt;code&gt;center = FALSE&lt;/code&gt; in &lt;code&gt;brmsformula()&lt;/code&gt; for all
+informative prior archetypes.&lt;/p&gt;'><sup>2</sup></a>. This is critically important to preserve
+the interpretation of the columns of interest and make sure the
+informative priors behave as expected.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">archetype</span>, <span class="st">"brm_archetype_nuisance"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "nuisance_WEIGHT"   "nuisance_SEX_Male"</span></span></code></pre></div>
@@ -201,7 +204,7 @@ priors behave as expected.</p>
 mapping, call <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> on the archetype. The printed
 output helps build intuition on how the archetype is parameterized and
 what those parameters are doing.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;&lt;code&gt;&lt;a href="https://rdrr.io/r/base/summary.html" class="external-link"&gt;summary()&lt;/a&gt;&lt;/code&gt; also invisibly returns a simple
-character vector with the equations below.&lt;/p&gt;'><sup>2</sup></a></p>
+character vector with the equations below.&lt;/p&gt;'><sup>3</sup></a></p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">archetype</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # This is the "successive cells" informative prior archetype in brms.mmrm.</span></span>
@@ -309,7 +312,7 @@ with a template and manually fill in the Stan code.</p>
 <span><span class="co">#&gt; 7 student_t(4,  7.65, 8.24) TRT   VIS3 </span></span>
 <span><span class="co">#&gt; 8 student_t(4,  4.64, 8.21) TRT   VIS4</span></span></code></pre></div>
 <p>After you have a labeling scheme, <code><a href="../reference/brm_prior_archetype.html">brm_prior_archetype()</a></code>
-can create a <code>brms</code> prior for the important fixed effects.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;&lt;code&gt;brms&lt;/code&gt; priors are documented in &lt;a href="https://paul-buerkner.github.io/brms/reference/set_prior.html" class="external-link uri"&gt;https://paul-buerkner.github.io/brms/reference/set_prior.html&lt;/a&gt;.&lt;/p&gt;'><sup>3</sup></a></p>
+can create a <code>brms</code> prior for the important fixed effects.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;&lt;code&gt;brms&lt;/code&gt; priors are documented in &lt;a href="https://paulbuerkner.com/brms/reference/set_prior.html" class="external-link uri"&gt;https://paulbuerkner.com/brms/reference/set_prior.html&lt;/a&gt;.&lt;/p&gt;'><sup>4</sup></a></p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">prior</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/brm_prior_archetype.html">brm_prior_archetype</a></span><span class="op">(</span>label <span class="op">=</span> <span class="va">label</span>, archetype <span class="op">=</span> <span class="va">archetype</span><span class="op">)</span></span>
 <span><span class="va">prior</span></span>
@@ -347,12 +350,12 @@ informative priors <code>student_t(4, -0.83, 1)</code>,
 <code>student_t(4, -0.78, 1)</code>,
 <code>student_t(4, -0.86, 1)</code>, and
 <code>student_t(4, -0.82, 1)</code>, respectively. Use
-<code><a href="https://paul-buerkner.github.io/brms/reference/set_prior.html" class="external-link">brms::set_prior()</a></code> and <code><a href="https://rdrr.io/r/base/c.html" class="external-link">c()</a></code> to append these
+<code><a href="https://paulbuerkner.com/brms/reference/set_prior.html" class="external-link">brms::set_prior()</a></code> and <code><a href="https://rdrr.io/r/base/c.html" class="external-link">c()</a></code> to append these
 priors to our existing <code>prior</code> object:</p>
 <p>The model still has many parameters where we did not set priors, and
 <code>brms</code> sets automatic defaults. You can see these defaults
-with <code><a href="https://paul-buerkner.github.io/brms/reference/default_prior.html" class="external-link">brms::get_prior()</a></code>.</p>
-<p><a href="https://paul-buerkner.github.io/brms/reference/set_prior.html" class="external-link uri">https://paul-buerkner.github.io/brms/reference/set_prior.html</a>
+with <code><a href="https://paulbuerkner.com/brms/reference/default_prior.html" class="external-link">brms::get_prior()</a></code>.</p>
+<p><a href="https://paulbuerkner.com/brms/reference/set_prior.html" class="external-link uri">https://paulbuerkner.com/brms/reference/set_prior.html</a>
 documents many of the default priors set by <code>brms</code>. In
 particular, <code>"(flat)"</code> denotes an improper uniform prior over
 all the real numbers.</p>
@@ -430,7 +433,7 @@ intervention.</p>
 <span><span class="va">summaries_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/brm_marginal_data.html">brm_marginal_data</a></span><span class="op">(</span><span class="va">archetype</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/brm_plot_compare.html">brm_plot_compare</a></span><span class="op">(</span>model <span class="op">=</span> <span class="va">summaries_model</span>, data <span class="op">=</span> <span class="va">summaries_data</span><span class="op">)</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
-<img src="archetypes_figures/archetype_compare_data-1.png" alt="plot of chunk archetype_compare_data"><p class="caption">
+<img src="archetypes_figures%2Farchetype_compare_data-1.png" alt="plot of chunk archetype_compare_data"><p class="caption">
 plot of chunk archetype_compare_data
 </p>
 </div>
@@ -617,7 +620,7 @@ support cLDA (e.g. <code><a href="../reference/brm_archetype_average_cells.html
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>

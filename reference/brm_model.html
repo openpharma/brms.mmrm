@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">brms.mmrm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0.9002</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -59,7 +59,7 @@
 <span>  <span class="va">formula</span>,</span>
 <span>  <span class="va">...</span>,</span>
 <span>  prior <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  family <span class="op">=</span> <span class="fu">brms</span><span class="fu">::</span><span class="fu"><a href="https://paul-buerkner.github.io/brms/reference/brmsfamily.html" class="external-link">brmsfamily</a></span><span class="op">(</span>family <span class="op">=</span> <span class="st">"gaussian"</span><span class="op">)</span>,</span>
+<span>  family <span class="op">=</span> <span class="fu">brms</span><span class="fu">::</span><span class="fu"><a href="https://paulbuerkner.com/brms/reference/brmsfamily.html" class="external-link">brmsfamily</a></span><span class="op">(</span>family <span class="op">=</span> <span class="st">"gaussian"</span><span class="op">)</span>,</span>
 <span>  imputed <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -73,38 +73,38 @@
 prior archetype from a function like <code><a href="brm_archetype_successive_cells.html">brm_archetype_successive_cells()</a></code>.
 Unless you supplied <code>model_missing_outcomes = TRUE</code> in <code><a href="brm_formula.html">brm_formula()</a></code>,
 <code>brm_model()</code> automatically rows with missing outcomes
-just prior to fitting the model with <code><a href="https://paul-buerkner.github.io/brms/reference/brm.html" class="external-link">brms::brm()</a></code>.
+just prior to fitting the model with <code><a href="https://paulbuerkner.com/brms/reference/brm.html" class="external-link">brms::brm()</a></code>.
 The <code>brms.mmrm_data</code> attribute
 in the output object is always the version of the data prior to
 removing these rows. See the <code>data</code> element of the returned <code>brms</code>
 object for the final data actually supplied to the model.</p>
 <p>If you supply a non-<code>NULL</code> value for the <code>imputed</code>
 argument, then the <code>data</code> argument is ignored and the MMRM is fit
-successively to each dataset in <code>imputed</code> using <code><a href="https://paul-buerkner.github.io/brms/reference/brm_multiple.html" class="external-link">brms::brm_multiple()</a></code>.
+successively to each dataset in <code>imputed</code> using <code><a href="https://paulbuerkner.com/brms/reference/brm_multiple.html" class="external-link">brms::brm_multiple()</a></code>.
 Posterior draws are combined automatically for downstream post-processing
 unless you set <code>combine = FALSE</code> in <code>brm_model()</code>.</p></dd>
 
 
 <dt id="arg-formula">formula<a class="anchor" aria-label="anchor" href="#arg-formula"></a></dt>
 <dd><p>An object of class <code>"brmsformula"</code> from <code><a href="brm_formula.html">brm_formula()</a></code>
-or <code><a href="https://paul-buerkner.github.io/brms/reference/brmsformula.html" class="external-link">brms::brmsformula()</a></code>. Should include the full mapping
+or <code><a href="https://paulbuerkner.com/brms/reference/brmsformula.html" class="external-link">brms::brmsformula()</a></code>. Should include the full mapping
 of the model, including fixed effects, residual correlation,
 and heterogeneity in the discrete-time-specific residual variance
 components.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Arguments to <code><a href="https://paul-buerkner.github.io/brms/reference/brm.html" class="external-link">brms::brm()</a></code> or <code><a href="https://paul-buerkner.github.io/brms/reference/brm_multiple.html" class="external-link">brms::brm_multiple()</a></code>
+<dd><p>Arguments to <code><a href="https://paulbuerkner.com/brms/reference/brm.html" class="external-link">brms::brm()</a></code> or <code><a href="https://paulbuerkner.com/brms/reference/brm_multiple.html" class="external-link">brms::brm_multiple()</a></code>
 other than <code>data</code>, <code>formula</code>, <code>prior</code>, and <code>family</code>.</p></dd>
 
 
 <dt id="arg-prior">prior<a class="anchor" aria-label="anchor" href="#arg-prior"></a></dt>
 <dd><p>Either <code>NULL</code> for default priors
-or a <code>"brmsprior"</code> object from <code><a href="https://paul-buerkner.github.io/brms/reference/set_prior.html" class="external-link">brms::prior()</a></code>.</p></dd>
+or a <code>"brmsprior"</code> object from <code><a href="https://paulbuerkner.com/brms/reference/set_prior.html" class="external-link">brms::prior()</a></code>.</p></dd>
 
 
 <dt id="arg-family">family<a class="anchor" aria-label="anchor" href="#arg-family"></a></dt>
-<dd><p>A <code>brms</code> family object generated by <code><a href="https://paul-buerkner.github.io/brms/reference/brmsfamily.html" class="external-link">brms::brmsfamily()</a></code>.
+<dd><p>A <code>brms</code> family object generated by <code><a href="https://paulbuerkner.com/brms/reference/brmsfamily.html" class="external-link">brms::brmsfamily()</a></code>.
 Must fit a continuous outcome variable and have the identity link.</p></dd>
 
 
@@ -115,7 +115,7 @@ from the <code>mice</code> package. The <code>rbmi</code> package may offer a mo
 method for imputation for MMRMs than <code>mice</code>. It is your responsibility
 to choose an imputation method appropriate for the data and model.</p>
 <p>If not <code>NULL</code>, then the MMRM is fit
-successively to each dataset in <code>imputed</code> using <code><a href="https://paul-buerkner.github.io/brms/reference/brm_multiple.html" class="external-link">brms::brm_multiple()</a></code>.
+successively to each dataset in <code>imputed</code> using <code><a href="https://paulbuerkner.com/brms/reference/brm_multiple.html" class="external-link">brms::brm_multiple()</a></code>.
 Posterior draws are combined automatically for downstream post-processing
 unless you set <code>combine = FALSE</code> in <code>brm_model()</code>, so everything at
 the level of <code><a href="brm_marginal_draws.html">brm_marginal_draws()</a></code> will be exactly the same as
@@ -144,7 +144,7 @@ The ordering of the categorical variables in the data,
 as well as the <code>contrast</code> option in R, affect the
 construction of the model matrix. To see the model
 matrix that will ultimately be used in <code>brm_model()</code>,
-run <code><a href="https://paul-buerkner.github.io/brms/reference/standata.html" class="external-link">brms::make_standata()</a></code> and examine the <code>X</code> element
+run <code><a href="https://paulbuerkner.com/brms/reference/standata.html" class="external-link">brms::make_standata()</a></code> and examine the <code>X</code> element
 of the returned list. See the examples below for a
 demonstration.</p>
     </div>
@@ -176,14 +176,14 @@ demonstration.</p>
 <span class="r-in"><span><span class="co"># Optional: set the contrast option, which determines the model matrix.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>contrasts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>unordered <span class="op">=</span> <span class="st">"contr.SAS"</span>, ordered <span class="op">=</span> <span class="st">"contr.poly"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># See the fixed effect mapping you get from the data:</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">brms</span><span class="fu">::</span><span class="fu"><a href="https://paul-buerkner.github.io/brms/reference/standata.html" class="external-link">make_standata</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="va">formula</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span><span class="op">$</span><span class="va">X</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">brms</span><span class="fu">::</span><span class="fu"><a href="https://paulbuerkner.com/brms/reference/standata.html" class="external-link">make_standata</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="va">formula</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span><span class="op">$</span><span class="va">X</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># Specify a different contrast method to use an alternative</span></span></span>
 <span class="r-in"><span><span class="co"># mapping when fitting the model with brm_model():</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  contrasts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>unordered <span class="op">=</span> <span class="st">"contr.treatment"</span>, ordered <span class="op">=</span> <span class="st">"contr.poly"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># different model matrix than before:</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">brms</span><span class="fu">::</span><span class="fu"><a href="https://paul-buerkner.github.io/brms/reference/standata.html" class="external-link">make_standata</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="va">formula</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span><span class="op">$</span><span class="va">X</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">brms</span><span class="fu">::</span><span class="fu"><a href="https://paulbuerkner.com/brms/reference/standata.html" class="external-link">make_standata</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="va">formula</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span><span class="op">$</span><span class="va">X</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/capture.output.html" class="external-link">capture.output</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span></span></span>
@@ -217,7 +217,7 @@ demonstration.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer></div>

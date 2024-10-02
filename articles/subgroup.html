@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">brms.mmrm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0.9002</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -502,7 +502,7 @@ leave-one-out cross-validation.</p>
 marginal means.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/brm_plot_draws.html">brm_plot_draws</a></span><span class="op">(</span><span class="va">draws_subgroup</span><span class="op">$</span><span class="va">difference_group</span><span class="op">)</span></span></code></pre></div>
-<p><img src="subgroup/draws-1.png"></p>
+<p><img src="subgroup%2Fdraws-1.png"></p>
 <p>You can adjust visual aesthetics to compare subgroup levels side by
 side if subgroup level is the primary comparison of interest.</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
@@ -511,7 +511,7 @@ side if subgroup level is the primary comparison of interest.</p>
 <span>  axis <span class="op">=</span> <span class="st">"subgroup"</span>,</span>
 <span>  facet <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"time"</span>, <span class="st">"group"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="subgroup/drawscustom-1.png"></p>
+<p><img src="subgroup%2Fdrawscustom-1.png"></p>
 <p>The following function call compares the subgroup model results
 against the subgroup data.</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
@@ -520,7 +520,7 @@ against the subgroup data.</p>
 <span>  model <span class="op">=</span> <span class="va">summaries_subgroup</span>,</span>
 <span>  marginal <span class="op">=</span> <span class="st">"response"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="subgroup/subgroup-vs-data-1.png"></p>
+<p><img src="subgroup%2Fsubgroup-vs-data-1.png"></p>
 <p>You can adjust plot aesthetics to view subgroup levels side by side
 as the primary comparison of interest.</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
@@ -532,7 +532,7 @@ as the primary comparison of interest.</p>
 <span>  axis <span class="op">=</span> <span class="st">"time"</span>,</span>
 <span>  facet <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"group"</span>, <span class="st">"source"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="subgroup/subgroup-vs-data-levels-1.png"></p>
+<p><img src="subgroup%2Fsubgroup-vs-data-levels-1.png"></p>
 <p>We can also visually compare the treatment effects of a subgroup
 level against the marginal treatment effects of the reduced model.</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
@@ -541,7 +541,7 @@ level against the marginal treatment effects of the reduced model.</p>
 <span>  reduced <span class="op">=</span> <span class="va">summaries_reduced</span>,</span>
 <span>  marginal <span class="op">=</span> <span class="st">"difference_group"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="subgroup/reduced-model-comparison-1.png"></p>
+<p><img src="subgroup%2Freduced-model-comparison-1.png"></p>
 <p>Please remember to filter on a single subgroup level. Otherwise,
 <code><a href="../reference/brm_plot_compare.html">brm_plot_compare()</a></code> throws an informative error to prevent
 overplotting.</p>
@@ -599,7 +599,7 @@ clinical data</span>,”</span> <em>Clin Trials</em>, 20, 380–393.
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>
