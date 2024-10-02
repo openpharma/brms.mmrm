@@ -95,7 +95,7 @@ a formula for the \code{sigma} argument of \code{\link[=brm_formula]{brm_formula
 In \code{brms}, the standard deviations of the residuals are
 modeled through a parameter vector called \code{sigma}. \code{brms.mmrm}
 always treats \code{sigma} as a distributional parameter
-(\url{https://paul-buerkner.github.io/brms/articles/brms_distreg.html}).
+(\url{https://paulbuerkner.com/brms/articles/brms_distreg.html}).
 \code{\link[=brm_formula_sigma]{brm_formula_sigma()}} lets you control the parameterization of \code{sigma}.
 The output of \code{\link[=brm_formula_sigma]{brm_formula_sigma()}} serves as input to the \code{sigma}
 argument of \code{\link[=brm_formula]{brm_formula()}}.

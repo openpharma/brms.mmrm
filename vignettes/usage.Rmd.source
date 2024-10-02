@@ -129,7 +129,7 @@ formula
 
 # Priors
 
-Some analyses require informative priors, others require non-informative ones. Please use [`brms`](https://paul-buerkner.github.io/brms/) to construct a prior suitable for your analysis. The [`brms`](https://paul-buerkner.github.io/brms/) package has documentation on how its default priors are constructed and how to set your own priors. Once you have an R object that represents the joint prior distribution of your model, you can pass it to the `brm_model()` function described below. The `get_prior()` function shows the default priors for a given dataset and model formula.
+Some analyses require informative priors, others require non-informative ones. Please use [`brms`](https://paulbuerkner.com/brms/) to construct a prior suitable for your analysis. The [`brms`](https://paulbuerkner.com/brms/) package has documentation on how its default priors are constructed and how to set your own priors.^[Please consult the documentation on automatic centering in `brms` if you plan to set a prior on the intercept: `?brms::brmsformula`. Automatic centering changes the interpretation of the intercept parameter.] Once you have an R object that represents the joint prior distribution of your model, you can pass it to the `brm_model()` function described below. The `get_prior()` function shows the default priors for a given dataset and model formula.
 
 ```{r}
 brms::get_prior(data = data, formula = formula) |>
@@ -295,14 +295,14 @@ brm_plot_draws(
 
 ## Comparing priors and posteriors
 
-Suppose we want to compare the prior on the intercept term to its marginal posterior. `brms` automatically assigns a mildly informative Student t prior to help the MCMC converge:
+For a model with an intercept term and with automatic centering in `brms` turned on, `brms` by default assigns a mildly informative Student t prior to help the MCMC converge.^[With automatic centering in `brms`, the prior on the intercept applies to the term `Intercept` is the term which gets the prior, and `b_Intercept` is a generated quantity representing the intercept without centering. See the `center` argument and the "Parameterization of the population-level intercept" sub-section of "Details" at <https://paulbuerkner.com/brms/reference/brmsformula.html>.]
 
 ```{r}
 brms::prior_summary(model) |>
   filter(class == "Intercept")
 ```
 
-To compare the prior and posterior, we express the prior using the `distributional` package, extract posterior samples from the `brms` model, and visualize them together with the `ggdist` package. Below, the shaded gray region is the posterior density, and the blue line is the prior density.
+Suppose we want to compare the prior on `Intercept` to its marginal posterior. To begin, we express the prior using the `distributional` package, extract posterior samples from the `brms` model, and visualize them together with the `ggdist` package. Below, the shaded gray region is the posterior density, and the blue line is the prior density.
 
 ```{r priorvsposterior}
 library(distributional)
@@ -314,7 +314,7 @@ prior <- dist_student_t(3, 1.9, 11.8)
 posterior <- as_draws_df(model)
 
 ggplot() +
-  stat_halfeye(aes(x = b_Intercept), data = posterior) +
+  stat_halfeye(aes(x = Intercept), data = posterior) +
   stat_slab(aes(xdist = prior), color = "blue", fill = NA) +
   scale_thickness_shared()
 ```
@@ -360,7 +360,7 @@ str(data$AVISIT)
 
 # Appendix B: Imputation of missing outcomes
 
-Under the missing at random (MAR) assumptions, MMRMs do not require imputation (@bamdd). However, if the outcomes in your data are not missing at random, or if you are targeting an alternative estimand, then you may need to impute missing outcomes. `brms.mmrm` can leverage either of the two alternative solutions described at <https://paul-buerkner.github.io/brms/articles/brms_missings.html>. 
+Under the missing at random (MAR) assumptions, MMRMs do not require imputation (@bamdd). However, if the outcomes in your data are not missing at random, or if you are targeting an alternative estimand, then you may need to impute missing outcomes. `brms.mmrm` can leverage either of the two alternative solutions described at <https://paulbuerkner.com/brms/articles/brms_missings.html>. 
 
 ## Imputation before model fitting
 

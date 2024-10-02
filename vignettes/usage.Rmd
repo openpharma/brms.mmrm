@@ -75,18 +75,18 @@ data <- brm_data(
 ``` r
 data
 #> # A tibble: 800 × 11
-#>    USUBJID AVISIT ARMCD RACE  SEX   FEV1_BL  FEV1 WEIGHT VISITN VISITN2 FEV1_CHG
-#>    <fct>   <fct>  <fct> <fct> <fct>   <dbl> <dbl>  <dbl>  <int>   <dbl>    <dbl>
-#>  1 PT2     VIS1   PBO   Asian Male     45.0  NA    0.465      1  0.330     NA   
-#>  2 PT2     VIS2   PBO   Asian Male     45.0  31.5  0.233      2 -0.820    -13.6 
-#>  3 PT2     VIS3   PBO   Asian Male     45.0  36.9  0.360      3  0.487     -8.15
-#>  4 PT2     VIS4   PBO   Asian Male     45.0  48.8  0.507      4  0.738      3.78
-#>  5 PT3     VIS1   PBO   Blac… Fema…    43.5  NA    0.682      1  0.576     NA   
-#>  6 PT3     VIS2   PBO   Blac… Fema…    43.5  36.0  0.892      2 -0.305     -7.51
-#>  7 PT3     VIS3   PBO   Blac… Fema…    43.5  NA    0.128      3  1.51      NA   
-#>  8 PT3     VIS4   PBO   Blac… Fema…    43.5  37.2  0.222      4  0.390     -6.34
-#>  9 PT5     VIS1   PBO   Blac… Male     43.6  32.3  0.411      1 -0.0162   -11.3 
-#> 10 PT5     VIS2   PBO   Blac… Male     43.6  NA    0.422      2  0.944     NA   
+#>    USUBJID AVISIT ARMCD RACE            SEX   FEV1_BL  FEV1 WEIGHT VISITN VISITN2 FEV1_CHG
+#>    <fct>   <fct>  <fct> <fct>           <fct>   <dbl> <dbl>  <dbl>  <int>   <dbl>    <dbl>
+#>  1 PT2     VIS1   PBO   Asian           Male     45.0  NA    0.465      1  0.330     NA   
+#>  2 PT2     VIS2   PBO   Asian           Male     45.0  31.5  0.233      2 -0.820    -13.6 
+#>  3 PT2     VIS3   PBO   Asian           Male     45.0  36.9  0.360      3  0.487     -8.15
+#>  4 PT2     VIS4   PBO   Asian           Male     45.0  48.8  0.507      4  0.738      3.78
+#>  5 PT3     VIS1   PBO   Black or Afric… Fema…    43.5  NA    0.682      1  0.576     NA   
+#>  6 PT3     VIS2   PBO   Black or Afric… Fema…    43.5  36.0  0.892      2 -0.305     -7.51
+#>  7 PT3     VIS3   PBO   Black or Afric… Fema…    43.5  NA    0.128      3  1.51      NA   
+#>  8 PT3     VIS4   PBO   Black or Afric… Fema…    43.5  37.2  0.222      4  0.390     -6.34
+#>  9 PT5     VIS1   PBO   Black or Afric… Male     43.6  32.3  0.411      1 -0.0162   -11.3 
+#> 10 PT5     VIS2   PBO   Black or Afric… Male     43.6  NA    0.422      2  0.944     NA   
 #> # ℹ 790 more rows
 ```
 
@@ -156,7 +156,7 @@ formula
 
 # Priors
 
-Some analyses require informative priors, others require non-informative ones. Please use [`brms`](https://paul-buerkner.github.io/brms/) to construct a prior suitable for your analysis. The [`brms`](https://paul-buerkner.github.io/brms/) package has documentation on how its default priors are constructed and how to set your own priors. Once you have an R object that represents the joint prior distribution of your model, you can pass it to the `brm_model()` function described below. The `get_prior()` function shows the default priors for a given dataset and model formula.
+Some analyses require informative priors, others require non-informative ones. Please use [`brms`](https://paulbuerkner.com/brms/) to construct a prior suitable for your analysis. The [`brms`](https://paulbuerkner.com/brms/) package has documentation on how its default priors are constructed and how to set your own priors.^[Please consult the documentation on automatic centering in `brms` if you plan to set a prior on the intercept: `?brms::brmsformula`. Automatic centering changes the interpretation of the intercept parameter.] Once you have an R object that represents the joint prior distribution of your model, you can pass it to the `brm_model()` function described below. The `get_prior()` function shows the default priors for a given dataset and model formula.
 
 
 ``` r
@@ -214,54 +214,34 @@ model
 #> 
 #> Correlation Structures:
 #>                    Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-#> cortime(VIS1,VIS2)     0.36      0.09     0.17     0.51 1.00     5926     2988
-#> cortime(VIS1,VIS3)     0.14      0.10    -0.06     0.33 1.00     5214     3152
-#> cortime(VIS2,VIS3)     0.04      0.10    -0.16     0.25 1.00     5495     2706
-#> cortime(VIS1,VIS4)     0.17      0.11    -0.06     0.38 1.00     5762     2816
-#> cortime(VIS2,VIS4)     0.11      0.09    -0.07     0.28 1.00     5909     2829
-#> cortime(VIS3,VIS4)     0.00      0.10    -0.19     0.20 1.00     5305     3018
+#> cortime(VIS1,VIS2)     0.36      0.08     0.19     0.51 1.00     5330     3117
+#> cortime(VIS1,VIS3)     0.14      0.10    -0.06     0.32 1.00     5545     2626
+#> cortime(VIS2,VIS3)     0.04      0.10    -0.15     0.24 1.00     5103     3078
+#> cortime(VIS1,VIS4)     0.16      0.12    -0.08     0.38 1.00     5353     2866
+#> cortime(VIS2,VIS4)     0.11      0.09    -0.06     0.28 1.00     6012     3087
+#> cortime(VIS3,VIS4)     0.01      0.10    -0.19     0.21 1.00     4506     2771
 #> 
 #> Regression Coefficients:
-#>                            Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS
-#> Intercept                     23.36      2.55    18.40    28.51 1.00     1814
-#> FEV1_BL                       -0.82      0.06    -0.94    -0.70 1.00     1876
-#> ARMCDTRT                       4.00      1.06     1.97     6.09 1.00     2505
-#> AVISIT2                        4.46      2.73    -0.87     9.73 1.00     2058
-#> AVISIT3                       12.54      2.92     6.78    18.33 1.00     1967
-#> AVISIT4                       15.52      4.45     6.74    24.29 1.00     2576
-#> RACEBlackorAfricanAmerican     1.45      0.59     0.32     2.63 1.00     5718
-#> RACEWhite                      5.45      0.63     4.23     6.68 1.00     5124
-#> SEXFemale                      0.38      0.52    -0.63     1.40 1.00     5439
-#> FEV1_BL:AVISIT2                0.01      0.06    -0.12     0.14 1.00     2221
-#> FEV1_BL:AVISIT3               -0.05      0.07    -0.19     0.08 1.00     2041
-#> FEV1_BL:AVISIT4               -0.01      0.11    -0.21     0.20 1.00     2686
-#> ARMCDTRT:AVISIT2              -0.03      1.16    -2.26     2.24 1.00     2710
-#> ARMCDTRT:AVISIT3              -0.99      1.20    -3.42     1.37 1.00     2490
-#> ARMCDTRT:AVISIT4               0.44      1.87    -3.15     4.03 1.00     4022
-#> sigma_AVISITVIS1               1.83      0.06     1.71     1.95 1.00     5914
-#> sigma_AVISITVIS2               1.59      0.06     1.47     1.71 1.00     5225
-#> sigma_AVISITVIS3               1.33      0.06     1.21     1.46 1.00     5779
-#> sigma_AVISITVIS4               2.28      0.06     2.16     2.41 1.00     5354
-#>                            Tail_ESS
-#> Intercept                      2393
-#> FEV1_BL                        2622
-#> ARMCDTRT                       2533
-#> AVISIT2                        2730
-#> AVISIT3                        2769
-#> AVISIT4                        2669
-#> RACEBlackorAfricanAmerican     2829
-#> RACEWhite                      3019
-#> SEXFemale                      2912
-#> FEV1_BL:AVISIT2                2831
-#> FEV1_BL:AVISIT3                2685
-#> FEV1_BL:AVISIT4                2691
-#> ARMCDTRT:AVISIT2               3198
-#> ARMCDTRT:AVISIT3               2866
-#> ARMCDTRT:AVISIT4               2956
-#> sigma_AVISITVIS1               3225
-#> sigma_AVISITVIS2               3257
-#> sigma_AVISITVIS3               3047
-#> sigma_AVISITVIS4               2741
+#>                            Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+#> Intercept                     23.32      2.57    18.30    28.46 1.00     1595     2142
+#> FEV1_BL                       -0.82      0.06    -0.93    -0.70 1.00     1720     2210
+#> ARMCDTRT                       4.04      1.07     1.97     6.20 1.00     2694     3113
+#> AVISIT2                        4.43      2.75    -1.15     9.82 1.00     2037     2470
+#> AVISIT3                       12.55      2.93     6.74    18.27 1.00     1852     2195
+#> AVISIT4                       15.59      4.23     7.38    23.91 1.00     2489     2521
+#> RACEBlackorAfricanAmerican     1.45      0.59     0.28     2.65 1.00     5262     3112
+#> RACEWhite                      5.46      0.61     4.26     6.68 1.00     5172     3218
+#> SEXFemale                      0.38      0.51    -0.62     1.40 1.00     5881     3056
+#> FEV1_BL:AVISIT2                0.01      0.06    -0.12     0.14 1.00     2069     2704
+#> FEV1_BL:AVISIT3               -0.05      0.07    -0.19     0.08 1.00     1898     2215
+#> FEV1_BL:AVISIT4               -0.01      0.10    -0.21     0.19 1.00     2596     2762
+#> ARMCDTRT:AVISIT2              -0.06      1.15    -2.31     2.17 1.00     2894     3132
+#> ARMCDTRT:AVISIT3              -1.02      1.20    -3.37     1.38 1.00     3078     3105
+#> ARMCDTRT:AVISIT4               0.35      1.88    -3.30     3.93 1.00     3810     3176
+#> sigma_AVISITVIS1               1.83      0.06     1.71     1.95 1.00     5127     3300
+#> sigma_AVISITVIS2               1.59      0.06     1.47     1.71 1.00     5574     3239
+#> sigma_AVISITVIS3               1.33      0.06     1.21     1.45 1.00     5217     3072
+#> sigma_AVISITVIS4               2.28      0.06     2.16     2.41 1.00     6592     3198
 #> 
 #> Draws were sampled using sampling(NUTS). For each parameter, Bulk_ESS
 #> and Tail_ESS are effective sample size measures, and Rhat is the potential
@@ -272,18 +252,18 @@ model
 ``` r
 model$brms.mmrm_data
 #> # A tibble: 800 × 11
-#>    USUBJID AVISIT ARMCD RACE  SEX   FEV1_BL  FEV1 WEIGHT VISITN VISITN2 FEV1_CHG
-#>    <fct>   <ord>  <fct> <fct> <fct>   <dbl> <dbl>  <dbl>  <int>   <dbl>    <dbl>
-#>  1 PT2     VIS1   PBO   Asian Male     45.0  NA    0.465      1  0.330     NA   
-#>  2 PT2     VIS2   PBO   Asian Male     45.0  31.5  0.233      2 -0.820    -13.6 
-#>  3 PT2     VIS3   PBO   Asian Male     45.0  36.9  0.360      3  0.487     -8.15
-#>  4 PT2     VIS4   PBO   Asian Male     45.0  48.8  0.507      4  0.738      3.78
-#>  5 PT3     VIS1   PBO   Blac… Fema…    43.5  NA    0.682      1  0.576     NA   
-#>  6 PT3     VIS2   PBO   Blac… Fema…    43.5  36.0  0.892      2 -0.305     -7.51
-#>  7 PT3     VIS3   PBO   Blac… Fema…    43.5  NA    0.128      3  1.51      NA   
-#>  8 PT3     VIS4   PBO   Blac… Fema…    43.5  37.2  0.222      4  0.390     -6.34
-#>  9 PT5     VIS1   PBO   Blac… Male     43.6  32.3  0.411      1 -0.0162   -11.3 
-#> 10 PT5     VIS2   PBO   Blac… Male     43.6  NA    0.422      2  0.944     NA   
+#>    USUBJID AVISIT ARMCD RACE            SEX   FEV1_BL  FEV1 WEIGHT VISITN VISITN2 FEV1_CHG
+#>    <fct>   <ord>  <fct> <fct>           <fct>   <dbl> <dbl>  <dbl>  <int>   <dbl>    <dbl>
+#>  1 PT2     VIS1   PBO   Asian           Male     45.0  NA    0.465      1  0.330     NA   
+#>  2 PT2     VIS2   PBO   Asian           Male     45.0  31.5  0.233      2 -0.820    -13.6 
+#>  3 PT2     VIS3   PBO   Asian           Male     45.0  36.9  0.360      3  0.487     -8.15
+#>  4 PT2     VIS4   PBO   Asian           Male     45.0  48.8  0.507      4  0.738      3.78
+#>  5 PT3     VIS1   PBO   Black or Afric… Fema…    43.5  NA    0.682      1  0.576     NA   
+#>  6 PT3     VIS2   PBO   Black or Afric… Fema…    43.5  36.0  0.892      2 -0.305     -7.51
+#>  7 PT3     VIS3   PBO   Black or Afric… Fema…    43.5  NA    0.128      3  1.51      NA   
+#>  8 PT3     VIS4   PBO   Black or Afric… Fema…    43.5  37.2  0.222      4  0.390     -6.34
+#>  9 PT5     VIS1   PBO   Black or Afric… Male     43.6  32.3  0.411      1 -0.0162   -11.3 
+#> 10 PT5     VIS2   PBO   Black or Afric… Male     43.6  NA    0.422      2  0.944     NA   
 #> # ℹ 790 more rows
 ```
 
@@ -316,16 +296,16 @@ names(draws)
 draws$difference_group
 #> # A draws_df: 1000 iterations, 4 chains, and 3 variables
 #>    TRT|VIS2 TRT|VIS3 TRT|VIS4
-#> 1      0.63    -1.33    -1.03
-#> 2     -1.09    -1.03    -1.18
-#> 3      0.26    -0.39    -0.38
-#> 4      0.22    -1.27     0.50
-#> 5     -0.55    -1.49    -0.14
-#> 6     -0.28    -0.91    -3.35
-#> 7      0.29    -0.89     1.28
-#> 8     -0.11    -0.99    -1.68
-#> 9     -0.56    -0.81     1.64
-#> 10     0.91    -0.30     0.91
+#> 1     0.251    -2.24    1.149
+#> 2    -0.662    -1.33   -0.804
+#> 3    -0.129    -1.57    2.736
+#> 4    -0.370    -2.00    1.231
+#> 5    -0.964    -1.91   -1.026
+#> 6    -0.939    -1.15    0.258
+#> 7    -0.026    -1.15   -0.047
+#> 8     0.052    -1.48    1.239
+#> 9    -0.929    -0.81   -0.791
+#> 10   -0.437    -1.16    2.233
 #> # ... with 3990 more draws
 #> # ... hidden reserved variables {'.chain', '.iteration', '.draw'}
 ```
@@ -343,16 +323,16 @@ names(draws_average)
 draws_average$difference_group
 #> # A draws_df: 1000 iterations, 4 chains, and 1 variables
 #>    TRT|average
-#> 1       -0.576
-#> 2       -1.101
-#> 3       -0.170
-#> 4       -0.187
-#> 5       -0.726
-#> 6       -1.514
-#> 7        0.224
-#> 8       -0.928
-#> 9        0.094
-#> 10       0.507
+#> 1       -0.281
+#> 2       -0.932
+#> 3        0.347
+#> 4       -0.380
+#> 5       -1.300
+#> 6       -0.610
+#> 7       -0.407
+#> 8       -0.064
+#> 9       -0.845
+#> 10       0.212
 #> # ... with 3990 more draws
 #> # ... hidden reserved variables {'.chain', '.iteration', '.draw'}
 ```
@@ -367,16 +347,16 @@ summaries
 #> # A tibble: 140 × 6
 #>    marginal         statistic group time    value   mcse
 #>    <chr>            <chr>     <chr> <chr>   <dbl>  <dbl>
-#>  1 difference_group lower     TRT   VIS2  -2.26   0.0563
-#>  2 difference_group lower     TRT   VIS3  -3.42   0.0653
-#>  3 difference_group lower     TRT   VIS4  -3.15   0.0801
-#>  4 difference_group mean      TRT   VIS2  -0.0350 0.0225
-#>  5 difference_group mean      TRT   VIS3  -0.990  0.0244
-#>  6 difference_group mean      TRT   VIS4   0.442  0.0297
-#>  7 difference_group median    TRT   VIS2  -0.0433 0.0243
-#>  8 difference_group median    TRT   VIS3  -0.975  0.0296
-#>  9 difference_group median    TRT   VIS4   0.471  0.0349
-#> 10 difference_group sd        TRT   VIS2   1.16   0.0152
+#>  1 difference_group lower     TRT   VIS2  -2.31   0.0465
+#>  2 difference_group lower     TRT   VIS3  -3.37   0.0668
+#>  3 difference_group lower     TRT   VIS4  -3.30   0.0688
+#>  4 difference_group mean      TRT   VIS2  -0.0638 0.0216
+#>  5 difference_group mean      TRT   VIS3  -1.02   0.0219
+#>  6 difference_group mean      TRT   VIS4   0.348  0.0311
+#>  7 difference_group median    TRT   VIS2  -0.0714 0.0249
+#>  8 difference_group median    TRT   VIS3  -1.02   0.0252
+#>  9 difference_group median    TRT   VIS4   0.381  0.0320
+#> 10 difference_group sd        TRT   VIS2   1.15   0.0161
 #> # ℹ 130 more rows
 ```
 
@@ -406,12 +386,12 @@ brm_marginal_probabilities(
 #> # A tibble: 6 × 5
 #>   direction threshold group time  value
 #>   <chr>         <dbl> <chr> <chr> <dbl>
-#> 1 greater        -0.1 TRT   VIS2  0.520
-#> 2 greater        -0.1 TRT   VIS3  0.227
-#> 3 greater        -0.1 TRT   VIS4  0.619
-#> 4 less            0.1 TRT   VIS2  0.547
-#> 5 less            0.1 TRT   VIS3  0.829
-#> 6 less            0.1 TRT   VIS4  0.421
+#> 1 greater        -0.1 TRT   VIS2  0.511
+#> 2 greater        -0.1 TRT   VIS3  0.220
+#> 3 greater        -0.1 TRT   VIS4  0.594
+#> 4 less            0.1 TRT   VIS2  0.56 
+#> 5 less            0.1 TRT   VIS3  0.827
+#> 6 less            0.1 TRT   VIS4  0.443
 ```
 
 Finally, `brm_marignal_data()` computes marginal means and confidence intervals on the response variable in the data, along with other summary statistics.
@@ -522,7 +502,7 @@ brm_plot_draws(
 
 ## Comparing priors and posteriors
 
-Suppose we want to compare the prior on the intercept term to its marginal posterior. `brms` automatically assigns a mildly informative Student t prior to help the MCMC converge:
+For a model with an intercept term and with automatic centering in `brms` turned on, `brms` by default assigns a mildly informative Student t prior to help the MCMC converge.^[With automatic centering in `brms`, the prior on the intercept applies to the term `Intercept` is the term which gets the prior, and `b_Intercept` is a generated quantity representing the intercept without centering. See the `center` argument and the "Parameterization of the population-level intercept" sub-section of "Details" at <https://paulbuerkner.com/brms/reference/brmsformula.html>.]
 
 
 ``` r
@@ -531,7 +511,7 @@ brms::prior_summary(model) |>
 #> Intercept ~ student_t(3, 1.9, 11.8)
 ```
 
-To compare the prior and posterior, we express the prior using the `distributional` package, extract posterior samples from the `brms` model, and visualize them together with the `ggdist` package. Below, the shaded gray region is the posterior density, and the blue line is the prior density.
+Suppose we want to compare the prior on `Intercept` to its marginal posterior. To begin, we express the prior using the `distributional` package, extract posterior samples from the `brms` model, and visualize them together with the `ggdist` package. Below, the shaded gray region is the posterior density, and the blue line is the prior density.
 
 
 ``` r
@@ -544,7 +524,7 @@ prior <- dist_student_t(3, 1.9, 11.8)
 posterior <- as_draws_df(model)
 
 ggplot() +
-  stat_halfeye(aes(x = b_Intercept), data = posterior) +
+  stat_halfeye(aes(x = Intercept), data = posterior) +
   stat_slab(aes(xdist = prior), color = "blue", fill = NA) +
   scale_thickness_shared()
 ```
@@ -581,20 +561,20 @@ head(brms::make_standata(formula = formula, data = data)$X)
 #> 3           1 45.02477        1       0       1       0         1
 #> 4           1 45.02477        1       0       0       1         1
 #> 6           1 43.50070        1       1       0       0         0
-#>     RACEBlackorAfricanAmerican SEXMale FEV1_BL:AVISIT2 FEV1_BL:AVISIT3
-#> 422                          1       0        25.27144         0.00000
-#> 424                          1       0         0.00000         0.00000
-#> 2                            0       1        45.02477         0.00000
-#> 3                            0       1         0.00000        45.02477
-#> 4                            0       1         0.00000         0.00000
-#> 6                            1       0        43.50070         0.00000
-#>     FEV1_BL:AVISIT4 ARMCDPBO:AVISIT2 ARMCDPBO:AVISIT3 ARMCDPBO:AVISIT4
-#> 422         0.00000                0                0                0
-#> 424        25.27144                0                0                0
-#> 2           0.00000                1                0                0
-#> 3           0.00000                0                1                0
-#> 4          45.02477                0                0                1
-#> 6           0.00000                1                0                0
+#>     RACEBlackorAfricanAmerican SEXMale FEV1_BL:AVISIT2 FEV1_BL:AVISIT3 FEV1_BL:AVISIT4
+#> 422                          1       0        25.27144         0.00000         0.00000
+#> 424                          1       0         0.00000         0.00000        25.27144
+#> 2                            0       1        45.02477         0.00000         0.00000
+#> 3                            0       1         0.00000        45.02477         0.00000
+#> 4                            0       1         0.00000         0.00000        45.02477
+#> 6                            1       0        43.50070         0.00000         0.00000
+#>     ARMCDPBO:AVISIT2 ARMCDPBO:AVISIT3 ARMCDPBO:AVISIT4
+#> 422                0                0                0
+#> 424                0                0                0
+#> 2                  1                0                0
+#> 3                  0                1                0
+#> 4                  0                0                1
+#> 6                  1                0                0
 ```
 
 If you choose a different contrast method, a different model matrix may result.
@@ -606,34 +586,27 @@ options(
 )
 # different model matrix than before:
 head(brms::make_standata(formula = formula, data = data)$X)
-#>     Intercept  FEV1_BL ARMCDTRT AVISIT2 AVISIT3 AVISIT4
-#> 422         1 25.27144        1       1       0       0
-#> 424         1 25.27144        1       0       0       1
-#> 2           1 45.02477        0       1       0       0
-#> 3           1 45.02477        0       0       1       0
-#> 4           1 45.02477        0       0       0       1
-#> 6           1 43.50070        0       1       0       0
-#>     RACEBlackorAfricanAmerican RACEWhite SEXFemale FEV1_BL:AVISIT2
-#> 422                          1         0         1        25.27144
-#> 424                          1         0         1         0.00000
-#> 2                            0         0         0        45.02477
-#> 3                            0         0         0         0.00000
-#> 4                            0         0         0         0.00000
-#> 6                            1         0         1        43.50070
-#>     FEV1_BL:AVISIT3 FEV1_BL:AVISIT4 ARMCDTRT:AVISIT2 ARMCDTRT:AVISIT3
-#> 422         0.00000         0.00000                1                0
-#> 424         0.00000        25.27144                0                0
-#> 2           0.00000         0.00000                0                0
-#> 3          45.02477         0.00000                0                0
-#> 4           0.00000        45.02477                0                0
-#> 6           0.00000         0.00000                0                0
-#>     ARMCDTRT:AVISIT4
-#> 422                0
-#> 424                1
-#> 2                  0
-#> 3                  0
-#> 4                  0
-#> 6                  0
+#>     Intercept  FEV1_BL ARMCDTRT AVISIT2 AVISIT3 AVISIT4 RACEBlackorAfricanAmerican
+#> 422         1 25.27144        1       1       0       0                          1
+#> 424         1 25.27144        1       0       0       1                          1
+#> 2           1 45.02477        0       1       0       0                          0
+#> 3           1 45.02477        0       0       1       0                          0
+#> 4           1 45.02477        0       0       0       1                          0
+#> 6           1 43.50070        0       1       0       0                          1
+#>     RACEWhite SEXFemale FEV1_BL:AVISIT2 FEV1_BL:AVISIT3 FEV1_BL:AVISIT4 ARMCDTRT:AVISIT2
+#> 422         0         1        25.27144         0.00000         0.00000                1
+#> 424         0         1         0.00000         0.00000        25.27144                0
+#> 2           0         0        45.02477         0.00000         0.00000                0
+#> 3           0         0         0.00000        45.02477         0.00000                0
+#> 4           0         0         0.00000         0.00000        45.02477                0
+#> 6           0         1        43.50070         0.00000         0.00000                0
+#>     ARMCDTRT:AVISIT3 ARMCDTRT:AVISIT4
+#> 422                0                0
+#> 424                0                1
+#> 2                  0                0
+#> 3                  0                0
+#> 4                  0                0
+#> 6                  0                0
 ```
 
 Recall from earlier that `brm_data_chronologize()` protects the discrete time variable (in our case, `AVISIT`) from the `contrasts` option by assigning a `contrasts` attribute of its own.
@@ -650,7 +623,7 @@ str(data$AVISIT)
 
 # Appendix B: Imputation of missing outcomes
 
-Under the missing at random (MAR) assumptions, MMRMs do not require imputation (@bamdd). However, if the outcomes in your data are not missing at random, or if you are targeting an alternative estimand, then you may need to impute missing outcomes. `brms.mmrm` can leverage either of the two alternative solutions described at <https://paul-buerkner.github.io/brms/articles/brms_missings.html>. 
+Under the missing at random (MAR) assumptions, MMRMs do not require imputation (@bamdd). However, if the outcomes in your data are not missing at random, or if you are targeting an alternative estimand, then you may need to impute missing outcomes. `brms.mmrm` can leverage either of the two alternative solutions described at <https://paulbuerkner.com/brms/articles/brms_missings.html>. 
 
 ## Imputation before model fitting
 

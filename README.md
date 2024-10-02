@@ -10,20 +10,20 @@
 The [mixed model for repeated measures
 (MMRM)](https://link.springer.com/article/10.1177/009286150804200402) is
 a popular model for longitudinal clinical trial data with continuous
-endpoints, and [`brms`](https://paul-buerkner.github.io/brms/) is
-powerful and versatile package for fitting Bayesian regression models.
-The `brms.mmrm` R package leverages
-[`brms`](https://paul-buerkner.github.io/brms/) to run
+endpoints, and [`brms`](https://paulbuerkner.com/brms/) is powerful and
+versatile package for fitting Bayesian regression models. The
+`brms.mmrm` R package leverages
+[`brms`](https://paulbuerkner.com/brms/) to run
 [MMRMs](https://link.springer.com/article/10.1177/009286150804200402),
 and it supports a simplified interface to reduce difficulty and align
 with best practices for the life sciences.
 
 ## Installation
 
-| Type        | Source     | Command                                                                      |
-|-------------|------------|------------------------------------------------------------------------------|
-| Release     | CRAN       | `install.packages("brms.mmrm")`                                              |
-| Development | GitHub     | `remotes::install_github("openpharma/brms.mmrm")`                            |
+| Type | Source | Command |
+|----|----|----|
+| Release | CRAN | `install.packages("brms.mmrm")` |
+| Development | GitHub | `remotes::install_github("openpharma/brms.mmrm")` |
 | Development | openpharma | `install.packages("brms.mmrm", repos = "https://openpharma.r-universe.dev")` |
 
 ## Documentation
@@ -56,8 +56,8 @@ are the same datasets that
 itself against SAS in [this
 vignette](https://openpharma.github.io/mmrm/latest-tag/articles/mmrm_review_methods.html).
 For additional validation in your functional area or domain of
-expertise, you may choose to run similar analyses on your own
-datasets to compare `brms.mmrm` against
+expertise, you may choose to run similar analyses on your own datasets
+to compare `brms.mmrm` against
 [`mmrm`](https://openpharma.github.io/mmrm/latest-tag/) and/or SAS.
 
 ## Help
@@ -68,8 +68,8 @@ issues](https://github.com/openpharma/brms.mmrm), respectively.
 
 ## Thanks
 
-Thanks to [`openstatsware`](https://www.openstatsware.org/) and the [R
-Consortium](https://www.r-consortium.org/) for providing professional
+Thanks to the [`openstatsware`](https://www.openstatsware.org/) and [R
+Consortium](https://r-consortium.org/) for providing professional
 networks to recruit skilled statisticians and developers.
 
 ## Code of conduct
@@ -84,7 +84,7 @@ By contributing to this project, you agree to abide by its terms.
     To cite package 'brms.mmrm' in publications use:
 
       Landau WM, Kunzmann K, Sidi Y, Stock C (????). _brms.mmrm: Bayesian
-      MMRMs using 'brms'_. R package version 0.1.0.9003,
+      MMRMs using 'brms'_. R package version 1.1.0.9002,
       <https://github.com/openpharma/brms.mmrm>.
 
     A BibTeX entry for LaTeX users is
@@ -92,7 +92,7 @@ By contributing to this project, you agree to abide by its terms.
       @Manual{,
         title = {brms.mmrm: Bayesian MMRMs using 'brms'},
         author = {William Michael Landau and Kevin Kunzmann and Yoni Sidi and Christian Stock},
-        note = {R package version 0.1.0.9003},
+        note = {R package version 1.1.0.9002},
         url = {https://github.com/openpharma/brms.mmrm},
       }
 

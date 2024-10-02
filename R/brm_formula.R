@@ -131,7 +131,7 @@
 #'   patient, as modeled in the residuals. Different patients are modeled
 #'   as independent. The `correlation` argument controls how this matrix
 #'   is parameterized, and the choices given by `brms` are listed at
-#'   <https://paul-buerkner.github.io/brms/reference/autocor-terms.html>,
+#'   <https://paulbuerkner.com/brms/reference/autocor-terms.html>,
 #'   and the choice is ultimately encoded in the main body of the
 #'   output formula through terms like `unstru()` and `arma()`, some
 #'   of which are configurable through arguments
@@ -141,16 +141,16 @@
 #'   * `"unstructured"`: the default/recommended option, a fully parameterized
 #'     covariance matrix with a unique scalar parameter for each unique pair
 #'     of discrete time points. C.f.
-#'     <https://paul-buerkner.github.io/brms/reference/unstr.html>.
+#'     <https://paulbuerkner.com/brms/reference/unstr.html>.
 #'   * `"autoregressive_moving_average"`: autoregressive moving
 #'     average (ARMA), c.f.
-#'     <https://paul-buerkner.github.io/brms/reference/arma.html>.
+#'     <https://paulbuerkner.com/brms/reference/arma.html>.
 #'   * `"autoregressive"`: autoregressive (AR), c.f.
-#'     <https://paul-buerkner.github.io/brms/reference/ar.html>.
+#'     <https://paulbuerkner.com/brms/reference/ar.html>.
 #'   * `"moving_average"`: moving average (MA), c.f.
-#'     <https://paul-buerkner.github.io/brms/reference/ma.html>.
+#'     <https://paulbuerkner.com/brms/reference/ma.html>.
 #'   * `"compound_symmetry`: compound symmetry, c.f.
-#'     <https://paul-buerkner.github.io/brms/reference/cosy.html>.
+#'     <https://paulbuerkner.com/brms/reference/cosy.html>.
 #'   * `"diagonal"`: declare independent time points within patients.
 #' @param autoregressive_order Nonnegative integer,
 #'   autoregressive order for the `"autoregressive_moving_average"`
@@ -163,11 +163,11 @@
 #'   Directly supplied to the `cov` argument in `brms` for
 #'   `"autoregressive_moving_average"`, `"autoregressive"`, and
 #'   `"moving_average"` correlation structures. C.f.
-#'   <https://paul-buerkner.github.io/brms/reference/arma.html>.
+#'   <https://paulbuerkner.com/brms/reference/arma.html>.
 #' @param model_missing_outcomes Logical of length 1, `TRUE`
 #'   to impute missing outcomes during model fitting as described in the
 #'   "Imputation during model fitting" section of
-#'   <https://paul-buerkner.github.io/brms/articles/brms_missings.html>.
+#'   <https://paulbuerkner.com/brms/articles/brms_missings.html>.
 #'   Specifically, if the outcome variable is `y`, then the formula will
 #'   begin with `y | mi() ~ ...` instead of simply `y ~ ...`.
 #'   Set to `FALSE` (default) to forgo this kind of imputation
@@ -183,6 +183,17 @@
 #' @param warn_ignored Set to `TRUE`
 #'   to throw a warning if ignored arguments are specified,
 #'   `FALSE` otherwise.
+#' @param center `TRUE` to center the columns of the model matrix before
+#'   fitting the model if the model formula includes an intercept
+#'   term controlled by `brms`. `FALSE` to skip centering. Centering usually
+#'   leads to more computationally efficient sampling in the presence
+#'   of an intercept, but it changes
+#'   the interpretation of the intercept parameter if included in the model
+#'   (as explained in the help file of `brms::brmsformula()`).
+#'   Informative prior archetypes always use `center = FALSE`
+#'   and use an intercept not controlled by `brms.mmrm` to ensure the
+#'   intercept parameter is interpretable and compatible with
+#'   user-defined priors.
 #' @param ... Named arguments to specific [brm_formula()] methods.
 #' @param effect_baseline Deprecated on 2024-01-16 (version 0.0.2.9002).
 #'   Use `baseline` instead.
@@ -292,6 +303,7 @@ brm_formula.default <- function(
   subgroup = !is.null(attr(data, "brm_subgroup")),
   subgroup_time = !is.null(attr(data, "brm_subgroup")),
   time = TRUE,
+  center = TRUE,
   ...,
   effect_baseline = NULL,
   effect_group = NULL,
@@ -335,6 +347,7 @@ brm_formula.default <- function(
     . >= 0,
     message = "moving_average_order must be a nonnegative integer of length 1"
   )
+  assert_lgl(center, "center must be TRUE or FALSE")
   expect_baseline <- baseline ||
     baseline_subgroup ||
     baseline_subgroup_time ||
@@ -421,7 +434,11 @@ brm_formula.default <- function(
     name_outcome
   )
   formula_fixed <- stats::as.formula(paste(term_outcome, "~", right))
-  brms_formula <- brms::brmsformula(formula = formula_fixed, sigma)
+  brms_formula <- brms::brmsformula(
+    formula = formula_fixed,
+    sigma,
+    center = center
+  )
   formula <- brm_formula_new(
     formula = brms_formula,
     brm_intercept = intercept,
@@ -536,7 +553,11 @@ brm_formula.brms_mmrm_archetype <- function(
     name_outcome
   )
   formula_fixed <- stats::as.formula(paste(term_outcome, "~", right))
-  brms_formula <- brms::brmsformula(formula = formula_fixed, sigma)
+  brms_formula <- brms::brmsformula(
+    formula = formula_fixed,
+    sigma,
+    center = FALSE
+  )
   formula <- brm_formula_archetype_new(
     formula = brms_formula,
     brm_correlation = correlation,

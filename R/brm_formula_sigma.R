@@ -6,7 +6,7 @@
 #' @details In `brms`, the standard deviations of the residuals are
 #'   modeled through a parameter vector called `sigma`. `brms.mmrm`
 #'   always treats `sigma` as a distributional parameter
-#'   (<https://paul-buerkner.github.io/brms/articles/brms_distreg.html>).
+#'   (<https://paulbuerkner.com/brms/articles/brms_distreg.html>).
 #'   [brm_formula_sigma()] lets you control the parameterization of `sigma`.
 #'   The output of [brm_formula_sigma()] serves as input to the `sigma`
 #'   argument of [brm_formula()].

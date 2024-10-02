@@ -97,7 +97,7 @@ To accomplish our goals, we need to carefully construct a linear transformation 
 
 # Existing capabilities
 
-`brms.mmrm::brm_model()` returns a fitted [`brms`](https://paul-buerkner.github.io/brms/) model, and [`brms`](https://paul-buerkner.github.io/brms/) already has tools for posterior inference. Through a combination of native functions and S3 methods, [`brms`](https://paul-buerkner.github.io/brms/) integrates not only with [`posterior`](https://mc-stan.org/posterior/) and [`loo`](https://mc-stan.org/loo/), but also [`emmeans`](https://cran.r-project.org/package=emmeans) for the estimation of marginal means and downstream contrasts. 
+`brms.mmrm::brm_model()` returns a fitted [`brms`](https://paulbuerkner.com/brms/) model, and [`brms`](https://paulbuerkner.com/brms/) already has tools for posterior inference. Through a combination of native functions and S3 methods, [`brms`](https://paulbuerkner.com/brms/) integrates not only with [`posterior`](https://mc-stan.org/posterior/) and [`loo`](https://mc-stan.org/loo/), but also [`emmeans`](https://cran.r-project.org/package=emmeans) for the estimation of marginal means and downstream contrasts. 
 
 Despite the existing features in `brms`, `brms.mmrm` implements custom code to transform model coefficients into marginal means. This is because the reference grids in `emmeans` can only condition on factors explicitly declared in the model formula supplied to `brms`, whereas `brms.mmrm` needs more flexibility in order to support [informative prior archetypes](https://openpharma.github.io/brms.mmrm/articles/archetypes.html) (@bedrick1996, @bedrick1997, @christensen2010, @rosner2021).
 

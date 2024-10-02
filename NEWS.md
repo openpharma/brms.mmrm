@@ -1,7 +1,8 @@
-# brms.mmrm 1.1.0.9002 (development)
+# brms.mmrm 1.1.1
 
 * Use FEV data in usage vignette.
-* Show how to prior vs posterior in the usage vignette.
+* Show how to visualize prior vs posterior in the usage vignette.
+* Add a `center` argument to `brms_formula.default()` and explain intercept parameter interpretation concerns (#128).
 
 # brms.mmrm 1.1.0
 
@@ -16,7 +17,7 @@
 * Set the default value of `effect_size` to `attr(formula, "brm_allow_effect_size")`.
 * Remove defaults from some arguments to `brm_data()` and document examples.
 * Deprecate the `role` argument of `brm_data()` in favor of `reference_time` (#119).
-* Add a new `model_missing_outcomes` in `brm_formula()` to optionally impute missing values during model fitting as described at <https://paul-buerkner.github.io/brms/articles/brms_missings.html> (#121).
+* Add a new `model_missing_outcomes` in `brm_formula()` to optionally impute missing values during model fitting as described at <https://paulbuerkner.com/brms/articles/brms_missings.html> (#121).
 * Add a new `imputed` argument to accept a `mice` multiply imputed dataset ("mids") in `brm_model()` (#121).
 * Add a `summary()` method for `brm_transform_marginal()` objects.
 * Do not recheck the rank of the formula in `brm_transform_marginal()`.

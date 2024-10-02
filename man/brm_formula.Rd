@@ -42,6 +42,7 @@ brm_formula(
   subgroup = !is.null(attr(data, "brm_subgroup")),
   subgroup_time = !is.null(attr(data, "brm_subgroup")),
   time = TRUE,
+  center = TRUE,
   ...,
   effect_baseline = NULL,
   effect_group = NULL,
@@ -70,7 +71,7 @@ prior archetype from a function like \code{\link[=brm_archetype_successive_cells
 \item{model_missing_outcomes}{Logical of length 1, \code{TRUE}
 to impute missing outcomes during model fitting as described in the
 "Imputation during model fitting" section of
-\url{https://paul-buerkner.github.io/brms/articles/brms_missings.html}.
+\url{https://paulbuerkner.com/brms/articles/brms_missings.html}.
 Specifically, if the outcome variable is \code{y}, then the formula will
 begin with \code{y | mi() ~ ...} instead of simply \code{y ~ ...}.
 Set to \code{FALSE} (default) to forgo this kind of imputation
@@ -97,7 +98,7 @@ This matrix describes the correlations between time points in the same
 patient, as modeled in the residuals. Different patients are modeled
 as independent. The \code{correlation} argument controls how this matrix
 is parameterized, and the choices given by \code{brms} are listed at
-\url{https://paul-buerkner.github.io/brms/reference/autocor-terms.html},
+\url{https://paulbuerkner.com/brms/reference/autocor-terms.html},
 and the choice is ultimately encoded in the main body of the
 output formula through terms like \code{unstru()} and \code{arma()}, some
 of which are configurable through arguments
@@ -108,16 +109,16 @@ Choices in \code{brms.mmrm}:
 \item \code{"unstructured"}: the default/recommended option, a fully parameterized
 covariance matrix with a unique scalar parameter for each unique pair
 of discrete time points. C.f.
-\url{https://paul-buerkner.github.io/brms/reference/unstr.html}.
+\url{https://paulbuerkner.com/brms/reference/unstr.html}.
 \item \code{"autoregressive_moving_average"}: autoregressive moving
 average (ARMA), c.f.
-\url{https://paul-buerkner.github.io/brms/reference/arma.html}.
+\url{https://paulbuerkner.com/brms/reference/arma.html}.
 \item \code{"autoregressive"}: autoregressive (AR), c.f.
-\url{https://paul-buerkner.github.io/brms/reference/ar.html}.
+\url{https://paulbuerkner.com/brms/reference/ar.html}.
 \item \code{"moving_average"}: moving average (MA), c.f.
-\url{https://paul-buerkner.github.io/brms/reference/ma.html}.
+\url{https://paulbuerkner.com/brms/reference/ma.html}.
 \item \verb{"compound_symmetry}: compound symmetry, c.f.
-\url{https://paul-buerkner.github.io/brms/reference/cosy.html}.
+\url{https://paulbuerkner.com/brms/reference/cosy.html}.
 \item \code{"diagonal"}: declare independent time points within patients.
 }}
 
@@ -134,7 +135,7 @@ whether to estimate ARMA effects using residual covariance matrices.
 Directly supplied to the \code{cov} argument in \code{brms} for
 \code{"autoregressive_moving_average"}, \code{"autoregressive"}, and
 \code{"moving_average"} correlation structures. C.f.
-\url{https://paul-buerkner.github.io/brms/reference/arma.html}.}
+\url{https://paulbuerkner.com/brms/reference/arma.html}.}
 
 \item{...}{Named arguments to specific \code{\link[=brm_formula]{brm_formula()}} methods.}
 
@@ -215,6 +216,18 @@ variable in the dataset.}
 \item{time}{Logical of length 1.
 \code{TRUE} (default) to include a additive effect for discrete time,
 \code{FALSE} to omit.}
+
+\item{center}{\code{TRUE} to center the columns of the model matrix before
+fitting the model if the model formula includes an intercept
+term controlled by \code{brms}. \code{FALSE} to skip centering. Centering usually
+leads to more computationally efficient sampling in the presence
+of an intercept, but it changes
+the interpretation of the intercept parameter if included in the model
+(as explained in the help file of \code{brms::brmsformula()}).
+Informative prior archetypes always use \code{center = FALSE}
+and use an intercept not controlled by \code{brms.mmrm} to ensure the
+intercept parameter is interpretable and compatible with
+user-defined priors.}
 
 \item{effect_baseline}{Deprecated on 2024-01-16 (version 0.0.2.9002).
 Use \code{baseline} instead.}

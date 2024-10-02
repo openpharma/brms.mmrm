@@ -12,7 +12,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-The `brms.mmrm` R package implements a mixed model of repeated measures (MMRM), a popular and flexible model to analyze continuous longitudinal outcomes (@mallinckrodt2008, @mallinckrodt2017, @bamdd). `brms.mmrm` focuses on marginal MMRMs for randomized controlled parallel studies with discrete time points, where each patient shares the same set of time points. Whereas the [`mmrm`](https://openpharma.github.io/mmrm/) package is frequentist, `brms.mmrm` fits models in Bayesian fashion using [`brms`](https://paul-buerkner.github.io/brms/) [@burkner2017].
+The `brms.mmrm` R package implements a mixed model of repeated measures (MMRM), a popular and flexible model to analyze continuous longitudinal outcomes (@mallinckrodt2008, @mallinckrodt2017, @bamdd). `brms.mmrm` focuses on marginal MMRMs for randomized controlled parallel studies with discrete time points, where each patient shares the same set of time points. Whereas the [`mmrm`](https://openpharma.github.io/mmrm/) package is frequentist, `brms.mmrm` fits models in Bayesian fashion using [`brms`](https://paulbuerkner.com/brms/) [@burkner2017].
 
 # Model
 
@@ -25,7 +25,7 @@ y_n \sim \text{Multivariate-Normal}\left ( \text{mean} = X_n b, \ \text{variance
 $$
 Above, $X_n$ is the fixed effect model matrix of patient $n$, and its specific makeup is determined by arguments such as `intercept` and `group` in `brm_formula()`. $b$ is a constant-length vector of fixed effect parameters.
 
-The MMRM in `brms.mmrm` is a [distributional model](https://paul-buerkner.github.io/brms/articles/brms_distreg.html), which means it uses a linear regression structure for both the mean and the variance of the multivariate normal likelihood. In particular, the $T \times T$ symmetric positive-definite residual covariance matrix $\Sigma_n$ of patient $n$ decomposes as follows:
+The MMRM in `brms.mmrm` is a [distributional model](https://paulbuerkner.com/brms/articles/brms_distreg.html), which means it uses a linear regression structure for both the mean and the variance of the multivariate normal likelihood. In particular, the $T \times T$ symmetric positive-definite residual covariance matrix $\Sigma_n$ of patient $n$ decomposes as follows:
 
 $$
 \begin{aligned}
@@ -34,9 +34,9 @@ $$
 \end{aligned}
 $$
 
-Above, $\sigma_n$ is a vector of $T$ time-specific scalar standard deviations, and $\text{diag}(\sigma_n)$ is a diagonal $T \times T$ matrix. $Z_n$ is a patient-specific matrix which controls how the [distributional parameters](https://paul-buerkner.github.io/brms/articles/brms_distreg.html) $b_\sigma$ map to the more intuitive standard deviation vector $\sigma_n$. The specific makeup of $Z_n$ is determined by the `sigma` argument of `brm_formula()`, which in turn is produced by `brm_formula_sigma()`.
+Above, $\sigma_n$ is a vector of $T$ time-specific scalar standard deviations, and $\text{diag}(\sigma_n)$ is a diagonal $T \times T$ matrix. $Z_n$ is a patient-specific matrix which controls how the [distributional parameters](https://paulbuerkner.com/brms/articles/brms_distreg.html) $b_\sigma$ map to the more intuitive standard deviation vector $\sigma_n$. The specific makeup of $Z_n$ is determined by the `sigma` argument of `brm_formula()`, which in turn is produced by `brm_formula_sigma()`.
 
-$\Lambda$ is a symmetric positive-definite correlation matrix with diagonal elements equal to 1 and off-diagonal elements between -1 and 1. The structure of $\Lambda$ depends on the `correlation` argument of `brm_formula()`, which could describe an unstructured parameterization, ARMA, compound symmetry, etc. These alternative structures and priors are available directly through `brms`. For specific details, please consult <https://paul-buerkner.github.io/brms/reference/autocor-terms.html> and `?brms.mmrm::brm_formula`.
+$\Lambda$ is a symmetric positive-definite correlation matrix with diagonal elements equal to 1 and off-diagonal elements between -1 and 1. The structure of $\Lambda$ depends on the `correlation` argument of `brm_formula()`, which could describe an unstructured parameterization, ARMA, compound symmetry, etc. These alternative structures and priors are available directly through `brms`. For specific details, please consult <https://paulbuerkner.com/brms/reference/autocor-terms.html> and `?brms.mmrm::brm_formula`.
 
 # Priors
 
@@ -46,10 +46,10 @@ For the correlation matrix $\Lambda$, the default prior in `brms.mmrm` is the [L
 
 # Sampling
 
-`brms.mmrm`, through [`brms`](https://paul-buerkner.github.io/brms/), fits the model to the data using the Markov chain Monte Carlo (MCMC) capabilities of [Stan](https://mc-stan.org/) [@stan2023]. Please read <https://mc-stan.org/users/documentation/> for more details on the methodology of [Stan](https://mc-stan.org/). The result of MCMC is a collection of draws from the full joint posterior distribution of the parameters given the data. Individual draws of scalar parameters such as $\beta_3$ are considered draws from the marginal posterior distribution of e.g. $\beta_3$ given the data.
+`brms.mmrm`, through [`brms`](https://paulbuerkner.com/brms/), fits the model to the data using the Markov chain Monte Carlo (MCMC) capabilities of [Stan](https://mc-stan.org/) [@stan2023]. Please read <https://mc-stan.org/users/documentation/> for more details on the methodology of [Stan](https://mc-stan.org/). The result of MCMC is a collection of draws from the full joint posterior distribution of the parameters given the data. Individual draws of scalar parameters such as $\beta_3$ are considered draws from the marginal posterior distribution of e.g. $\beta_3$ given the data.
 
 # Imputation of missing outcomes
 
-Under the missing at random (MAR) assumptions, MMRMs do not require imputation (@bamdd). However, if the outcomes in your data are not missing at random, or if you are targeting an alternative estimand, then you may need to impute missing outcomes. `brms.mmrm` can leverage either of the two alternative solutions described at <https://paul-buerkner.github.io/brms/articles/brms_missings.html>. Please see the [usage vignette](https://openpharma.github.io/brms.mmrm/articles/usage.html) for details on the implementation and interface.
+Under the missing at random (MAR) assumptions, MMRMs do not require imputation (@bamdd). However, if the outcomes in your data are not missing at random, or if you are targeting an alternative estimand, then you may need to impute missing outcomes. `brms.mmrm` can leverage either of the two alternative solutions described at <https://paulbuerkner.com/brms/articles/brms_missings.html>. Please see the [usage vignette](https://openpharma.github.io/brms.mmrm/articles/usage.html) for details on the implementation and interface.
 
 # References
