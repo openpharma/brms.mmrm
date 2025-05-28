@@ -26,9 +26,6 @@ The dataset is a tibble with 800 rows and 7 variables:
 * `FEV1` (FEV1 at study visits),
 * `WEIGHT` (weighting variable).
 
-We will derive `FEV1_CHG = FEV1 - FEV1_BL` and analyze `FEV1_CHG` as the outcome variable.
-
-
 ``` r
 library(brms.mmrm)
 data(fev_data, package = "mmrm")
