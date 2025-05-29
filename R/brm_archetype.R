@@ -239,8 +239,8 @@ summary.brms_mmrm_archetype <- function(object, message = TRUE, ...) {
   lines <- c(
     "This is the \"%s\" informative prior archetype in brms.mmrm.",
     "The following equations show the relationships between the",
-    "marginal means (left-hand side) and fixed effect parameters",
-    "(right-hand side).",
+    "marginal means (left-hand side) and important fixed effect parameters",
+    "(right-hand side). Nuisance parameters are omitted.",
     ""
   )
   name <- gsub("^brms_mmrm_", "", class(object)[1L])
