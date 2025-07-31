@@ -76,7 +76,9 @@
 #'   covariates, please manually expand the data to the full grid of patients
 #'   and time points before you call [brm_data()]. See the "Preprocessing"
 #'   section for details.
-#' @param missing Character of length 1, name of an optional variable
+#' @param weights Character of length 1, name of an optional numeric variable
+#'   with numeric observation-specific weights for weighted regression.
+#' @param missing Character of length 1, name of an optional logical variable
 #'   in a simulated dataset to indicate which outcome values should be missing.
 #'   Set to `NULL` to omit.
 #' @param reference_group Atomic value of length 1, Level of the `group`
@@ -139,6 +141,7 @@ brm_data <- function(
   time,
   patient,
   covariates = character(0L),
+  weights = NULL,
   missing = NULL,
   reference_group,
   reference_subgroup = NULL,
@@ -180,6 +183,7 @@ brm_data <- function(
     brm_time = as.character(time),
     brm_patient = as.character(patient),
     brm_covariates = as.character(covariates),
+    brm_weights = weights,
     brm_missing = missing,
     brm_reference_group = reference_group,
     brm_reference_subgroup = reference_subgroup,
@@ -198,6 +202,7 @@ brm_data_new <- function(
   brm_time = NULL,
   brm_patient = NULL,
   brm_covariates = NULL,
+  brm_weights = NULL,
   brm_missing = NULL,
   brm_reference_group = NULL,
   brm_reference_subgroup = NULL,
@@ -213,6 +218,7 @@ brm_data_new <- function(
     brm_time = brm_time,
     brm_patient = brm_patient,
     brm_covariates = brm_covariates,
+    brm_weights = brm_weights,
     brm_missing = brm_missing,
     brm_reference_group = brm_reference_group,
     brm_reference_subgroup = brm_reference_subgroup,
@@ -239,6 +245,7 @@ brm_data_validate.default <- function(data) {
   time <- attr(data, "brm_time")
   patient <- attr(data, "brm_patient")
   covariates <- attr(data, "brm_covariates")
+  weights <- attr(data, "brm_weights")
   missing <- attr(data, "brm_missing")
   reference_group <- attr(data, "brm_reference_group")
   reference_subgroup <- attr(data, "brm_reference_subgroup")
@@ -261,6 +268,7 @@ brm_data_validate.default <- function(data) {
   assert_chr(time, "time of data must be a nonempty character string")
   assert_chr(patient, "patient of data must be a nonempty character string")
   assert_chr_vec(covariates, "covariates of data must be a character vector")
+  assert_chr(weights %|||% "weights", "weights must NULL or character")
   assert_chr(missing %|||% "missing", "missing must NULL or character")
   assert_chr(reference_group, "reference_group must be a nonempty string")
   assert_chr(
@@ -284,6 +292,7 @@ brm_data_validate.default <- function(data) {
   assert_col(time, data)
   assert_col(patient, data)
   assert_col(covariates, data)
+  assert_col(weights, data)
   assert_col(missing, data)
   assert_machine_names(outcome)
   assert_machine_names(baseline %|||% "baseline")
@@ -292,6 +301,7 @@ brm_data_validate.default <- function(data) {
   assert_machine_names(time)
   assert_machine_names(patient)
   assert_machine_names(covariates)
+  assert_machine_names(weights)
   assert_machine_names(missing)
   assert(
     reference_group,
@@ -354,7 +364,17 @@ brm_data_validate.default <- function(data) {
       message = "baseline variable must be numeric if supplied."
     )
   }
-  for (column in c(baseline, group, subgroup, time, patient, covariates)) {
+  columns <- c(
+    baseline,
+    group,
+    subgroup,
+    time,
+    patient,
+    covariates,
+    weights,
+    missing
+  )
+  for (column in columns) {
     assert(
       !anyNA(data[[column]]),
       message = sprintf(
@@ -373,6 +393,24 @@ brm_data_validate.default <- function(data) {
           "column in the data must be an atomic or factor type,",
           "and all factor levels must be non-missing."
         )
+      )
+    )
+  }
+  if (!is.null(weights)) {
+    assert(
+      data[[weights]],
+      is.null(.) || is.numeric(.),
+      message = c(
+        "if supplied, the 'weights' variable in the data must be logical"
+      )
+    )
+  }
+  if (!is.null(missing)) {
+    assert(
+      data[[missing]],
+      is.null(.) || is.logical(.),
+      message = c(
+        "if supplied, the 'missing' variable in the data must be logical"
       )
     )
   }
@@ -400,6 +438,7 @@ brm_data_fill.brms_mmrm_data <- function(data) {
   time <- attr(data, "brm_time")
   patient <- attr(data, "brm_patient")
   covariates <- attr(data, "brm_covariates")
+  weights <- attr(data, "brm_weights")
   missing <- attr(data, "brm_missing")
   interest <- attr(data, "brm_archetype_interest")
   nuisance <- attr(data, "brm_archetype_nuisance")
@@ -413,6 +452,7 @@ brm_data_fill.brms_mmrm_data <- function(data) {
     group,
     subgroup,
     covariates,
+    weights,
     missing,
     interest,
     nuisance

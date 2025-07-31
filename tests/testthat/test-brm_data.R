@@ -13,6 +13,7 @@ test_that("brm_data() response", {
   data <- data[- c(2L, 3L), ]
   data <- data[sample.int(n = nrow(data)), ]
   data$col_missing <- FALSE
+  data$col_weights <- 1.25
   out <- brm_data(
     data = data,
     outcome = "col_response",
@@ -22,6 +23,7 @@ test_that("brm_data() response", {
     covariates = c("col_factor2", "col_factor3"),
     reference_group = "group 1",
     reference_time = "time 1",
+    weights = "col_weights",
     missing = "col_missing"
   )
   expect_s3_class(out, "brms_mmrm_data")
@@ -41,6 +43,7 @@ test_that("brm_data() response", {
         "col_factor1",
         "col_factor2",
         "col_factor3",
+        "col_weights",
         "col_missing"
       )
     )
@@ -65,9 +68,11 @@ test_that("brm_data() response", {
   expect_equal(attr(out, "brm_time"), "col_time")
   expect_equal(attr(out, "brm_patient"), "col_patient")
   expect_equal(attr(out, "brm_covariates"), c("col_factor2", "col_factor3"))
+  expect_equal(attr(out, "brm_weights"), "col_weights")
   expect_equal(attr(out, "brm_missing"), "col_missing")
   expect_equal(attr(out, "brm_reference_group"), "group 1")
   expect_equal(attr(out, "brm_reference_time"), "time 1")
+  expect_equal(out$col_weights, rep(1.25, nrow(out)))
   expect_false(brm_data_has_subgroup(out))
 })
 

@@ -13,6 +13,7 @@ brm_data(
   time,
   patient,
   covariates = character(0L),
+  weights = NULL,
   missing = NULL,
   reference_group,
   reference_subgroup = NULL,
@@ -80,7 +81,10 @@ covariates, please manually expand the data to the full grid of patients
 and time points before you call \code{\link[=brm_data]{brm_data()}}. See the "Preprocessing"
 section for details.}
 
-\item{missing}{Character of length 1, name of an optional variable
+\item{weights}{Character of length 1, name of an optional numeric variable
+with numeric observation-specific weights for weighted regression.}
+
+\item{missing}{Character of length 1, name of an optional logical variable
 in a simulated dataset to indicate which outcome values should be missing.
 Set to \code{NULL} to omit.}
 
