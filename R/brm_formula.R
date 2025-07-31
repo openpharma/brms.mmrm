@@ -477,6 +477,7 @@ brm_formula.default <- function(
     brm_moving_average_order = moving_average_order,
     brm_residual_covariance_arma_estimation =
       residual_covariance_arma_estimation,
+    brm_weights = weights,
     brm_model_missing_outcomes = model_missing_outcomes,
     brm_allow_effect_size = attr(sigma, "brm_allow_effect_size")
   )
@@ -587,6 +588,7 @@ brm_formula.brms_mmrm_archetype <- function(
     brm_residual_covariance_arma_estimation =
       residual_covariance_arma_estimation,
     brm_allow_effect_size = attr(sigma, "brm_allow_effect_size"),
+    brm_weights = weights,
     brm_model_missing_outcomes = model_missing_outcomes
   )
   brm_formula_validate(formula)
@@ -706,6 +708,7 @@ brm_formula_new <- function(
   brm_moving_average_order,
   brm_residual_covariance_arma_estimation,
   brm_allow_effect_size,
+  brm_weights,
   brm_model_missing_outcomes
 ) {
   structure(
@@ -730,6 +733,7 @@ brm_formula_new <- function(
     brm_residual_covariance_arma_estimation =
       brm_residual_covariance_arma_estimation,
     brm_allow_effect_size = brm_allow_effect_size,
+    brm_weights = brm_weights,
     brm_model_missing_outcomes = brm_model_missing_outcomes
   )
 }
@@ -741,6 +745,7 @@ brm_formula_archetype_new <- function(
   brm_moving_average_order,
   brm_residual_covariance_arma_estimation,
   brm_allow_effect_size,
+  brm_weights,
   brm_model_missing_outcomes
 ) {
   structure(
@@ -754,6 +759,7 @@ brm_formula_archetype_new <- function(
     brm_residual_covariance_arma_estimation =
       brm_residual_covariance_arma_estimation,
     brm_allow_effect_size = brm_allow_effect_size,
+    brm_weights = brm_weights,
     brm_model_missing_outcomes = brm_model_missing_outcomes
   )
 }

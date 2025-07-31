@@ -1,6 +1,6 @@
-# brms.mmrm 1.1.1.9000 (development)
+# brms.mmrm 1.1.1.9001 (development)
 
-
+* Add support for regression weights (#135, @yonisidi).
 
 # brms.mmrm 1.1.1
 
