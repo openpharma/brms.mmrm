@@ -613,12 +613,12 @@ term_outcome <- function(
   }
   term_weights <- if_any(
     weights,
-    sprintf("weights(%s)", name_weights),
+    sprintf("resp_weights(%s)", name_weights),
     NULL
   )
   term_missing <- if_any(
     model_missing_outcomes,
-    "mi()",
+    "resp_mi()",
     NULL
   )
   paste(

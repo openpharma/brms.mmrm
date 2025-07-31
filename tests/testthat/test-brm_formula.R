@@ -57,7 +57,7 @@ test_that("brm_formula() with default names and all non-subgroup terms", {
   )
 })
 
-test_that("without regression weights, with missing outcomes", {
+test_that("with regression weights and missing outcomes", {
   data <- brm_data(
     data = tibble::tibble(
       CHG = c(1, 2),
@@ -65,7 +65,7 @@ test_that("without regression weights, with missing outcomes", {
       baseline = c(2, 3),
       TRT01P = c("x", "y"),
       USUBJID = c("x", "y"),
-      w = c(1, 0.5)
+      w = c(1, 1)
     ),
     outcome = "CHG",
     group = "TRT01P",
@@ -83,68 +83,19 @@ test_that("without regression weights, with missing outcomes", {
     group = TRUE,
     group_time = TRUE,
     time = TRUE,
+    weights = TRUE,
     model_missing_outcomes = TRUE,
     check_rank = FALSE
   )
   expect_s3_class(out, "brms_mmrm_formula")
   expect_s3_class(out, "brmsformula")
   expect_equal(attr(out, "brm_correlation"), "unstructured")
-  expect_false(attr(out, "brm_weights"))
+  expect_true(attr(out, "brm_weights"))
   expect_true(attr(out, "brm_model_missing_outcomes"))
   expect_equal(
     deparse(out[[1L]], width.cutoff = 500L),
     paste(
-      "CHG | mi() ~ baseline + baseline:AVISIT +",
-      "TRT01P + TRT01P:AVISIT + AVISIT",
-      "+ unstr(time = AVISIT, gr = USUBJID)"
-    )
-  )
-  expect_equal(
-    deparse(out[[2L]][[1L]], width.cutoff = 500L),
-    paste(
-      "sigma ~ 0 + AVISIT"
-    )
-  )
-})
-
-test_that("with regression weights, without missing outcomes", {
-  data <- brm_data(
-    data = tibble::tibble(
-      CHG = c(1, 2),
-      AVISIT = c("x", "y"),
-      baseline = c(2, 3),
-      TRT01P = c("x", "y"),
-      USUBJID = c("x", "y"),
-      w = c(1, 0.5)
-    ),
-    outcome = "CHG",
-    group = "TRT01P",
-    time = "AVISIT",
-    baseline = "baseline",
-    patient = "USUBJID",
-    weights = "w",
-    reference_group = "x"
-  )
-  out <- brm_formula(
-    data = data,
-    intercept = TRUE,
-    baseline = TRUE,
-    baseline_time = TRUE,
-    group = TRUE,
-    group_time = TRUE,
-    time = TRUE,
-    model_missing_outcomes = TRUE,
-    check_rank = FALSE
-  )
-  expect_s3_class(out, "brms_mmrm_formula")
-  expect_s3_class(out, "brmsformula")
-  expect_equal(attr(out, "brm_correlation"), "unstructured")
-  expect_false(attr(out, "brm_weights"))
-  expect_true(attr(out, "brm_model_missing_outcomes"))
-  expect_equal(
-    deparse(out[[1L]], width.cutoff = 500L),
-    paste(
-      "CHG | mi() ~ baseline + baseline:AVISIT +",
+      "CHG | resp_weights(w) + resp_mi() ~ baseline + baseline:AVISIT +",
       "TRT01P + TRT01P:AVISIT + AVISIT",
       "+ unstr(time = AVISIT, gr = USUBJID)"
     )
@@ -762,7 +713,8 @@ test_that("archetype, model missing outcomes + regression weights", {
   expect_equal(
     deparse(out[[1L]], width.cutoff = 500L),
     paste(
-      "change | weights(data_weights) + mi() ~ 0 + x_group_1_time_2 +",
+      "change | resp_weights(data_weights) + resp_mi() ~",
+      "0 + x_group_1_time_2 +",
       "x_group_1_time_3 + x_group_1_time_4 +",
       "x_group_2_time_2 + x_group_2_time_3 + x_group_2_time_4 +",
       "nuisance_biomarker1 + nuisance_biomarker2 + nuisance_status1_absent +",
