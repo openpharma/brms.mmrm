@@ -8,6 +8,7 @@
 \usage{
 brm_formula(
   data,
+  weights = FALSE,
   model_missing_outcomes = FALSE,
   check_rank = TRUE,
   sigma = brms.mmrm::brm_formula_sigma(data = data, check_rank = check_rank),
@@ -20,6 +21,7 @@ brm_formula(
 
 \method{brm_formula}{default}(
   data,
+  weights = FALSE,
   model_missing_outcomes = FALSE,
   check_rank = TRUE,
   sigma = brms.mmrm::brm_formula_sigma(data = data, check_rank = check_rank),
@@ -53,6 +55,7 @@ brm_formula(
 
 \method{brm_formula}{brms_mmrm_archetype}(
   data,
+  weights = FALSE,
   model_missing_outcomes = FALSE,
   check_rank = TRUE,
   sigma = brms.mmrm::brm_formula_sigma(data = data, check_rank = check_rank),
@@ -67,6 +70,14 @@ brm_formula(
 \arguments{
 \item{data}{A classed data frame from \code{\link[=brm_data]{brm_data()}}, or an informative
 prior archetype from a function like \code{\link[=brm_archetype_successive_cells]{brm_archetype_successive_cells()}}.}
+
+\item{weights}{\code{TRUE} to opt into weighted regression using the
+\code{weights} column originally passed to \code{\link[=brm_data]{brm_data()}}.
+\code{FALSE} to omit.
+\code{weights = TRUE} edits the beginning of the formula to look like
+\code{y | weights(weights_column) ~ ...} instead of the usual \code{y ~ ...}.
+If combined with \code{model_missing_outcomes = TRUE}, the formula becomes
+\code{y | weights(weights_column) + mi() ~ ...}}
 
 \item{model_missing_outcomes}{Logical of length 1, \code{TRUE}
 to impute missing outcomes during model fitting as described in the

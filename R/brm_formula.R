@@ -164,6 +164,13 @@
 #'   `"autoregressive_moving_average"`, `"autoregressive"`, and
 #'   `"moving_average"` correlation structures. C.f.
 #'   <https://paulbuerkner.com/brms/reference/arma.html>.
+#' @param weights `TRUE` to opt into weighted regression using the
+#'   `weights` column originally passed to [brm_data()].
+#'   `FALSE` to omit.
+#'   `weights = TRUE` edits the beginning of the formula to look like
+#'   `y | weights(weights_column) ~ ...` instead of the usual `y ~ ...`.
+#'   If combined with `model_missing_outcomes = TRUE`, the formula becomes
+#'   `y | weights(weights_column) + mi() ~ ...`
 #' @param model_missing_outcomes Logical of length 1, `TRUE`
 #'   to impute missing outcomes during model fitting as described in the
 #'   "Imputation during model fitting" section of
@@ -264,6 +271,7 @@
 #' formula
 brm_formula <- function(
   data,
+  weights = FALSE,
   model_missing_outcomes = FALSE,
   check_rank = TRUE,
   sigma = brms.mmrm::brm_formula_sigma(data = data, check_rank = check_rank),
@@ -281,6 +289,7 @@ brm_formula <- function(
 #' @method brm_formula default
 brm_formula.default <- function(
   data,
+  weights = FALSE,
   model_missing_outcomes = FALSE,
   check_rank = TRUE,
   sigma = brms.mmrm::brm_formula_sigma(data = data, check_rank = check_rank),
@@ -370,6 +379,13 @@ brm_formula.default <- function(
       message = "brm_data() found no subgroup column in the data."
     )
   }
+  if (weights) {
+    assert_chr(
+      attr(data, "brm_weights"),
+      message =
+        "brm_data() found no column in the data for regression weights."
+    )
+  }
   text <- paste0(
     "%s was deprecated on 2024-01-16 (version 0.0.2.9002).",
     "Use %s instead."
@@ -403,6 +419,7 @@ brm_formula.default <- function(
   name_time <- attr(data, "brm_time")
   name_patient <- attr(data, "brm_patient")
   name_covariates <- attr(data, "brm_covariates")
+  name_weights <- attr(data, "brm_weights")
   terms <- c(
     term("0", !intercept),
     term(name_baseline, baseline),
@@ -428,10 +445,11 @@ brm_formula.default <- function(
   )
   terms <- terms[nzchar(terms)] %||% "1"
   right <- paste(terms, collapse = " + ")
-  term_outcome <- if_any(
-    model_missing_outcomes,
-    paste(name_outcome, "| mi()"),
-    name_outcome
+  term_outcome <- term_outcome(
+    name_outcome = name_outcome,
+    name_weights = name_weights,
+    weights = weights,
+    model_missing_outcomes = model_missing_outcomes
   )
   formula_fixed <- stats::as.formula(paste(term_outcome, "~", right))
   brms_formula <- brms::brmsformula(
@@ -474,6 +492,7 @@ brm_formula.default <- function(
 #' @method brm_formula brms_mmrm_archetype
 brm_formula.brms_mmrm_archetype <- function(
   data,
+  weights = FALSE,
   model_missing_outcomes = FALSE,
   check_rank = TRUE,
   sigma = brms.mmrm::brm_formula_sigma(data = data, check_rank = check_rank),
@@ -530,6 +549,7 @@ brm_formula.brms_mmrm_archetype <- function(
   name_outcome <- attr(data, "brm_outcome")
   name_time <- attr(data, "brm_time")
   name_patient <- attr(data, "brm_patient")
+  name_weights <- attr(data, "brm_weights")
   interest <- attr(data, "brm_archetype_interest")
   nuisance <- attr(data, "brm_archetype_nuisance")
   terms <- c(
@@ -547,10 +567,11 @@ brm_formula.brms_mmrm_archetype <- function(
   )
   terms <- terms[nzchar(terms)] %||% "1"
   right <- paste(terms, collapse = " + ")
-  term_outcome <- if_any(
-    model_missing_outcomes,
-    paste(name_outcome, "| mi()"),
-    name_outcome
+  term_outcome <- term_outcome(
+    name_outcome = name_outcome,
+    name_weights = name_weights,
+    weights = weights,
+    model_missing_outcomes = model_missing_outcomes
   )
   formula_fixed <- stats::as.formula(paste(term_outcome, "~", right))
   brms_formula <- brms::brmsformula(
@@ -577,6 +598,32 @@ brm_formula.brms_mmrm_archetype <- function(
 
 term <- function(labels, condition) {
   if_any(condition, paste0(labels, collapse = ":"), character(0L))
+}
+
+term_outcome <- function(
+  name_outcome,
+  name_weights,
+  weights,
+  model_missing_outcomes
+) {
+  if (!weights && !model_missing_outcomes) {
+    return(name_outcome)
+  }
+  term_weights <- if_any(
+    weights,
+    sprintf("weights(%s)", name_weights),
+    NULL
+  )
+  term_missing <- if_any(
+    model_missing_outcomes,
+    "mi()",
+    NULL
+  )
+  paste(
+    name_outcome,
+    "|",
+    paste(c(term_weights, term_missing), collapse = " + ")
+  )
 }
 
 term_correlation <- function(
