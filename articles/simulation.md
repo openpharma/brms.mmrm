@@ -1,0 +1,346 @@
+# Simulation
+
+There are multiple ways to simulate MMRM datasets using `brms` and
+`brms.mmrm`.
+
+## Simple
+
+[`brm_simulate_simple()`](../reference/brm_simulate_simple.md) simulates
+a dataset from the prior predictive distribution of a simple special
+case of an MMRM.[¹](#fn1)
+
+``` r
+library(brms.mmrm)
+set.seed(0)
+sim <- brm_simulate_simple(
+  n_group = 3,
+  n_patient = 100,
+  n_time = 4
+)
+```
+
+The `data` element has a classed `tibble` you can directly supply to
+[`brm_formula()`](../reference/brm_formula.md) and
+[`brm_model()`](../reference/brm_model.md).
+
+``` r
+sim$data
+#> # A tibble: 1,200 × 4
+#>    patient     time   response group  
+#>    <chr>       <chr>     <dbl> <chr>  
+#>  1 patient_001 time_1    1.11  group_1
+#>  2 patient_001 time_2    2.15  group_1
+#>  3 patient_001 time_3    2.54  group_1
+#>  4 patient_001 time_4   -1.73  group_1
+#>  5 patient_002 time_1    1.11  group_1
+#>  6 patient_002 time_2    2.64  group_1
+#>  7 patient_002 time_3    1.69  group_1
+#>  8 patient_002 time_4    0.783 group_1
+#>  9 patient_003 time_1    0.118 group_1
+#> 10 patient_003 time_2    2.48  group_1
+#> # ℹ 1,190 more rows
+```
+
+The `parameters` element has the corresponding parameter values
+simulated from the joint prior. Arguments to
+[`brm_simulate_simple()`](../reference/brm_simulate_simple.md) control
+hyperparameters.
+
+``` r
+str(sim$parameters)
+#> List of 5
+#>  $ beta      : num [1:6] 1.263 -0.326 1.33 1.272 0.415 ...
+#>  $ tau       : num [1:4] -0.092857 -0.029472 -0.000577 0.240465
+#>  $ sigma     : num [1:4] 0.911 0.971 0.999 1.272
+#>  $ lambda    : num [1:4, 1:4] 1 0.415 -0.818 -0.282 0.415 ...
+#>  $ covariance: num [1:4, 1:4] 0.831 0.368 -0.745 -0.326 0.368 ...
+```
+
+And the `model_matrix` element has the regression model matrix of fixed
+effect parameters.
+
+``` r
+head(sim$model_matrix)
+#>   groupgroup_1 groupgroup_2 groupgroup_3 timetime_2 timetime_3 timetime_4
+#> 1            1            0            0          0          0          0
+#> 2            1            0            0          1          0          0
+#> 3            1            0            0          0          1          0
+#> 4            1            0            0          0          0          1
+#> 5            1            0            0          0          0          0
+#> 6            1            0            0          1          0          0
+```
+
+## Change from baseline
+
+[`brm_data_change()`](../reference/brm_data_change.md) can convert the
+outcome variable from raw response to change from baseline. This applies
+to real datasets passed through \[brm_data()\] as well as simulated ones
+from e.g. \[brm_simulate_simple()\]. The dataset above uses raw response
+with a baseline time point of `"time_1"`
+
+``` r
+sim$data
+#> # A tibble: 1,200 × 4
+#>    patient     time   response group  
+#>    <chr>       <chr>     <dbl> <chr>  
+#>  1 patient_001 time_1    1.11  group_1
+#>  2 patient_001 time_2    2.15  group_1
+#>  3 patient_001 time_3    2.54  group_1
+#>  4 patient_001 time_4   -1.73  group_1
+#>  5 patient_002 time_1    1.11  group_1
+#>  6 patient_002 time_2    2.64  group_1
+#>  7 patient_002 time_3    1.69  group_1
+#>  8 patient_002 time_4    0.783 group_1
+#>  9 patient_003 time_1    0.118 group_1
+#> 10 patient_003 time_2    2.48  group_1
+#> # ℹ 1,190 more rows
+```
+
+[`brm_data_change()`](../reference/brm_data_change.md) subtracts
+baseline, replaces the raw response column with a new change from
+baseline column, adds a new column for the original baseline raw
+response, and adjusts the internal attributes of the classed object
+accordingly.
+
+``` r
+brm_data_change(
+  data = sim$data,
+  name_change = "new_change",
+  name_baseline = "new_baseline"
+)
+#> # A tibble: 900 × 5
+#>    patient     time   group   new_change new_baseline
+#>    <chr>       <chr>  <chr>        <dbl>        <dbl>
+#>  1 patient_001 time_2 group_1      1.04         1.11 
+#>  2 patient_001 time_3 group_1      1.43         1.11 
+#>  3 patient_001 time_4 group_1     -2.84         1.11 
+#>  4 patient_002 time_2 group_1      1.53         1.11 
+#>  5 patient_002 time_3 group_1      0.576        1.11 
+#>  6 patient_002 time_4 group_1     -0.328        1.11 
+#>  7 patient_003 time_2 group_1      2.37         0.118
+#>  8 patient_003 time_3 group_1      3.07         0.118
+#>  9 patient_003 time_4 group_1     -1.14         0.118
+#> 10 patient_004 time_2 group_1      1.57         1.29 
+#> # ℹ 890 more rows
+```
+
+## Advanced
+
+For a more nuanced simulation, build up the dataset layer by layer.
+Begin with
+[`brm_simulate_outline()`](../reference/brm_simulate_outline.md) to
+create an initial structure and a random missingness pattern. In
+[`brm_simulate_outline()`](../reference/brm_simulate_outline.md),
+missing responses can come from either transitory intercurrent events or
+from dropouts. The `missing` column indicates which outcome values will
+be missing (`NA_real_`) in a later step. The `response` column is
+entirely missing for now and will be simulated later.
+
+``` r
+data <- brm_simulate_outline(
+  n_group = 2,
+  n_patient = 100,
+  n_time = 4,
+  rate_dropout = 0.3
+)
+
+data
+#> # A tibble: 800 × 5
+#>    patient     time   group   missing response
+#>    <chr>       <chr>  <chr>   <lgl>      <dbl>
+#>  1 patient_001 time_1 group_1 FALSE         NA
+#>  2 patient_001 time_2 group_1 TRUE          NA
+#>  3 patient_001 time_3 group_1 TRUE          NA
+#>  4 patient_001 time_4 group_1 TRUE          NA
+#>  5 patient_002 time_1 group_1 FALSE         NA
+#>  6 patient_002 time_2 group_1 FALSE         NA
+#>  7 patient_002 time_3 group_1 TRUE          NA
+#>  8 patient_002 time_4 group_1 TRUE          NA
+#>  9 patient_003 time_1 group_1 FALSE         NA
+#> 10 patient_003 time_2 group_1 FALSE         NA
+#> # ℹ 790 more rows
+```
+
+Optionally add random continuous covariates
+[`brm_simulate_continuous()`](../reference/brm_simulate_continuous.md)
+and random categorical covariates using
+[`brm_simulate_categorical()`](../reference/brm_simulate_categorical.md).
+In each case, the covariates are non-time-varying, which means each
+patient gets only one unique value.
+
+``` r
+data <- data |>
+  brm_simulate_continuous(names = c("biomarker1", "biomarker2")) |>
+  brm_simulate_categorical(
+    names = c("status1", "status2"),
+    levels = c("present", "absent")
+  )
+
+data
+#> # A tibble: 800 × 9
+#>    patient    time  group missing response biomarker1 biomarker2 status1 status2
+#>    <chr>      <chr> <chr> <lgl>      <dbl>      <dbl>      <dbl> <chr>   <chr>  
+#>  1 patient_0… time… grou… FALSE         NA      0.328     -0.655 present absent 
+#>  2 patient_0… time… grou… TRUE          NA      0.328     -0.655 present absent 
+#>  3 patient_0… time… grou… TRUE          NA      0.328     -0.655 present absent 
+#>  4 patient_0… time… grou… TRUE          NA      0.328     -0.655 present absent 
+#>  5 patient_0… time… grou… FALSE         NA      1.04      -0.779 absent  absent 
+#>  6 patient_0… time… grou… FALSE         NA      1.04      -0.779 absent  absent 
+#>  7 patient_0… time… grou… TRUE          NA      1.04      -0.779 absent  absent 
+#>  8 patient_0… time… grou… TRUE          NA      1.04      -0.779 absent  absent 
+#>  9 patient_0… time… grou… FALSE         NA      0.717     -0.954 present absent 
+#> 10 patient_0… time… grou… FALSE         NA      0.717     -0.954 present absent 
+#> # ℹ 790 more rows
+```
+
+As described in the next section, `brms.mmrm` has a convenient function
+[`brm_simulate_prior()`](../reference/brm_simulate_prior.md) to simulate
+the outcome variable `response` using the data skeleton above and the
+prior predictive distribution. However, if you prefer a full custom
+approach, you may need granular details about the parameterization,
+which requires the model matrix. Fortunately, `brms` supports a
+[`make_standata()`](https://paulbuerkner.com/brms/reference/standata.html)
+function to provide this, given a dataset and a formula. You may need to
+temporarily set the response variable to something non-missing, and you
+may wish to specify a custom prior.
+
+``` r
+library(brms)
+formula <- brm_formula(data = mutate(data, response = 0))
+formula
+#> response ~ group + group:time + time + biomarker1 + biomarker2 + status1 + status2 + unstr(time = time, gr = patient) 
+#> sigma ~ 0 + time
+
+stan_data <- make_standata(
+  formula = formula,
+  data = mutate(data, response = 0)
+)
+model_matrix <- stan_data$X
+head(model_matrix)
+#>   Intercept groupgroup_2 timetime_2 timetime_3 timetime_4 biomarker1 biomarker2
+#> 1         1            0          0          0          0  0.3283275 -0.6547971
+#> 2         1            0          1          0          0  0.3283275 -0.6547971
+#> 3         1            0          0          1          0  0.3283275 -0.6547971
+#> 4         1            0          0          0          1  0.3283275 -0.6547971
+#> 5         1            0          0          0          0  1.0385746 -0.7793828
+#> 6         1            0          1          0          0  1.0385746 -0.7793828
+#>   status1present status2present groupgroup_2:timetime_2 groupgroup_2:timetime_3
+#> 1              1              0                       0                       0
+#> 2              1              0                       0                       0
+#> 3              1              0                       0                       0
+#> 4              1              0                       0                       0
+#> 5              0              0                       0                       0
+#> 6              0              0                       0                       0
+#>   groupgroup_2:timetime_4
+#> 1                       0
+#> 2                       0
+#> 3                       0
+#> 4                       0
+#> 5                       0
+#> 6                       0
+```
+
+## Prior
+
+Function [`brm_simulate_prior()`](../reference/brm_simulate_prior.md)
+simulates from the prior predictive distribution. It requires a dataset
+and a formula, and it accepts a custom prior constructed with
+[`brms::set_prior()`](https://paulbuerkner.com/brms/reference/set_prior.html).
+
+``` r
+formula <- brm_formula(data = data)
+
+library(brms)
+prior <- set_prior("student_t(3, 0, 1.3)", class = "Intercept") +
+  set_prior("student_t(3, 0, 1.2)", class = "b") +
+  set_prior("student_t(3, 0, 1.1)", class = "b", dpar = "sigma") +
+  set_prior("lkj(1)", class = "cortime")
+
+prior
+#>                 prior     class coef group resp  dpar nlpar   lb   ub source
+#>  student_t(3, 0, 1.3) Intercept                             <NA> <NA>   user
+#>  student_t(3, 0, 1.2)         b                             <NA> <NA>   user
+#>  student_t(3, 0, 1.1)         b                 sigma       <NA> <NA>   user
+#>                lkj(1)   cortime                             <NA> <NA>   user
+
+sim <- brm_simulate_prior(
+  data = data,
+  formula = formula,
+  prior = prior,
+  refresh = 0
+)
+```
+
+The output object `sim` has multiple draws from the prior predictive
+distribution. `sim$outcome` has outcome draws, and `sim$parameters` has
+parameter draws. `sim$model_matrix` has the model matrix, and
+`sim$model` has the full `brms` model fit object. You can pass
+`sim$model` to functions from `brms` and `bayesplot` such as
+[`pp_check()`](https://mc-stan.org/bayesplot/reference/pp_check.html).
+
+``` r
+names(sim)
+#> [1] "data"         "model"        "model_matrix" "outcome"      "parameters"
+```
+
+In addition, `sim$data` has a copy of the original dataset, but with the
+outcome variable taken from the final draw from the prior predictive
+distribution. In addition, the missingness pattern is automatically
+applied so that `sim$data$response` is `NA_real_` whenever
+`sim$data$missing` equals `TRUE`.
+
+``` r
+sim$data
+#> # A tibble: 800 × 9
+#>    patient    time  group missing response biomarker1 biomarker2 status1 status2
+#>    <chr>      <chr> <chr> <lgl>      <dbl>      <dbl>      <dbl> <chr>   <chr>  
+#>  1 patient_0… time… grou… FALSE      3.90       0.328     -0.655 present absent 
+#>  2 patient_0… time… grou… TRUE      NA          0.328     -0.655 present absent 
+#>  3 patient_0… time… grou… TRUE      NA          0.328     -0.655 present absent 
+#>  4 patient_0… time… grou… TRUE      NA          0.328     -0.655 present absent 
+#>  5 patient_0… time… grou… FALSE      3.46       1.04      -0.779 absent  absent 
+#>  6 patient_0… time… grou… FALSE      2.66       1.04      -0.779 absent  absent 
+#>  7 patient_0… time… grou… TRUE      NA          1.04      -0.779 absent  absent 
+#>  8 patient_0… time… grou… TRUE      NA          1.04      -0.779 absent  absent 
+#>  9 patient_0… time… grou… FALSE      5.28       0.717     -0.954 present absent 
+#> 10 patient_0… time… grou… FALSE      0.120      0.717     -0.954 present absent 
+#> # ℹ 790 more rows
+```
+
+## Posterior
+
+`brms` supports posterior predictive simulations and checks through
+functions `posteiror_predict()`,
+[`posterior_epred()`](https://mc-stan.org/rstantools/reference/posterior_epred.html),
+and
+[`pp_check()`](https://mc-stan.org/bayesplot/reference/pp_check.html).
+These can be used with a `brms` model fit object either from
+[`brm_model()`](../reference/brm_model.md) or from
+[`brm_simulate_prior()`](../reference/brm_simulate_prior.md).
+
+``` r
+data <- sim$data
+formula <- brm_formula(data = data)
+model <- brm_model(data = data, formula = formula, refresh = 0)
+outcome_draws <- posterior_predict(object = model)
+```
+
+The returned `outcome_draws` object is a numeric array of posterior
+predictive draws, with one row per draw and one column per non-missing
+observation (row) in the original data.
+
+``` r
+str(outcome_draws)
+#>  num [1:4000, 1:659] 4.57 3.84 3.88 3.06 3.48 ...
+
+dim(data)
+#> [1] 800   9
+
+sum(!is.na(data$response))
+#> [1] 659
+```
+
+------------------------------------------------------------------------
+
+1.  The function help file explains the details about the model
+    parameterization.

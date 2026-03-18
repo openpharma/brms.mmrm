@@ -242,11 +242,11 @@ archetype-specific functions such as <code><a href="brm_archetype_successive_cel
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p>Other informative prior archetypes:
-<code><a href="brm_archetype_average_effects.html">brm_archetype_average_effects</a>()</code>,
-<code><a href="brm_archetype_cells.html">brm_archetype_cells</a>()</code>,
-<code><a href="brm_archetype_effects.html">brm_archetype_effects</a>()</code>,
-<code><a href="brm_archetype_successive_cells.html">brm_archetype_successive_cells</a>()</code>,
-<code><a href="brm_archetype_successive_effects.html">brm_archetype_successive_effects</a>()</code></p></div>
+<code><a href="brm_archetype_average_effects.html">brm_archetype_average_effects()</a></code>,
+<code><a href="brm_archetype_cells.html">brm_archetype_cells()</a></code>,
+<code><a href="brm_archetype_effects.html">brm_archetype_effects()</a></code>,
+<code><a href="brm_archetype_successive_cells.html">brm_archetype_successive_cells()</a></code>,
+<code><a href="brm_archetype_successive_effects.html">brm_archetype_successive_effects()</a></code></p></div>
     </div>
 
     <div class="section level2">
@@ -338,13 +338,20 @@ archetype-specific functions such as <code><a href="brm_archetype_successive_cel
 <span class="r-in"><span>  <span class="fu"><a href="brm_prior_label.html">brm_prior_label</a></span><span class="op">(</span><span class="st">"normal(2, 4.4)"</span>, group <span class="op">=</span> <span class="st">"group_2"</span>, time <span class="op">=</span> <span class="st">"time_4"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="brm_prior_archetype.html">brm_prior_archetype</a></span><span class="op">(</span><span class="va">archetype</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">prior</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>           prior class             coef group resp dpar nlpar   lb   ub source</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  normal(1, 2.2)     b x_group_1_time_2                       &lt;NA&gt; &lt;NA&gt;   user</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  normal(1, 3.3)     b x_group_1_time_3                       &lt;NA&gt; &lt;NA&gt;   user</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  normal(1, 4.4)     b x_group_1_time_4                       &lt;NA&gt; &lt;NA&gt;   user</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  normal(2, 2.2)     b x_group_2_time_2                       &lt;NA&gt; &lt;NA&gt;   user</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  normal(2, 3.3)     b x_group_2_time_3                       &lt;NA&gt; &lt;NA&gt;   user</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  normal(2, 4.4)     b x_group_2_time_4                       &lt;NA&gt; &lt;NA&gt;   user</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           prior class             coef group resp dpar nlpar   lb   ub tag</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  normal(1, 2.2)     b x_group_1_time_2                       &lt;NA&gt; &lt;NA&gt;    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  normal(1, 3.3)     b x_group_1_time_3                       &lt;NA&gt; &lt;NA&gt;    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  normal(1, 4.4)     b x_group_1_time_4                       &lt;NA&gt; &lt;NA&gt;    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  normal(2, 2.2)     b x_group_2_time_2                       &lt;NA&gt; &lt;NA&gt;    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  normal(2, 3.3)     b x_group_2_time_3                       &lt;NA&gt; &lt;NA&gt;    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  normal(2, 4.4)     b x_group_2_time_4                       &lt;NA&gt; &lt;NA&gt;    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  source</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    user</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    user</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    user</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    user</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    user</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    user</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">prior</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "brmsprior"  "data.frame"</span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"BRM_EXAMPLES"</span>, unset <span class="op">=</span> <span class="st">""</span><span class="op">)</span>, <span class="st">"true"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
@@ -384,7 +391,7 @@ archetype-specific functions such as <code><a href="brm_archetype_successive_cel
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer></div>
