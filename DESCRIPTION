@@ -50,7 +50,7 @@ URL: https://openpharma.github.io/brms.mmrm/,
   https://github.com/openpharma/brms.mmrm
 BugReports: https://github.com/openpharma/brms.mmrm/issues
 Depends:
-  R (>= 4.0.0)
+  R (>= 4.1.0)
 Imports:
   brms (>= 2.19.0),
   dplyr,
