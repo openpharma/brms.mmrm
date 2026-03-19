@@ -92,7 +92,7 @@ brm_marginal_probabilities <- function(
   out <- purrr::map2_df(
     .x = direction,
     .y = threshold,
-    .f = ~summarize_probabilities(
+    .f = ~ summarize_probabilities(
       draws = draws,
       direction = .x,
       threshold = .y
@@ -115,7 +115,7 @@ brm_marginal_probabilities <- function(
 summarize_probabilities <- function(draws, direction, threshold) {
   values <- purrr::map_dbl(
     draws,
-    ~marginal_probability(.x, direction, threshold)
+    ~ marginal_probability(.x, direction, threshold)
   )
   args <- list(
     group = names_component(names(draws), "group"),

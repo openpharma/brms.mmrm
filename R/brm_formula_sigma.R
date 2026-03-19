@@ -131,7 +131,7 @@ brm_formula_sigma <- function(
       message = "brm_data() found no baseline column in the data."
     )
   }
-  expect_subgroup <-  baseline_subgroup ||
+  expect_subgroup <- baseline_subgroup ||
     baseline_subgroup_time ||
     group_subgroup ||
     group_subgroup_time ||

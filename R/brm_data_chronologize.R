@@ -131,7 +131,7 @@ brm_data_chronologize <- function(
         time
       )
     )
-    grid <- grid[order(grid[[order]]),, drop = FALSE] # nolint
+    grid <- grid[order(grid[[order]]), , drop = FALSE] # nolint
     levels <- grid[[time]]
   }
   data[[time]] <- ordered(data[[time]], levels = levels)

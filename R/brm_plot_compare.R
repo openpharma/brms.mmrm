@@ -129,8 +129,7 @@ brm_plot_compare <- function(
     )
   }
   data <- dplyr::bind_rows(data_list, .id = "source")
-  use_subgroup <- "subgroup" %in% colnames(data) &&
-    !anyNA(data$subgroup)
+  use_subgroup <- "subgroup" %in% colnames(data) && !anyNA(data$subgroup)
   if (!use_subgroup) {
     facet <- setdiff(facet, "subgroup")
     for (name in names(data_list)) {

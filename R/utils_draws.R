@@ -31,7 +31,8 @@ name_marginal_subgroup <- function(group, subgroup, time) {
 names_have_subgroup <- function(names) {
   names <- setdiff(names, names_mcmc)
   matches <- lapply(
-    names, function(name) {
+    names,
+    function(name) {
       length(gregexpr(pattern = brm_sep(), text = name, fixed = TRUE)[[1L]])
     }
   )

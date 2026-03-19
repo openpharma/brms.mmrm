@@ -69,7 +69,7 @@ test_that("brm_transform_marginal(), response, non-subgroup", {
     out <- setNames(as.numeric(out), names)
     exp <- emmeans::emmeans(
       object = model,
-      specs = ~ARMCD:AVISIT,
+      specs = ~ ARMCD:AVISIT,
       weights = "proportional",
       nuisance = c("RACE", "SEX", "WEIGHT")
     )
@@ -150,7 +150,7 @@ test_that("brm_transform_marginal(), change, non-subgroup", {
     out <- setNames(as.numeric(out), names)
     exp <- emmeans::emmeans(
       object = model,
-      specs = ~ARMCD:AVISIT,
+      specs = ~ ARMCD:AVISIT,
       weights = "proportional",
       nuisance = c("RACE", "SEX", "WEIGHT")
     )
@@ -255,7 +255,7 @@ test_that("brm_transform_marginal(), change, subgroup, global", {
   out <- setNames(as.numeric(out), names)
   exp <- emmeans::emmeans(
     object = model,
-    specs = ~ARMCD:SEX:AVISIT,
+    specs = ~ ARMCD:SEX:AVISIT,
     weights = "proportional",
     nuisance = c("RACE", "WEIGHT")
   )

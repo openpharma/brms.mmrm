@@ -212,7 +212,8 @@ brm_marginal_draws <- function(
   draws_response <- tibble::as_tibble(as.matrix(draws_beta) %*% t(transform))
   draws_response <- dplyr::bind_cols(draws_response, index_mcmc)
   draws_response <- posterior::as_draws_df(draws_response)
-  if (has_baseline) { # baseline exists, subgroup exists
+  if (has_baseline) {
+    # baseline exists, subgroup exists
     if (has_subgroup) {
       draws_difference_time <- subtract_reference_time_subroup(
         draws = draws_response,
@@ -235,7 +236,8 @@ brm_marginal_draws <- function(
         levels_time = setdiff(levels_time, reference_time),
         reference_subgroup = reference_subgroup
       )
-    } else { # baseline exists, no subgroup
+    } else {
+      # baseline exists, no subgroup
       draws_difference_time <- subtract_reference_time(
         draws = draws_response,
         levels_group = levels_group,
@@ -249,7 +251,8 @@ brm_marginal_draws <- function(
         reference_group = reference_group
       )
     }
-  } else { # baseline does not exist, subgroup exists
+  } else {
+    # baseline does not exist, subgroup exists
     if (has_subgroup) {
       draws_difference_group <- subtract_reference_group_subgroup(
         draws = draws_response,
@@ -265,7 +268,8 @@ brm_marginal_draws <- function(
         levels_time = levels_time,
         reference_subgroup = reference_subgroup
       )
-    } else { # baseline does not exist, no subgroup
+    } else {
+      # baseline does not exist, no subgroup
       draws_difference_group <- subtract_reference_group(
         draws = draws_response,
         levels_group = levels_group,

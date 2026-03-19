@@ -72,7 +72,7 @@ brm_marginal_draws_average <- function(
     message = "marginals arg must be a named list from brm_marginal_draws()"
   )
   brm_data_validate(data)
-  levels_group <-  brm_levels(data[[attr(data, "brm_group")]])
+  levels_group <- brm_levels(data[[attr(data, "brm_group")]])
   levels_subgroup <- if_any(
     is.null(attr(data, "brm_subgroup")),
     character(0L),

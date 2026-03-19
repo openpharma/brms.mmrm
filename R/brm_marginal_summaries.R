@@ -113,8 +113,8 @@ summarize_marginals <- function(draws, level) {
     mean = purrr::map_dbl(draws, mean),
     median = purrr::map_dbl(draws, median),
     sd = purrr::map_dbl(draws, sd),
-    lower = purrr::map_dbl(draws, ~quantile(.x, level_lower)),
-    upper = purrr::map_dbl(draws, ~quantile(.x, level_upper))
+    lower = purrr::map_dbl(draws, ~ quantile(.x, level_lower)),
+    upper = purrr::map_dbl(draws, ~ quantile(.x, level_upper))
   )
   mcse <- tibble::tibble(
     group = names_component(names(draws), "group"),
@@ -123,8 +123,8 @@ summarize_marginals <- function(draws, level) {
     mean = purrr::map_dbl(draws, posterior::mcse_mean),
     median = purrr::map_dbl(draws, posterior::mcse_median),
     sd = purrr::map_dbl(draws, posterior::mcse_sd),
-    lower = purrr::map_dbl(draws, ~posterior::mcse_quantile(.x, level_lower)),
-    upper = purrr::map_dbl(draws, ~posterior::mcse_quantile(.x, level_upper))
+    lower = purrr::map_dbl(draws, ~ posterior::mcse_quantile(.x, level_lower)),
+    upper = purrr::map_dbl(draws, ~ posterior::mcse_quantile(.x, level_upper))
   )
   columns <- c("group", if_any(use_subgroup, "subgroup", NULL), "time")
   value <- tidyr::pivot_longer(

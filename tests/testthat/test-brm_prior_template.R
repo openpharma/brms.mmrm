@@ -37,7 +37,8 @@ test_that("brm_prior_template()", {
       paste0(
         "x_group_",
         rep(c(1L, 2L), each = 3L),
-        "_time_", rep(seq_len(3L), times = 2L)
+        "_time_",
+        rep(seq_len(3L), times = 2L)
       )
     )
   )

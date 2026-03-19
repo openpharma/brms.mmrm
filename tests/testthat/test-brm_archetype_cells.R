@@ -452,7 +452,9 @@ test_that("brm_archetype_cells() clda subgroup", {
     mapping_full[!(mapping_full$variable %in% dropped), ]
   )
   columns <- c(
-    "group", "subgroup", "time",
+    "group",
+    "subgroup",
+    "time",
     attr(out, "brm_archetype_interest")
   )
   grid <- dplyr::arrange(dplyr::distinct(out[, columns]), group, time)

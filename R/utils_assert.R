@@ -37,11 +37,12 @@ assert_chr_vec <- function(value, message = NULL) {
 }
 
 assert_col <- function(value, data, message = NULL) {
-  message <- message %|||% paste(
-    paste(value, collapse = ", "),
-    "must be column name(s) of",
-    deparse(substitute(data))
-  )
+  message <- message %|||%
+    paste(
+      paste(value, collapse = ", "),
+      "must be column name(s) of",
+      deparse(substitute(data))
+    )
   assert(
     all(value %in% colnames(data)),
     message = message

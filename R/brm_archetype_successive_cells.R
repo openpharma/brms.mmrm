@@ -240,7 +240,7 @@ archetype_successive_cells <- function(data, clda, prefix) {
       drop <- mapping$variable[index_drop]
       interest[[keep]] <- as.integer(interest[[keep]] | interest[[drop]])
       interest[[drop]] <- NULL
-      mapping <- mapping[mapping$variable != drop,, drop = FALSE] # nolint
+      mapping <- mapping[mapping$variable != drop, , drop = FALSE] # nolint
     }
   }
   list(interest = interest, mapping = mapping)
@@ -297,7 +297,7 @@ archetype_successive_cells_subgroup <- function(data, clda, prefix) {
         drop <- mapping$variable[index_drop]
         interest[[keep]] <- as.integer(interest[[keep]] | interest[[drop]])
         interest[[drop]] <- NULL
-        mapping <- mapping[mapping$variable != drop,, drop = FALSE] # nolint
+        mapping <- mapping[mapping$variable != drop, , drop = FALSE] # nolint
       }
     }
   }

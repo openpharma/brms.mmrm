@@ -10,7 +10,7 @@ test_that("brm_data() response", {
   data$factor2 <- data$patient
   data$factor3 <- data$patient
   colnames(data) <- paste0("col_", colnames(data))
-  data <- data[- c(2L, 3L), ]
+  data <- data[-c(2L, 3L), ]
   data <- data[sample.int(n = nrow(data)), ]
   data$col_missing <- FALSE
   out <- brm_data(
@@ -28,7 +28,7 @@ test_that("brm_data() response", {
   expect_true(tibble::is_tibble(out))
   expect_silent(brm_data_validate(out))
   expect_true(all(is.na(out$col_response[c(2L, 3L)])))
-  expect_false(anyNA(out$col_response[- c(2L, 3L)]))
+  expect_false(anyNA(out$col_response[-c(2L, 3L)]))
   expect_equal(nrow(out), 800L)
   expect_equal(
     sort(colnames(out)),
@@ -54,7 +54,7 @@ test_that("brm_data() response", {
     rep(paste("time", seq_len(4L)), times = 200L)
   )
   expect_equal(
-    sort(out$col_response[- c(2L, 3L)]),
+    sort(out$col_response[-c(2L, 3L)]),
     sort(c(data$col_response))
   )
   expect_equal(out$col_patient, out$col_factor2)
@@ -86,7 +86,7 @@ test_that("brm_data() response with subgroup", {
   data$factor3 <- data$patient
   colnames(data) <- paste0("col_", colnames(data))
   slice_missing <- dplyr::arrange(data[c(2L, 3L), ], col_time)
-  data <- data[- c(2L, 3L), ]
+  data <- data[-c(2L, 3L), ]
   data <- data[sample.int(n = nrow(data)), ]
   data$col_missing <- FALSE
   expect_error(
@@ -204,7 +204,7 @@ test_that("brm_data() change", {
   data$factor2 <- data$patient
   data$factor3 <- data$patient
   colnames(data) <- paste0("col_", colnames(data))
-  data <- data[- c(2L, 3L), ]
+  data <- data[-c(2L, 3L), ]
   data <- data[sample.int(n = nrow(data)), ]
   out <- brm_data(
     data = data,
@@ -219,7 +219,7 @@ test_that("brm_data() change", {
   expect_true(tibble::is_tibble(out))
   expect_silent(brm_data_validate(out))
   expect_true(all(is.na(out$col_response[c(2L, 3L)])))
-  expect_false(anyNA(out$col_response[- c(2L, 3L)]))
+  expect_false(anyNA(out$col_response[-c(2L, 3L)]))
   expect_equal(nrow(out), 800L)
   expect_equal(
     sort(colnames(out)),
@@ -244,7 +244,7 @@ test_that("brm_data() change", {
     rep(paste("time", seq_len(4L)), times = 200L)
   )
   expect_equal(
-    sort(out$col_response[- c(2L, 3L)]),
+    sort(out$col_response[-c(2L, 3L)]),
     sort(c(data$col_response))
   )
   expect_equal(attr(out, "brm_outcome"), "col_response")
@@ -265,7 +265,7 @@ test_that("brm_data() bad reference_time", {
   data$factor2 <- data$patient
   data$factor3 <- data$patient
   colnames(data) <- paste0("col_", colnames(data))
-  data <- data[- c(2L, 3L), ]
+  data <- data[-c(2L, 3L), ]
   data <- data[sample.int(n = nrow(data)), ]
   expect_error(
     brm_data(
@@ -302,7 +302,7 @@ test_that("brm_data() bad group", {
   data$factor2 <- data$patient
   data$factor3 <- data$patient
   colnames(data) <- paste0("col_", colnames(data))
-  data <- data[- c(2L, 3L), ]
+  data <- data[-c(2L, 3L), ]
   data <- data[sample.int(n = nrow(data)), ]
   expect_error(
     brm_data(
@@ -327,7 +327,7 @@ test_that("brm_data() levels", {
   data$factor2 <- data$patient
   data$factor3 <- data$patient
   colnames(data) <- paste0("col_", colnames(data))
-  data <- data[- c(2L, 3L), ]
+  data <- data[-c(2L, 3L), ]
   data <- data[sample.int(n = nrow(data)), ]
   expect_error(
     brm_data(
@@ -404,7 +404,7 @@ test_that("brm_data() ordered factor contrasts", {
     reference_time = "time_1"
   )
   expect_equal(
-    sort(colnames(model.matrix(~ time, data = out))),
+    sort(colnames(model.matrix(~time, data = out))),
     sort(c("(Intercept)", "time2", "time3", "time4"))
   )
 })
@@ -421,7 +421,7 @@ test_that("deprecate role argument", {
   data$factor2 <- data$patient
   data$factor3 <- data$patient
   colnames(data) <- paste0("col_", colnames(data))
-  data <- data[- c(2L, 3L), ]
+  data <- data[-c(2L, 3L), ]
   data <- data[sample.int(n = nrow(data)), ]
   data$col_missing <- FALSE
   expect_warning(

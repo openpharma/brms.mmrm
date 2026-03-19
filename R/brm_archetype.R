@@ -121,8 +121,7 @@ brm_data_validate.brms_mmrm_archetype <- function(data) {
     )
   )
   assert(
-    sort(mapping$variable) ==
-      sort(attr(data, "brm_archetype_interest")),
+    sort(mapping$variable) == sort(attr(data, "brm_archetype_interest")),
     message = paste(
       "the \"variable\" column of the brm_archetype_mapping",
       "attribute must agree with the values in the",
@@ -139,7 +138,7 @@ brm_data_validate.brms_mmrm_archetype <- function(data) {
     character(0L),
     brm_levels(data[[attr(data, "brm_subgroup")]])
   )
-  times <-  brm_levels(data[[attr(data, "brm_time")]])
+  times <- brm_levels(data[[attr(data, "brm_time")]])
   n_group <- length(groups)
   n_subgroup <- length(subgroups)
   n_time <- length(times)

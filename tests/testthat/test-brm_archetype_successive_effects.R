@@ -378,10 +378,14 @@ test_that("brm_archetype_successive_effects() clda non-subgroup", {
     ) |>
       dplyr::mutate(response = 0)
     out <- brm_archetype_successive_effects(
-      data, clda = TRUE, intercept = intercept
+      data,
+      clda = TRUE,
+      intercept = intercept
     )
     full <- brm_archetype_successive_effects(
-      data, clda = FALSE, intercept = intercept
+      data,
+      clda = FALSE,
+      intercept = intercept
     )
     expect_equal(
       attr(out, "brm_archetype_interest"),
@@ -435,7 +439,9 @@ test_that("brm_archetype_successive_effects() clda subgroup", {
     mapping_full[!(mapping_full$variable %in% dropped), ]
   )
   columns <- c(
-    "group", "subgroup", "time",
+    "group",
+    "subgroup",
+    "time",
     attr(out, "brm_archetype_interest")
   )
   equations <- summary(out, message = FALSE)
