@@ -67,15 +67,15 @@ simulation$data
 #> # A tibble: 800 × 4
 #>    response group   patient   time  
 #>       <dbl> <chr>   <chr>     <chr> 
-#>  1     1.30 group 1 patient 1 time 1
-#>  2     2.52 group 1 patient 1 time 2
-#>  3     2.63 group 1 patient 1 time 3
+#>  1     1.29 group 1 patient 1 time 1
+#>  2     2.62 group 1 patient 1 time 2
+#>  3     2.64 group 1 patient 1 time 3
 #>  4     1.98 group 1 patient 1 time 4
 #>  5     1.22 group 1 patient 2 time 1
-#>  6     2.63 group 1 patient 2 time 2
-#>  7     2.38 group 1 patient 2 time 3
+#>  6     2.54 group 1 patient 2 time 2
+#>  7     2.37 group 1 patient 2 time 3
 #>  8     2.52 group 1 patient 2 time 4
 #>  9     1.32 group 1 patient 3 time 1
-#> 10     2.63 group 1 patient 3 time 2
+#> 10     2.60 group 1 patient 3 time 2
 #> # ℹ 790 more rows
 ```

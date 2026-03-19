@@ -387,12 +387,12 @@ homogeneous
 #> sigma ~ 0
 #> attr(,"brm_allow_effect_size")
 #> [1] TRUE
-#> <environment: 0x556e43e744c8>
+#> <environment: 0x555b911e6650>
 by_group
 #> sigma ~ group + time
 #> attr(,"brm_allow_effect_size")
 #> [1] TRUE
-#> <environment: 0x556e441d1800>
+#> <environment: 0x555b915187f8>
 brm_formula(data, sigma = homogeneous)
 #> response ~ group + group:time + time + unstr(time = time, gr = patient) 
 #> sigma ~ 0

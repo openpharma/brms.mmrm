@@ -202,7 +202,7 @@ involved.</p>
 <span><span class="co">#&gt;     AVISIT + RACE + SEX + WEIGHT</span></span>
 <span><span class="co">#&gt; attr(,"center")</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span>
-<span><span class="co">#&gt; &lt;environment: 0x561414a69d48&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt; &lt;environment: 0x55c9257aff80&gt;</span></span></code></pre></div>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/model.matrix.html" class="external-link">model.matrix</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">base_formula</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  [1] "(Intercept)"                   "FEV1_BL"                      </span></span>
@@ -330,13 +330,13 @@ al. (1980)</span>) and produces similar estimates.</p>
 <code class="sourceCode R"><span><span class="va">marginals_custom</span> <span class="op">-</span> <span class="va">marginals_emmeans</span><span class="op">$</span><span class="va">emmean</span></span>
 <span><span class="co">#&gt;                   [,1]</span></span>
 <span><span class="co">#&gt; PBO|VIS1  0.000000e+00</span></span>
-<span><span class="co">#&gt; PBO|VIS2  4.440892e-16</span></span>
-<span><span class="co">#&gt; PBO|VIS3 -1.110223e-16</span></span>
-<span><span class="co">#&gt; PBO|VIS4 -8.881784e-16</span></span>
-<span><span class="co">#&gt; TRT|VIS1 -1.110223e-15</span></span>
-<span><span class="co">#&gt; TRT|VIS2 -5.551115e-16</span></span>
-<span><span class="co">#&gt; TRT|VIS3 -1.332268e-15</span></span>
-<span><span class="co">#&gt; TRT|VIS4 -1.776357e-15</span></span></code></pre></div>
+<span><span class="co">#&gt; PBO|VIS2 -4.440892e-16</span></span>
+<span><span class="co">#&gt; PBO|VIS3  3.330669e-16</span></span>
+<span><span class="co">#&gt; PBO|VIS4  0.000000e+00</span></span>
+<span><span class="co">#&gt; TRT|VIS1 -2.220446e-16</span></span>
+<span><span class="co">#&gt; TRT|VIS2 -2.220446e-16</span></span>
+<span><span class="co">#&gt; TRT|VIS3 -4.440892e-16</span></span>
+<span><span class="co">#&gt; TRT|VIS4  0.000000e+00</span></span></code></pre></div>
 <p>For our Bayesian MMRMs in <code>brms.mmrm</code>, the transformation
 from <code><a href="../reference/brm_transform_marginal.html">brm_transform_marginal()</a></code> operates on each individual
 draw from the joint posterior distribution. The transformation matrix
@@ -544,13 +544,13 @@ from <code>emmeans</code>.</p>
 <span><span class="co">#&gt;   ARMCD AVISIT emmean custom difference</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> PBO   VIS1   -<span style="color: #BB0000;">4.60</span>  -<span style="color: #BB0000;">4.60</span>    0   <span style="color: #949494;"> </span>   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> PBO   VIS2   -<span style="color: #BB0000;">2.54</span>  -<span style="color: #BB0000;">2.54</span>    4.44<span style="color: #949494;">e</span><span style="color: #BB0000;">-16</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> PBO   VIS3    0.984  0.984  -<span style="color: #BB0000;">1.11</span><span style="color: #949494;">e</span><span style="color: #BB0000;">-16</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> PBO   VIS4    5.60   5.60   -<span style="color: #BB0000;">8.88</span><span style="color: #949494;">e</span><span style="color: #BB0000;">-16</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> TRT   VIS1   -<span style="color: #BB0000;">1.29</span>  -<span style="color: #BB0000;">1.29</span>   -<span style="color: #BB0000;">1.11</span><span style="color: #949494;">e</span><span style="color: #BB0000;">-15</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> TRT   VIS2    0.847  0.847  -<span style="color: #BB0000;">5.55</span><span style="color: #949494;">e</span><span style="color: #BB0000;">-16</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">7</span> TRT   VIS3    3.80   3.80   -<span style="color: #BB0000;">1.33</span><span style="color: #949494;">e</span><span style="color: #BB0000;">-15</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">8</span> TRT   VIS4   10.1   10.1    -<span style="color: #BB0000;">1.78</span><span style="color: #949494;">e</span><span style="color: #BB0000;">-15</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> PBO   VIS2   -<span style="color: #BB0000;">2.54</span>  -<span style="color: #BB0000;">2.54</span>   -<span style="color: #BB0000;">4.44</span><span style="color: #949494;">e</span><span style="color: #BB0000;">-16</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> PBO   VIS3    0.984  0.984   3.33<span style="color: #949494;">e</span><span style="color: #BB0000;">-16</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> PBO   VIS4    5.60   5.60    0   <span style="color: #949494;"> </span>   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> TRT   VIS1   -<span style="color: #BB0000;">1.29</span>  -<span style="color: #BB0000;">1.29</span>   -<span style="color: #BB0000;">2.22</span><span style="color: #949494;">e</span><span style="color: #BB0000;">-16</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> TRT   VIS2    0.847  0.847  -<span style="color: #BB0000;">2.22</span><span style="color: #949494;">e</span><span style="color: #BB0000;">-16</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">7</span> TRT   VIS3    3.80   3.80   -<span style="color: #BB0000;">4.44</span><span style="color: #949494;">e</span><span style="color: #BB0000;">-16</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">8</span> TRT   VIS4   10.1   10.1     0   <span style="color: #949494;"> </span></span></span></code></pre></div>
 <p><code>brms.mmrm</code> follows the procedure above, but in a Bayesian
 context. The <code><a href="../reference/brm_transform_marginal.html">brm_transform_marginal()</a></code> creates the matrix
 above, and <code><a href="../reference/brm_marginal_draws.html">brm_marginal_draws()</a></code> uses it to transform

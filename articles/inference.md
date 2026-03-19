@@ -121,7 +121,7 @@ base_formula
 #>     AVISIT + RACE + SEX + WEIGHT
 #> attr(,"center")
 #> [1] TRUE
-#> <environment: 0x561414a69d48>
+#> <environment: 0x55c9257aff80>
 ```
 
 ``` r
@@ -267,13 +267,13 @@ marginals_emmeans
 marginals_custom - marginals_emmeans$emmean
 #>                   [,1]
 #> PBO|VIS1  0.000000e+00
-#> PBO|VIS2  4.440892e-16
-#> PBO|VIS3 -1.110223e-16
-#> PBO|VIS4 -8.881784e-16
-#> TRT|VIS1 -1.110223e-15
-#> TRT|VIS2 -5.551115e-16
-#> TRT|VIS3 -1.332268e-15
-#> TRT|VIS4 -1.776357e-15
+#> PBO|VIS2 -4.440892e-16
+#> PBO|VIS3  3.330669e-16
+#> PBO|VIS4  0.000000e+00
+#> TRT|VIS1 -2.220446e-16
+#> TRT|VIS2 -2.220446e-16
+#> TRT|VIS3 -4.440892e-16
+#> TRT|VIS4  0.000000e+00
 ```
 
 For our Bayesian MMRMs in `brms.mmrm`, the transformation from
@@ -497,13 +497,13 @@ marginals_emmeans |>
 #>   ARMCD AVISIT emmean custom difference
 #>   <fct> <fct>   <dbl>  <dbl>      <dbl>
 #> 1 PBO   VIS1   -4.60  -4.60    0       
-#> 2 PBO   VIS2   -2.54  -2.54    4.44e-16
-#> 3 PBO   VIS3    0.984  0.984  -1.11e-16
-#> 4 PBO   VIS4    5.60   5.60   -8.88e-16
-#> 5 TRT   VIS1   -1.29  -1.29   -1.11e-15
-#> 6 TRT   VIS2    0.847  0.847  -5.55e-16
-#> 7 TRT   VIS3    3.80   3.80   -1.33e-15
-#> 8 TRT   VIS4   10.1   10.1    -1.78e-15
+#> 2 PBO   VIS2   -2.54  -2.54   -4.44e-16
+#> 3 PBO   VIS3    0.984  0.984   3.33e-16
+#> 4 PBO   VIS4    5.60   5.60    0       
+#> 5 TRT   VIS1   -1.29  -1.29   -2.22e-16
+#> 6 TRT   VIS2    0.847  0.847  -2.22e-16
+#> 7 TRT   VIS3    3.80   3.80   -4.44e-16
+#> 8 TRT   VIS4   10.1   10.1     0    
 ```
 
 `brms.mmrm` follows the procedure above, but in a Bayesian context. The
