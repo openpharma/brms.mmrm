@@ -52,70 +52,66 @@ For more details on informative prior archetypes, see `vignette("archetypes", pa
 summary(data_current)
 ```
 
-## Benchmark analysis with a non-informative prior
+## Benchmark analysis with a diffuse prior
 
-Let's analyze this data with a non-informative prior first, to establish a baseline for comparison.
+As a basis for comparison, we first fit a Bayesian MMRM with a diffuse prior:
 
 ```{r, output = FALSE, message = FALSE, results = "hide"}
-formula <- brm_formula(data_current)
-fit_noninformative <- brm_model(
+fit_diffuse <- brm_model(
   data = data_current,
-  formula = formula,
+  formula = brm_formula(data_current),
   refresh = 0L
 )
 ```
 
+The estimated marginal means closely match the analogous data summaries:
+
 ```{r}
-draws_noninformative <- brm_marginal_draws(fit_noninformative)
-summaries_noninformative <- brm_marginal_summaries(draws_noninformative)
-summaries_data_current <- brm_marginal_data(data_current)
-brm_plot_compare(
-  data_current = summaries_data_current,
-  fit_noninformative = summaries_noninformative
-)
+draws_diffuse <- brm_marginal_draws(fit_diffuse)
+summaries_diffuse <- brm_marginal_summaries(draws_diffuse)
+summaries_data <- brm_marginal_data(data_current)
 ```
 
-Suppose the study was designed to declare efficacy if the posterior probability of observing a treatment effect at the final visit ($\delta$) greater than 4 units of FEV1 is greater than 75%:
+```{r}
+brm_plot_compare(data = summaries_data, fit_diffuse = summaries_diffuse)
+```
+
+Suppose the trial is designed to declare efficacy if the posterior probability of observing a treatment effect at visit 4 ($\delta$) of at least 4 units of FEV1 is at least 0.8:
 
 $$
 \begin{aligned}
-P(\delta > 4 \ | \ \text{data}) > 0.75
+P(\delta > 4 \ \mid \ \text{data}) > 0.85
 \end{aligned}
 $$
 
-We see a posterior probability that barely meets this threshold:
+The posterior probability undershoots the efficacy threshold, which is unsurprising because the dataset has few patients and MMRMs with diffuse priors are weak.
 
 ```{r}
-brm_marginal_probabilities(
-  draws_noninformative,
-  direction = "greater",
-  threshold = 4
-) |>
+draws_diffuse |>
+  brm_marginal_probabilities(direction = "greater", threshold = 4) |>
   filter(time == "VIS4") |>
   pull(value)
 ```
 
-## Historical data
+## Constructing the robust MAP prior
 
-For demonstration purposes, we posit summary-level historical datasets on visit 4 that mimic the structure of the current study data but show a higher placebo response.^[In practice, you would use actual historical data from previous studies that are relevant to your current study.]
+Suppose we have a wealth of historical summary-level placebo data on FEV1 at visit 4 in similar studies:
 
 ```{r}
 data_historical_visit4 <- tibble::tribble(
   ~study   , ~mean , ~sd   , ~patients ,
-  "study1" , 12.16 , 10.01 ,       137 ,
-  "study2" , 13.45 ,  9.87 ,       158 ,
-  "study3" , 11.34 , 12.33 ,        89 ,
-  "study4" , 10.87 , 14.44 ,       120 ,
-  "study5" , 12.00 , 12.07 ,        91 ,
-  "study6" , 13.10 , 11.11 ,        74
+  "study1" , 8.16  , 10.01 ,       437 ,
+  "study2" , 8.45  ,  9.87 ,       558 ,
+  "study3" , 7.34  , 12.33 ,       489 ,
+  "study4" , 6.87  , 14.44 ,       320 ,
+  "study5" , 7.00  , 12.07 ,       491 ,
+  "study6" , 7.10  , 11.11 ,       574
 ) |>
   mutate(se = sd / sqrt(patients))
 ```
 
-## Constructing the robust MAP prior
-
-We use `gMAP()` from `RBesT` to fit a meta-analytic predictive model to the historical summary data, then `automixfit()` to approximate the MAP posterior as a mixture of normals, and finally `robustify()` to add a weakly informative component that protects against prior-data conflict (@schmidli2014).
-This robustified MAP posterior will serve as the MAP prior for the Bayesian MMRM downstream.
+We use `gMAP()` from `RBesT` to fit this summary data with a meta-analytic predictive model, then `automixfit()` to approximate the MAP posterior as a mixture of normals, and finally `robustify()` to add a weakly informative component that protects against prior-data conflict (@schmidli2014).
+This robustified MAP posterior will serve as the MAP prior for the Bayesian MMRM downstream.^[See the documentation of `gMAP()`, `automixfit()` and `robustify()` in `RBesT` for details on how to do this in general.]
 
 ```{r, results = "hide", message = FALSE}
 library(RBesT)
@@ -138,9 +134,78 @@ map_prior <- robustify(
 )
 ```
 
-```r
+```{r}
 map_prior
 ```
 
-## Analysis
+## Converting the prior for use in `brms.mmrm`
 
+We assign robust MAP prior to the placebo group mean at visit 1:^[See the documentation of `RBesT::mixstanvar()`]
+
+```{r}
+prior <- brm_prior_label(
+  code = "mixnorm(map_w, map_m, map_s)",
+  group = "PBO",
+  time = "VIS4"
+) |>
+  brm_prior_archetype(archetype = data_current)
+
+prior
+```
+
+We then use `RBesT::mixstanvar()` to tell the Stan code in `brms` how to interpret `mixnorm()`.
+Below, the name "map" has to align with the prefix "map" in the call to `mixnorm()` above.^[The suffixes "_w", "_m", and "_s" in `mixnorm()` are hard-coded.]
+
+```{r}
+stanvars <- mixstanvar(map = map_prior)
+```
+
+## Fitting the Bayesian MMRM with the MAP prior
+
+We simply plug `prior` and `stanvars` into the call to `brms.mmrm::brm_model()`:
+
+```{r, output = FALSE, message = FALSE, results = "hide"}
+fit_map <- brm_model(
+  data = data_current,
+  formula = brm_formula(data_current),
+  prior = prior,
+  stanvars = stanvars,
+  refresh = 0L
+)
+```
+
+The model with the MAP prior has a more precise estimate of the placebo group mean at the final visit.
+
+```{r}
+draws_map <- brm_marginal_draws(fit_map)
+summaries_map <- brm_marginal_summaries(draws_map)
+```
+
+```{r}
+brm_plot_compare(
+  data = summaries_data,
+  fit_diffuse = summaries_diffuse,
+  fit_map = summaries_map
+)
+```
+
+With this added precision, we meet the efficacy threshold:
+
+```{r}
+draws_map |>
+  brm_marginal_probabilities(direction = "greater", threshold = 4) |>
+  filter(time == "VIS4") |>
+  pull(value)
+```
+
+In other trials, the MAP prior may have the opposite effect.
+To avoid human decision-making bias, it is important to pre-specify the analysis model used to evaluate the efficacy rule.
+
+## Multivariate mixture priors
+
+```{r, eval = FALSE}
+prior <- brm_prior_label(
+  code = "mixnorm(control_w, control_m, control_sigma_L)",
+  group = "PBO"
+)
+```
