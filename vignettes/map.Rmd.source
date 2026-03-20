@@ -126,9 +126,9 @@ map_mcmc <- RBesT::gMAP(
   beta.prior = cbind(0, 100)
 )
 
-map_mix <- RBesT::automixfit(map_mcmc)
+map_mixture <- RBesT::automixfit(map_mcmc)
 
-map_prior <- RBesT::robustify(
+map_robust <- RBesT::robustify(
   map_mix,
   weight = 0.2,
   mean = 0,
@@ -137,7 +137,7 @@ map_prior <- RBesT::robustify(
 ```
 
 ```{r}
-map_prior
+map_robust
 ```
 
 # Converting the prior for use in `brms.mmrm`
@@ -159,7 +159,7 @@ We then use `RBesT::mixstanvar()` to tell the Stan code in `brms` how to interpr
 Below, the name "map" has to align with the prefix "map" in the call to `mixnorm()` above.^[The suffixes "_w", "_m", and "_s" in `mixnorm()` are hard-coded.]
 
 ```{r}
-stanvars <- RBesT::mixstanvar(map = map_prior)
+stanvars <- RBesT::mixstanvar(map = map_robust)
 ```
 
 # Fitting the Bayesian MMRM with the MAP prior

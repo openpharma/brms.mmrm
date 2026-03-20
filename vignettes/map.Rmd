@@ -1,7 +1,7 @@
 ---
 title: "Meta-analytic predictive priors"
-bibliography: '/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/brms.mmrm/bibliography.bib'
-csl: '/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/brms.mmrm/asa.csl'
+bibliography: '`r system.file("bibliography.bib", package = "brms.mmrm")`'
+csl: '`r system.file("asa.csl", package = "brms.mmrm")`'
 output:
   rmarkdown::html_vignette:
     toc: true
@@ -158,9 +158,9 @@ map_mcmc <- RBesT::gMAP(
   beta.prior = cbind(0, 100)
 )
 
-map_mix <- RBesT::automixfit(map_mcmc)
+map_mixture <- RBesT::automixfit(map_mcmc)
 
-map_prior <- RBesT::robustify(
+map_robust <- RBesT::robustify(
   map_mix,
   weight = 0.2,
   mean = 0,
@@ -170,7 +170,7 @@ map_prior <- RBesT::robustify(
 
 
 ``` r
-map_prior
+map_robust
 #> Univariate normal mixture
 #> Mixture Components:
 #>   comp1      comp2      robust    
@@ -201,7 +201,7 @@ Below, the name "map" has to align with the prefix "map" in the call to `mixnorm
 
 
 ``` r
-stanvars <- RBesT::mixstanvar(map = map_prior)
+stanvars <- RBesT::mixstanvar(map = map_robust)
 ```
 
 # Fitting the Bayesian MMRM with the MAP prior
@@ -338,11 +338,13 @@ multivariate_mixture <- RBesT::mixmvnorm(
 
 We then translate the multivariate mixture into a format that `brms` can use:
 
+
 ``` r
 stanvars <- RBesT::mixstanvar(prior = multivariate_mixture)
 ```
 
 Finally, we fit the model:
+
 
 ``` r
 fit_multivariate_mixture <- brm_model(
