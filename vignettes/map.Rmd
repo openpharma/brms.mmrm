@@ -12,11 +12,9 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-library(brms)
 library(brms.mmrm)
 library(dplyr)
 library(mmrm)
-library(RBesT)
 set.seed(0L)
 ```
 
@@ -114,8 +112,7 @@ We use `gMAP()` from `RBesT` to fit this summary data with a meta-analytic predi
 This robustified MAP posterior will serve as the MAP prior for the Bayesian MMRM downstream.^[See the documentation of `gMAP()`, `automixfit()` and `robustify()` in `RBesT` for details on how to do this in general.]
 
 ```{r, results = "hide", message = FALSE}
-library(RBesT)
-map_mcmc <- gMAP(
+map_mcmc <- RBesT::gMAP(
   cbind(mean, se) ~ 1 | study,
   data = data_historical_visit4,
   family = gaussian,
@@ -124,9 +121,9 @@ map_mcmc <- gMAP(
   beta.prior = cbind(0, 100)
 )
 
-map_mix <- automixfit(map_mcmc)
+map_mix <- RBesT::automixfit(map_mcmc)
 
-map_prior <- robustify(
+map_prior <- RBesT::robustify(
   map_mix,
   weight = 0.2,
   mean = 0,
@@ -203,9 +200,56 @@ To avoid human decision-making bias, it is important to pre-specify the analysis
 
 ## Multivariate mixture priors
 
-```{r, eval = FALSE}
-prior <- brm_prior_label(
-  code = "mixnorm(control_w, control_m, control_sigma_L)",
-  group = "PBO"
+```{r}
+prior <- brms::prior(
+  "mixmvnorm(prior_w, prior_m, prior_sigma_L)",
+  class = "b",
+  dpar = ""
+)
+```
+
+```{r}
+# 8 coefficients in the order brms assigns to class = "b":
+#   b[1:4] = x_PBO_VIS1, x_PBO_VIS2, x_PBO_VIS3, x_PBO_VIS4
+#   b[5:8] = x_TRT_VIS1, x_TRT_VIS2, x_TRT_VIS3, x_TRT_VIS4
+
+# Informative component: informed PBO means, vague TRT effects.
+mean_informative <- c(5, 7, 8, 9, 0, 0, 0, 0)
+
+# Block-diagonal covariance: correlated PBO block, vague diagonal TRT block.
+cov_pbo <- matrix(
+  c( 4, 2, 1, 1,
+     2, 4, 2, 1,
+     1, 2, 4, 2,
+     1, 1, 2, 9),
+  nrow = 4
+)
+cov_informative <- matrix(0, 8, 8)
+cov_informative[1:4, 1:4] <- cov_pbo
+cov_informative[5:8, 5:8] <- diag(rep(100, 4))
+
+# Robust component: vague everywhere.
+mean_robust <- rep(0, 8)
+cov_robust <- diag(rep(100, 8))
+
+multivariate_mixture <- RBesT::mixmvnorm(
+  informative = c(0.8, mean_informative, cov_informative),
+  robust = c(0.2, mean_robust, cov_robust),
+  sigma = diag(rep(100, 8))
+)
+multivariate_mixture
+```
+
+```{r}
+stanvars <- RBesT::mixstanvar(prior = multivariate_mixture)
+```
+
+```{r, output = FALSE, message = FALSE, results = "hide"}
+fit_multivariate_mixture <- brm_model(
+  data = data_current,
+  formula = brm_formula(data_current),
+  prior = prior,
+  stanvars = stanvars,
+  refresh = 0L
 )
 ```
