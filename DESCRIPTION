@@ -1,6 +1,6 @@
 Package: brms.mmrm
 Title: Bayesian MMRMs using 'brms'
-Version: 1.1.1.9000
+Version: 1.1.1.9001
 Authors@R: c(
   person(
     given = c("William", "Michael"),
@@ -73,14 +73,14 @@ Suggests:
   fst,
   gt,
   gtsummary,
-  knitr (>= 1.30),
+  knitr,
   markdown (>= 1.1),
   mmrm,
   parallel,
   Rcpp,
   RcppEigen,
   RcppParallel,
-  rmarkdown (>= 2.4),
+  rmarkdown,
   rstan,
   StanHeaders,
   testthat (>= 3.0.0)

@@ -17,7 +17,6 @@ knitr::opts_chunk$set(
 [![status](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![check](https://github.com/openpharma/brms.mmrm/workflows/check/badge.svg)](https://github.com/openpharma/brms.mmrm/actions?query=workflow%3Acheck)
 [![cover](https://github.com/openpharma/brms.mmrm/workflows/cover/badge.svg)](https://github.com/openpharma/brms.mmrm/actions?query=workflow%3Acover)
-[![lint](https://github.com/openpharma/brms.mmrm/workflows/lint/badge.svg)](https://github.com/openpharma/brms.mmrm/actions?query=workflow%3Alint)
 
 The [mixed model for repeated measures (MMRM)](https://link.springer.com/article/10.1177/009286150804200402) is a popular model for longitudinal clinical trial data with continuous endpoints, and [`brms`](https://paulbuerkner.com/brms/) is powerful and versatile package for fitting Bayesian regression models. The `brms.mmrm` R package leverages [`brms`](https://paulbuerkner.com/brms/) to run [MMRMs](https://link.springer.com/article/10.1177/009286150804200402), and it supports a simplified interface to reduce difficulty and align with best practices for the life sciences.
 

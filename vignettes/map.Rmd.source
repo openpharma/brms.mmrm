@@ -1,0 +1,289 @@
+---
+title: "Meta-analytic predictive priors"
+bibliography: '`r system.file("bibliography.bib", package = "brms.mmrm")`'
+csl: '`r system.file("asa.csl", package = "brms.mmrm")`'
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    number_sections: true
+vignette: >
+  %\VignetteIndexEntry{Meta-analytic predictive priors}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(brms.mmrm)
+library(dplyr)
+library(mmrm)
+set.seed(0L)
+```
+
+A meta-analytic predictive prior is a type of historical borrowing approach that uses data from one or more previous studies to build a prior distribution for parameters of interest in a new study (@spiegelhalter2004, @neuenschwander2010, @schmidli2014). 
+This vignette demonstrates how to supply a meta-analytic predictive prior to a Bayesian MMRM fitted with `brms.mmrm`.
+
+# Data of the current study
+
+We use the FEV1 data from the `mmrm` package, which contains measurements of forced expiratory volume in 1 second (FEV1) for patients with chronic obstructive pulmonary disease (COPD) at multiple visits.
+
+```{r}
+library(brms.mmrm)
+library(dplyr)
+data(fev_data, package = "mmrm")
+data_current <- fev_data |>
+  mutate(FEV1_CHG = FEV1 - FEV1_BL) |>
+  brm_data(
+    outcome = "FEV1_CHG",
+    group = "ARMCD",
+    time = "AVISIT",
+    patient = "USUBJID",
+    reference_group = "PBO"
+  ) |>
+  brm_data_chronologize(order = "VISITN") |>
+  brm_archetype_effects(intercept = FALSE)
+data_current
+```
+
+We are using a treatment effect informative prior archetype that invites the user to specify an informative prior on the placebo group mean at each study visit.
+For more details on informative prior archetypes, see `vignette("archetypes", package = "brms.mmrm")`.
+
+```{r}
+summary(data_current)
+```
+
+# Benchmark analysis with a diffuse prior
+
+As a basis for comparison, we first fit a Bayesian MMRM with a diffuse prior:
+
+```{r, output = FALSE, message = FALSE, results = "hide"}
+fit_diffuse <- brm_model(
+  data = data_current,
+  formula = brm_formula(data_current),
+  refresh = 0L
+)
+```
+
+The estimated marginal means closely match the analogous data summaries:
+
+```{r}
+draws_diffuse <- brm_marginal_draws(fit_diffuse)
+summaries_diffuse <- brm_marginal_summaries(draws_diffuse)
+summaries_data <- brm_marginal_data(data_current)
+```
+
+```{r}
+brm_plot_compare(data = summaries_data, fit_diffuse = summaries_diffuse)
+```
+
+Suppose the trial is designed to declare efficacy if the posterior probability of observing a treatment effect at visit 4 ($\delta$) of at least 4 units of FEV1 is at least 0.8:
+
+$$
+\begin{aligned}
+P(\delta > 4 \ \mid \ \text{data}) > 0.85
+\end{aligned}
+$$
+
+The posterior probability undershoots the efficacy threshold, which is unsurprising because the dataset has few patients and MMRMs with diffuse priors are weak.
+
+```{r}
+draws_diffuse |>
+  brm_marginal_probabilities(direction = "greater", threshold = 4) |>
+  filter(time == "VIS4") |>
+  pull(value)
+```
+
+# Constructing the robust MAP prior
+
+Suppose we have a wealth of historical summary-level placebo data on FEV1 at visit 4 in similar studies:
+
+```{r}
+data_historical_visit4 <- tibble::tribble(
+  ~study   , ~mean , ~sd   , ~patients ,
+  "study1" , 8.16  , 10.01 ,       437 ,
+  "study2" , 8.45  ,  9.87 ,       558 ,
+  "study3" , 7.34  , 12.33 ,       489 ,
+  "study4" , 6.87  , 14.44 ,       320 ,
+  "study5" , 7.00  , 12.07 ,       491 ,
+  "study6" , 7.10  , 11.11 ,       574
+) |>
+  mutate(se = sd / sqrt(patients))
+```
+
+We use `gMAP()` from `RBesT` to fit this summary data with a meta-analytic predictive model, then `automixfit()` to approximate the MAP posterior as a mixture of normals, and finally `robustify()` to add a weakly informative component that protects against prior-data conflict (@schmidli2014).
+This robustified MAP posterior will serve as the MAP prior for the Bayesian MMRM downstream.^[See the documentation of `gMAP()`, `automixfit()` and `robustify()` in `RBesT` for details on how to do this in general.]
+
+```{r, results = "hide", message = FALSE}
+map_mcmc <- RBesT::gMAP(
+  cbind(mean, se) ~ 1 | study,
+  data = data_historical_visit4,
+  family = gaussian,
+  tau.dist = "HalfNormal",
+  tau.prior = 1,
+  beta.prior = cbind(0, 100)
+)
+
+map_mixture <- RBesT::automixfit(map_mcmc)
+
+map_robust <- RBesT::robustify(
+  map_mix,
+  weight = 0.2,
+  mean = 0,
+  sigma = mean(data_historical_visit4$sd)
+)
+```
+
+```{r}
+map_robust
+```
+
+# Converting the prior for use in `brms.mmrm`
+
+We assign robust MAP prior to the placebo group mean at visit 1:^[See the documentation of `RBesT::mixstanvar()`]
+
+```{r}
+prior <- brm_prior_label(
+  code = "mixnorm(map_w, map_m, map_s)",
+  group = "PBO",
+  time = "VIS4"
+) |>
+  brm_prior_archetype(archetype = data_current)
+
+prior
+```
+
+We then use `RBesT::mixstanvar()` to tell the Stan code in `brms` how to interpret `mixnorm()`.
+Below, the name "map" has to align with the prefix "map" in the call to `mixnorm()` above.^[The suffixes "_w", "_m", and "_s" in `mixnorm()` are hard-coded.]
+
+```{r}
+stanvars <- RBesT::mixstanvar(map = map_robust)
+```
+
+# Fitting the Bayesian MMRM with the MAP prior
+
+We simply plug `prior` and `stanvars` into the call to `brms.mmrm::brm_model()`:
+
+```{r, output = FALSE, message = FALSE, results = "hide"}
+fit_map <- brm_model(
+  data = data_current,
+  formula = brm_formula(data_current),
+  prior = prior,
+  stanvars = stanvars,
+  refresh = 0L
+)
+```
+
+The model with the MAP prior has a more precise estimate of the placebo group mean at the final visit.
+
+```{r}
+draws_map <- brm_marginal_draws(fit_map)
+summaries_map <- brm_marginal_summaries(draws_map)
+```
+
+```{r}
+brm_plot_compare(
+  data = summaries_data,
+  fit_diffuse = summaries_diffuse,
+  fit_map = summaries_map
+)
+```
+
+With this added precision, we meet the efficacy threshold:
+
+```{r}
+draws_map |>
+  brm_marginal_probabilities(direction = "greater", threshold = 4) |>
+  filter(time == "VIS4") |>
+  pull(value)
+```
+
+In other trials, the MAP prior may have the opposite effect.
+To avoid human decision-making bias, it is important to pre-specify the analysis model used to evaluate the efficacy rule.
+
+# Multivariate mixture priors
+
+For a multivariate mixture prior with correlated model coefficients, we can use `mixmvnorm()` in the `prior` specification and `mixstanvar()` to convert the mixture for use in `brms.mmrm`.
+Not all multivariate mixture priors are MAP priors, but you can translate a pre-computed MAP prior into the `mixmvnorm()` format as shown below.
+
+First, we specify the distributional family of the prior for `brms`:
+
+```{r}
+prior <- brms::prior(
+  "mixmvnorm(prior_w, prior_m, prior_sigma_L)",
+  class = "b",
+  dpar = ""
+)
+```
+
+Before we construct the mixture prior, we need to note the order of the model coefficients in `brms`.
+
+```{r}
+brms::prior_summary(fit_diffuse)
+```
+
+From `brms::prior_summary()`, we see that the model coefficients are ordered first by study arm, then by study visit. 
+This is the order we will use for the components of the mean and covariance of the multivariate normal mixture components.
+
+```{r}
+# Informative component:
+# informed placebo means, vague treatment effects.
+mean_informative <- c(
+  5, # x_PBO_VIS1
+  7, # x_PBO_VIS2
+  8, # x_PBO_VIS3
+  9, # x_PBO_VIS4
+  0, # x_TRT_VIS1
+  0, # x_TRT_VIS2
+  0, # x_TRT_VIS3
+  0 #  x_TRT_VIS4
+)
+
+# Block-diagonal covariance:
+# correlated control block, vague diagonal treatment block.
+covariance_control <- matrix(
+  rbind(
+    c(4, 2, 1, 1),
+    c(2, 4, 2, 1),
+    c(1, 2, 4, 2),
+    c(1, 1, 2, 9)
+  ),
+  nrow = 4
+)
+covariance_informative <- matrix(0, 8, 8)
+covariance_informative[1:4, 1:4] <- covariance_control
+covariance_informative[5:8, 5:8] <- diag(rep(64, 4))
+
+# Robust component: vague everywhere.
+mean_robust <- rep(0, 8)
+covariance_robust <- diag(rep(81, 8))
+
+# Each mixture component is a vector with the
+# weight, mean vector, and covariance matrix elements all inline.
+multivariate_mixture <- RBesT::mixmvnorm(
+  informative = c(0.8, mean_informative, covariance_informative),
+  robust = c(0.2, mean_robust, covariance_robust)
+)
+```
+
+We then translate the multivariate mixture into a format that `brms` can use:
+
+```{r}
+stanvars <- RBesT::mixstanvar(prior = multivariate_mixture)
+```
+
+Finally, we fit the model:
+
+```{r, output = FALSE, message = FALSE, results = "hide"}
+fit_multivariate_mixture <- brm_model(
+  data = data_current,
+  formula = brm_formula(data_current),
+  prior = prior,
+  stanvars = stanvars,
+  refresh = 0L
+)
+```
+
+# References
