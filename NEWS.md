@@ -1,6 +1,6 @@
-# brms.mmrm 1.1.1.9000 (development)
+# brms.mmrm development version
 
-
+* Add `vignettes/map.Rmd`, a new vignette on meta-analytic predictive priors for Bayesian MMRMs.
 
 # brms.mmrm 1.1.1
 

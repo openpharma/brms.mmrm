@@ -1,7 +1,7 @@
 ---
 title: "Meta-analytic predictive priors"
-bibliography: '/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/brms.mmrm/bibliography.bib'
-csl: '/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/brms.mmrm/asa.csl'
+bibliography: '`r system.file("bibliography.bib", package = "brms.mmrm")`'
+csl: '`r system.file("asa.csl", package = "brms.mmrm")`'
 output:
   rmarkdown::html_vignette:
     toc: true
@@ -12,7 +12,16 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(brms.mmrm)
+library(dplyr)
+library(mmrm)
+set.seed(0L)
+```
 
 A meta-analytic predictive prior is a type of historical borrowing approach that uses data from one or more previous studies to build a prior distribution for parameters of interest in a new study (@spiegelhalter2004, @neuenschwander2010, @schmidli2014). 
 This vignette demonstrates how to supply a meta-analytic predictive prior to a Bayesian MMRM fitted with `brms.mmrm`.
@@ -21,8 +30,7 @@ This vignette demonstrates how to supply a meta-analytic predictive prior to a B
 
 We use the FEV1 data from the `mmrm` package, which contains measurements of forced expiratory volume in 1 second (FEV1) for patients with chronic obstructive pulmonary disease (COPD) at multiple visits.
 
-
-``` r
+```{r}
 library(brms.mmrm)
 library(dplyr)
 data(fev_data, package = "mmrm")
@@ -38,52 +46,20 @@ data_current <- fev_data |>
   brm_data_chronologize(order = "VISITN") |>
   brm_archetype_effects(intercept = FALSE)
 data_current
-#> # A tibble: 800 × 19
-#>    x_PBO_VIS1 x_PBO_VIS2 x_PBO_VIS3 x_PBO_VIS4 x_TRT_VIS1 x_TRT_VIS2 x_TRT_VIS3
-#>  *      <int>      <int>      <int>      <int>      <int>      <int>      <int>
-#>  1          1          0          0          0          0          0          0
-#>  2          0          1          0          0          0          0          0
-#>  3          0          0          1          0          0          0          0
-#>  4          0          0          0          1          0          0          0
-#>  5          1          0          0          0          0          0          0
-#>  6          0          1          0          0          0          0          0
-#>  7          0          0          1          0          0          0          0
-#>  8          0          0          0          1          0          0          0
-#>  9          1          0          0          0          0          0          0
-#> 10          0          1          0          0          0          0          0
-#> # ℹ 790 more rows
-#> # ℹ 12 more variables: x_TRT_VIS4 <int>, USUBJID <fct>, AVISIT <ord>, ARMCD <fct>,
-#> #   RACE <fct>, SEX <fct>, FEV1_BL <dbl>, FEV1 <dbl>, WEIGHT <dbl>, VISITN <int>,
-#> #   VISITN2 <dbl>, FEV1_CHG <dbl>
 ```
 
 We are using a treatment effect informative prior archetype that invites the user to specify an informative prior on the placebo group mean at each study visit.
 For more details on informative prior archetypes, see `vignette("archetypes", package = "brms.mmrm")`.
 
-
-``` r
+```{r}
 summary(data_current)
-#> # This is the "effects" informative prior archetype in brms.mmrm.
-#> # The following equations show the relationships between the
-#> # marginal means (left-hand side) and important fixed effect parameters
-#> # (right-hand side). Nuisance parameters are omitted.
-#> # 
-#> #   PBO:VIS1 = x_PBO_VIS1
-#> #   PBO:VIS2 = x_PBO_VIS2
-#> #   PBO:VIS3 = x_PBO_VIS3
-#> #   PBO:VIS4 = x_PBO_VIS4
-#> #   TRT:VIS1 = x_PBO_VIS1 + x_TRT_VIS1
-#> #   TRT:VIS2 = x_PBO_VIS2 + x_TRT_VIS2
-#> #   TRT:VIS3 = x_PBO_VIS3 + x_TRT_VIS3
-#> #   TRT:VIS4 = x_PBO_VIS4 + x_TRT_VIS4
 ```
 
 # Benchmark analysis with a diffuse prior
 
 As a basis for comparison, we first fit a Bayesian MMRM with a diffuse prior:
 
-
-``` r
+```{r, output = FALSE, message = FALSE, results = "hide"}
 fit_diffuse <- brm_model(
   data = data_current,
   formula = brm_formula(data_current),
@@ -93,19 +69,15 @@ fit_diffuse <- brm_model(
 
 The estimated marginal means closely match the analogous data summaries:
 
-
-``` r
+```{r}
 draws_diffuse <- brm_marginal_draws(fit_diffuse)
 summaries_diffuse <- brm_marginal_summaries(draws_diffuse)
 summaries_data <- brm_marginal_data(data_current)
 ```
 
-
-``` r
+```{r}
 brm_plot_compare(data = summaries_data, fit_diffuse = summaries_diffuse)
 ```
-
-![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6-1.png)
 
 Suppose the trial is designed to declare efficacy if the posterior probability of observing a treatment effect at visit 4 ($\delta$) of at least 4 units of FEV1 is at least 0.8:
 
@@ -117,21 +89,18 @@ $$
 
 The posterior probability undershoots the efficacy threshold, which is unsurprising because the dataset has few patients and MMRMs with diffuse priors are weak.
 
-
-``` r
+```{r}
 draws_diffuse |>
   brm_marginal_probabilities(direction = "greater", threshold = 4) |>
   filter(time == "VIS4") |>
   pull(value)
-#> [1] 0.806
 ```
 
 # Constructing the robust MAP prior
 
 Suppose we have a wealth of historical summary-level placebo data on FEV1 at visit 4 in similar studies:
 
-
-``` r
+```{r}
 data_historical_visit4 <- tibble::tribble(
   ~study   , ~mean , ~sd   , ~patients ,
   "study1" , 8.16  , 10.01 ,       437 ,
@@ -147,8 +116,7 @@ data_historical_visit4 <- tibble::tribble(
 We use `gMAP()` from `RBesT` to fit this summary data with a meta-analytic predictive model, then `automixfit()` to approximate the MAP posterior as a mixture of normals, and finally `robustify()` to add a weakly informative component that protects against prior-data conflict (@schmidli2014).
 This robustified MAP posterior will serve as the MAP prior for the Bayesian MMRM downstream.^[See the documentation of `gMAP()`, `automixfit()` and `robustify()` in `RBesT` for details on how to do this in general.]
 
-
-``` r
+```{r, results = "hide", message = FALSE}
 map_mcmc <- RBesT::gMAP(
   cbind(mean, se) ~ 1 | study,
   data = data_historical_visit4,
@@ -168,23 +136,15 @@ map_prior <- RBesT::robustify(
 )
 ```
 
-
-``` r
+```{r}
 map_prior
-#> Univariate normal mixture
-#> Mixture Components:
-#>   comp1      comp2      robust    
-#> w  0.5379345  0.2620655  0.2000000
-#> m  7.6266400  7.5077601  0.0000000
-#> s  0.4063899  1.0777665 11.6383333
 ```
 
 # Converting the prior for use in `brms.mmrm`
 
 We assign robust MAP prior to the placebo group mean at visit 1:^[See the documentation of `RBesT::mixstanvar()`]
 
-
-``` r
+```{r}
 prior <- brm_prior_label(
   code = "mixnorm(map_w, map_m, map_s)",
   group = "PBO",
@@ -193,14 +153,12 @@ prior <- brm_prior_label(
   brm_prior_archetype(archetype = data_current)
 
 prior
-#> b_x_PBO_VIS4 ~ mixnorm(map_w, map_m, map_s)
 ```
 
 We then use `RBesT::mixstanvar()` to tell the Stan code in `brms` how to interpret `mixnorm()`.
 Below, the name "map" has to align with the prefix "map" in the call to `mixnorm()` above.^[The suffixes "_w", "_m", and "_s" in `mixnorm()` are hard-coded.]
 
-
-``` r
+```{r}
 stanvars <- RBesT::mixstanvar(map = map_prior)
 ```
 
@@ -208,8 +166,7 @@ stanvars <- RBesT::mixstanvar(map = map_prior)
 
 We simply plug `prior` and `stanvars` into the call to `brms.mmrm::brm_model()`:
 
-
-``` r
+```{r, output = FALSE, message = FALSE, results = "hide"}
 fit_map <- brm_model(
   data = data_current,
   formula = brm_formula(data_current),
@@ -221,14 +178,12 @@ fit_map <- brm_model(
 
 The model with the MAP prior has a more precise estimate of the placebo group mean at the final visit.
 
-
-``` r
+```{r}
 draws_map <- brm_marginal_draws(fit_map)
 summaries_map <- brm_marginal_summaries(draws_map)
 ```
 
-
-``` r
+```{r}
 brm_plot_compare(
   data = summaries_data,
   fit_diffuse = summaries_diffuse,
@@ -236,17 +191,13 @@ brm_plot_compare(
 )
 ```
 
-![plot of chunk unnamed-chunk-15](figure/unnamed-chunk-15-1.png)
-
 With this added precision, we meet the efficacy threshold:
 
-
-``` r
+```{r}
 draws_map |>
   brm_marginal_probabilities(direction = "greater", threshold = 4) |>
   filter(time == "VIS4") |>
   pull(value)
-#> [1] 0.8635
 ```
 
 In other trials, the MAP prior may have the opposite effect.
@@ -259,8 +210,7 @@ Not all multivariate mixture priors are MAP priors, but you can translate a pre-
 
 First, we specify the distributional family of the prior for `brms`:
 
-
-``` r
+```{r}
 prior <- brms::prior(
   "mixmvnorm(prior_w, prior_m, prior_sigma_L)",
   class = "b",
@@ -270,32 +220,14 @@ prior <- brms::prior(
 
 Before we construct the mixture prior, we need to note the order of the model coefficients in `brms`.
 
-
-``` r
+```{r}
 brms::prior_summary(fit_diffuse)
-#>                 prior    class       coef group resp  dpar nlpar lb ub tag       source
-#>                (flat)        b                                                  default
-#>                (flat)        b x_PBO_VIS1                                  (vectorized)
-#>                (flat)        b x_PBO_VIS2                                  (vectorized)
-#>                (flat)        b x_PBO_VIS3                                  (vectorized)
-#>                (flat)        b x_PBO_VIS4                                  (vectorized)
-#>                (flat)        b x_TRT_VIS1                                  (vectorized)
-#>                (flat)        b x_TRT_VIS2                                  (vectorized)
-#>                (flat)        b x_TRT_VIS3                                  (vectorized)
-#>                (flat)        b x_TRT_VIS4                                  (vectorized)
-#>                (flat)        b                       sigma                      default
-#>                (flat)        b AVISITVIS1            sigma                 (vectorized)
-#>                (flat)        b AVISITVIS2            sigma                 (vectorized)
-#>                (flat)        b AVISITVIS3            sigma                 (vectorized)
-#>                (flat)        b AVISITVIS4            sigma                 (vectorized)
-#>  lkj_corr_cholesky(1) Lcortime                                                  default
 ```
 
 From `brms::prior_summary()`, we see that the model coefficients are ordered first by study arm, then by study visit. 
 This is the order we will use for the components of the mean and covariance of the multivariate normal mixture components.
 
-
-``` r
+```{r}
 # Informative component:
 # informed placebo means, vague treatment effects.
 mean_informative <- c(
@@ -338,13 +270,13 @@ multivariate_mixture <- RBesT::mixmvnorm(
 
 We then translate the multivariate mixture into a format that `brms` can use:
 
-``` r
+```{r}
 stanvars <- RBesT::mixstanvar(prior = multivariate_mixture)
 ```
 
 Finally, we fit the model:
 
-``` r
+```{r, output = FALSE, message = FALSE, results = "hide"}
 fit_multivariate_mixture <- brm_model(
   data = data_current,
   formula = brm_formula(data_current),
