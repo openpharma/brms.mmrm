@@ -1,0 +1,146 @@
+---
+title: "Meta-analytic predictive priors"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Meta-analytic predictive priors}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(brms)
+library(brms.mmrm)
+library(dplyr)
+library(mmrm)
+library(RBesT)
+set.seed(0L)
+```
+
+A meta-analytic predictive prior is a type of historical borrowing approach that uses data from one or more previous studies to build a prior distribution for parameters of interest in a new study (@spiegelhalter2004, @neuenschwander2010, @schmidli2014). 
+This vignette demonstrates how to supply a multivariate robust meta-analytic predictive prior to a Bayesian MMRM fitted with `brms.mmrm`.
+
+## Data of the current study
+
+We use the FEV1 data from the `mmrm` package, which contains measurements of forced expiratory volume in 1 second (FEV1) for patients with chronic obstructive pulmonary disease (COPD) at multiple visits.
+
+```{r}
+library(brms.mmrm)
+library(dplyr)
+data(fev_data, package = "mmrm")
+data_current <- fev_data |>
+  mutate(FEV1_CHG = FEV1 - FEV1_BL) |>
+  brm_data(
+    outcome = "FEV1_CHG",
+    group = "ARMCD",
+    time = "AVISIT",
+    patient = "USUBJID",
+    reference_group = "PBO"
+  ) |>
+  brm_data_chronologize(order = "VISITN") |>
+  brm_archetype_effects(intercept = FALSE)
+data_current
+```
+
+We are using a treatment effect informative prior archetype that invites the user to specify an informative prior on the placebo group mean at each study visit.
+For more details on informative prior archetypes, see `vignette("archetypes", package = "brms.mmrm")`.
+
+```{r}
+summary(data_current)
+```
+
+## Benchmark analysis with a non-informative prior
+
+Let's analyze this data with a non-informative prior first, to establish a baseline for comparison.
+
+```{r, output = FALSE, message = FALSE, results = "hide"}
+formula <- brm_formula(data_current)
+fit_noninformative <- brm_model(
+  data = data_current,
+  formula = formula,
+  refresh = 0L
+)
+```
+
+```{r}
+draws_noninformative <- brm_marginal_draws(fit_noninformative)
+summaries_noninformative <- brm_marginal_summaries(draws_noninformative)
+summaries_data_current <- brm_marginal_data(data_current)
+brm_plot_compare(
+  data_current = summaries_data_current,
+  fit_noninformative = summaries_noninformative
+)
+```
+
+Suppose the study was designed to declare efficacy if the posterior probability of observing a treatment effect at the final visit ($\delta$) greater than 4 units of FEV1 is greater than 75%:
+
+$$
+\begin{aligned}
+P(\delta > 4 \ | \ \text{data}) > 0.75
+\end{aligned}
+$$
+
+We see a posterior probability that barely meets this threshold:
+
+```{r}
+brm_marginal_probabilities(
+  draws_noninformative,
+  direction = "greater",
+  threshold = 4
+) |>
+  filter(time == "VIS4") |>
+  pull(value)
+```
+
+## Historical data
+
+For demonstration purposes, we posit summary-level historical datasets on visit 4 that mimic the structure of the current study data but show a higher placebo response.^[In practice, you would use actual historical data from previous studies that are relevant to your current study.]
+
+```{r}
+data_historical_visit4 <- tibble::tribble(
+  ~study   , ~mean , ~sd   , ~patients ,
+  "study1" , 12.16 , 10.01 ,       137 ,
+  "study2" , 13.45 ,  9.87 ,       158 ,
+  "study3" , 11.34 , 12.33 ,        89 ,
+  "study4" , 10.87 , 14.44 ,       120 ,
+  "study5" , 12.00 , 12.07 ,        91 ,
+  "study6" , 13.10 , 11.11 ,        74
+) |>
+  mutate(se = sd / sqrt(patients))
+```
+
+## Constructing the robust MAP prior
+
+We use `gMAP()` from `RBesT` to fit a meta-analytic predictive model to the historical summary data, then `automixfit()` to approximate the MAP posterior as a mixture of normals, and finally `robustify()` to add a weakly informative component that protects against prior-data conflict (@schmidli2014).
+This robustified MAP posterior will serve as the MAP prior for the Bayesian MMRM downstream.
+
+```{r, results = "hide", message = FALSE}
+library(RBesT)
+map_mcmc <- gMAP(
+  cbind(mean, se) ~ 1 | study,
+  data = data_historical_visit4,
+  family = gaussian,
+  tau.dist = "HalfNormal",
+  tau.prior = 1,
+  beta.prior = cbind(0, 100)
+)
+
+map_mix <- automixfit(map_mcmc)
+
+map_prior <- robustify(
+  map_mix,
+  weight = 0.2,
+  mean = 0,
+  sigma = mean(data_historical_visit4$sd)
+)
+```
+
+```r
+map_prior
+```
+
+## Analysis
+
