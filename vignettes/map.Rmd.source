@@ -21,7 +21,6 @@ knitr::opts_chunk$set(
 library(brms.mmrm)
 library(dplyr)
 library(mmrm)
-set.seed(0L)
 ```
 
 A meta-analytic predictive prior is a type of historical borrowing approach that uses data from one or more previous studies to build a prior distribution for parameters of interest in a new study (@spiegelhalter2004, @neuenschwander2010, @schmidli2014). 
@@ -32,6 +31,7 @@ This vignette demonstrates how to supply a meta-analytic predictive prior to a B
 We use the FEV1 data from the `mmrm` package, which contains simulated measurements of forced expiratory volume in 1 second (FEV1) for virtual atients with chronic obstructive pulmonary disease (COPD) at multiple visits.
 
 ```{r}
+set.seed(0L)
 library(brms.mmrm)
 library(dplyr)
 data(fev_data, package = "mmrm")

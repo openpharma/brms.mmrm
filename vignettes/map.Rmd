@@ -23,6 +23,7 @@ We use the FEV1 data from the `mmrm` package, which contains simulated measureme
 
 
 ``` r
+set.seed(0L)
 library(brms.mmrm)
 library(dplyr)
 data(fev_data, package = "mmrm")
