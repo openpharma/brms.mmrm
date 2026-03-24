@@ -143,7 +143,7 @@ map_robust
 
 # Converting the prior for use in `brms.mmrm`
 
-We assign robust MAP prior to the placebo group mean at visit 1:^[See the documentation of `RBesT::mixstanvar()`]
+We assign robust MAP prior to the placebo group mean at visit 4:^[See the documentation of `RBesT::mixstanvar()`]
 
 ```{r}
 prior <- brm_prior_label(
