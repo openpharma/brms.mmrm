@@ -105,7 +105,7 @@ summaries_data <- brm_marginal_data(data_current)
 brm_plot_compare(data = summaries_data, fit_diffuse = summaries_diffuse)
 ```
 
-![plot of chunk diffuse](map/diffuse-1.png)
+![](map/diffuse-1.png)
 
 Suppose the trial is designed to declare efficacy if the posterior probability of observing a treatment effect at visit 4 ($\delta$) of at least 4 units of FEV1 is at least 85%:
 
@@ -236,7 +236,7 @@ brm_plot_compare(
 )
 ```
 
-![plot of chunk map](map/map-1.png)
+![](map/map-1.png)
 
 With this added precision, we meet the efficacy threshold:
 

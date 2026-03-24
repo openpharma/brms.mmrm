@@ -16,7 +16,8 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.path = "map/"
+  fig.path = "map/",
+  fig.cap = ""
 )
 library(brms.mmrm)
 library(dplyr)
