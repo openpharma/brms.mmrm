@@ -15,7 +15,8 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  fig.path = "map/"
 )
 library(brms.mmrm)
 library(dplyr)
@@ -75,11 +76,11 @@ summaries_diffuse <- brm_marginal_summaries(draws_diffuse)
 summaries_data <- brm_marginal_data(data_current)
 ```
 
-```{r}
+```{r diffuse}
 brm_plot_compare(data = summaries_data, fit_diffuse = summaries_diffuse)
 ```
 
-Suppose the trial is designed to declare efficacy if the posterior probability of observing a treatment effect at visit 4 ($\delta$) of at least 4 units of FEV1 is at least 0.8:
+Suppose the trial is designed to declare efficacy if the posterior probability of observing a treatment effect at visit 4 ($\delta$) of at least 4 units of FEV1 is at least 85%:
 
 $$
 \begin{aligned}
@@ -129,7 +130,7 @@ map_mcmc <- RBesT::gMAP(
 map_mixture <- RBesT::automixfit(map_mcmc)
 
 map_robust <- RBesT::robustify(
-  map_mix,
+  map_mixture,
   weight = 0.2,
   mean = 0,
   sigma = mean(data_historical_visit4$sd)
@@ -183,7 +184,7 @@ draws_map <- brm_marginal_draws(fit_map)
 summaries_map <- brm_marginal_summaries(draws_map)
 ```
 
-```{r}
+```{r map}
 brm_plot_compare(
   data = summaries_data,
   fit_diffuse = summaries_diffuse,

@@ -1,7 +1,7 @@
 ---
 title: "Meta-analytic predictive priors"
-bibliography: '`r system.file("bibliography.bib", package = "brms.mmrm")`'
-csl: '`r system.file("asa.csl", package = "brms.mmrm")`'
+bibliography: '/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/brms.mmrm/bibliography.bib'
+csl: '/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/brms.mmrm/asa.csl'
 output:
   rmarkdown::html_vignette:
     toc: true
@@ -19,7 +19,7 @@ This vignette demonstrates how to supply a meta-analytic predictive prior to a B
 
 # Data of the current study
 
-We use the FEV1 data from the `mmrm` package, which contains simulated measurements of forced expiratory volume in 1 second (FEV1) for virtual patients with chronic obstructive pulmonary disease (COPD) at multiple visits.
+We use the FEV1 data from the `mmrm` package, which contains simulated measurements of forced expiratory volume in 1 second (FEV1) for virtual atients with chronic obstructive pulmonary disease (COPD) at multiple visits.
 
 
 ``` r
@@ -39,21 +39,20 @@ data_current <- fev_data |>
   brm_archetype_effects(intercept = FALSE)
 data_current
 #> # A tibble: 800 × 19
-#>    x_PBO_VIS1 x_PBO_VIS2 x_PBO_VIS3 x_PBO_VIS4 x_TRT_VIS1 x_TRT_VIS2 x_TRT_VIS3
-#>  *      <int>      <int>      <int>      <int>      <int>      <int>      <int>
-#>  1          1          0          0          0          0          0          0
-#>  2          0          1          0          0          0          0          0
-#>  3          0          0          1          0          0          0          0
-#>  4          0          0          0          1          0          0          0
-#>  5          1          0          0          0          0          0          0
-#>  6          0          1          0          0          0          0          0
-#>  7          0          0          1          0          0          0          0
-#>  8          0          0          0          1          0          0          0
-#>  9          1          0          0          0          0          0          0
-#> 10          0          1          0          0          0          0          0
+#>    x_PBO_VIS1 x_PBO_VIS2 x_PBO_VIS3 x_PBO_VIS4 x_TRT_VIS1 x_TRT_VIS2 x_TRT_VIS3 x_TRT_VIS4 USUBJID AVISIT ARMCD
+#>  *      <int>      <int>      <int>      <int>      <int>      <int>      <int>      <int> <fct>   <ord>  <fct>
+#>  1          1          0          0          0          0          0          0          0 PT2     VIS1   PBO  
+#>  2          0          1          0          0          0          0          0          0 PT2     VIS2   PBO  
+#>  3          0          0          1          0          0          0          0          0 PT2     VIS3   PBO  
+#>  4          0          0          0          1          0          0          0          0 PT2     VIS4   PBO  
+#>  5          1          0          0          0          0          0          0          0 PT3     VIS1   PBO  
+#>  6          0          1          0          0          0          0          0          0 PT3     VIS2   PBO  
+#>  7          0          0          1          0          0          0          0          0 PT3     VIS3   PBO  
+#>  8          0          0          0          1          0          0          0          0 PT3     VIS4   PBO  
+#>  9          1          0          0          0          0          0          0          0 PT5     VIS1   PBO  
+#> 10          0          1          0          0          0          0          0          0 PT5     VIS2   PBO  
 #> # ℹ 790 more rows
-#> # ℹ 12 more variables: x_TRT_VIS4 <int>, USUBJID <fct>, AVISIT <ord>, ARMCD <fct>,
-#> #   RACE <fct>, SEX <fct>, FEV1_BL <dbl>, FEV1 <dbl>, WEIGHT <dbl>, VISITN <int>,
+#> # ℹ 8 more variables: RACE <fct>, SEX <fct>, FEV1_BL <dbl>, FEV1 <dbl>, WEIGHT <dbl>, VISITN <int>,
 #> #   VISITN2 <dbl>, FEV1_CHG <dbl>
 ```
 
@@ -105,9 +104,9 @@ summaries_data <- brm_marginal_data(data_current)
 brm_plot_compare(data = summaries_data, fit_diffuse = summaries_diffuse)
 ```
 
-![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6-1.png)
+![plot of chunk diffuse](map/diffuse-1.png)
 
-Suppose the trial is designed to declare efficacy if the posterior probability of observing a treatment effect at visit 4 ($\delta$) of at least 4 units of FEV1 is at least 0.8:
+Suppose the trial is designed to declare efficacy if the posterior probability of observing a treatment effect at visit 4 ($\delta$) of at least 4 units of FEV1 is at least 85%:
 
 $$
 \begin{aligned}
@@ -161,7 +160,7 @@ map_mcmc <- RBesT::gMAP(
 map_mixture <- RBesT::automixfit(map_mcmc)
 
 map_robust <- RBesT::robustify(
-  map_mix,
+  map_mixture,
   weight = 0.2,
   mean = 0,
   sigma = mean(data_historical_visit4$sd)
@@ -236,7 +235,7 @@ brm_plot_compare(
 )
 ```
 
-![plot of chunk unnamed-chunk-15](figure/unnamed-chunk-15-1.png)
+![plot of chunk map](map/map-1.png)
 
 With this added precision, we meet the efficacy threshold:
 
