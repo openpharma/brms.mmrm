@@ -19,7 +19,7 @@ This vignette demonstrates how to supply a meta-analytic predictive prior to a B
 
 # Data of the current study
 
-We use the FEV1 data from the `mmrm` package, which contains measurements of forced expiratory volume in 1 second (FEV1) for patients with chronic obstructive pulmonary disease (COPD) at multiple visits.
+We use the FEV1 data from the `mmrm` package, which contains simulated measurements of forced expiratory volume in 1 second (FEV1) for virtual patients with chronic obstructive pulmonary disease (COPD) at multiple visits.
 
 
 ``` r
