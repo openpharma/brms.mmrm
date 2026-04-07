@@ -249,18 +249,19 @@ prior <- brms::prior(
 ```
 
 Before we construct the mixture prior, we need to note the order of the model coefficients in `brms`.
+From `brms::prior_summary()`, we see that the model coefficients are ordered first by study arm, then by study visit. 
+This is the order we will use for the components of the mean and covariance of the multivariate normal mixture components.
 
 ```{r}
 brms::prior_summary(fit_diffuse)
 ```
 
-From `brms::prior_summary()`, we see that the model coefficients are ordered first by study arm, then by study visit. 
-This is the order we will use for the components of the mean and covariance of the multivariate normal mixture components.
+We assume a rigorous process of evidence synthesis estimated the following marginal means for the placebo group.
+We also include vague treatment effects for the active treatment group.
+We will use this mean vector for both components of the mixture prior.
 
 ```{r}
-# Informative component:
-# informed placebo means, vague treatment effects.
-mean_informative <- c(
+mean_mixture <- c(
   5, # x_PBO_VIS1
   7, # x_PBO_VIS2
   8, # x_PBO_VIS3
@@ -270,7 +271,11 @@ mean_informative <- c(
   0, # x_TRT_VIS3
   0 #  x_TRT_VIS4
 )
+```
 
+Similarly, we posit a block-diagonal covariance matrix with independent study arms and a diffuse block for the treatment arm.
+
+```{r}
 # Block-diagonal covariance:
 # correlated control block, vague diagonal treatment block.
 covariance_control <- matrix(
@@ -285,15 +290,20 @@ covariance_control <- matrix(
 covariance_informative <- matrix(0, 8, 8)
 covariance_informative[1:4, 1:4] <- covariance_control
 covariance_informative[5:8, 5:8] <- diag(rep(64, 4))
+```
 
-# Robust component: vague everywhere.
-mean_robust <- mean_informative
-covariance_robust <- diag(rep(81, 8))
+To help prevent prior-data conflict, we add a robust mixture component.
+Ordinarily, the variance of a robust MAP component is proportional to the pooled patient-level variance from historical data.
+Since formal evidence synthesis is outside the scope of this section, we simply borrow from the diffuse block (i.e. the treatment arm) of the covariance above.
+
+```{r}
+mean_robust <- mean_mixture
+covariance_robust <- diag(rep(64, 8))
 
 # Each mixture component is a vector with the
 # weight, mean vector, and covariance matrix elements all inline.
 multivariate_mixture <- RBesT::mixmvnorm(
-  informative = c(0.8, mean_informative, covariance_informative),
+  informative = c(0.8, mean_mixture, covariance_informative),
   robust = c(0.2, mean_robust, covariance_robust)
 )
 ```

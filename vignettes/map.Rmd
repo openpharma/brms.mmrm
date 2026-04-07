@@ -1,7 +1,7 @@
 ---
 title: "Meta-analytic predictive priors"
-bibliography: '`r system.file("bibliography.bib", package = "brms.mmrm")`'
-csl: '`r system.file("asa.csl", package = "brms.mmrm")`'
+bibliography: '/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/brms.mmrm/bibliography.bib'
+csl: '/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/brms.mmrm/asa.csl'
 output:
   rmarkdown::html_vignette:
     toc: true
@@ -42,20 +42,24 @@ data_current <- fev_data |>
   brm_archetype_effects(intercept = FALSE)
 data_current
 #> # A tibble: 800 × 19
-#>    x_PBO_VIS1 x_PBO_VIS2 x_PBO_VIS3 x_PBO_VIS4 x_TRT_VIS1 x_TRT_VIS2 x_TRT_VIS3 x_TRT_VIS4 USUBJID AVISIT
-#>  *      <int>      <int>      <int>      <int>      <int>      <int>      <int>      <int> <fct>   <ord> 
-#>  1          1          0          0          0          0          0          0          0 PT2     VIS1  
-#>  2          0          1          0          0          0          0          0          0 PT2     VIS2  
-#>  3          0          0          1          0          0          0          0          0 PT2     VIS3  
-#>  4          0          0          0          1          0          0          0          0 PT2     VIS4  
-#>  5          1          0          0          0          0          0          0          0 PT3     VIS1  
-#>  6          0          1          0          0          0          0          0          0 PT3     VIS2  
-#>  7          0          0          1          0          0          0          0          0 PT3     VIS3  
-#>  8          0          0          0          1          0          0          0          0 PT3     VIS4  
-#>  9          1          0          0          0          0          0          0          0 PT5     VIS1  
-#> 10          0          1          0          0          0          0          0          0 PT5     VIS2  
+#>    x_PBO_VIS1 x_PBO_VIS2 x_PBO_VIS3 x_PBO_VIS4
+#>  *      <int>      <int>      <int>      <int>
+#>  1          1          0          0          0
+#>  2          0          1          0          0
+#>  3          0          0          1          0
+#>  4          0          0          0          1
+#>  5          1          0          0          0
+#>  6          0          1          0          0
+#>  7          0          0          1          0
+#>  8          0          0          0          1
+#>  9          1          0          0          0
+#> 10          0          1          0          0
 #> # ℹ 790 more rows
-#> # ℹ 9 more variables: ARMCD <fct>, RACE <fct>, SEX <fct>, FEV1_BL <dbl>, FEV1 <dbl>, WEIGHT <dbl>,
+#> # ℹ 15 more variables: x_TRT_VIS1 <int>,
+#> #   x_TRT_VIS2 <int>, x_TRT_VIS3 <int>,
+#> #   x_TRT_VIS4 <int>, USUBJID <fct>, AVISIT <ord>,
+#> #   ARMCD <fct>, RACE <fct>, SEX <fct>,
+#> #   FEV1_BL <dbl>, FEV1 <dbl>, WEIGHT <dbl>,
 #> #   VISITN <int>, VISITN2 <dbl>, FEV1_CHG <dbl>
 ```
 
@@ -298,36 +302,53 @@ prior <- brms::prior(
 ```
 
 Before we construct the mixture prior, we need to note the order of the model coefficients in `brms`.
-
-
-``` r
-brms::prior_summary(fit_diffuse)
-#>                 prior    class       coef group resp  dpar nlpar lb ub tag       source
-#>                (flat)        b                                                  default
-#>                (flat)        b x_PBO_VIS1                                  (vectorized)
-#>                (flat)        b x_PBO_VIS2                                  (vectorized)
-#>                (flat)        b x_PBO_VIS3                                  (vectorized)
-#>                (flat)        b x_PBO_VIS4                                  (vectorized)
-#>                (flat)        b x_TRT_VIS1                                  (vectorized)
-#>                (flat)        b x_TRT_VIS2                                  (vectorized)
-#>                (flat)        b x_TRT_VIS3                                  (vectorized)
-#>                (flat)        b x_TRT_VIS4                                  (vectorized)
-#>                (flat)        b                       sigma                      default
-#>                (flat)        b AVISITVIS1            sigma                 (vectorized)
-#>                (flat)        b AVISITVIS2            sigma                 (vectorized)
-#>                (flat)        b AVISITVIS3            sigma                 (vectorized)
-#>                (flat)        b AVISITVIS4            sigma                 (vectorized)
-#>  lkj_corr_cholesky(1) Lcortime                                                  default
-```
-
 From `brms::prior_summary()`, we see that the model coefficients are ordered first by study arm, then by study visit. 
 This is the order we will use for the components of the mean and covariance of the multivariate normal mixture components.
 
 
 ``` r
-# Informative component:
-# informed placebo means, vague treatment effects.
-mean_informative <- c(
+brms::prior_summary(fit_diffuse)
+#>                 prior    class       coef group resp
+#>                (flat)        b                      
+#>                (flat)        b x_PBO_VIS1           
+#>                (flat)        b x_PBO_VIS2           
+#>                (flat)        b x_PBO_VIS3           
+#>                (flat)        b x_PBO_VIS4           
+#>                (flat)        b x_TRT_VIS1           
+#>                (flat)        b x_TRT_VIS2           
+#>                (flat)        b x_TRT_VIS3           
+#>                (flat)        b x_TRT_VIS4           
+#>                (flat)        b                      
+#>                (flat)        b AVISITVIS1           
+#>                (flat)        b AVISITVIS2           
+#>                (flat)        b AVISITVIS3           
+#>                (flat)        b AVISITVIS4           
+#>  lkj_corr_cholesky(1) Lcortime                      
+#>   dpar nlpar lb ub tag       source
+#>                             default
+#>                        (vectorized)
+#>                        (vectorized)
+#>                        (vectorized)
+#>                        (vectorized)
+#>                        (vectorized)
+#>                        (vectorized)
+#>                        (vectorized)
+#>                        (vectorized)
+#>  sigma                      default
+#>  sigma                 (vectorized)
+#>  sigma                 (vectorized)
+#>  sigma                 (vectorized)
+#>  sigma                 (vectorized)
+#>                             default
+```
+
+We assume a rigorous process of evidence synthesis estimated the following marginal means for the placebo group.
+We also include vague treatment effects for the active treatment group.
+We will use this mean vector for both components of the mixture prior.
+
+
+``` r
+mean_mixture <- c(
   5, # x_PBO_VIS1
   7, # x_PBO_VIS2
   8, # x_PBO_VIS3
@@ -337,7 +358,12 @@ mean_informative <- c(
   0, # x_TRT_VIS3
   0 #  x_TRT_VIS4
 )
+```
 
+Similarly, we posit a block-diagonal covariance matrix with independent study arms and a diffuse block for the treatment arm.
+
+
+``` r
 # Block-diagonal covariance:
 # correlated control block, vague diagonal treatment block.
 covariance_control <- matrix(
@@ -352,15 +378,21 @@ covariance_control <- matrix(
 covariance_informative <- matrix(0, 8, 8)
 covariance_informative[1:4, 1:4] <- covariance_control
 covariance_informative[5:8, 5:8] <- diag(rep(64, 4))
+```
 
-# Robust component: vague everywhere.
-mean_robust <- mean_informative
-covariance_robust <- diag(rep(81, 8))
+To help prevent prior-data conflict, we add a robust mixture component.
+Ordinarily, the variance of a robust MAP component is proportional to the pooled patient-level variance from historical data.
+Since formal evidence synthesis is outside the scope of this section, we simply borrow from the diffuse block (i.e. the treatment arm) of the covariance above.
+
+
+``` r
+mean_robust <- mean_mixture
+covariance_robust <- diag(rep(64, 8))
 
 # Each mixture component is a vector with the
 # weight, mean vector, and covariance matrix elements all inline.
 multivariate_mixture <- RBesT::mixmvnorm(
-  informative = c(0.8, mean_informative, covariance_informative),
+  informative = c(0.8, mean_mixture, covariance_informative),
   robust = c(0.2, mean_robust, covariance_robust)
 )
 ```
