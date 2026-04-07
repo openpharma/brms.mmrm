@@ -236,6 +236,8 @@ To avoid human decision-making bias, it is important to pre-specify the analysis
 For a multivariate mixture prior with correlated model coefficients, we can use `mixmvnorm()` in the `prior` specification and `mixstanvar()` to convert the mixture for use in `brms.mmrm`.
 Not all multivariate mixture priors are MAP priors, but you can translate a pre-computed MAP prior into the `mixmvnorm()` format as shown below.
 
+## Specifying a known prior
+
 First, we specify the distributional family of the prior for `brms`:
 
 ```{r}
@@ -313,5 +315,10 @@ fit_multivariate_mixture <- brm_model(
   refresh = 0L
 )
 ```
+
+## Constructing a prior from real data
+
+Constructing a multivariate mixture prior from real data is more involved than the univariate case, but the general principles are the same.
+For details, please see @wang2024.
 
 # References
