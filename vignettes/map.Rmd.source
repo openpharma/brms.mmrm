@@ -146,8 +146,9 @@ map_mcmc <- RBesT::gMAP(
   cbind(mean, se) ~ 1 | study,
   data = data_historical_visit4,
   family = gaussian,
+  # See https://opensource.nibr.com/RBesT/reference/gMAP.html#details to set priors.
   tau.dist = "HalfNormal",
-  tau.prior = 1,
+  tau.prior = pooled_external_data_sd / 4,
   beta.prior = cbind(0, 100)
 )
 

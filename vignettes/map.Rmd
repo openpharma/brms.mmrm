@@ -42,20 +42,21 @@ data_current <- fev_data |>
   brm_archetype_effects(intercept = FALSE)
 data_current
 #> # A tibble: 800 × 19
-#>    x_PBO_VIS1 x_PBO_VIS2 x_PBO_VIS3 x_PBO_VIS4 x_TRT_VIS1 x_TRT_VIS2 x_TRT_VIS3 x_TRT_VIS4 USUBJID AVISIT ARMCD RACE  SEX  
-#>  *      <int>      <int>      <int>      <int>      <int>      <int>      <int>      <int> <fct>   <ord>  <fct> <fct> <fct>
-#>  1          1          0          0          0          0          0          0          0 PT2     VIS1   PBO   Asian Male 
-#>  2          0          1          0          0          0          0          0          0 PT2     VIS2   PBO   Asian Male 
-#>  3          0          0          1          0          0          0          0          0 PT2     VIS3   PBO   Asian Male 
-#>  4          0          0          0          1          0          0          0          0 PT2     VIS4   PBO   Asian Male 
-#>  5          1          0          0          0          0          0          0          0 PT3     VIS1   PBO   Blac… Fema…
-#>  6          0          1          0          0          0          0          0          0 PT3     VIS2   PBO   Blac… Fema…
-#>  7          0          0          1          0          0          0          0          0 PT3     VIS3   PBO   Blac… Fema…
-#>  8          0          0          0          1          0          0          0          0 PT3     VIS4   PBO   Blac… Fema…
-#>  9          1          0          0          0          0          0          0          0 PT5     VIS1   PBO   Blac… Male 
-#> 10          0          1          0          0          0          0          0          0 PT5     VIS2   PBO   Blac… Male 
+#>    x_PBO_VIS1 x_PBO_VIS2 x_PBO_VIS3 x_PBO_VIS4 x_TRT_VIS1 x_TRT_VIS2 x_TRT_VIS3 x_TRT_VIS4 USUBJID AVISIT
+#>  *      <int>      <int>      <int>      <int>      <int>      <int>      <int>      <int> <fct>   <ord> 
+#>  1          1          0          0          0          0          0          0          0 PT2     VIS1  
+#>  2          0          1          0          0          0          0          0          0 PT2     VIS2  
+#>  3          0          0          1          0          0          0          0          0 PT2     VIS3  
+#>  4          0          0          0          1          0          0          0          0 PT2     VIS4  
+#>  5          1          0          0          0          0          0          0          0 PT3     VIS1  
+#>  6          0          1          0          0          0          0          0          0 PT3     VIS2  
+#>  7          0          0          1          0          0          0          0          0 PT3     VIS3  
+#>  8          0          0          0          1          0          0          0          0 PT3     VIS4  
+#>  9          1          0          0          0          0          0          0          0 PT5     VIS1  
+#> 10          0          1          0          0          0          0          0          0 PT5     VIS2  
 #> # ℹ 790 more rows
-#> # ℹ 6 more variables: FEV1_BL <dbl>, FEV1 <dbl>, WEIGHT <dbl>, VISITN <int>, VISITN2 <dbl>, FEV1_CHG <dbl>
+#> # ℹ 9 more variables: ARMCD <fct>, RACE <fct>, SEX <fct>, FEV1_BL <dbl>, FEV1 <dbl>, WEIGHT <dbl>,
+#> #   VISITN <int>, VISITN2 <dbl>, FEV1_CHG <dbl>
 ```
 
 We are using a treatment effect informative prior archetype that invites the user to specify an informative prior on the placebo group mean at each study visit.
@@ -176,8 +177,9 @@ map_mcmc <- RBesT::gMAP(
   cbind(mean, se) ~ 1 | study,
   data = data_historical_visit4,
   family = gaussian,
+  # See https://opensource.nibr.com/RBesT/reference/gMAP.html#details to set priors.
   tau.dist = "HalfNormal",
-  tau.prior = 1,
+  tau.prior = pooled_external_data_sd / 4,
   beta.prior = cbind(0, 100)
 )
 
@@ -196,10 +198,10 @@ map_robust <- RBesT::robustify(
 map_robust
 #> Univariate normal mixture
 #> Mixture Components:
-#>   comp1        comp2        robust      
-#> w    0.5379345    0.2620655    0.2000000
-#> m    7.6266400    7.5077601    7.5221610
-#> s    0.4063899    1.0777665 7124.2001890
+#>   comp1        comp2        comp3        robust      
+#> w 4.451438e-01 3.291704e-01 2.568579e-02 2.000000e-01
+#> m 7.618285e+00 7.524934e+00 8.572269e+00 7.522161e+00
+#> s 4.222427e-01 1.104931e+00 3.146753e+00 7.124200e+03
 ```
 
 # Converting the prior for use in `brms.mmrm`
@@ -271,7 +273,7 @@ draws_map |>
   brm_marginal_probabilities(direction = "greater", threshold = 4) |>
   filter(time == "VIS4") |>
   pull(value)
-#> [1] 0.87025
+#> [1] 0.865
 ```
 
 In other trials, the MAP prior may have the opposite effect.
