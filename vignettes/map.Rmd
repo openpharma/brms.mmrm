@@ -26,6 +26,8 @@ We use the FEV1 data from the `mmrm` package, which contains simulated measureme
 set.seed(0L)
 library(brms.mmrm)
 library(dplyr)
+library(ggplot2)
+library(mmrm)
 data(fev_data, package = "mmrm")
 data_current <- fev_data |>
   mutate(FEV1_CHG = FEV1 - FEV1_BL) |>
@@ -101,7 +103,18 @@ summaries_data <- brm_marginal_data(data_current)
 
 
 ``` r
-brm_plot_compare(data = summaries_data, fit_diffuse = summaries_diffuse)
+colors <- c(
+  data = "#000000",
+  fit_diffuse = "#E69F00",
+  fit_map = "#56B4E9"
+)
+```
+
+
+``` r
+brm_plot_compare(data = summaries_data, fit_diffuse = summaries_diffuse) +
+  scale_color_manual(values = colors) +
+  theme_bw(12)
 ```
 
 ![](map/diffuse-1.png)
@@ -243,7 +256,9 @@ brm_plot_compare(
   data = summaries_data,
   fit_diffuse = summaries_diffuse,
   fit_map = summaries_map
-)
+) +
+  scale_color_manual(values = colors) +
+  theme_bw(12)
 ```
 
 ![](map/map-1.png)
