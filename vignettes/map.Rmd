@@ -40,21 +40,20 @@ data_current <- fev_data |>
   brm_archetype_effects(intercept = FALSE)
 data_current
 #> # A tibble: 800 × 19
-#>    x_PBO_VIS1 x_PBO_VIS2 x_PBO_VIS3 x_PBO_VIS4 x_TRT_VIS1 x_TRT_VIS2 x_TRT_VIS3 x_TRT_VIS4 USUBJID AVISIT ARMCD
-#>  *      <int>      <int>      <int>      <int>      <int>      <int>      <int>      <int> <fct>   <ord>  <fct>
-#>  1          1          0          0          0          0          0          0          0 PT2     VIS1   PBO  
-#>  2          0          1          0          0          0          0          0          0 PT2     VIS2   PBO  
-#>  3          0          0          1          0          0          0          0          0 PT2     VIS3   PBO  
-#>  4          0          0          0          1          0          0          0          0 PT2     VIS4   PBO  
-#>  5          1          0          0          0          0          0          0          0 PT3     VIS1   PBO  
-#>  6          0          1          0          0          0          0          0          0 PT3     VIS2   PBO  
-#>  7          0          0          1          0          0          0          0          0 PT3     VIS3   PBO  
-#>  8          0          0          0          1          0          0          0          0 PT3     VIS4   PBO  
-#>  9          1          0          0          0          0          0          0          0 PT5     VIS1   PBO  
-#> 10          0          1          0          0          0          0          0          0 PT5     VIS2   PBO  
+#>    x_PBO_VIS1 x_PBO_VIS2 x_PBO_VIS3 x_PBO_VIS4 x_TRT_VIS1 x_TRT_VIS2 x_TRT_VIS3 x_TRT_VIS4 USUBJID AVISIT ARMCD RACE  SEX  
+#>  *      <int>      <int>      <int>      <int>      <int>      <int>      <int>      <int> <fct>   <ord>  <fct> <fct> <fct>
+#>  1          1          0          0          0          0          0          0          0 PT2     VIS1   PBO   Asian Male 
+#>  2          0          1          0          0          0          0          0          0 PT2     VIS2   PBO   Asian Male 
+#>  3          0          0          1          0          0          0          0          0 PT2     VIS3   PBO   Asian Male 
+#>  4          0          0          0          1          0          0          0          0 PT2     VIS4   PBO   Asian Male 
+#>  5          1          0          0          0          0          0          0          0 PT3     VIS1   PBO   Blac… Fema…
+#>  6          0          1          0          0          0          0          0          0 PT3     VIS2   PBO   Blac… Fema…
+#>  7          0          0          1          0          0          0          0          0 PT3     VIS3   PBO   Blac… Fema…
+#>  8          0          0          0          1          0          0          0          0 PT3     VIS4   PBO   Blac… Fema…
+#>  9          1          0          0          0          0          0          0          0 PT5     VIS1   PBO   Blac… Male 
+#> 10          0          1          0          0          0          0          0          0 PT5     VIS2   PBO   Blac… Male 
 #> # ℹ 790 more rows
-#> # ℹ 8 more variables: RACE <fct>, SEX <fct>, FEV1_BL <dbl>, FEV1 <dbl>, WEIGHT <dbl>, VISITN <int>,
-#> #   VISITN2 <dbl>, FEV1_CHG <dbl>
+#> # ℹ 6 more variables: FEV1_BL <dbl>, FEV1 <dbl>, WEIGHT <dbl>, VISITN <int>, VISITN2 <dbl>, FEV1_CHG <dbl>
 ```
 
 We are using a treatment effect informative prior archetype that invites the user to specify an informative prior on the placebo group mean at each study visit.
@@ -144,6 +143,17 @@ data_historical_visit4 <- tibble::tribble(
   mutate(se = sd / sqrt(patients))
 ```
 
+Soon, we will make use of the pooled mean and standard deviation of this external data:
+
+
+``` r
+pooled_external_data_mean <- sum(data_historical_visit4$mean * data_historical_visit4$patients) /
+  sum(data_historical_visit4$patients)
+pooled_external_data_sd <- sum(data_historical_visit4$sd^2 * data_historical_visit4$patients) /
+  sum(data_historical_visit4$patients) |>
+  sqrt()
+```
+
 We use `gMAP()` from `RBesT` to fit this summary data with a meta-analytic predictive model, then `automixfit()` to approximate the MAP posterior as a mixture of normals, and finally `robustify()` to add a weakly informative component that protects against prior-data conflict (@schmidli2014).
 This robustified MAP posterior will serve as the MAP prior for the Bayesian MMRM downstream.^[See the documentation of `gMAP()`, `automixfit()` and `robustify()` in `RBesT` for details on how to do this in general.]
 
@@ -163,8 +173,8 @@ map_mixture <- RBesT::automixfit(map_mcmc)
 map_robust <- RBesT::robustify(
   map_mixture,
   weight = 0.2,
-  mean = 0,
-  sigma = mean(data_historical_visit4$sd)
+  mean = pooled_external_data_mean,
+  sigma = pooled_external_data_sd
 )
 ```
 
@@ -173,10 +183,10 @@ map_robust <- RBesT::robustify(
 map_robust
 #> Univariate normal mixture
 #> Mixture Components:
-#>   comp1      comp2      robust    
-#> w  0.5379345  0.2620655  0.2000000
-#> m  7.6266400  7.5077601  0.0000000
-#> s  0.4063899  1.0777665 11.6383333
+#>   comp1        comp2        robust      
+#> w    0.5379345    0.2620655    0.2000000
+#> m    7.6266400    7.5077601    7.5221610
+#> s    0.4063899    1.0777665 7124.2001890
 ```
 
 # Converting the prior for use in `brms.mmrm`
@@ -246,7 +256,7 @@ draws_map |>
   brm_marginal_probabilities(direction = "greater", threshold = 4) |>
   filter(time == "VIS4") |>
   pull(value)
-#> [1] 0.8635
+#> [1] 0.87025
 ```
 
 In other trials, the MAP prior may have the opposite effect.
@@ -325,7 +335,7 @@ covariance_informative[1:4, 1:4] <- covariance_control
 covariance_informative[5:8, 5:8] <- diag(rep(64, 4))
 
 # Robust component: vague everywhere.
-mean_robust <- rep(0, 8)
+mean_robust <- mean_informative
 covariance_robust <- diag(rep(81, 8))
 
 # Each mixture component is a vector with the

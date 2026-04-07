@@ -115,6 +115,16 @@ data_historical_visit4 <- tibble::tribble(
   mutate(se = sd / sqrt(patients))
 ```
 
+Soon, we will make use of the pooled mean and standard deviation of this external data:
+
+```{r}
+pooled_external_data_mean <- sum(data_historical_visit4$mean * data_historical_visit4$patients) /
+  sum(data_historical_visit4$patients)
+pooled_external_data_sd <- sum(data_historical_visit4$sd^2 * data_historical_visit4$patients) /
+  sum(data_historical_visit4$patients) |>
+  sqrt()
+```
+
 We use `gMAP()` from `RBesT` to fit this summary data with a meta-analytic predictive model, then `automixfit()` to approximate the MAP posterior as a mixture of normals, and finally `robustify()` to add a weakly informative component that protects against prior-data conflict (@schmidli2014).
 This robustified MAP posterior will serve as the MAP prior for the Bayesian MMRM downstream.^[See the documentation of `gMAP()`, `automixfit()` and `robustify()` in `RBesT` for details on how to do this in general.]
 
@@ -133,8 +143,8 @@ map_mixture <- RBesT::automixfit(map_mcmc)
 map_robust <- RBesT::robustify(
   map_mixture,
   weight = 0.2,
-  mean = 0,
-  sigma = mean(data_historical_visit4$sd)
+  mean = pooled_external_data_mean,
+  sigma = pooled_external_data_sd
 )
 ```
 
@@ -259,7 +269,7 @@ covariance_informative[1:4, 1:4] <- covariance_control
 covariance_informative[5:8, 5:8] <- diag(rep(64, 4))
 
 # Robust component: vague everywhere.
-mean_robust <- rep(0, 8)
+mean_robust <- mean_informative
 covariance_robust <- diag(rep(81, 8))
 
 # Each mixture component is a vector with the
