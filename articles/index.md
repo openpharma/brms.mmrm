@@ -11,6 +11,7 @@
 - [Subgroup analysis](subgroup.md):
 - [Simulation](simulation.md):
 - [Informative prior archetypes](archetypes.md):
+- [Meta-analytic predictive priors](map.md):
 
 ### Validation
 

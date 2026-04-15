@@ -1,7 +1,5 @@
 # Changelog
 
-## brms.mmrm 1.1.1.9000 (development)
-
 ## brms.mmrm 1.1.1
 
 CRAN release: 2024-10-02

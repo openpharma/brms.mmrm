@@ -4,7 +4,6 @@
 [![status](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![check](https://github.com/openpharma/brms.mmrm/workflows/check/badge.svg)](https://github.com/openpharma/brms.mmrm/actions?query=workflow%3Acheck)
 [![cover](https://github.com/openpharma/brms.mmrm/workflows/cover/badge.svg)](https://github.com/openpharma/brms.mmrm/actions?query=workflow%3Acover)
-[![lint](https://github.com/openpharma/brms.mmrm/workflows/lint/badge.svg)](https://github.com/openpharma/brms.mmrm/actions?query=workflow%3Alint)
 
 The [mixed model for repeated measures
 (MMRM)](https://link.springer.com/article/10.1177/009286150804200402) is
@@ -219,6 +218,7 @@ A BibTeX entry for LaTeX users is
 - [Subgroup analysis](subgroup.md):
 - [Simulation](simulation.md):
 - [Informative prior archetypes](archetypes.md):
+- [Meta-analytic predictive priors](map.md):
 
 ### Validation
 
