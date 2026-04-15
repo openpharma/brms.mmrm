@@ -1,3 +1,6 @@
 *.html
 *.R
 !sbc/*.R
+
+/.quarto/
+**/*.quarto_ipynb
