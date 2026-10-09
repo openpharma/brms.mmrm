@@ -37,6 +37,11 @@ scientifically meaningful fixed number. If you want a nuisance column
 to be centered at a fixed value other than its mean,
 use \code{\link[=brm_recenter_nuisance]{brm_recenter_nuisance()}} to shift the center. This function
 can handle any nuisance variable
+
+For a nuisance variable which interacts baseline response with
+discrete time and/or the subgroup, the center applies to baseline
+within the cell of the data that the interaction applies to.
+The rest of the column stays at zero.
 }
 \examples{
 set.seed(0L)

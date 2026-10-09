@@ -13,6 +13,11 @@
 #'   to be centered at a fixed value other than its mean,
 #'   use [brm_recenter_nuisance()] to shift the center. This function
 #'   can handle any nuisance variable
+#'
+#'   For a nuisance variable which interacts baseline response with
+#'   discrete time and/or the subgroup, the center applies to baseline
+#'   within the cell of the data that the interaction applies to.
+#'   The rest of the column stays at zero.
 #' @return An informative prior archetype data frame with one of the
 #'   variables re-centered.
 #' @param data An informative prior archetype data frame output from
@@ -74,7 +79,8 @@ brm_recenter_nuisance <- function(data, nuisance, center) {
     original,
     paste("original center of", nuisance, "could not be found")
   )
-  data[[nuisance]] <- data[[nuisance]] + original - center
+  mask <- nuisance_mask_rows(data[[nuisance]])
+  data[[nuisance]][mask] <- data[[nuisance]][mask] + original - center
   attr(data[[nuisance]], "brm_center") <- center
   data
 }

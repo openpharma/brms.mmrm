@@ -36,6 +36,17 @@
 #'   In other words, preprocessing nuisance variables this way preserves
 #'   the interpretations of the fixed effects of interest, and it ensures
 #'   informative priors can be specified correctly.
+#'
+#'   Nuisance variables which interact baseline response with discrete time
+#'   and/or the subgroup are centered differently. Such a column is zero
+#'   except in the cell of the data that the interaction applies to, so it is
+#'   centered only within that cell, and it stays zero everywhere else.
+#'   Centering these columns at their means across the whole dataset would
+#'   leave them entangled with the variables that marginal means average over,
+#'   which would break the relationship between the fixed effects of interest
+#'   and the marginal means. A consequence is that a baseline-by-subgroup
+#'   interaction centers baseline at the mean within each subgroup level
+#'   rather than the mean of the whole dataset.
 #' @inheritSection brm_prior_archetype Prior labeling
 #' @section Prior labeling for [brm_archetype_successive_cells()]:
 #'   Within each treatment group, each intercept is labeled by the earliest

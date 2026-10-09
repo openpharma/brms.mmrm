@@ -23,6 +23,47 @@ archetype_nuisance <- function(
   assert_lgl(baseline_subgroup, sprintf(text, "baseline_subgroup"))
   assert_lgl(baseline_subgroup_time, sprintf(text, "baseline_subgroup_time"))
   assert_lgl(baseline_time, sprintf(text, "baseline_time"))
+  has_baseline <- !is.null(attr(data, "brm_baseline"))
+  out <- nuisance_columns(
+    data = data,
+    prefix = prefix,
+    covariates = covariates,
+    baseline = baseline,
+    baseline_subgroup = baseline_subgroup,
+    baseline_subgroup_time = baseline_subgroup_time,
+    baseline_time = baseline_time
+  )
+  if (!is.null(out) && ncol(out)) {
+    out <- nuisance_full_rank(
+      data = data,
+      interest = interest,
+      nuisance = out
+    )
+  }
+  if (has_baseline) {
+    out <- nuisance_mask(
+      data = data,
+      nuisance = out,
+      prefix = prefix,
+      covariates = covariates,
+      baseline = baseline,
+      baseline_subgroup = baseline_subgroup,
+      baseline_subgroup_time = baseline_subgroup_time,
+      baseline_time = baseline_time
+    )
+  }
+  nuisance_center(out)
+}
+
+nuisance_columns <- function(
+  data,
+  prefix,
+  covariates,
+  baseline,
+  baseline_subgroup,
+  baseline_subgroup_time,
+  baseline_time
+) {
   out <- tibble::new_tibble(list(), nrow = nrow(data))
   has_baseline <- !is.null(attr(data, "brm_baseline"))
   has_subgroup <- !is.null(attr(data, "brm_subgroup"))
@@ -44,13 +85,42 @@ archetype_nuisance <- function(
   if (!is.null(out) && ncol(out)) {
     colnames(out) <- paste0(prefix, colnames(out))
     colnames(out) <- make.names(colnames(out), unique = FALSE, allow_ = TRUE)
-    out <- nuisance_full_rank(
-      data = data,
-      interest = interest,
-      nuisance = out
-    )
   }
-  nuisance_center(out)
+  out
+}
+
+# Identify the rows that each baseline-derived nuisance column applies to.
+# Rebuilding the columns with baseline set to 1 turns each baseline-derived
+# column into its own indicator and leaves the other columns unchanged, so
+# differences between the two versions reveal which columns involve baseline.
+# nuisance_columns() generates the same column names in the same order given
+# the same arguments, which is what lets the rebuilt columns line up with the
+# ones that survived nuisance_full_rank().
+nuisance_mask <- function(data, nuisance, prefix, ...) {
+  if (is.null(nuisance) || !ncol(nuisance)) {
+    return(nuisance)
+  }
+  constant <- data
+  constant[[attr(data, "brm_baseline")]] <- 1
+  indicator <- nuisance_columns(data = constant, prefix = prefix, ...)
+  assert(
+    all(colnames(nuisance) %in% colnames(indicator)),
+    message = paste0(
+      "could not identify the rows of the nuisance columns that involve ",
+      "baseline. Please submit a bug report to ",
+      "https://github.com/openpharma/brms.mmrm/issues ",
+      "and include a small runnable reproducible example."
+    )
+  )
+  indicator <- indicator[, colnames(nuisance), drop = FALSE]
+  for (name in colnames(nuisance)) {
+    difference <- abs(nuisance[[name]] - indicator[[name]])
+    if (any(difference > .Machine$double.eps)) {
+      mask <- abs(indicator[[name]]) > .Machine$double.eps
+      attr(nuisance[[name]], "brm_mask") <- mask
+    }
+  }
+  nuisance
 }
 
 nuisance_covariates <- function(data) {
@@ -134,9 +204,18 @@ drop_zero_columns <- function(x) {
 
 nuisance_center <- function(data) {
   for (name in colnames(data)) {
-    mean <- mean(data[[name]])
+    mask <- nuisance_mask_rows(data[[name]])
+    mean <- mean(data[[name]][mask])
     attr(data[[name]], "brm_center") <- mean
-    data[[name]] <- data[[name]] - mean
+    data[[name]][mask] <- data[[name]][mask] - mean
   }
   data
+}
+
+# Rows a nuisance column is centered over. Columns formed by interacting
+# baseline with time and/or subgroup are structurally zero outside the cell
+# that defines them, so they are centered only within that cell. All other
+# columns are centered over the whole dataset.
+nuisance_mask_rows <- function(x) {
+  attr(x, "brm_mask") %|||% rep(TRUE, length(x))
 }

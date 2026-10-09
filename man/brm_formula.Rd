@@ -151,7 +151,10 @@ Ignored for informative prior archetypes.
 For informative prior archetypes, this option should be set in
 functions like \code{\link[=brm_archetype_successive_cells]{brm_archetype_successive_cells()}} rather than in
 \code{\link[=brm_formula]{brm_formula()}} in order to make sure columns are appropriately
-centered and the underlying model matrix has full rank.}
+centered and the underlying model matrix has full rank.
+See the Nuisance variables section of
+\code{\link[=brm_archetype_successive_cells]{brm_archetype_successive_cells()}} for how baseline interactions
+are centered.}
 
 \item{baseline_subgroup}{Logical of length 1.}
 
@@ -164,7 +167,10 @@ Ignored for informative prior archetypes.
 For informative prior archetypes, this option should be set in
 functions like \code{\link[=brm_archetype_successive_cells]{brm_archetype_successive_cells()}} rather than in
 \code{\link[=brm_formula]{brm_formula()}} in order to make sure columns are appropriately
-centered and the underlying model matrix has full rank.}
+centered and the underlying model matrix has full rank.
+See the Nuisance variables section of
+\code{\link[=brm_archetype_successive_cells]{brm_archetype_successive_cells()}} for how baseline interactions
+are centered.}
 
 \item{baseline_time}{Logical of length 1.
 \code{TRUE} to include baseline-by-time interaction, \code{FALSE} to omit.
@@ -174,7 +180,10 @@ Ignored for informative prior archetypes.
 For informative prior archetypes, this option should be set in
 functions like \code{\link[=brm_archetype_successive_cells]{brm_archetype_successive_cells()}} rather than in
 \code{\link[=brm_formula]{brm_formula()}} in order to make sure columns are appropriately
-centered and the underlying model matrix has full rank.}
+centered and the underlying model matrix has full rank.
+See the Nuisance variables section of
+\code{\link[=brm_archetype_successive_cells]{brm_archetype_successive_cells()}} for how baseline interactions
+are centered.}
 
 \item{covariates}{Logical of length 1.
 \code{TRUE} (default) to include any additive covariates declared with
