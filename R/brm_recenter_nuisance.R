@@ -13,6 +13,21 @@
 #'   to be centered at a fixed value other than its mean,
 #'   use [brm_recenter_nuisance()] to shift the center. This function
 #'   can handle any nuisance variable
+#'
+#'   For a nuisance variable which interacts baseline response with
+#'   discrete time and/or the subgroup, the center applies to baseline
+#'   within the cell of the data that the interaction applies to.
+#'   The rest of the column stays at zero.
+#'
+#'   Recentering a nuisance variable shifts the reference level of the model,
+#'   which changes the interpretation of the marginal means from
+#'   [brm_marginal_draws()]. It is your responsibility to interpret the
+#'   reference level and the resulting marginal means appropriately.
+#'   Please recenter with [brm_recenter_nuisance()] rather than modifying
+#'   the column directly, so the recorded center stays in sync with the
+#'   column. [brm_transform_marginal()] prints an informative message
+#'   (once per session) if it detects a nuisance column that was recentered
+#'   some other way.
 #' @return An informative prior archetype data frame with one of the
 #'   variables re-centered.
 #' @param data An informative prior archetype data frame output from
@@ -74,7 +89,8 @@ brm_recenter_nuisance <- function(data, nuisance, center) {
     original,
     paste("original center of", nuisance, "could not be found")
   )
-  data[[nuisance]] <- data[[nuisance]] + original - center
+  mask <- nuisance_mask_rows(data[[nuisance]])
+  data[[nuisance]][mask] <- data[[nuisance]][mask] + original - center
   attr(data[[nuisance]], "brm_center") <- center
   data
 }

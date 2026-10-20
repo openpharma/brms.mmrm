@@ -73,9 +73,9 @@ prior
 class(prior)
 }
 \seealso{
-Other priors: 
-\code{\link{brm_prior_label}()},
-\code{\link{brm_prior_simple}()},
-\code{\link{brm_prior_template}()}
+Other priors:
+\code{\link[=brm_prior_label]{brm_prior_label()}},
+\code{\link[=brm_prior_simple]{brm_prior_simple()}},
+\code{\link[=brm_prior_template]{brm_prior_template()}}
 }
 \concept{priors}

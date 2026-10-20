@@ -109,9 +109,9 @@ brm_prior_simple(
 )
 }
 \seealso{
-Other priors: 
-\code{\link{brm_prior_archetype}()},
-\code{\link{brm_prior_label}()},
-\code{\link{brm_prior_template}()}
+Other priors:
+\code{\link[=brm_prior_archetype]{brm_prior_archetype()}},
+\code{\link[=brm_prior_label]{brm_prior_label()}},
+\code{\link[=brm_prior_template]{brm_prior_template()}}
 }
 \concept{priors}

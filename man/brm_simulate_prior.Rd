@@ -83,10 +83,10 @@ out$data
 }
 }
 \seealso{
-Other simulation: 
-\code{\link{brm_simulate_categorical}()},
-\code{\link{brm_simulate_continuous}()},
-\code{\link{brm_simulate_outline}()},
-\code{\link{brm_simulate_simple}()}
+Other simulation:
+\code{\link[=brm_simulate_categorical]{brm_simulate_categorical()}},
+\code{\link[=brm_simulate_continuous]{brm_simulate_continuous()}},
+\code{\link[=brm_simulate_outline]{brm_simulate_outline()}},
+\code{\link[=brm_simulate_simple]{brm_simulate_simple()}}
 }
 \concept{simulation}

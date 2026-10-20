@@ -58,6 +58,9 @@
 #'   functions like [brm_archetype_successive_cells()] rather than in
 #'   [brm_formula()] in order to make sure columns are appropriately
 #'   centered and the underlying model matrix has full rank.
+#'   See the Nuisance variables section of
+#'   [brm_archetype_successive_cells()] for how baseline interactions
+#'   are centered.
 #' @param baseline_subgroup Logical of length 1.
 #'   `TRUE` to include baseline-by-subgroup interaction, `FALSE` to omit.
 #'   Default is `TRUE` if [brm_data()] previously declared baseline
@@ -67,6 +70,9 @@
 #'   functions like [brm_archetype_successive_cells()] rather than in
 #'   [brm_formula()] in order to make sure columns are appropriately
 #'   centered and the underlying model matrix has full rank.
+#'   See the Nuisance variables section of
+#'   [brm_archetype_successive_cells()] for how baseline interactions
+#'   are centered.
 #' @param baseline_subgroup_time Logical of length 1.
 #'   `TRUE` to include baseline-by-subgroup-by-time interaction,
 #'   `FALSE` to omit.
@@ -77,6 +83,9 @@
 #'   functions like [brm_archetype_successive_cells()] rather than in
 #'   [brm_formula()] in order to make sure columns are appropriately
 #'   centered and the underlying model matrix has full rank.
+#'   See the Nuisance variables section of
+#'   [brm_archetype_successive_cells()] for how baseline interactions
+#'   are centered.
 #' @param baseline_time Logical of length 1.
 #'   `TRUE` to include baseline-by-time interaction, `FALSE` to omit.
 #'   Default is `TRUE` if [brm_data()] previously declared a baseline
@@ -86,6 +95,9 @@
 #'   functions like [brm_archetype_successive_cells()] rather than in
 #'   [brm_formula()] in order to make sure columns are appropriately
 #'   centered and the underlying model matrix has full rank.
+#'   See the Nuisance variables section of
+#'   [brm_archetype_successive_cells()] for how baseline interactions
+#'   are centered.
 #' @param group Logical of length 1.
 #'   `TRUE` (default) to include additive effects for
 #'   treatment groups, `FALSE` to omit.

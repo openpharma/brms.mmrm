@@ -34,7 +34,10 @@ Ignored for informative prior archetypes.
 For informative prior archetypes, this option should be set in
 functions like \code{\link[=brm_archetype_successive_cells]{brm_archetype_successive_cells()}} rather than in
 \code{\link[=brm_formula]{brm_formula()}} in order to make sure columns are appropriately
-centered and the underlying model matrix has full rank.}
+centered and the underlying model matrix has full rank.
+See the Nuisance variables section of
+\code{\link[=brm_archetype_successive_cells]{brm_archetype_successive_cells()}} for how baseline interactions
+are centered.}
 
 \item{baseline_subgroup}{Logical of length 1.}
 
@@ -47,7 +50,10 @@ Ignored for informative prior archetypes.
 For informative prior archetypes, this option should be set in
 functions like \code{\link[=brm_archetype_successive_cells]{brm_archetype_successive_cells()}} rather than in
 \code{\link[=brm_formula]{brm_formula()}} in order to make sure columns are appropriately
-centered and the underlying model matrix has full rank.}
+centered and the underlying model matrix has full rank.
+See the Nuisance variables section of
+\code{\link[=brm_archetype_successive_cells]{brm_archetype_successive_cells()}} for how baseline interactions
+are centered.}
 
 \item{baseline_time}{Logical of length 1.
 \code{TRUE} to include baseline-by-time interaction, \code{FALSE} to omit.
@@ -57,7 +63,10 @@ Ignored for informative prior archetypes.
 For informative prior archetypes, this option should be set in
 functions like \code{\link[=brm_archetype_successive_cells]{brm_archetype_successive_cells()}} rather than in
 \code{\link[=brm_formula]{brm_formula()}} in order to make sure columns are appropriately
-centered and the underlying model matrix has full rank.}
+centered and the underlying model matrix has full rank.
+See the Nuisance variables section of
+\code{\link[=brm_archetype_successive_cells]{brm_archetype_successive_cells()}} for how baseline interactions
+are centered.}
 
 \item{covariates}{Logical of length 1.
 \code{TRUE} (default) to include any additive covariates declared with
@@ -151,6 +160,17 @@ of interest are not implicitly conditional on a subset of the data.
 In other words, preprocessing nuisance variables this way preserves
 the interpretations of the fixed effects of interest, and it ensures
 informative priors can be specified correctly.
+
+Nuisance variables which interact baseline response with discrete time
+and/or the subgroup are centered differently. Such a column is zero
+except in the cell of the data that the interaction applies to, so it is
+centered only within that cell, and it stays zero everywhere else.
+Centering these columns at their means across the whole dataset would
+leave them entangled with the variables that marginal means average over,
+which would break the relationship between the fixed effects of interest
+and the marginal means. A consequence is that a baseline-by-subgroup
+interaction centers baseline at the mean within each subgroup level
+rather than the mean of the whole dataset.
 }
 
 \section{Prior labeling}{
@@ -244,11 +264,11 @@ brm_plot_compare(model = summaries_model, data = summaries_data)
 }
 }
 \seealso{
-Other informative prior archetypes: 
-\code{\link{brm_archetype_average_cells}()},
-\code{\link{brm_archetype_cells}()},
-\code{\link{brm_archetype_effects}()},
-\code{\link{brm_archetype_successive_cells}()},
-\code{\link{brm_archetype_successive_effects}()}
+Other informative prior archetypes:
+\code{\link[=brm_archetype_average_cells]{brm_archetype_average_cells()}},
+\code{\link[=brm_archetype_cells]{brm_archetype_cells()}},
+\code{\link[=brm_archetype_effects]{brm_archetype_effects()}},
+\code{\link[=brm_archetype_successive_cells]{brm_archetype_successive_cells()}},
+\code{\link[=brm_archetype_successive_effects]{brm_archetype_successive_effects()}}
 }
 \concept{informative prior archetypes}

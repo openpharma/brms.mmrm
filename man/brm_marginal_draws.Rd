@@ -165,11 +165,11 @@ brm_marginal_draws(data = data, formula = formula, model = model)
 }
 }
 \seealso{
-Other marginals: 
-\code{\link{brm_marginal_data}()},
-\code{\link{brm_marginal_draws_average}()},
-\code{\link{brm_marginal_grid}()},
-\code{\link{brm_marginal_probabilities}()},
-\code{\link{brm_marginal_summaries}()}
+Other marginals:
+\code{\link[=brm_marginal_data]{brm_marginal_data()}},
+\code{\link[=brm_marginal_draws_average]{brm_marginal_draws_average()}},
+\code{\link[=brm_marginal_grid]{brm_marginal_grid()}},
+\code{\link[=brm_marginal_probabilities]{brm_marginal_probabilities()}},
+\code{\link[=brm_marginal_summaries]{brm_marginal_summaries()}}
 }
 \concept{marginals}

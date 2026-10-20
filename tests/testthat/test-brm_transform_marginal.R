@@ -549,3 +549,116 @@ test_that("archetype subgroup with nuisance, average_within_subgroup = F", {
   cell <- cell[c(setdiff(names(cell), nuisance), nuisance)]
   expect_equal(as.numeric(transform %*% sdif), as.numeric(cell)[seq_len(12L)])
 })
+
+test_that("detect nuisance columns recentered outside the supported way", {
+  set.seed(0L)
+  data <- brm_simulate_outline(
+    n_group = 2,
+    n_patient = 20,
+    n_time = 3,
+    rate_dropout = 0,
+    rate_lapse = 0
+  ) |>
+    dplyr::mutate(response = rnorm(n = dplyr::n())) |>
+    brm_data_change() |>
+    brm_simulate_continuous(names = "biomarker1") |>
+    brm_simulate_categorical(
+      names = "status1",
+      levels = c("present", "absent")
+    )
+  archetype <- brm_archetype_cells(data, baseline_time = TRUE)
+  # A clean archetype is centered as recorded.
+  expect_equal(nuisance_recentered_manually(archetype), character(0L))
+  # brm_recenter_nuisance() keeps the recorded center in sync with the column,
+  # for ordinary nuisance columns and for masked baseline interactions alike.
+  recentered <- brm_recenter_nuisance(
+    data = archetype,
+    nuisance = "nuisance_biomarker1",
+    center = 0.75
+  )
+  expect_equal(nuisance_recentered_manually(recentered), character(0L))
+  recentered <- brm_recenter_nuisance(
+    data = archetype,
+    nuisance = "nuisance_baseline.timetime_2",
+    center = 0.5
+  )
+  expect_equal(nuisance_recentered_manually(recentered), character(0L))
+  # Shifting a column directly leaves the recorded center behind.
+  manual <- archetype
+  manual$nuisance_biomarker1 <- manual$nuisance_biomarker1 - 2
+  expect_equal(nuisance_recentered_manually(manual), "nuisance_biomarker1")
+  manual <- archetype
+  manual$nuisance_baseline.timetime_2 <-
+    manual$nuisance_baseline.timetime_2 + 3
+  expect_equal(
+    nuisance_recentered_manually(manual),
+    "nuisance_baseline.timetime_2"
+  )
+})
+
+test_that("recentering check skips data without nuisance columns", {
+  set.seed(0L)
+  data <- brm_simulate_outline(
+    n_group = 2,
+    n_patient = 20,
+    n_time = 3,
+    rate_dropout = 0,
+    rate_lapse = 0
+  ) |>
+    dplyr::mutate(response = rnorm(n = dplyr::n())) |>
+    brm_data_change()
+  # Only informative prior archetypes have nuisance columns to check.
+  expect_equal(nuisance_recentered_manually(data), character(0L))
+  archetype <- brm_archetype_cells(
+    data,
+    covariates = FALSE,
+    baseline = FALSE,
+    baseline_time = FALSE
+  )
+  expect_equal(attr(archetype, "brm_archetype_nuisance"), character(0L))
+  expect_equal(nuisance_recentered_manually(archetype), character(0L))
+})
+
+test_that("brm_transform_marginal() messages about manual recentering", {
+  set.seed(0L)
+  data <- brm_simulate_outline(
+    n_group = 2,
+    n_patient = 20,
+    n_time = 3,
+    rate_dropout = 0,
+    rate_lapse = 0
+  ) |>
+    dplyr::mutate(response = rnorm(n = dplyr::n())) |>
+    brm_data_change() |>
+    brm_simulate_continuous(names = "biomarker1")
+  archetype <- brm_archetype_cells(data, baseline_time = TRUE)
+  formula <- brm_formula(archetype)
+  # brm_message_session() is quiet under testthat, so reset the frequency and
+  # unset TESTTHAT to observe the message itself.
+  observe <- function(data) {
+    rlang::reset_message_verbosity("nuisance_recentered")
+    withr::with_envvar(
+      c(TESTTHAT = NA_character_),
+      capture_messages(brm_transform_marginal(data = data, formula = formula))
+    )
+  }
+  expect_equal(observe(archetype), character(0L))
+  manual <- archetype
+  manual$nuisance_biomarker1 <- manual$nuisance_biomarker1 - 2
+  messages <- observe(manual)
+  expect_equal(length(messages), 1L)
+  expect_true(grepl("brm_recenter_nuisance", messages, fixed = TRUE))
+  expect_true(grepl("nuisance_biomarker1", messages, fixed = TRUE))
+  # The message is shown once per session.
+  expect_equal(
+    length(
+      withr::with_envvar(
+        c(TESTTHAT = NA_character_),
+        capture_messages(
+          brm_transform_marginal(data = manual, formula = formula)
+        )
+      )
+    ),
+    0L
+  )
+})

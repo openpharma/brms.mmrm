@@ -181,8 +181,8 @@ brm_data(
 )
 }
 \seealso{
-Other data: 
-\code{\link{brm_data_change}()},
-\code{\link{brm_data_chronologize}()}
+Other data:
+\code{\link[=brm_data_change]{brm_data_change()}},
+\code{\link[=brm_data_chronologize]{brm_data_chronologize()}}
 }
 \concept{data}

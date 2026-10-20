@@ -52,62 +52,84 @@ export(brm_simulate_prior)
 export(brm_simulate_simple)
 export(brm_transform_marginal)
 importFrom(MASS,mvrnorm)
-importFrom(brms,brm)
-importFrom(brms,brmsformula)
-importFrom(brms,get_prior)
-importFrom(brms,make_standata)
-importFrom(brms,mi)
-importFrom(brms,prior)
-importFrom(brms,unstr)
-importFrom(dplyr,across)
-importFrom(dplyr,arrange)
-importFrom(dplyr,bind_cols)
-importFrom(dplyr,bind_rows)
-importFrom(dplyr,distinct)
-importFrom(dplyr,left_join)
-importFrom(dplyr,rename)
-importFrom(dplyr,select)
-importFrom(dplyr,summarize)
-importFrom(ggplot2,aes)
-importFrom(ggplot2,facet_wrap)
-importFrom(ggplot2,geom_errorbar)
-importFrom(ggplot2,geom_point)
-importFrom(ggplot2,ggplot)
-importFrom(ggplot2,position_dodge)
-importFrom(ggplot2,theme_gray)
-importFrom(ggplot2,xlab)
-importFrom(ggplot2,ylab)
+importFrom(brms,
+  brm,
+  brmsformula,
+  get_prior,
+  make_standata,
+  mi,
+  prior,
+  unstr
+)
+importFrom(dplyr,
+  across,
+  arrange,
+  bind_cols,
+  bind_rows,
+  distinct,
+  left_join,
+  rename,
+  select,
+  summarize
+)
+importFrom(ggplot2,
+  aes,
+  facet_wrap,
+  geom_errorbar,
+  geom_point,
+  ggplot,
+  position_dodge,
+  theme_gray,
+  xlab,
+  ylab
+)
 importFrom(ggridges,geom_density_ridges2)
-importFrom(posterior,as_draws_df)
-importFrom(posterior,mcse_mean)
-importFrom(posterior,mcse_median)
-importFrom(posterior,mcse_quantile)
-importFrom(posterior,mcse_sd)
-importFrom(purrr,map2_df)
-importFrom(purrr,map_dbl)
-importFrom(purrr,map_df)
-importFrom(rlang,is_formula)
-importFrom(rlang,warn)
-importFrom(stats,"contrasts<-")
-importFrom(stats,as.formula)
-importFrom(stats,complete.cases)
-importFrom(stats,contr.treatment)
-importFrom(stats,median)
-importFrom(stats,model.matrix)
-importFrom(stats,rbinom)
-importFrom(stats,rnorm)
-importFrom(stats,runif)
-importFrom(stats,sd)
-importFrom(tibble,as_tibble)
-importFrom(tibble,tibble)
-importFrom(tidyr,expand_grid)
-importFrom(tidyr,pivot_longer)
-importFrom(tidyr,pivot_wider)
-importFrom(tidyselect,any_of)
-importFrom(tidyselect,everything)
-importFrom(tidyselect,starts_with)
+importFrom(posterior,
+  as_draws_df,
+  mcse_mean,
+  mcse_median,
+  mcse_quantile,
+  mcse_sd
+)
+importFrom(purrr,
+  map2_df,
+  map_dbl,
+  map_df
+)
+importFrom(rlang,
+  is_formula,
+  warn
+)
+importFrom(stats,
+  "contrasts<-",
+  as.formula,
+  complete.cases,
+  contr.treatment,
+  median,
+  model.matrix,
+  rbinom,
+  rnorm,
+  runif,
+  sd
+)
+importFrom(tibble,
+  as_tibble,
+  tibble
+)
+importFrom(tidyr,
+  expand_grid,
+  pivot_longer,
+  pivot_wider
+)
+importFrom(tidyselect,
+  any_of,
+  everything,
+  starts_with
+)
 importFrom(trialr,rlkjcorr)
-importFrom(utils,capture.output)
-importFrom(utils,globalVariables)
-importFrom(utils,head)
+importFrom(utils,
+  capture.output,
+  globalVariables,
+  head
+)
 importFrom(zoo,na.locf)

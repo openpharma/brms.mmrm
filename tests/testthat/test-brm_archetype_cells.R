@@ -485,3 +485,46 @@ test_that("brm_archetype_cells() clda subgroup", {
   )
   expect_equal(equations, expected)
 })
+
+test_that("brm_archetype_cells() centers baseline interactions in cells", {
+  set.seed(0L)
+  data <- brm_simulate_outline(
+    n_group = 2,
+    n_subgroup = 3,
+    n_patient = 150,
+    n_time = 4,
+    rate_dropout = 0,
+    rate_lapse = 0
+  ) |>
+    dplyr::mutate(response = rnorm(n = dplyr::n())) |>
+    brm_data_change() |>
+    brm_simulate_continuous(names = c("biomarker1", "biomarker2"))
+  out <- brm_archetype_cells(
+    data,
+    baseline = TRUE,
+    baseline_subgroup = TRUE,
+    baseline_subgroup_time = TRUE,
+    baseline_time = TRUE,
+    covariates = TRUE
+  )
+  nuisance <- attr(out, "brm_archetype_nuisance")
+  masked <- Filter(
+    function(name) !is.null(attr(out[[name]], "brm_mask")),
+    nuisance
+  )
+  # Columns formed by interacting baseline with subgroup and/or time are
+  # centered within the cell they apply to, and they stay zero outside it.
+  expect_true(length(masked) > 0L)
+  for (name in masked) {
+    mask <- attr(out[[name]], "brm_mask")
+    expect_equal(mean(out[[name]][mask]), 0)
+    expect_true(all(out[[name]][!mask] == 0))
+  }
+  # Columns unrelated to baseline are centered over the whole dataset.
+  for (name in c("nuisance_biomarker1", "nuisance_biomarker2")) {
+    expect_null(attr(out[[name]], "brm_mask"))
+    expect_equal(mean(out[[name]]), 0)
+  }
+  # Centering in cells also keeps the overall column means at zero.
+  expect_equal(max(abs(colMeans(out[, nuisance]))), 0)
+})
