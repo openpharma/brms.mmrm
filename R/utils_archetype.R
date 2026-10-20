@@ -219,3 +219,102 @@ nuisance_center <- function(data) {
 nuisance_mask_rows <- function(x) {
   attr(x, "brm_mask") %|||% rep(TRUE, length(x))
 }
+
+# Message the user once per session if a nuisance column of an informative
+# prior archetype was recentered by means other than brm_recenter_nuisance().
+nuisance_warn_recentered <- function(data) {
+  names <- nuisance_recentered_manually(data)
+  if (!length(names)) {
+    return(invisible())
+  }
+  brm_message_session(
+    "In brm_transform_marginal(), these nuisance columns of the informative ",
+    "prior archetype appear to have been recentered outside ",
+    "brm_recenter_nuisance(): ",
+    paste(names, collapse = ", "),
+    ". Recentering a nuisance variable shifts the reference level of the ",
+    "model, and brm_transform_marginal() assumes nuisance columns are ",
+    "centered as the archetype recorded them. Please recenter with ",
+    "brm_recenter_nuisance(), which keeps the recorded center in sync with ",
+    "the column and respects the cell that a baseline interaction applies ",
+    "to. Whenever a nuisance variable is recentered manually, it is your ",
+    "responsibility to interpret the reference level of the model and the ",
+    "resulting marginal means appropriately. For more information, please ",
+    "visit https://openpharma.github.io/brms.mmrm/articles/archetypes.html",
+    id = "nuisance_recentered"
+  )
+  invisible()
+}
+
+# Nuisance columns whose contents no longer agree with the center recorded in
+# their "brm_center" attribute. brm_recenter_nuisance() keeps the attribute in
+# sync with the column, so a disagreement means the column was recentered some
+# other way and the reference level of the model has silently shifted.
+# Only informative prior archetypes have nuisance columns to check.
+nuisance_recentered_manually <- function(data) {
+  if (!inherits(data, "brms_mmrm_archetype")) {
+    return(character(0L))
+  }
+  nuisance <- attr(data, "brm_archetype_nuisance")
+  if (!length(nuisance)) {
+    return(character(0L))
+  }
+  defaults <- nuisance_default_centers(data)
+  out <- character(0L)
+  for (name in nuisance) {
+    original <- nuisance_match_default(name, defaults)
+    center <- attr(data[[name]], "brm_center")
+    if (is.na(original) || !is.numeric(center) || length(center) != 1L) {
+      next
+    }
+    observed <- mean(data[[name]][nuisance_mask_rows(data[[name]])])
+    expected <- original - center
+    tolerance <- sqrt(.Machine$double.eps) * max(1, abs(expected))
+    if (abs(observed - expected) > tolerance) {
+      out <- c(out, name)
+    }
+  }
+  out
+}
+
+# The center each nuisance column would have if the archetype were rebuilt from
+# the original data columns it still carries. Generating every kind of nuisance
+# column gives a superset of the ones the archetype actually has, so the
+# archetype does not need to record which baseline arguments built it.
+nuisance_default_centers <- function(data) {
+  data <- brm_data_remove_archetype(data)
+  has_baseline <- !is.null(attr(data, "brm_baseline"))
+  has_subgroup <- !is.null(attr(data, "brm_subgroup"))
+  args <- list(
+    data = data,
+    prefix = "",
+    covariates = TRUE,
+    baseline = TRUE,
+    baseline_subgroup = has_subgroup,
+    baseline_subgroup_time = has_subgroup,
+    baseline_time = TRUE
+  )
+  out <- do.call(what = nuisance_columns, args = args)
+  if (is.null(out) || !ncol(out)) {
+    return(numeric(0L))
+  }
+  if (has_baseline) {
+    args$nuisance <- out
+    out <- do.call(what = nuisance_mask, args = args)
+  }
+  centers <- lapply(out, function(x) mean(x[nuisance_mask_rows(x)]))
+  unlist(centers)
+}
+
+# Match a nuisance column of an archetype to the uncentered column it came
+# from. Archetype column names are the generated names with prefix_nuisance
+# prepended, and the longest match wins so that e.g. a baseline-by-subgroup
+# column does not match a baseline-by-subgroup-by-time column.
+nuisance_match_default <- function(name, defaults) {
+  candidates <- names(defaults)
+  candidates <- candidates[endsWith(name, candidates)]
+  if (!length(candidates)) {
+    return(NA_real_)
+  }
+  defaults[[candidates[which.max(nchar(candidates))]]]
+}

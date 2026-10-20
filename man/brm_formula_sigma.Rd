@@ -135,8 +135,8 @@ brm_formula(data, sigma = homogeneous)
 brm_formula(data, sigma = by_group)
 }
 \seealso{
-Other models: 
-\code{\link{brm_formula}()},
-\code{\link{brm_model}()}
+Other models:
+\code{\link[=brm_formula]{brm_formula()}},
+\code{\link[=brm_model]{brm_model()}}
 }
 \concept{models}

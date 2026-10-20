@@ -18,6 +18,16 @@
 #'   discrete time and/or the subgroup, the center applies to baseline
 #'   within the cell of the data that the interaction applies to.
 #'   The rest of the column stays at zero.
+#'
+#'   Recentering a nuisance variable shifts the reference level of the model,
+#'   which changes the interpretation of the marginal means from
+#'   [brm_marginal_draws()]. It is your responsibility to interpret the
+#'   reference level and the resulting marginal means appropriately.
+#'   Please recenter with [brm_recenter_nuisance()] rather than modifying
+#'   the column directly, so the recorded center stays in sync with the
+#'   column. [brm_transform_marginal()] prints an informative message
+#'   (once per session) if it detects a nuisance column that was recentered
+#'   some other way.
 #' @return An informative prior archetype data frame with one of the
 #'   variables re-centered.
 #' @param data An informative prior archetype data frame output from

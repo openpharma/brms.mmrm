@@ -79,10 +79,10 @@ simulation <- brm_simulate_simple()
 simulation$data
 }
 \seealso{
-Other simulation: 
-\code{\link{brm_simulate_categorical}()},
-\code{\link{brm_simulate_continuous}()},
-\code{\link{brm_simulate_outline}()},
-\code{\link{brm_simulate_prior}()}
+Other simulation:
+\code{\link[=brm_simulate_categorical]{brm_simulate_categorical()}},
+\code{\link[=brm_simulate_continuous]{brm_simulate_continuous()}},
+\code{\link[=brm_simulate_outline]{brm_simulate_outline()}},
+\code{\link[=brm_simulate_prior]{brm_simulate_prior()}}
 }
 \concept{simulation}

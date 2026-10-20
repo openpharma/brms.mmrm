@@ -92,9 +92,9 @@ label <- NULL |>
 label
 }
 \seealso{
-Other priors: 
-\code{\link{brm_prior_archetype}()},
-\code{\link{brm_prior_simple}()},
-\code{\link{brm_prior_template}()}
+Other priors:
+\code{\link[=brm_prior_archetype]{brm_prior_archetype()}},
+\code{\link[=brm_prior_simple]{brm_prior_simple()}},
+\code{\link[=brm_prior_template]{brm_prior_template()}}
 }
 \concept{priors}

@@ -79,11 +79,11 @@ suppressWarnings(brm_marginal_summaries(draws))
 }
 }
 \seealso{
-Other marginals: 
-\code{\link{brm_marginal_data}()},
-\code{\link{brm_marginal_draws}()},
-\code{\link{brm_marginal_draws_average}()},
-\code{\link{brm_marginal_grid}()},
-\code{\link{brm_marginal_probabilities}()}
+Other marginals:
+\code{\link[=brm_marginal_data]{brm_marginal_data()}},
+\code{\link[=brm_marginal_draws]{brm_marginal_draws()}},
+\code{\link[=brm_marginal_draws_average]{brm_marginal_draws_average()}},
+\code{\link[=brm_marginal_grid]{brm_marginal_grid()}},
+\code{\link[=brm_marginal_probabilities]{brm_marginal_probabilities()}}
 }
 \concept{marginals}

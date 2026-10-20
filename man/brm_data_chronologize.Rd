@@ -92,8 +92,8 @@ data2 <- brm_data_chronologize(data, time = "AVISIT", levels = levels)
 sort(unique(data2$AVISIT)) # correct order
 }
 \seealso{
-Other data: 
-\code{\link{brm_data}()},
-\code{\link{brm_data_change}()}
+Other data:
+\code{\link[=brm_data]{brm_data()}},
+\code{\link[=brm_data_change]{brm_data_change()}}
 }
 \concept{data}

@@ -58,7 +58,7 @@ and
 \url{https://cran.r-project.org/package=emmeans/vignettes/interactions.html}.}
 
 \item{prefix}{Character of length 1, prefix to add to
-the model matrix (\code{"X"}) from \code{\link[brms:standata]{brms::make_standata()}} in order to
+the model matrix (\code{"X"}) from \code{\link[brms:make_standata]{brms::make_standata()}} in order to
 reconstruct the \code{brms} model parameter names. This argument should
 only be modified for testing purposes.}
 }
@@ -77,6 +77,16 @@ posterior draws of marginal means. You may customize the output of
 \code{\link[=brm_transform_marginal]{brm_transform_marginal()}} before passing it to \code{\link[=brm_marginal_draws]{brm_marginal_draws()}}.
 However, please do not modify the dimensions, row names, or column
 names.
+
+For informative prior archetypes, \code{\link[=brm_transform_marginal]{brm_transform_marginal()}} assumes the
+nuisance columns are centered as the archetype recorded them. Recentering
+a nuisance variable shifts the reference level of the model, so please
+recenter with \code{\link[=brm_recenter_nuisance]{brm_recenter_nuisance()}}, which keeps the recorded center
+in sync with the column. \code{\link[=brm_transform_marginal]{brm_transform_marginal()}} prints an informative
+message (once per session) if it detects a nuisance column that was
+recentered some other way. Whenever a nuisance variable is recentered
+manually, it is your responsibility to interpret the reference level of
+the model and the resulting marginal means appropriately.
 }
 \examples{
 set.seed(0L)

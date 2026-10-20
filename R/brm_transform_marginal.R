@@ -9,6 +9,16 @@
 #'   [brm_transform_marginal()] before passing it to [brm_marginal_draws()].
 #'   However, please do not modify the dimensions, row names, or column
 #'   names.
+#'
+#'   For informative prior archetypes, [brm_transform_marginal()] assumes the
+#'   nuisance columns are centered as the archetype recorded them. Recentering
+#'   a nuisance variable shifts the reference level of the model, so please
+#'   recenter with [brm_recenter_nuisance()], which keeps the recorded center
+#'   in sync with the column. [brm_transform_marginal()] prints an informative
+#'   message (once per session) if it detects a nuisance column that was
+#'   recentered some other way. Whenever a nuisance variable is recentered
+#'   manually, it is your responsibility to interpret the reference level of
+#'   the model and the resulting marginal means appropriately.
 #' @return A matrix to transform model parameters (columns) into
 #'   marginal means (rows).
 #' @inheritParams brm_marginal_draws
@@ -115,6 +125,7 @@ brm_transform_marginal <- function(
   if (!brm_has_subgroup(data = data, formula = formula)) {
     average_within_subgroup <- FALSE
   }
+  nuisance_warn_recentered(data)
   time <- attr(data, "brm_time")
   levels_time <- brm_levels(data[[time]])
   assert(

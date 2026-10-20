@@ -65,7 +65,7 @@ brm_plot_draws(draws = draws$difference_time)
 }
 }
 \seealso{
-Other visualization: 
-\code{\link{brm_plot_compare}()}
+Other visualization:
+\code{\link[=brm_plot_compare]{brm_plot_compare()}}
 }
 \concept{visualization}

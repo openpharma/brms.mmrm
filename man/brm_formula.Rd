@@ -309,7 +309,7 @@ The ordering of the categorical variables in the data,
 as well as the \code{contrast} option in R, affect the
 construction of the model matrix. To see the model
 matrix that will ultimately be used in \code{\link[=brm_model]{brm_model()}},
-run \code{\link[brms:standata]{brms::make_standata()}} and examine the \code{X} element
+run \code{\link[brms:make_standata]{brms::make_standata()}} and examine the \code{X} element
 of the returned list. See the examples below for a
 demonstration.
 }
@@ -373,8 +373,8 @@ formula <- brm_formula(data = archetype)
 formula
 }
 \seealso{
-Other models: 
-\code{\link{brm_formula_sigma}()},
-\code{\link{brm_model}()}
+Other models:
+\code{\link[=brm_formula_sigma]{brm_formula_sigma()}},
+\code{\link[=brm_model]{brm_model()}}
 }
 \concept{models}

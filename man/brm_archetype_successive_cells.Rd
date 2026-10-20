@@ -283,11 +283,11 @@ brm_plot_compare(model = summaries_model, data = summaries_data)
 }
 }
 \seealso{
-Other informative prior archetypes: 
-\code{\link{brm_archetype_average_cells}()},
-\code{\link{brm_archetype_average_effects}()},
-\code{\link{brm_archetype_cells}()},
-\code{\link{brm_archetype_effects}()},
-\code{\link{brm_archetype_successive_effects}()}
+Other informative prior archetypes:
+\code{\link[=brm_archetype_average_cells]{brm_archetype_average_cells()}},
+\code{\link[=brm_archetype_average_effects]{brm_archetype_average_effects()}},
+\code{\link[=brm_archetype_cells]{brm_archetype_cells()}},
+\code{\link[=brm_archetype_effects]{brm_archetype_effects()}},
+\code{\link[=brm_archetype_successive_effects]{brm_archetype_successive_effects()}}
 }
 \concept{informative prior archetypes}

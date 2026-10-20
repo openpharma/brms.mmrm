@@ -78,9 +78,9 @@ label$code <- c(
 brm_prior_archetype(label = label, archetype = archetype)
 }
 \seealso{
-Other priors: 
-\code{\link{brm_prior_archetype}()},
-\code{\link{brm_prior_label}()},
-\code{\link{brm_prior_simple}()}
+Other priors:
+\code{\link[=brm_prior_archetype]{brm_prior_archetype()}},
+\code{\link[=brm_prior_label]{brm_prior_label()}},
+\code{\link[=brm_prior_simple]{brm_prior_simple()}}
 }
 \concept{priors}

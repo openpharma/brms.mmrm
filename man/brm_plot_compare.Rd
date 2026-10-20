@@ -110,7 +110,7 @@ brm_plot_compare(
 }
 }
 \seealso{
-Other visualization: 
-\code{\link{brm_plot_draws}()}
+Other visualization:
+\code{\link[=brm_plot_draws]{brm_plot_draws()}}
 }
 \concept{visualization}

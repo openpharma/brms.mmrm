@@ -1,6 +1,7 @@
 # brms.mmrm development version
 
 * Center nuisance variables which interact baseline with time and/or the subgroup within the cell of the data they apply to, rather than across the whole dataset. Centering these columns globally broke the relationship between the fixed effects of interest and the marginal means (#139, @michael-lamm).
+* `brm_transform_marginal()` now prints an informative message (once per session) if a nuisance column of an informative prior archetype was recentered by means other than `brm_recenter_nuisance()`. Recentering shifts the reference level of the model, and it is the user's responsibility to interpret the reference level and the resulting marginal means appropriately (#139, @michael-lamm).
 * Add `vignettes/map.Rmd`, a new vignette on meta-analytic predictive priors for Bayesian MMRMs.
 
 # brms.mmrm 1.1.1
