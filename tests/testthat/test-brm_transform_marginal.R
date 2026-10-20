@@ -619,6 +619,50 @@ test_that("recentering check skips data without nuisance columns", {
   expect_equal(nuisance_recentered_manually(archetype), character(0L))
 })
 
+test_that("recentering check skips columns without a usable center", {
+  set.seed(0L)
+  data <- brm_simulate_outline(
+    n_group = 2,
+    n_patient = 20,
+    n_time = 3,
+    rate_dropout = 0,
+    rate_lapse = 0
+  ) |>
+    dplyr::mutate(response = rnorm(n = dplyr::n())) |>
+    brm_data_change() |>
+    brm_simulate_continuous(names = "biomarker1")
+  archetype <- brm_archetype_cells(data)
+  archetype$nuisance_biomarker1 <- archetype$nuisance_biomarker1 - 2
+  attr(archetype$nuisance_biomarker1, "brm_center") <- NULL
+  expect_equal(nuisance_recentered_manually(archetype), character(0L))
+})
+
+test_that("nuisance_default_centers() with nothing to generate", {
+  set.seed(0L)
+  data <- brm_simulate_outline(
+    n_group = 2,
+    n_patient = 20,
+    n_time = 3,
+    rate_dropout = 0,
+    rate_lapse = 0
+  ) |>
+    dplyr::mutate(response = rnorm(n = dplyr::n()))
+  archetype <- brm_archetype_cells(
+    data,
+    covariates = FALSE,
+    baseline = FALSE,
+    baseline_time = FALSE
+  )
+  expect_equal(nuisance_default_centers(archetype), numeric(0L))
+})
+
+test_that("nuisance_match_default()", {
+  defaults <- c(b = 1, ab = 2)
+  expect_equal(nuisance_match_default("nuisance_ab", defaults), 2)
+  expect_equal(nuisance_match_default("nuisance_b", defaults), 1)
+  expect_equal(nuisance_match_default("nuisance_x", defaults), NA_real_)
+})
+
 test_that("brm_transform_marginal() messages about manual recentering", {
   set.seed(0L)
   data <- brm_simulate_outline(
