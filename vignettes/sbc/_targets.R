@@ -13,11 +13,12 @@ tar_option_set(
     seconds_idle = 120,
     seconds_interval = 10,
     seconds_timeout = 120,
-    log_resources = "memory.txt",
-    sge_cores = 3L,
-    sge_memory_gigabytes_required = 32,
-    sge_log_output = "logs/",
-    script_lines = file.path("module load R", getRversion())
+    options_cluster = crew.cluster::crew_options_sge(
+      cores = 3L,
+      memory_gigabytes_required = 32,
+      log_output = "logs/",
+      script_lines = file.path("module load R", getRversion())
+    )
   )
 )
 
@@ -47,7 +48,7 @@ list(
     ),
     tar_target(
       results,
-      save_fst(ranks, sprintf("results/%s.fst", name)),
+      save_csv(ranks, sprintf("results/%s.csv", name)),
       deployment = "main"
     )
   )

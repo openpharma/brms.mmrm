@@ -21,7 +21,6 @@ knitr::opts_chunk$set(
 )
 library(brms.mmrm)
 library(dplyr)
-library(fst)
 library(ggplot2)
 library(tibble)
 library(tidyr)
@@ -50,7 +49,7 @@ source("sbc/R/response.R")
 source("sbc/R/scenarios.R")
 
 read_ranks <- function(path) {
-  fst::read_fst(path) |>
+  utils::read.csv(path, check.names = FALSE) |>
     tibble::as_tibble() |>
     pivot_longer(
       cols = everything(),
@@ -100,7 +99,7 @@ setup_prior(subgroup) |>
 The following histograms show the SBC rank statistics which compare the prior parameter draws draws to the posterior draws. If the data simulation code and modeling code are both correct and consistent, then the rank statistics should be approximately uniformly distributed.
 
 ```{r}
-ranks_subgroup <- read_ranks("sbc/results/subgroup.fst")
+ranks_subgroup <- read_ranks("sbc/results/subgroup.csv")
 ```
 
 Fixed effect parameter ranks:
@@ -156,7 +155,7 @@ setup_prior(unstructured) |>
 SBC checking rank statistics:
 
 ```{r}
-ranks_unstructured <- read_ranks("sbc/results/unstructured.fst")
+ranks_unstructured <- read_ranks("sbc/results/unstructured.csv")
 ```
 
 Fixed effect parameter ranks:
@@ -213,7 +212,7 @@ SBC checking rank statistics:
 
 ```{r}
 ranks_autoregressive_moving_average <- read_ranks(
-  "sbc/results/autoregressive_moving_average.fst"
+  "sbc/results/autoregressive_moving_average.csv"
 )
 ```
 
@@ -261,7 +260,7 @@ setup_prior(autoregressive) |>
 SBC checking rank statistics:
 
 ```{r}
-ranks_autoregressive <- read_ranks("sbc/results/autoregressive.fst")
+ranks_autoregressive <- read_ranks("sbc/results/autoregressive.csv")
 ```
 
 Fixed effect parameter ranks:
@@ -307,7 +306,7 @@ setup_prior(moving_average) |>
 SBC checking rank statistics:
 
 ```{r}
-ranks_moving_average <- read_ranks("sbc/results/moving_average.fst")
+ranks_moving_average <- read_ranks("sbc/results/moving_average.csv")
 ```
 
 Fixed effect parameter ranks:
@@ -353,7 +352,7 @@ setup_prior(compound_symmetry) |>
 SBC checking rank statistics:
 
 ```{r}
-ranks_compound_symmetry <- read_ranks("sbc/results/compound_symmetry.fst")
+ranks_compound_symmetry <- read_ranks("sbc/results/compound_symmetry.csv")
 ```
 
 Fixed effect parameter ranks:
@@ -399,7 +398,7 @@ setup_prior(diagonal) |>
 SBC checking rank statistics:
 
 ```{r}
-ranks_diagonal <- read_ranks("sbc/results/diagonal.fst")
+ranks_diagonal <- read_ranks("sbc/results/diagonal.csv")
 ```
 
 Fixed effect parameter ranks:

@@ -22,7 +22,8 @@ run_simulation <- function(
     chains = chains,
     cores = chains,
     iter = iter,
-    warmup = warmup
+    warmup = warmup,
+    backend = "cmdstanr"
   )
   assert_equal_priors(as_brms_prior(prior), brms::prior_summary(model))
   get_sbc_ranks(model, simulation)
