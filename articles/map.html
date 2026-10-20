@@ -12,8 +12,8 @@
 <link rel="icon" sizes="any" href="../favicon.ico">
 <link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Meta-analytic predictive priors">
 </head>
@@ -92,7 +92,7 @@ Bayesian MMRM fitted with <code>brms.mmrm</code>.</p>
 </h2>
 <p>We use the FEV1 data from the <code>mmrm</code> package, which
 contains simulated measurements of forced expiratory volume in 1 second
-(FEV1) for virtual atients with chronic obstructive pulmonary disease
+(FEV1) for virtual patients with chronic obstructive pulmonary disease
 (COPD) at multiple visits.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">0L</span><span class="op">)</span></span>
@@ -186,7 +186,7 @@ summaries:</p>
 probability of observing a treatment effect at visit 4
 (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>δ</mi><annotation encoding="application/x-tex">\delta</annotation></semantics></math>)
 of at least 4 units of FEV1 is at least 85%:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>δ</mi><mo>&gt;</mo><mn>4</mn><mspace width="0.222em"></mspace><mo>∣</mo><mspace width="0.222em"></mspace><mtext mathvariant="normal">data</mtext><mo stretchy="true" form="postfix">)</mo></mrow><mo>&gt;</mo><mn>0.85</mn></mtd></mtr></mtable><annotation encoding="application/x-tex">
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"><mi>P</mi><mo stretchy="false" form="prefix">(</mo><mi>δ</mi><mo>&gt;</mo><mn>4</mn><mspace width="0.222em"></mspace><mo>∣</mo><mspace width="0.222em"></mspace><mtext mathvariant="normal">data</mtext><mo stretchy="false" form="postfix">)</mo><mo>&gt;</mo><mn>0.85</mn></mtd></mtr></mtable><annotation encoding="application/x-tex">
 \begin{aligned}
 P(\delta &gt; 4 \ \mid \ \text{data}) &gt; 0.85
 \end{aligned}
@@ -499,7 +499,7 @@ of historical control data with a covariate</a>,”</span> in
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>

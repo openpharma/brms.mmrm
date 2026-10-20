@@ -12,46 +12,50 @@ each patient shares the same set of time points. Whereas the
 
 ## Model
 
-Let $y_{1},\ldots,y_{N}$ be independent data points observed for
-individual patients in a clinical trial. Each $y_{n}$ is a numeric
-vector of length $T$, where $T$ is the number of discrete time points in
-the dataset (e.g. patient visits in the study protocol). We model
-$y_{n}$ as follows:
+Let $`y_1, \ldots, y_N`$ be independent data points observed for
+individual patients in a clinical trial. Each $`y_n`$ is a numeric
+vector of length $`T`$, where $`T`$ is the number of discrete time
+points in the dataset (e.g. patient visits in the study protocol). We
+model $`y_n`$ as follows:
 
-$$\begin{array}{r}
-{y_{n} \sim \text{Multivariate-Normal}\left( \text{mean} = X_{n}b,\ \text{variance} = \Sigma_{n} \right)}
-\end{array}$$ Above, $X_{n}$ is the fixed effect model matrix of patient
-$n$, and its specific makeup is determined by arguments such as
-`intercept` and `group` in
-[`brm_formula()`](../reference/brm_formula.md). $b$ is a constant-length
-vector of fixed effect parameters.
+``` math
+\begin{aligned}
+y_n \sim \text{Multivariate-Normal}\left ( \text{mean} = X_n b, \ \text{variance} = \Sigma_n \right )
+\end{aligned}
+```
+Above, $`X_n`$ is the fixed effect model matrix of patient $`n`$, and
+its specific makeup is determined by arguments such as `intercept` and
+`group` in [`brm_formula()`](../reference/brm_formula.md). $`b`$ is a
+constant-length vector of fixed effect parameters.
 
 The MMRM in `brms.mmrm` is a [distributional
 model](https://paulbuerkner.com/brms/articles/brms_distreg.html), which
 means it uses a linear regression structure for both the mean and the
 variance of the multivariate normal likelihood. In particular, the
-$T \times T$ symmetric positive-definite residual covariance matrix
-$\Sigma_{n}$ of patient $n$ decomposes as follows:
+$`T \times T`$ symmetric positive-definite residual covariance matrix
+$`\Sigma_n`$ of patient $`n`$ decomposes as follows:
 
-$$\begin{aligned}
-\Sigma_{n} & {= \text{diag}\left( \sigma_{n} \right) \cdot \Lambda \cdot \text{diag}\left( \sigma_{n} \right)} \\
-\sigma_{n} & {= \text{exp}\left( Z_{n}b_{\sigma} \right)}
-\end{aligned}$$
+``` math
+\begin{aligned}
+\Sigma_n &= \text{diag}(\sigma_n) \cdot \Lambda \cdot \text{diag}(\sigma_n) \\
+\sigma_n &= \text{exp} \left ( Z_n b_\sigma \right)
+\end{aligned}
+```
 
-Above, $\sigma_{n}$ is a vector of $T$ time-specific scalar standard
-deviations, and $\text{diag}\left( \sigma_{n} \right)$ is a diagonal
-$T \times T$ matrix. $Z_{n}$ is a patient-specific matrix which controls
-how the [distributional
+Above, $`\sigma_n`$ is a vector of $`T`$ time-specific scalar standard
+deviations, and $`\text{diag}(\sigma_n)`$ is a diagonal $`T \times T`$
+matrix. $`Z_n`$ is a patient-specific matrix which controls how the
+[distributional
 parameters](https://paulbuerkner.com/brms/articles/brms_distreg.html)
-$b_{\sigma}$ map to the more intuitive standard deviation vector
-$\sigma_{n}$. The specific makeup of $Z_{n}$ is determined by the
+$`b_\sigma`$ map to the more intuitive standard deviation vector
+$`\sigma_n`$. The specific makeup of $`Z_n`$ is determined by the
 `sigma` argument of [`brm_formula()`](../reference/brm_formula.md),
 which in turn is produced by
 [`brm_formula_sigma()`](../reference/brm_formula_sigma.md).
 
-$\Lambda$ is a symmetric positive-definite correlation matrix with
+$`\Lambda`$ is a symmetric positive-definite correlation matrix with
 diagonal elements equal to 1 and off-diagonal elements between -1 and 1.
-The structure of $\Lambda$ depends on the `correlation` argument of
+The structure of $`\Lambda`$ depends on the `correlation` argument of
 [`brm_formula()`](../reference/brm_formula.md), which could describe an
 unstructured parameterization, ARMA, compound symmetry, etc. These
 alternative structures and priors are available directly through `brms`.
@@ -61,21 +65,21 @@ For specific details, please consult
 
 ## Priors
 
-The scalar components of $b$ are modeled as independent with
+The scalar components of $`b`$ are modeled as independent with
 user-defined priors specified through the `prior` argument of
 [`brm_model()`](../reference/brm_model.md). The hyperparameters of these
 priors are constant. The default priors are improper uniform for
 non-intercept terms and a data-dependent Student-t distribution for the
-intercept. The variance-related distributional parameters $b_{\sigma}$
+intercept. The variance-related distributional parameters $`b_\sigma`$
 are given similar priors
 
-For the correlation matrix $\Lambda$, the default prior in `brms.mmrm`
+For the correlation matrix $`\Lambda`$, the default prior in `brms.mmrm`
 is the [LKJ correlation
 distribution](https://mc-stan.org/docs/functions-reference/correlation_matrix_distributions.html#lkj-correlation)
 with shape parameter equal to 1. This choice of prior is only valid for
 unstructured correlation matrices. Other correlation structures, such
-ARMA, will parameterize $\Lambda$ and allow users to set priors on those
-new specialized parameters.
+ARMA, will parameterize $`\Lambda`$ and allow users to set priors on
+those new specialized parameters.
 
 ## Sampling
 
@@ -86,8 +90,8 @@ read <https://mc-stan.org/users/documentation/> for more details on the
 methodology of [Stan](https://mc-stan.org/). The result of MCMC is a
 collection of draws from the full joint posterior distribution of the
 parameters given the data. Individual draws of scalar parameters such as
-$\beta_{3}$ are considered draws from the marginal posterior
-distribution of e.g. $\beta_{3}$ given the data.
+$`\beta_3`$ are considered draws from the marginal posterior
+distribution of e.g. $`\beta_3`$ given the data.
 
 ## Imputation of missing outcomes
 

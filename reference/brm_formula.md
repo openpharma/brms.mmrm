@@ -177,6 +177,9 @@ brm_formula(
   [`brm_archetype_successive_cells()`](brm_archetype_successive_cells.md)
   rather than in `brm_formula()` in order to make sure columns are
   appropriately centered and the underlying model matrix has full rank.
+  See the Nuisance variables section of
+  [`brm_archetype_successive_cells()`](brm_archetype_successive_cells.md)
+  for how baseline interactions are centered.
 
 - baseline_subgroup:
 
@@ -193,6 +196,9 @@ brm_formula(
   [`brm_archetype_successive_cells()`](brm_archetype_successive_cells.md)
   rather than in `brm_formula()` in order to make sure columns are
   appropriately centered and the underlying model matrix has full rank.
+  See the Nuisance variables section of
+  [`brm_archetype_successive_cells()`](brm_archetype_successive_cells.md)
+  for how baseline interactions are centered.
 
 - baseline_time:
 
@@ -204,6 +210,9 @@ brm_formula(
   [`brm_archetype_successive_cells()`](brm_archetype_successive_cells.md)
   rather than in `brm_formula()` in order to make sure columns are
   appropriately centered and the underlying model matrix has full rank.
+  See the Nuisance variables section of
+  [`brm_archetype_successive_cells()`](brm_archetype_successive_cells.md)
+  for how baseline interactions are centered.
 
 - covariates:
 
@@ -387,12 +396,12 @@ homogeneous
 #> sigma ~ 0
 #> attr(,"brm_allow_effect_size")
 #> [1] TRUE
-#> <environment: 0x55baf4c353f0>
+#> <environment: 0x55e914aa0348>
 by_group
 #> sigma ~ group + time
 #> attr(,"brm_allow_effect_size")
 #> [1] TRUE
-#> <environment: 0x55baf4a1c498>
+#> <environment: 0x55e914c10ec8>
 brm_formula(data, sigma = homogeneous)
 #> response ~ group + group:time + time + unstr(time = time, gr = patient) 
 #> sigma ~ 0

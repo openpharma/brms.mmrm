@@ -14,6 +14,7 @@ variable, and optional baseline covariates such as age and gender. As an
 example, consider the `fev_dat` dataset from the `mmrm` package.
 
 ``` r
+
 data(fev_data, package = "mmrm")
 ```
 
@@ -40,6 +41,7 @@ For this vignette, we derive the response variable `FEV1_CHG` as the
 change from baseline of `FEV1`.
 
 ``` r
+
 fev_data <- fev_data |>
   mutate(FEV1_CHG = FEV1 - FEV1_BL)
 ```
@@ -53,6 +55,7 @@ arguments `outcome`, `group`, `time`, etc. as attributes which the
 downstream post-processing functions will recognize.
 
 ``` r
+
 data <- brm_data(
   data = fev_data,
   outcome = "FEV1_CHG",
@@ -67,6 +70,7 @@ data <- brm_data(
 ```
 
 ``` r
+
 data
 #> # A tibble: 800 × 11
 #>    USUBJID AVISIT ARMCD RACE            SEX   FEV1_BL  FEV1 WEIGHT VISITN VISITN2 FEV1_CHG
@@ -85,6 +89,7 @@ data
 ```
 
 ``` r
+
 str(attributes(data))
 #> List of 11
 #>  $ row.names          : int [1:800] 1 2 3 4 5 6 7 8 9 10 ...
@@ -105,6 +110,7 @@ ordered factor whose levels respect the chronological order given by the
 continuous time variable `VISITN`.
 
 ``` r
+
 data <- data |>
   brm_data_chronologize(order = "VISITN")
 ```
@@ -116,6 +122,7 @@ base R from automatically assigning the default but inappropriate
 contrasts.
 
 ``` r
+
 str(data$AVISIT)
 #>  Ord.factor w/ 4 levels "VIS1"<"VIS2"<..: 1 2 3 4 1 2 3 4 1 2 ...
 #>  - attr(*, "contrasts")= num [1:4, 1:3] 0 1 0 0 0 0 1 0 0 0 ...
@@ -132,6 +139,7 @@ from `brms.mmrm` makes this process easier. For example, here is a
 formula that omits baseline response and interaction terms.
 
 ``` r
+
 brm_formula(
   data = data,
   baseline = FALSE,
@@ -146,6 +154,7 @@ For the purposes of our example, we choose a fully parameterized
 analysis of the raw response.
 
 ``` r
+
 formula <- brm_formula(data = data)
 
 formula
@@ -160,13 +169,14 @@ ones. Please use [`brms`](https://paulbuerkner.com/brms/) to construct a
 prior suitable for your analysis. The
 [`brms`](https://paulbuerkner.com/brms/) package has documentation on
 how its default priors are constructed and how to set your own
-priors.[¹](#fn1) Once you have an R object that represents the joint
-prior distribution of your model, you can pass it to the
+priors.[^1] Once you have an R object that represents the joint prior
+distribution of your model, you can pass it to the
 [`brm_model()`](../reference/brm_model.md) function described below. The
 [`get_prior()`](https://paulbuerkner.com/brms/reference/default_prior.html)
 function shows the default priors for a given dataset and model formula.
 
 ``` r
+
 brms::get_prior(data = data, formula = formula) |>
   as.data.frame() |>
   select(-any_of(c("group", "resp", "nlpar", "lb", "ub", "source")))
@@ -204,6 +214,7 @@ the scenes, using the formula and prior you set in the `formula` and
 `prior` arguments.
 
 ``` r
+
 model <- brm_model(data = data, formula = formula, refresh = 0)
 #> Compiling Stan program...
 #> Start sampling
@@ -214,6 +225,7 @@ The result is a `brms` model object with extra list elements
 formula used to fit the model.
 
 ``` r
+
 model
 #>  Family: gaussian 
 #>   Links: mu = identity; sigma = log 
@@ -260,6 +272,7 @@ model
 ```
 
 ``` r
+
 model$brms.mmrm_data
 #> # A tibble: 800 × 11
 #>    USUBJID AVISIT ARMCD RACE            SEX   FEV1_BL  FEV1 WEIGHT VISITN VISITN2 FEV1_CHG
@@ -278,6 +291,7 @@ model$brms.mmrm_data
 ```
 
 ``` r
+
 model$brms.mmrm_formula
 #> FEV1_CHG ~ FEV1_BL + FEV1_BL:AVISIT + ARMCD + ARMCD:AVISIT + AVISIT + RACE + SEX + unstr(time = AVISIT, gr = USUBJID) 
 #> sigma ~ 0 + AVISIT
@@ -303,6 +317,7 @@ To derive posterior draws of these marginals, use the
 [`brm_marginal_draws()`](../reference/brm_marginal_draws.md) function.
 
 ``` r
+
 draws <- brm_marginal_draws(model = model)
 
 names(draws)
@@ -333,6 +348,7 @@ can average the draws above across discrete time points (either all or a
 user-defined subset).
 
 ``` r
+
 draws_average <- brm_marginal_draws_average(draws = draws, data = data)
 
 names(draws_average)
@@ -361,6 +377,7 @@ function produces posterior summaries of these marginals, and it
 includes the Monte Carlo standard error (MCSE) of each estimate.
 
 ``` r
+
 summaries <- brm_marginal_summaries(draws, level = 0.95)
 
 summaries
@@ -384,17 +401,22 @@ The
 [`brm_marginal_probabilities()`](../reference/brm_marginal_probabilities.md)
 function shows posterior probabilities of the form,
 
-$$\begin{array}{r}
-{\text{Prob}\left( \text{treatment effect} > \text{threshold} \right)}
-\end{array}$$
+``` math
+\begin{aligned}
+\text{Prob}(\text{treatment effect} > \text{threshold})
+\end{aligned}
+```
 
 or
 
-$$\begin{array}{r}
-{\text{Prob}\left( \text{treatment effect} < \text{threshold} \right)}
-\end{array}$$
+``` math
+\begin{aligned}
+\text{Prob}(\text{treatment effect} < \text{threshold})
+\end{aligned}
+```
 
 ``` r
+
 brm_marginal_probabilities(
   draws = draws,
   threshold = c(-0.1, 0.1),
@@ -416,6 +438,7 @@ intervals on the response variable in the data, along with other summary
 statistics.
 
 ``` r
+
 summaries_data <- brm_marginal_data(data = data, level = 0.95)
 
 summaries_data
@@ -442,6 +465,7 @@ summaries_data
 Suppose we fit a second model which omits baseline.
 
 ``` r
+
 summaries_no_baseline <- data |>
   brm_formula(baseline = FALSE, baseline_time = FALSE) |>
   brm_model(data = data, refresh = 0) |>
@@ -456,6 +480,7 @@ compares means and intervals from different models and data sources in
 the same plot.
 
 ``` r
+
 brm_plot_compare(
   data = summaries_data,
   no_baseline = summaries_no_baseline,
@@ -469,6 +494,7 @@ If you omit the marginals of the data, you can show inference on change
 from baseline or the treatment effect.
 
 ``` r
+
 brm_plot_compare(
   no_baseline = summaries_no_baseline,
   with_baseline = summaries,
@@ -482,6 +508,7 @@ Additional arguments let you control the primary comparison of interest
 (the color aesthetic), the horizontal axis, and the faceting variable.
 
 ``` r
+
 brm_plot_compare(
   no_baseline = summaries_no_baseline,
   with_baseline = summaries,
@@ -501,6 +528,7 @@ posterior draws of the response, change from baseline, or treatment
 difference.
 
 ``` r
+
 brm_plot_draws(draws = draws$difference_group)
 ```
 
@@ -510,6 +538,7 @@ The `axis` and `facet` arguments customize the horizontal axis and
 faceting variable, respectively.
 
 ``` r
+
 brm_plot_draws(
   draws = draws$difference_group,
   axis = "group",
@@ -523,9 +552,10 @@ brm_plot_draws(
 
 For a model with an intercept term and with automatic centering in
 `brms` turned on, `brms` by default assigns a mildly informative Student
-t prior to help the MCMC converge.[²](#fn2)
+t prior to help the MCMC converge.[^2]
 
 ``` r
+
 brms::prior_summary(model) |>
   filter(class == "Intercept")
 #> Intercept ~ student_t(3, 1.9, 11.8)
@@ -538,6 +568,7 @@ them together with the `ggdist` package. Below, the shaded gray region
 is the posterior density, and the blue line is the prior density.
 
 ``` r
+
 library(distributional)
 library(ggdist)
 library(ggplot2)
@@ -570,6 +601,7 @@ which govern
 for unordered and ordered variables, respectively.
 
 ``` r
+
 options(contrasts = c(unordered = "contr.SAS", ordered = "contr.poly"))
 ```
 
@@ -581,6 +613,7 @@ includes the fixed effects model matrix `X`. Note the differences in the
 above.
 
 ``` r
+
 head(brms::make_standata(formula = formula, data = data)$X)
 #>     Intercept  FEV1_BL ARMCDPBO AVISIT2 AVISIT3 AVISIT4 RACEAsian
 #> 422         1 25.27144        0       1       0       0         0
@@ -609,6 +642,7 @@ If you choose a different contrast method, a different model matrix may
 result.
 
 ``` r
+
 options(
   contrasts = c(unordered = "contr.treatment", ordered = "contr.poly")
 )
@@ -643,6 +677,7 @@ protects the discrete time variable (in our case, `AVISIT`) from the
 `contrasts` option by assigning a `contrasts` attribute of its own.
 
 ``` r
+
 str(data$AVISIT)
 #>  Ord.factor w/ 4 levels "VIS1"<"VIS2"<..: 1 2 3 4 1 2 3 4 1 2 ...
 #>  - attr(*, "contrasts")= num [1:4, 1:3] 0 1 0 0 0 0 1 0 0 0 ...
@@ -670,6 +705,7 @@ is uniquely suited to the multiple imputation of continuous longitudinal
 clinical trial data.
 
 ``` r
+
 variables <- rbmi::set_vars(
   outcome = "FEV1_CHG",
   visit = "AVISIT",
@@ -708,6 +744,7 @@ the individual imputed datasets in the `imputed` object. The computation
 could take several hours because it requires many fitted MMRM.
 
 ``` r
+
 model <- brm_model(
   data = data, # Yes, please supply the original non-imputed dataset too.
   formula = formula,
@@ -733,6 +770,7 @@ this type of imputation, simply supply the returned formula object to
 the `formula` argument of [`brm_model()`](../reference/brm_model.md).
 
 ``` r
+
 brm_formula(data, model_missing_outcomes = TRUE)
 #> FEV1_CHG | mi() ~ FEV1_BL + FEV1_BL:AVISIT + ARMCD + ARMCD:AVISIT + AVISIT + RACE + SEX + unstr(time = AVISIT, gr = USUBJID) 
 #> sigma ~ 0 + AVISIT
@@ -750,15 +788,13 @@ Repeated
 Measures](https://opensource.nibr.com/bamdd/src/02h_mmrm.html),” in
 *Applied Modeling in Drug Development*, Novartis AG.
 
-------------------------------------------------------------------------
-
-1.  Please consult the documentation on automatic centering in `brms` if
-    you plan to set a prior on the intercept:
+[^1]: Please consult the documentation on automatic centering in `brms`
+    if you plan to set a prior on the intercept:
     [`?brms::brmsformula`](https://paulbuerkner.com/brms/reference/brmsformula.html).
     Automatic centering changes the interpretation of the intercept
     parameter.
 
-2.  With automatic centering in `brms`, the prior on the intercept
+[^2]: With automatic centering in `brms`, the prior on the intercept
     applies to the term `Intercept` is the term which gets the prior,
     and `b_Intercept` is a generated quantity representing the intercept
     without centering. See the `center` argument and the

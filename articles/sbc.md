@@ -30,6 +30,7 @@ from the SBC checking study, and we use custom functions to read and
 plot rank statistics:
 
 ``` r
+
 library(dplyr)
 library(ggplot2)
 library(tibble)
@@ -85,6 +86,7 @@ The prior was randomly generated and used for both simulation and
 analysis:
 
 ``` r
+
 setup_prior(subgroup) |>
   select(prior, class, coef, dpar) |>
   as.data.frame()
@@ -142,12 +144,14 @@ simulation code and modeling code are both correct and consistent, then
 the rank statistics should be approximately uniformly distributed.
 
 ``` r
+
 ranks_subgroup <- read_ranks("sbc/results/subgroup.fst")
 ```
 
 Fixed effect parameter ranks:
 
 ``` r
+
 ranks_subgroup |>
   filter(grepl("^b_", parameter)) |>
   filter(!grepl("^b_sigma", parameter)) |>
@@ -159,6 +163,7 @@ ranks_subgroup |>
 Standard deviation parameter ranks:
 
 ``` r
+
 ranks_subgroup |>
   filter(grepl("b_sigma", parameter)) |>
   plot_ranks()
@@ -169,6 +174,7 @@ ranks_subgroup |>
 Correlation parameter ranks:
 
 ``` r
+
 ranks_subgroup |>
   filter(grepl("cortime_", parameter)) |>
   plot_ranks()
@@ -197,6 +203,7 @@ The prior was randomly generated and used for both simulation and
 analysis:
 
 ``` r
+
 setup_prior(unstructured) |>
   select(prior, class, coef, dpar) |>
   as.data.frame()
@@ -217,12 +224,14 @@ setup_prior(unstructured) |>
 SBC checking rank statistics:
 
 ``` r
+
 ranks_unstructured <- read_ranks("sbc/results/unstructured.fst")
 ```
 
 Fixed effect parameter ranks:
 
 ``` r
+
 ranks_unstructured |>
   filter(grepl("^b_", parameter)) |>
   filter(!grepl("^b_sigma", parameter)) |>
@@ -233,6 +242,7 @@ ranks_unstructured |>
 deviation parameter ranks:
 
 ``` r
+
 ranks_unstructured |>
   filter(grepl("b_sigma", parameter)) |>
   plot_ranks()
@@ -243,6 +253,7 @@ ranks_unstructured |>
 Correlation parameter ranks:
 
 ``` r
+
 ranks_unstructured |>
   filter(grepl("cortime_", parameter)) |>
   plot_ranks()
@@ -271,6 +282,7 @@ The prior was randomly generated and used for both simulation and
 analysis:
 
 ``` r
+
 setup_prior(autoregressive_moving_average) |>
   select(prior, class, coef, dpar) |>
   as.data.frame()
@@ -289,6 +301,7 @@ setup_prior(autoregressive_moving_average) |>
 SBC checking rank statistics:
 
 ``` r
+
 ranks_autoregressive_moving_average <- read_ranks(
   "sbc/results/autoregressive_moving_average.fst"
 )
@@ -297,6 +310,7 @@ ranks_autoregressive_moving_average <- read_ranks(
 Fixed effect parameter ranks:
 
 ``` r
+
 ranks_autoregressive_moving_average |>
   filter(grepl("^b_", parameter)) |>
   filter(!grepl("^b_sigma", parameter)) |>
@@ -308,6 +322,7 @@ ranks_autoregressive_moving_average |>
 Log-scale standard deviation parameter ranks:
 
 ``` r
+
 ranks_autoregressive_moving_average |>
   filter(grepl("b_sigma", parameter)) |>
   plot_ranks()
@@ -318,6 +333,7 @@ ranks_autoregressive_moving_average |>
 Correlation parameter ranks:
 
 ``` r
+
 ranks_autoregressive_moving_average |>
   filter(parameter %in% c("ar[1]", "ma[1]")) |>
   plot_ranks()
@@ -337,6 +353,7 @@ The prior was randomly generated and used for both simulation and
 analysis:
 
 ``` r
+
 setup_prior(autoregressive) |>
   select(prior, class, coef, dpar) |>
   as.data.frame()
@@ -354,12 +371,14 @@ setup_prior(autoregressive) |>
 SBC checking rank statistics:
 
 ``` r
+
 ranks_autoregressive <- read_ranks("sbc/results/autoregressive.fst")
 ```
 
 Fixed effect parameter ranks:
 
 ``` r
+
 ranks_autoregressive |>
   filter(grepl("^b_", parameter)) |>
   filter(!grepl("^b_sigma", parameter)) |>
@@ -370,6 +389,7 @@ ranks_autoregressive |>
 deviation parameter ranks:
 
 ``` r
+
 ranks_autoregressive |>
   filter(grepl("b_sigma", parameter)) |>
   plot_ranks()
@@ -380,6 +400,7 @@ ranks_autoregressive |>
 Correlation parameter ranks:
 
 ``` r
+
 ranks_autoregressive |>
   filter(parameter %in% c("ar[1]", "ar[2]")) |>
   plot_ranks()
@@ -399,6 +420,7 @@ The prior was randomly generated and used for both simulation and
 analysis:
 
 ``` r
+
 setup_prior(moving_average) |>
   select(prior, class, coef, dpar) |>
   as.data.frame()
@@ -416,12 +438,14 @@ setup_prior(moving_average) |>
 SBC checking rank statistics:
 
 ``` r
+
 ranks_moving_average <- read_ranks("sbc/results/moving_average.fst")
 ```
 
 Fixed effect parameter ranks:
 
 ``` r
+
 ranks_moving_average |>
   filter(grepl("^b_", parameter)) |>
   filter(!grepl("^b_sigma", parameter)) |>
@@ -432,6 +456,7 @@ ranks_moving_average |>
 deviation parameter ranks:
 
 ``` r
+
 ranks_moving_average |>
   filter(grepl("b_sigma", parameter)) |>
   plot_ranks()
@@ -442,6 +467,7 @@ ranks_moving_average |>
 Correlation parameter ranks:
 
 ``` r
+
 ranks_moving_average |>
   filter(parameter %in% c("ma[1]", "ma[2]")) |>
   plot_ranks()
@@ -461,6 +487,7 @@ The prior was randomly generated and used for both simulation and
 analysis:
 
 ``` r
+
 setup_prior(compound_symmetry) |>
   select(prior, class, coef, dpar) |>
   as.data.frame()
@@ -478,12 +505,14 @@ setup_prior(compound_symmetry) |>
 SBC checking rank statistics:
 
 ``` r
+
 ranks_compound_symmetry <- read_ranks("sbc/results/compound_symmetry.fst")
 ```
 
 Fixed effect parameter ranks:
 
 ``` r
+
 ranks_compound_symmetry |>
   filter(grepl("^b_", parameter)) |>
   filter(!grepl("^b_sigma", parameter)) |>
@@ -494,6 +523,7 @@ ranks_compound_symmetry |>
 deviation parameter ranks:
 
 ``` r
+
 ranks_compound_symmetry |>
   filter(grepl("b_sigma", parameter)) |>
   plot_ranks()
@@ -504,6 +534,7 @@ ranks_compound_symmetry |>
 Correlation parameter ranks:
 
 ``` r
+
 ranks_compound_symmetry |>
   filter(parameter == "cosy") |>
   plot_ranks()
@@ -523,6 +554,7 @@ The prior was randomly generated and used for both simulation and
 analysis:
 
 ``` r
+
 setup_prior(diagonal) |>
   select(prior, class, coef, dpar) |>
   as.data.frame()
@@ -542,12 +574,14 @@ setup_prior(diagonal) |>
 SBC checking rank statistics:
 
 ``` r
+
 ranks_diagonal <- read_ranks("sbc/results/diagonal.fst")
 ```
 
 Fixed effect parameter ranks:
 
 ``` r
+
 ranks_diagonal |>
   filter(grepl("^b_", parameter)) |>
   filter(!grepl("^b_sigma", parameter)) |>
@@ -558,6 +592,7 @@ ranks_diagonal |>
 deviation parameter ranks:
 
 ``` r
+
 ranks_diagonal |>
   filter(grepl("b_sigma", parameter)) |>
   plot_ranks()

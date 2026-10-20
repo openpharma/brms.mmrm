@@ -100,16 +100,17 @@ The following table shows the first rows of the dataset.
 +   tab_caption(caption = md("Table 1. First rows of the pre-processed `fev_dat` dataset."))
 ```
 
-| USUBJID | AVISIT | ARMCD | RACE                      | SEX    | FEV1_BL  | FEV1     | WEIGHT    | VISITN | VISITN2    | FEV1_CHG   |
-|---------|--------|-------|---------------------------|--------|----------|----------|-----------|--------|------------|------------|
-| PT2     | VIS1   | PBO   | Asian                     | Male   | 45.02477 | NA       | 0.4651848 | 1      | 0.3295078  | NA         |
-| PT2     | VIS2   | PBO   | Asian                     | Male   | 45.02477 | 31.45522 | 0.2330974 | 2      | -0.8204684 | -13.569552 |
-| PT2     | VIS3   | PBO   | Asian                     | Male   | 45.02477 | 36.87889 | 0.3600763 | 3      | 0.4874291  | -8.145878  |
-| PT2     | VIS4   | PBO   | Asian                     | Male   | 45.02477 | 48.80809 | 0.5073795 | 4      | 0.7383247  | 3.783324   |
-| PT3     | VIS1   | PBO   | Black or African American | Female | 43.50070 | NA       | 0.6821642 | 1      | 0.5757814  | NA         |
-| PT3     | VIS2   | PBO   | Black or African American | Female | 43.50070 | 35.98699 | 0.8917896 | 2      | -0.3053884 | -7.513705  |
+| USUBJID | AVISIT | ARMCD | RACE | SEX | FEV1_BL | FEV1 | WEIGHT | VISITN | VISITN2 | FEV1_CHG |
+|----|----|----|----|----|----|----|----|----|----|----|
+| PT2 | VIS1 | PBO | Asian | Male | 45.02477 | NA | 0.4651848 | 1 | 0.3295078 | NA |
+| PT2 | VIS2 | PBO | Asian | Male | 45.02477 | 31.45522 | 0.2330974 | 2 | -0.8204684 | -13.569552 |
+| PT2 | VIS3 | PBO | Asian | Male | 45.02477 | 36.87889 | 0.3600763 | 3 | 0.4874291 | -8.145878 |
+| PT2 | VIS4 | PBO | Asian | Male | 45.02477 | 48.80809 | 0.5073795 | 4 | 0.7383247 | 3.783324 |
+| PT3 | VIS1 | PBO | Black or African American | Female | 43.50070 | NA | 0.6821642 | 1 | 0.5757814 | NA |
+| PT3 | VIS2 | PBO | Black or African American | Female | 43.50070 | 35.98699 | 0.8917896 | 2 | -0.3053884 | -7.513705 |
 
-Table 1. First rows of the pre-processed `fev_dat` dataset.
+Table 1. First rows of the pre-processed `fev_dat` dataset. {.table
+.gt_table quarto-disable-processing="false" quarto-bootstrap="false"}
 
 ### Descriptive statistics
 
@@ -132,7 +133,8 @@ Table of baseline characteristics:
 
 [TABLE]
 
-Table 2. Baseline characteristics.
+Table 2. Baseline characteristics. {.table .gt_table
+quarto-disable-processing="false" quarto-bootstrap="false"}
 
 Table of change from baseline in FEV1 over 52 weeks:
 
@@ -162,7 +164,8 @@ Table of change from baseline in FEV1 over 52 weeks:
 
 [TABLE]
 
-Table 3. Change from baseline.
+Table 3. Change from baseline. {.table .gt_table
+quarto-disable-processing="false" quarto-bootstrap="false"}
 
 The following figure shows the primary endpoint over the four study
 visits in the data.
@@ -538,7 +541,8 @@ and `mmrm`.
 | correlation_vis3_vis4      | 0.0144   | 0.0159      | −0.0015    | −0.0929  |
 
 Table 4. Comparison of parameter estimates between Bayesian and
-frequentist MMRMs.
+frequentist MMRMs. {.table .gt_table quarto-disable-processing="false"
+quarto-bootstrap="false"}
 
 ``` r
 > table_se <- b_f_comparison |>
@@ -579,7 +583,8 @@ frequentist MMRMs.
 | avisit4:armcdtrt           | 1.6805   | 1.6605      | 0.0200     | 0.0120   |
 
 Table 5. Comparison of parameter standard errors between Bayesian and
-frequentist MMRMs.
+frequentist MMRMs. {.table .gt_table quarto-disable-processing="false"
+quarto-bootstrap="false"}
 
 ## Session info
 

@@ -21,6 +21,7 @@ trials, we refer to Lipkovich et al. (2017) and Lipkovich et al. (2023).
 The subgroup variable must be categorical.
 
 ``` r
+
 library(brms.mmrm)
 library(dplyr)
 library(magrittr)
@@ -57,6 +58,7 @@ among all treatment groups at all discrete time points. Otherwise, some
 marginal means of interest may not be estimable.
 
 ``` r
+
 count(raw_data, group, subgroup, time)
 #> # A tibble: 18 × 4
 #>    group   subgroup   time       n
@@ -89,6 +91,7 @@ subgroups: for example, the treatment effect of `subgroup_2` minus the
 treatment effect of the reference subgroup level you choose.
 
 ``` r
+
 data <- brm_data(
   data = raw_data,
   outcome = "response",
@@ -129,6 +132,7 @@ of [`brm_formula()`](../reference/brm_formula.md). For this specific
 example, we disable all interactions except group-subgroup interaction.
 
 ``` r
+
 formula_subgroup <- brm_formula(
   data = data,
   group_subgroup_time = FALSE,
@@ -143,9 +147,10 @@ formula_subgroup
 To create an analogous non-subgroup reduced model, disable each of the
 terms that involve the subgroup. This will be useful later on for
 measuring the impact of the subgroup as a whole, without needing to
-restrict to a specific level of the subgroup.[¹](#fn1)
+restrict to a specific level of the subgroup.[^1]
 
 ``` r
+
 formula_reduced <- brm_formula(
   data = data,
   group_subgroup = FALSE,
@@ -166,6 +171,7 @@ To run the full subgroup and reduced non-subgroup models, use
 the appropriate formula to each case.
 
 ``` r
+
 model_subgroup <- brm_model(
   data = data,
   formula = formula_subgroup,
@@ -176,6 +182,7 @@ model_subgroup <- brm_model(
 ```
 
 ``` r
+
 model_reduced <- brm_model(
   data = data,
   formula = formula_reduced,
@@ -190,9 +197,10 @@ model_reduced <- brm_model(
 [`brm_marginal_draws()`](../reference/brm_marginal_draws.md)
 automatically produces subgroup-specific marginal means if
 [`brm_formula()`](../reference/brm_formula.md) declared
-subgroup-specific fixed effects.[²](#fn2)
+subgroup-specific fixed effects.[^2]
 
 ``` r
+
 draws_subgroup <- brm_marginal_draws(
   model = model_subgroup,
   average_within_subgroup = FALSE
@@ -200,6 +208,7 @@ draws_subgroup <- brm_marginal_draws(
 ```
 
 ``` r
+
 draws_reduced <- brm_marginal_draws(
   model = model_reduced,
   average_within_subgroup = FALSE
@@ -210,6 +219,7 @@ For `draws_subgroup`, the marginals of the time difference (change from
 baseline) and treatment difference are now subgroup-specific.
 
 ``` r
+
 tibble::as_tibble(draws_subgroup$difference_group)
 #> # A tibble: 4,000 × 11
 #>    .chain .draw .iteration `group_2|subgroup_1|time_2` group_2|subgroup_1|time…¹
@@ -238,6 +248,7 @@ subgroup level and the reference subgroup level with respect to the
 treatment effects in `difference_group`.
 
 ``` r
+
 tibble::as_tibble(draws_subgroup$difference_subgroup)
 #> # A tibble: 4,000 × 7
 #>    .chain .draw .iteration `group_2|subgroup_2|time_2` group_2|subgroup_2|time…¹
@@ -268,6 +279,7 @@ summarizes the subgroup differences in the `difference_subgroup` table
 from [`brm_marginal_draws()`](../reference/brm_marginal_draws.md).
 
 ``` r
+
 summaries_subgroup <- brm_marginal_summaries(
   draws_subgroup,
   level = 0.95
@@ -300,6 +312,7 @@ still focuses on treatment effects, not on differences between pairs of
 subgroup levels.
 
 ``` r
+
 brm_marginal_probabilities(
   draws = draws_subgroup,
   threshold = c(-0.1, 0.1),
@@ -330,6 +343,7 @@ brm_marginal_probabilities(
 non-subgroup-specific summary statistics.
 
 ``` r
+
 summaries_data_subgroup <- brm_marginal_data(
   data = data,
   level = 0.95,
@@ -354,6 +368,7 @@ summaries_data_subgroup
 ```
 
 ``` r
+
 summaries_data_reduced <- brm_marginal_data(
   data = data,
   level = 0.95,
@@ -385,6 +400,7 @@ can easily compute the widely applicable information criterion (WAIC) of
 each model.
 
 ``` r
+
 brms::waic(model_subgroup)
 #> 
 #> Computed from 4000 by 900 log-likelihood matrix.
@@ -396,6 +412,7 @@ brms::waic(model_subgroup)
 ```
 
 ``` r
+
 brms::waic(model_reduced)
 #> 
 #> Computed from 4000 by 900 log-likelihood matrix.
@@ -411,11 +428,13 @@ predictive density (ELPD) based on approximate Pareto-smoothed
 leave-one-out cross-validation.
 
 ``` r
+
 loo_subgroup <- brms::loo(model_subgroup)
 loo_reduced <- brms::loo(model_reduced)
 ```
 
 ``` r
+
 loo_subgroup
 #> 
 #> Computed from 4000 by 900 log-likelihood matrix.
@@ -433,6 +452,7 @@ loo_subgroup
 ```
 
 ``` r
+
 loo_reduced
 #> 
 #> Computed from 4000 by 900 log-likelihood matrix.
@@ -450,6 +470,7 @@ loo_reduced
 ```
 
 ``` r
+
 loo::loo_compare(loo_subgroup, loo_reduced)
 #>                elpd_diff se_diff
 #> model_reduced   0.0       0.0   
@@ -462,6 +483,7 @@ loo::loo_compare(loo_subgroup, loo_reduced)
 subgroup-specific marginal means.
 
 ``` r
+
 brm_plot_draws(draws_subgroup$difference_group)
 ```
 
@@ -471,6 +493,7 @@ You can adjust visual aesthetics to compare subgroup levels side by side
 if subgroup level is the primary comparison of interest.
 
 ``` r
+
 brm_plot_draws(
   draws_subgroup$difference_group,
   axis = "subgroup",
@@ -484,6 +507,7 @@ The following function call compares the subgroup model results against
 the subgroup data.
 
 ``` r
+
 brm_plot_compare(
   data = summaries_data_subgroup,
   model = summaries_subgroup,
@@ -497,6 +521,7 @@ You can adjust plot aesthetics to view subgroup levels side by side as
 the primary comparison of interest.
 
 ``` r
+
 brm_plot_compare(
   data = summaries_data_subgroup,
   model = summaries_subgroup,
@@ -513,6 +538,7 @@ We can also visually compare the treatment effects of a subgroup level
 against the marginal treatment effects of the reduced model.
 
 ``` r
+
 brm_plot_compare(
   subgroup = filter(summaries_subgroup, subgroup == "subgroup_2"),
   reduced = summaries_reduced,
@@ -527,6 +553,7 @@ Please remember to filter on a single subgroup level. Otherwise,
 informative error to prevent overplotting.
 
 ``` r
+
 brm_plot_compare(
   subgroup = summaries_subgroup,
   reduced = summaries_reduced,
@@ -561,13 +588,11 @@ Lipkovich, I., Svensson, D., Ratitch, B., and Dmitrienko, A. (2023),
 heterogeneous treatment effects from clinical data,” *Clin Trials*, 20,
 380–393.
 
-------------------------------------------------------------------------
-
-1.  If analyzing change from baseline, you would also need to set
+[^1]: If analyzing change from baseline, you would also need to set
     `baseline_subgroup = FALSE` and `baseline_subgroup_time = FALSE` in
     the formula of the reduced model.
 
-2.  See the subgroup analysis section of
+[^2]: See the subgroup analysis section of
     <https://openpharma.github.io/brms.mmrm/articles/inference.html> for
     an explanation of `average_within_subgroup` in
     [`brm_transform_marginal()`](../reference/brm_transform_marginal.md)

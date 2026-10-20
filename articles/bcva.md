@@ -104,7 +104,8 @@ The following table shows the first rows of the dataset.
 | 3       | VIS4   | 4      | CTL   | Asian | 71.70881 | 4.822669  |
 | 3       | VIS5   | 5      | CTL   | Asian | 71.70881 | 7.348768  |
 
-Table 1. First rows of the pre-processed `bcva_data` dataset.
+Table 1. First rows of the pre-processed `bcva_data` dataset. {.table
+.gt_table quarto-disable-processing="false" quarto-bootstrap="false"}
 
 ### Descriptive statistics
 
@@ -127,7 +128,8 @@ Table of baseline characteristics:
 
 [TABLE]
 
-Table 2. Baseline characteristics.
+Table 2. Baseline characteristics. {.table .gt_table
+quarto-disable-processing="false" quarto-bootstrap="false"}
 
 Table of change from baseline in BCVA over 52 weeks:
 
@@ -157,7 +159,8 @@ Table of change from baseline in BCVA over 52 weeks:
 
 [TABLE]
 
-Table 3. Change from baseline.
+Table 3. Change from baseline. {.table .gt_table
+quarto-disable-processing="false" quarto-bootstrap="false"}
 
 The following figure shows the primary endpoint over the four study
 visits in the data.
@@ -677,7 +680,8 @@ and `mmrm`.
 | correlation_vis9_vis10 | 0.0781   | 0.0812      | −0.0031    | −0.0383  |
 
 Table 4. Comparison of parameter estimates between Bayesian and
-frequentist MMRMs.
+frequentist MMRMs. {.table .gt_table quarto-disable-processing="false"
+quarto-bootstrap="false"}
 
 ``` r
 > table_se <- b_f_comparison |>
@@ -729,4 +733,5 @@ frequentist MMRMs.
 | avisit10:armcdtrt | 0.1837   | 0.1815      | 0.0022     | 0.0122   |
 
 Table 5. Comparison of parameter standard errors between Bayesian and
-frequentist MMRMs.
+frequentist MMRMs. {.table .gt_table quarto-disable-processing="false"
+quarto-bootstrap="false"}

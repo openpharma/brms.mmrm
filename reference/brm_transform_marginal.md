@@ -86,6 +86,18 @@ means. You may customize the output of `brm_transform_marginal()` before
 passing it to [`brm_marginal_draws()`](brm_marginal_draws.md). However,
 please do not modify the dimensions, row names, or column names.
 
+For informative prior archetypes, `brm_transform_marginal()` assumes the
+nuisance columns are centered as the archetype recorded them.
+Recentering a nuisance variable shifts the reference level of the model,
+so please recenter with
+[`brm_recenter_nuisance()`](brm_recenter_nuisance.md), which keeps the
+recorded center in sync with the column. `brm_transform_marginal()`
+prints an informative message (once per session) if it detects a
+nuisance column that was recentered some other way. Whenever a nuisance
+variable is recentered manually, it is your responsibility to interpret
+the reference level of the model and the resulting marginal means
+appropriately.
+
 ## Examples
 
 ``` r

@@ -18,10 +18,10 @@ with best practices for the life sciences.
 
 ## Installation
 
-| Type        | Source     | Command                                                                      |
-|-------------|------------|------------------------------------------------------------------------------|
-| Release     | CRAN       | `install.packages("brms.mmrm")`                                              |
-| Development | GitHub     | `remotes::install_github("openpharma/brms.mmrm")`                            |
+| Type | Source | Command |
+|----|----|----|
+| Release | CRAN | `install.packages("brms.mmrm")` |
+| Development | GitHub | `remotes::install_github("openpharma/brms.mmrm")` |
 | Development | openpharma | `install.packages("brms.mmrm", repos = "https://openpharma.r-universe.dev")` |
 
 ## Documentation

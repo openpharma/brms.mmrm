@@ -18,6 +18,7 @@ interested in the `FEV1` change from baseline to each time point
 responses in order to simplify the discussion.
 
 ``` r
+
 library(brms.mmrm)
 library(dplyr)
 library(tidyr)
@@ -51,6 +52,7 @@ data <- fev_data |>
 ```
 
 ``` r
+
 data
 #> # A tibble: 788 × 10
 #>    USUBJID AVISIT ARMCD RACE        SEX   FEV1_BL WEIGHT VISITN VISITN2 FEV1_CHG
@@ -77,13 +79,14 @@ factors of interest. In a clinical trial with repeated measures, we are
 often interested in the mean response at each combination of treatment
 group and discrete time point. For our FEV1 dataset, we are interested
 in the mean of `FEV1_CHG` and its standard error for each combination of
-treatment group and time point.[¹](#fn1) In other words, we want to
-estimate the mean `FEV1_CHG` for group `"TRT"` time `"VIS1"`, the mean
-`FEV1_CHG` for group `"TRT"` time `"VIS2"`, and so on.[²](#fn2) We
-represent our goals in a reference with one row per marginal mean of
-interest and columns with the levels of the factors of interest.
+treatment group and time point.[^1] In other words, we want to estimate
+the mean `FEV1_CHG` for group `"TRT"` time `"VIS1"`, the mean `FEV1_CHG`
+for group `"TRT"` time `"VIS2"`, and so on.[^2] We represent our goals
+in a reference with one row per marginal mean of interest and columns
+with the levels of the factors of interest.
 
 ``` r
+
 reference_grid <- distinct(data, ARMCD, AVISIT)
 reference_grid
 #> # A tibble: 8 × 2
@@ -109,6 +112,7 @@ Even terms like `AVISITVIS2:ARMCDTRT` implicitly condition on a subset
 of the data because of the other variables involved.
 
 ``` r
+
 brms_mmrm_formula <- brm_formula(data, correlation = "diagonal")
 base_formula <- as.formula(brms_mmrm_formula[[1]])
 attr(base_formula, "nl") <- NULL
@@ -116,15 +120,17 @@ attr(base_formula, "loop") <- NULL
 ```
 
 ``` r
+
 base_formula
 #> FEV1_CHG ~ FEV1_BL + FEV1_BL:AVISIT + ARMCD + ARMCD:AVISIT + 
 #>     AVISIT + RACE + SEX + WEIGHT
 #> attr(,"center")
 #> [1] TRUE
-#> <environment: 0x55b3a478cf30>
+#> <environment: 0x55eed81d42a8>
 ```
 
 ``` r
+
 colnames(model.matrix(object = base_formula, data = data))
 #>  [1] "(Intercept)"                   "FEV1_BL"                      
 #>  [3] "ARMCDTRT"                      "AVISITVIS2"                   
@@ -170,10 +176,12 @@ To estimate marginal means,
 creates a special matrix.
 
 ``` r
+
 transform <- brm_transform_marginal(data = data, formula = brms_mmrm_formula)
 ```
 
 ``` r
+
 dim(transform)
 #> [1]  8 16
 transform[, 1:4]
@@ -189,9 +197,10 @@ transform[, 1:4]
 ```
 
 This special matrix encodes the equations below which map model
-coefficients to marginal means.[³](#fn3)
+coefficients to marginal means.[^3]
 
 ``` r
+
 summary(transform)
 #> # This is a matrix to transform model parameters to marginal means.
 #> # The following equations show the relationships between the
@@ -213,6 +222,7 @@ plugging the coefficients into the equations above. Both produce
 estimates of marginal means.
 
 ``` r
+
 model <- lm(formula = base_formula, data = data)
 marginals_custom <- transform %*% coef(model)
 marginals_custom
@@ -228,10 +238,11 @@ marginals_custom
 ```
 
 This technique is similar to
-[`emmeans::emmeans(weights = "proportional")`](https://cran.r-project.org/package=emmeans)[⁴](#fn4)
+[`emmeans::emmeans(weights = "proportional")`](https://cran.r-project.org/package=emmeans)[^4]
 (Lenth (2016), Searle et al. (1980)) and produces similar estimates.
 
 ``` r
+
 library(emmeans)
 #> Welcome to emmeans.
 #> Caution: You lose important information if you filter this package's results.
@@ -249,6 +260,7 @@ marginals_emmeans <- emmeans(
 ```
 
 ``` r
+
 marginals_emmeans
 #> # A tibble: 8 × 3
 #>   ARMCD AVISIT emmean
@@ -264,16 +276,17 @@ marginals_emmeans
 ```
 
 ``` r
+
 marginals_custom - marginals_emmeans$emmean
 #>                   [,1]
 #> PBO|VIS1  0.000000e+00
-#> PBO|VIS2  4.440892e-16
-#> PBO|VIS3 -1.110223e-16
-#> PBO|VIS4 -8.881784e-16
-#> TRT|VIS1 -1.110223e-15
-#> TRT|VIS2 -5.551115e-16
-#> TRT|VIS3 -1.332268e-15
-#> TRT|VIS4 -1.776357e-15
+#> PBO|VIS2 -4.440892e-16
+#> PBO|VIS3  3.330669e-16
+#> PBO|VIS4  0.000000e+00
+#> TRT|VIS1 -2.220446e-16
+#> TRT|VIS2 -2.220446e-16
+#> TRT|VIS3 -4.440892e-16
+#> TRT|VIS4  0.000000e+00
 ```
 
 For our Bayesian MMRMs in `brms.mmrm`, the transformation from
@@ -285,7 +298,7 @@ the value of the `transform` argument of
 [`brm_marginal_draws()`](../reference/brm_marginal_draws.md). That way,
 [`brm_marginal_draws()`](../reference/brm_marginal_draws.md) produces an
 entire estimated posterior of each marginal mean, rather than point
-estimates that assume a normal or Student-t distribution.[⁵](#fn5)
+estimates that assume a normal or Student-t distribution.[^5]
 
 ## How `brm_marginal_draws()` works
 
@@ -293,6 +306,7 @@ Let us take a closer look at the equations that map model parameters to
 marginal means.
 
 ``` r
+
 summary(transform)
 #> # This is a matrix to transform model parameters to marginal means.
 #> # The following equations show the relationships between the
@@ -337,6 +351,7 @@ first create a reference grid to define the factor levels of interest
 and the means of continuous variables to condition on.
 
 ``` r
+
 grid <- data |>
   mutate(FEV1_BL = mean(FEV1_BL), WEIGHT = mean(WEIGHT)) |>
   distinct(ARMCD, AVISIT, FEV1_BL, WEIGHT) |>
@@ -361,6 +376,7 @@ column represents a model coefficient, and each row represents a
 marginal mean of interest.
 
 ``` r
+
 transform <- model.matrix(
   object = ~ FEV1_BL * AVISIT + ARMCD * AVISIT + WEIGHT,
   data = grid
@@ -412,9 +428,10 @@ those dummy variables across the entire dataset. This process accounts
 for the observed frequencies of these levels in the data (ideal for
 passive variables that the experiment does not directly control), while
 guarding against hidden confounding with the factors of interest (which
-can lead to Simpson’s paradox).[⁶](#fn6)
+can lead to Simpson’s paradox).[^6]
 
 ``` r
+
 proportional_factors <- data |>
   model.matrix(object = ~ 0 + SEX + RACE) |>
   colMeans() |>
@@ -425,6 +442,7 @@ proportional_factors
 ```
 
 ``` r
+
 transform <- transform |>
   bind_cols(proportional_factors) |>
   as.matrix()
@@ -473,6 +491,7 @@ Finally, we use this transformation matrix to map estimated model
 coefficients to estimated marginal means.
 
 ``` r
+
 marginals_custom <- transform %*% coef(model)
 marginals_custom
 #>                [,1]
@@ -490,6 +509,7 @@ These results are extremely close to the estimated marginal means from
 `emmeans`.
 
 ``` r
+
 marginals_emmeans |>
   bind_cols(custom = as.numeric(marginals_custom)) |>
   mutate(difference = custom - emmean)
@@ -497,13 +517,13 @@ marginals_emmeans |>
 #>   ARMCD AVISIT emmean custom difference
 #>   <fct> <fct>   <dbl>  <dbl>      <dbl>
 #> 1 PBO   VIS1   -4.60  -4.60    0       
-#> 2 PBO   VIS2   -2.54  -2.54    4.44e-16
-#> 3 PBO   VIS3    0.984  0.984  -1.11e-16
-#> 4 PBO   VIS4    5.60   5.60   -8.88e-16
-#> 5 TRT   VIS1   -1.29  -1.29   -1.11e-15
-#> 6 TRT   VIS2    0.847  0.847  -5.55e-16
-#> 7 TRT   VIS3    3.80   3.80   -1.33e-15
-#> 8 TRT   VIS4   10.1   10.1    -1.78e-15
+#> 2 PBO   VIS2   -2.54  -2.54   -4.44e-16
+#> 3 PBO   VIS3    0.984  0.984   3.33e-16
+#> 4 PBO   VIS4    5.60   5.60    0       
+#> 5 TRT   VIS1   -1.29  -1.29   -2.22e-16
+#> 6 TRT   VIS2    0.847  0.847  -2.22e-16
+#> 7 TRT   VIS3    3.80   3.80   -4.44e-16
+#> 8 TRT   VIS4   10.1   10.1     0    
 ```
 
 `brms.mmrm` follows the procedure above, but in a Bayesian context. The
@@ -535,6 +555,7 @@ calculated `marginals_emmeans` above, but we now move `SEX` from
 `nuisance` to `specs`:
 
 ``` r
+
 emmeans(
   object = model,
   specs = ~SEX:ARMCD:AVISIT,
@@ -588,6 +609,7 @@ from scratch, first create a reference grid which includes subgroup
 levels.
 
 ``` r
+
 grid <- data |>
   distinct(ARMCD, SEX, AVISIT) |>
   arrange(ARMCD, SEX, AVISIT)
@@ -617,6 +639,7 @@ For each continuous variable, append the corresponding subgroup-specific
 averages to the grid.
 
 ``` r
+
 means <- data |>
   group_by(SEX) |>
   summarize(FEV1_BL = mean(FEV1_BL), WEIGHT = mean(WEIGHT), .groups = "drop")
@@ -648,6 +671,7 @@ Be sure to include the subgroup in the formula below exactly as it
 appears in the formula used to fit the model.
 
 ``` r
+
 transform <- model.matrix(
   object = ~ FEV1_BL * AVISIT + ARMCD * AVISIT + SEX + WEIGHT,
   data = grid
@@ -658,6 +682,7 @@ Append subgroup-specific averages of the levels of nuisance factors (in
 this case, just `RACE`).
 
 ``` r
+
 proportions <- data |>
   model.matrix(object = ~ 0 + RACE) |>
   as.data.frame() |>
@@ -676,6 +701,7 @@ Complete the transformation matrix by assigning the correct row names
 and aligning the column order with that of the model coefficients.
 
 ``` r
+
 rownames(transform) <- paste(grid$ARMCD, grid$SEX, grid$AVISIT)
 transform <- transform[, names(coef(model))]
 transform
@@ -754,6 +780,7 @@ marginal means. Because we averaged `FEV1_BL`, `WEIGHT`, and `RACE`
 within subgroup levels, the results will differ from those of `emmeans`.
 
 ``` r
+
 transform %*% coef(model)
 #>                       [,1]
 #> PBO Male VIS1   -5.0812041
@@ -803,27 +830,25 @@ marginal means in the linear model: An alternative to least squares
 means,” *The American Statistician*, 34, 216–221.
 <https://doi.org/10.1080/00031305.1980.10483031>.
 
-------------------------------------------------------------------------
-
-1.  For a subgroup analysis where the subgroup factor is identified in
+[^1]: For a subgroup analysis where the subgroup factor is identified in
     advance, we would be interested in each combination of treatment
     group, subgroup level, and time point.
 
-2.  Other quantities of interest are downstream of these marginal means.
-    For example, the difference between `TRT` and `PBO` at time point
-    `VIS4`, and the difference between `VIS4` and `VIS4` for the `TRT`
-    group, are simple contrasts of the upstream marginal means.
+[^2]: Other quantities of interest are downstream of these marginal
+    means. For example, the difference between `TRT` and `PBO` at time
+    point `VIS4`, and the difference between `VIS4` and `VIS4` for the
+    `TRT` group, are simple contrasts of the upstream marginal means.
 
-3.  [`summary()`](https://rdrr.io/r/base/summary.html) also invisibly
+[^3]: [`summary()`](https://rdrr.io/r/base/summary.html) also invisibly
     returns a simple character vector with the equations below.
 
-4.  Unlike `emmeans`, `brms.mmrm` completes the grid of patient visits
+[^4]: Unlike `emmeans`, `brms.mmrm` completes the grid of patient visits
     to add rows for implicitly missing responses. Completing the grid of
     patient visits ensures all patients are represented equally when
     averaging over baseline covariates, regardless of patients who drop
     out early.
 
-5.  You can then estimate the posterior of any function of marginal
+[^5]: You can then estimate the posterior of any function of marginal
     means by simply applying that function to the individual posterior
     draws from
     [`brm_marginal_draws()`](../reference/brm_marginal_draws.md).
@@ -831,7 +856,7 @@ means,” *The American Statistician*, 34, 216–221.
     identify column names for this kind of custom
     inference/post-processing.
 
-6.  For more context, please refer to the [`emmeans` basics
+[^6]: For more context, please refer to the [`emmeans` basics
     vignette](https://cran.r-project.org/package=emmeans/vignettes/basics.html),
     as well as discussion forums
     [here](https://stats.stackexchange.com/questions/332167/what-are-ls-means-useful-for)

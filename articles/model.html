@@ -12,8 +12,8 @@
 <link rel="icon" sizes="any" href="../favicon.ico">
 <link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Model">
 </head>
@@ -84,12 +84,10 @@
     
 <p>The <code>brms.mmrm</code> R package implements a mixed model of
 repeated measures (MMRM), a popular and flexible model to analyze
-continuous longitudinal outcomes (<span class="citation">Mallinckrodt et
-al. (2008)</span>, <span class="citation">Mallinckrodt and Lipkovich
-(2017)</span>, <span class="citation">Holzhauer and Weber
-(2024)</span>). <code>brms.mmrm</code> focuses on marginal MMRMs for
-randomized controlled parallel studies with discrete time points, where
-each patient shares the same set of time points. Whereas the <a href="https://openpharma.github.io/mmrm/" class="external-link"><code>mmrm</code></a> package
+continuous longitudinal outcomes (<span class="citation"><span class="nocase">Mallinckrodt et al.</span> (2008)</span>, <span class="citation">Mallinckrodt and Lipkovich (2017)</span>, <span class="citation">Holzhauer and Weber (2024)</span>).
+<code>brms.mmrm</code> focuses on marginal MMRMs for randomized
+controlled parallel studies with discrete time points, where each
+patient shares the same set of time points. Whereas the <a href="https://openpharma.github.io/mmrm/" class="external-link"><code>mmrm</code></a> package
 is frequentist, <code>brms.mmrm</code> fits models in Bayesian fashion
 using <a href="https://paulbuerkner.com/brms/" class="external-link"><code>brms</code></a>
 <span class="citation">(Bürkner 2017)</span>.</p>
@@ -109,7 +107,7 @@ is the number of discrete time points in the dataset (e.g. patient
 visits in the study protocol). We model
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>y</mi><mi>n</mi></msub><annotation encoding="application/x-tex">y_n</annotation></semantics></math>
 as follows:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"><msub><mi>y</mi><mi>n</mi></msub><mo>∼</mo><mtext mathvariant="normal">Multivariate-Normal</mtext><mrow><mo stretchy="true" form="prefix">(</mo><mtext mathvariant="normal">mean</mtext><mo>=</mo><msub><mi>X</mi><mi>n</mi></msub><mi>b</mi><mo>,</mo><mspace width="0.222em"></mspace><mtext mathvariant="normal">variance</mtext><mo>=</mo><msub><mi>Σ</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mtd></mtr></mtable><annotation encoding="application/x-tex">
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"><msub><mi>y</mi><mi>n</mi></msub><mo>∼</mo><mtext mathvariant="normal">Multivariate-Normal</mtext><mrow><mo stretchy="true" form="prefix">(</mo><mtext mathvariant="normal">mean</mtext><mo>=</mo><msub><mi>X</mi><mi>n</mi></msub><mi>b</mi><mo>,</mo><mspace width="0.222em"></mspace><mtext mathvariant="normal">variance</mtext><mo>=</mo><msub><mi mathvariant="normal">Σ</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mtd></mtr></mtable><annotation encoding="application/x-tex">
 \begin{aligned}
 y_n \sim \text{Multivariate-Normal}\left ( \text{mean} = X_n b, \ \text{variance} = \Sigma_n \right )
 \end{aligned}
@@ -128,11 +126,11 @@ the mean and the variance of the multivariate normal likelihood. In
 particular, the
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo>×</mo><mi>T</mi></mrow><annotation encoding="application/x-tex">T \times T</annotation></semantics></math>
 symmetric positive-definite residual covariance matrix
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>Σ</mi><mi>n</mi></msub><annotation encoding="application/x-tex">\Sigma_n</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi mathvariant="normal">Σ</mi><mi>n</mi></msub><annotation encoding="application/x-tex">\Sigma_n</annotation></semantics></math>
 of patient
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
 decomposes as follows:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"><msub><mi>Σ</mi><mi>n</mi></msub></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><mtext mathvariant="normal">diag</mtext><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>σ</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>⋅</mo><mi>Λ</mi><mo>⋅</mo><mtext mathvariant="normal">diag</mtext><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>σ</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"><msub><mi>σ</mi><mi>n</mi></msub></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><mtext mathvariant="normal">exp</mtext><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>Z</mi><mi>n</mi></msub><msub><mi>b</mi><mi>σ</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mtd></mtr></mtable><annotation encoding="application/x-tex">
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right; padding-right: 0"><msub><mi mathvariant="normal">Σ</mi><mi>n</mi></msub></mtd><mtd columnalign="left" style="text-align: left; padding-left: 0"><mo>=</mo><mtext mathvariant="normal">diag</mtext><mo stretchy="false" form="prefix">(</mo><msub><mi>σ</mi><mi>n</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>⋅</mo><mi mathvariant="normal">Λ</mi><mo>⋅</mo><mtext mathvariant="normal">diag</mtext><mo stretchy="false" form="prefix">(</mo><msub><mi>σ</mi><mi>n</mi></msub><mo stretchy="false" form="postfix">)</mo></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right; padding-right: 0"><msub><mi>σ</mi><mi>n</mi></msub></mtd><mtd columnalign="left" style="text-align: left; padding-left: 0"><mo>=</mo><mtext mathvariant="normal">exp</mtext><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>Z</mi><mi>n</mi></msub><msub><mi>b</mi><mi>σ</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mtd></mtr></mtable><annotation encoding="application/x-tex">
 \begin{aligned}
 \Sigma_n &amp;= \text{diag}(\sigma_n) \cdot \Lambda \cdot \text{diag}(\sigma_n) \\
 \sigma_n &amp;= \text{exp} \left ( Z_n b_\sigma \right)
@@ -143,7 +141,7 @@ decomposes as follows:</p>
 is a vector of
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>
 time-specific scalar standard deviations, and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">diag</mtext><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>σ</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\text{diag}(\sigma_n)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">diag</mtext><mo stretchy="false" form="prefix">(</mo><msub><mi>σ</mi><mi>n</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\text{diag}(\sigma_n)</annotation></semantics></math>
 is a diagonal
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo>×</mo><mi>T</mi></mrow><annotation encoding="application/x-tex">T \times T</annotation></semantics></math>
 matrix.
@@ -158,11 +156,11 @@ The specific makeup of
 is determined by the <code>sigma</code> argument of
 <code><a href="../reference/brm_formula.html">brm_formula()</a></code>, which in turn is produced by
 <code><a href="../reference/brm_formula_sigma.html">brm_formula_sigma()</a></code>.</p>
-<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Λ</mi><annotation encoding="application/x-tex">\Lambda</annotation></semantics></math>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Λ</mi><annotation encoding="application/x-tex">\Lambda</annotation></semantics></math>
 is a symmetric positive-definite correlation matrix with diagonal
 elements equal to 1 and off-diagonal elements between -1 and 1. The
 structure of
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Λ</mi><annotation encoding="application/x-tex">\Lambda</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Λ</mi><annotation encoding="application/x-tex">\Lambda</annotation></semantics></math>
 depends on the <code>correlation</code> argument of
 <code><a href="../reference/brm_formula.html">brm_formula()</a></code>, which could describe an unstructured
 parameterization, ARMA, compound symmetry, etc. These alternative
@@ -184,12 +182,12 @@ parameters
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>b</mi><mi>σ</mi></msub><annotation encoding="application/x-tex">b_\sigma</annotation></semantics></math>
 are given similar priors</p>
 <p>For the correlation matrix
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Λ</mi><annotation encoding="application/x-tex">\Lambda</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Λ</mi><annotation encoding="application/x-tex">\Lambda</annotation></semantics></math>,
 the default prior in <code>brms.mmrm</code> is the <a href="https://mc-stan.org/docs/functions-reference/correlation_matrix_distributions.html#lkj-correlation" class="external-link">LKJ
 correlation distribution</a> with shape parameter equal to 1. This
 choice of prior is only valid for unstructured correlation matrices.
 Other correlation structures, such ARMA, will parameterize
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Λ</mi><annotation encoding="application/x-tex">\Lambda</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Λ</mi><annotation encoding="application/x-tex">\Lambda</annotation></semantics></math>
 and allow users to set priors on those new specialized parameters.</p>
 </div>
 <div class="section level2">
@@ -236,10 +234,10 @@ Measures</span></a>,”</span> in <em><span class="nocase">Applied
 Modeling in Drug Development</span></em>, <span>Novartis AG</span>.
 </div>
 <div id="ref-mallinckrodt2008" class="csl-entry">
-Mallinckrodt, C. H., Lane, P. W., Schnell, D., and others (2008),
-<span>“Recommendations for the primary analysis of continuous endpoints
-in longitudinal clinical trials,”</span> <em>Therapeutic Innovation and
-Regulatory Science</em>, 42, 303–319. <a href="https://doi.org/10.1177/009286150804200402" class="external-link">https://doi.org/10.1177/009286150804200402</a>.
+<span class="nocase">Mallinckrodt, C. H., Lane, P. W., Schnell, D., and
+others</span> (2008), <span>“Recommendations for the primary analysis of
+continuous endpoints in longitudinal clinical trials,”</span>
+<em>Therapeutic Innovation and Regulatory Science</em>, 42, 303–319. <a href="https://doi.org/10.1177/009286150804200402" class="external-link">https://doi.org/10.1177/009286150804200402</a>.
 </div>
 <div id="ref-mallinckrodt2017" class="csl-entry">
 Mallinckrodt, C. H., and Lipkovich, I. (2017), <em>Analyzing
@@ -263,7 +261,7 @@ modeling language users guide and reference manual</a></em>.
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>

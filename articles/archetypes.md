@@ -26,6 +26,7 @@ The dataset is a tibble with 800 rows and 7 variables:
 - `WEIGHT` (weighting variable).
 
 ``` r
+
 library(brms.mmrm)
 data(fev_data, package = "mmrm")
 data <- fev_data |>
@@ -67,6 +68,7 @@ adjacent visits of a clinical trial. To do this, we create an instance
 of the “successive cells” archetype.
 
 ``` r
+
 archetype <- brm_archetype_successive_cells(data, baseline = FALSE)
 ```
 
@@ -76,6 +78,7 @@ constitute a custom model matrix to describe the desired
 parameterization.
 
 ``` r
+
 archetype
 #> # A tibble: 800 × 20
 #>    x_PBO_VIS1 x_PBO_VIS2 x_PBO_VIS3 x_PBO_VIS4 x_TRT_VIS1 x_TRT_VIS2 x_TRT_VIS3
@@ -99,6 +102,7 @@ archetype
 We have effects of interest to express successive differences:
 
 ``` r
+
 attr(archetype, "brm_archetype_interest")
 #> [1] "x_PBO_VIS1" "x_PBO_VIS2" "x_PBO_VIS3" "x_PBO_VIS4" "x_TRT_VIS1" "x_TRT_VIS2"
 #> [7] "x_TRT_VIS3" "x_TRT_VIS4"
@@ -107,16 +111,22 @@ attr(archetype, "brm_archetype_interest")
 We also have nuisance variables. Some nuisance variables are continuous
 covariates, while others are levels of one-hot-encoded concomitant
 factors or interactions of those concomitant factors with baseline
-and/or subgroup. All nuisance variables are centered at their means so
-the reference level of the model is at the “center” of the data and not
-implicitly conditional on a subset of the data.[¹](#fn1) In addition,
-some nuisance variables are automatically dropped in order to ensure the
-model matrix is full-rank, and automatic centering in `brms` is
-disabled[²](#fn2). This is critically important to preserve the
+and/or subgroup. All nuisance variables are centered so the reference
+level of the model is at the “center” of the data and not implicitly
+conditional on a subset of the data. Most nuisance variables are
+centered at their means across the whole dataset. Nuisance variables
+which interact baseline with time and/or the subgroup are centered only
+within the cell of the data they apply to, since those columns are zero
+everywhere else; centering them across the whole dataset would entangle
+them with the variables that marginal means average over.[^1] In
+addition, some nuisance variables are automatically dropped in order to
+ensure the model matrix is full-rank, and automatic centering in `brms`
+is disabled[^2]. This is critically important to preserve the
 interpretation of the columns of interest and make sure the informative
 priors behave as expected.
 
 ``` r
+
 attr(archetype, "brm_archetype_nuisance")
 #> [1] "nuisance_WEIGHT"   "nuisance_SEX_Male"
 ```
@@ -124,9 +134,10 @@ attr(archetype, "brm_archetype_nuisance")
 The factors of interest linearly map to marginal means. To see the
 mapping, call [`summary()`](https://rdrr.io/r/base/summary.html) on the
 archetype. The printed output helps build intuition on how the archetype
-is parameterized and what those parameters are doing.[³](#fn3)
+is parameterized and what those parameters are doing.[^3]
 
 ``` r
+
 summary(archetype)
 #> # This is the "successive cells" informative prior archetype in brms.mmrm.
 #> # The following equations show the relationships between the
@@ -175,6 +186,7 @@ reference at
 <https://mc-stan.org/docs/functions-reference/unbounded_continuous_distributions.html>.
 
 ``` r
+
 label <- NULL |>
   brm_prior_label(code = "student_t(4, -7.57, 4.96)", group = "PBO", time = "VIS1") |>
   brm_prior_label(code = "student_t(4,  3.14, 7.86)", group = "PBO", time = "VIS2") |>
@@ -203,6 +215,7 @@ As an alternative to
 with a template and manually fill in the Stan code.
 
 ``` r
+
 template <- brm_prior_template(archetype)
 template
 #> # A tibble: 8 × 3
@@ -219,6 +232,7 @@ template
 ```
 
 ``` r
+
 label <- template |>
   mutate(
     code = c(
@@ -248,9 +262,10 @@ label
 
 After you have a labeling scheme,
 [`brm_prior_archetype()`](../reference/brm_prior_archetype.md) can
-create a `brms` prior for the important fixed effects.[⁴](#fn4)
+create a `brms` prior for the important fixed effects.[^4]
 
 ``` r
+
 prior <- brm_prior_archetype(label = label, archetype = archetype)
 prior
 #>                      prior class       coef group resp dpar nlpar   lb   ub source
@@ -275,6 +290,7 @@ included nuisance parameters.
 archetypes.
 
 ``` r
+
 brm_formula(archetype)
 #> FEV1 ~ 0 + x_PBO_VIS1 + x_PBO_VIS2 + x_PBO_VIS3 + x_PBO_VIS4 + x_TRT_VIS1 + x_TRT_VIS2 + x_TRT_VIS3 + x_TRT_VIS4 + nuisance_WEIGHT + nuisance_SEX_Male + unstr(time = AVISIT, gr = USUBJID) 
 #> sigma ~ 0 + AVISIT
@@ -310,6 +326,7 @@ interest and nuisance variables instead of the original variables in the
 data.
 
 ``` r
+
 formula <- brm_formula(archetype)
 formula
 #> FEV1 ~ 0 + x_PBO_VIS1 + x_PBO_VIS2 + x_PBO_VIS3 + x_PBO_VIS4 + x_TRT_VIS1 + x_TRT_VIS2 + x_TRT_VIS3 + x_TRT_VIS4 + nuisance_WEIGHT + nuisance_SEX_Male + unstr(time = AVISIT, gr = USUBJID) 
@@ -320,6 +337,7 @@ The model can accept the archetype, formula, and prior. Usage is the
 same as in non-archetype workflows.
 
 ``` r
+
 model <- brm_model(
   data = archetype,
   formula = formula,
@@ -371,6 +389,7 @@ Marginal mean estimation, post-processing, and visualization
 automatically understand the archetype without any user intervention.
 
 ``` r
+
 draws <- brm_marginal_draws(
   data = archetype,
   formula = formula,
@@ -393,6 +412,7 @@ different kinds of fixed effects. For example, `brms.mmrm` supports
 simple cell mean and treatment effect parameterizations.
 
 ``` r
+
 summary(brm_archetype_cells(data, intercept = FALSE))
 #> # This is the "cells" informative prior archetype in brms.mmrm.
 #> # The following equations show the relationships between the
@@ -410,6 +430,7 @@ summary(brm_archetype_cells(data, intercept = FALSE))
 ```
 
 ``` r
+
 summary(brm_archetype_effects(data, intercept = FALSE))
 #> # This is the "effects" informative prior archetype in brms.mmrm.
 #> # The following equations show the relationships between the
@@ -432,6 +453,7 @@ for group 1 because it is the algebraic result of simplifying
 `(group_1:time_2 + group_1:time_3 + group_1:time_3) / 3`.
 
 ``` r
+
 summary(brm_archetype_average_cells(data, intercept = FALSE))
 #> # This is the "average cells" informative prior archetype in brms.mmrm.
 #> # The following equations show the relationships between the
@@ -453,6 +475,7 @@ becomes the time-averaged treatment effect of group 2 relative to group
 1.
 
 ``` r
+
 summary(brm_archetype_average_effects(data, intercept = FALSE))
 #> # This is the "average effects" informative prior archetype in brms.mmrm.
 #> # The following equations show the relationships between the
@@ -474,6 +497,7 @@ where fixed effects represent successive differences between adjacent
 time points.
 
 ``` r
+
 summary(brm_archetype_successive_cells(data, intercept = FALSE))
 #> # This is the "successive cells" informative prior archetype in brms.mmrm.
 #> # The following equations show the relationships between the
@@ -494,6 +518,7 @@ There is also a treatment effect version of the successive differences
 archetype:
 
 ``` r
+
 summary(brm_archetype_successive_effects(data, intercept = FALSE))
 #> # This is the "successive effects" informative prior archetype in brms.mmrm.
 #> # The following equations show the relationships between the
@@ -516,6 +541,7 @@ Archetypes can be customized. As an example, consider the simple cell
 means archetype.
 
 ``` r
+
 summary(brm_archetype_cells(data))
 #> # This is the "cells" informative prior archetype in brms.mmrm.
 #> # The following equations show the relationships between the
@@ -536,6 +562,7 @@ To include an intercept term which all the marginal means share, set
 `intercept = TRUE`.
 
 ``` r
+
 summary(brm_archetype_cells(data, intercept = TRUE))
 #> # This is the "cells" informative prior archetype in brms.mmrm.
 #> # The following equations show the relationships between the
@@ -561,6 +588,7 @@ and
 [`brm_archetype_average_effects()`](../reference/brm_archetype_average_effects.md)).
 
 ``` r
+
 summary(brm_archetype_cells(data, clda = TRUE))
 #> # This is the "cells" informative prior archetype in brms.mmrm.
 #> # The following equations show the relationships between the
@@ -577,18 +605,16 @@ summary(brm_archetype_cells(data, clda = TRUE))
 #> #   TRT:VIS4 = x_TRT_VIS4
 ```
 
-------------------------------------------------------------------------
-
-1.  [`brm_recenter_nuisance()`](../reference/brm_recenter_nuisance.md)
+[^1]: [`brm_recenter_nuisance()`](../reference/brm_recenter_nuisance.md)
     can retroactively recenter a nuisance column to a fixed value other
     than its mean.
 
-2.  [`brm_formula()`](../reference/brm_formula.md) assigns
+[^2]: [`brm_formula()`](../reference/brm_formula.md) assigns
     `center = FALSE` in `brmsformula()` for all informative prior
     archetypes.
 
-3.  [`summary()`](https://rdrr.io/r/base/summary.html) also invisibly
+[^3]: [`summary()`](https://rdrr.io/r/base/summary.html) also invisibly
     returns a simple character vector with the equations below.
 
-4.  `brms` priors are documented in
+[^4]: `brms` priors are documented in
     <https://paulbuerkner.com/brms/reference/set_prior.html>.

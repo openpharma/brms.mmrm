@@ -44,6 +44,22 @@ want a nuisance column to be centered at a fixed value other than its
 mean, use `brm_recenter_nuisance()` to shift the center. This function
 can handle any nuisance variable
 
+For a nuisance variable which interacts baseline response with discrete
+time and/or the subgroup, the center applies to baseline within the cell
+of the data that the interaction applies to. The rest of the column
+stays at zero.
+
+Recentering a nuisance variable shifts the reference level of the model,
+which changes the interpretation of the marginal means from
+[`brm_marginal_draws()`](brm_marginal_draws.md). It is your
+responsibility to interpret the reference level and the resulting
+marginal means appropriately. Please recenter with
+`brm_recenter_nuisance()` rather than modifying the column directly, so
+the recorded center stays in sync with the column.
+[`brm_transform_marginal()`](brm_transform_marginal.md) prints an
+informative message (once per session) if it detects a nuisance column
+that was recentered some other way.
+
 ## Examples
 
 ``` r

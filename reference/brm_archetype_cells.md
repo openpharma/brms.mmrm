@@ -53,7 +53,9 @@ brm_archetype_cells(
   [`brm_archetype_successive_cells()`](brm_archetype_successive_cells.md)
   rather than in [`brm_formula()`](brm_formula.md) in order to make sure
   columns are appropriately centered and the underlying model matrix has
-  full rank.
+  full rank. See the Nuisance variables section of
+  [`brm_archetype_successive_cells()`](brm_archetype_successive_cells.md)
+  for how baseline interactions are centered.
 
 - baseline_subgroup:
 
@@ -70,7 +72,9 @@ brm_archetype_cells(
   [`brm_archetype_successive_cells()`](brm_archetype_successive_cells.md)
   rather than in [`brm_formula()`](brm_formula.md) in order to make sure
   columns are appropriately centered and the underlying model matrix has
-  full rank.
+  full rank. See the Nuisance variables section of
+  [`brm_archetype_successive_cells()`](brm_archetype_successive_cells.md)
+  for how baseline interactions are centered.
 
 - baseline_time:
 
@@ -82,7 +86,9 @@ brm_archetype_cells(
   [`brm_archetype_successive_cells()`](brm_archetype_successive_cells.md)
   rather than in [`brm_formula()`](brm_formula.md) in order to make sure
   columns are appropriately centered and the underlying model matrix has
-  full rank.
+  full rank. See the Nuisance variables section of
+  [`brm_archetype_successive_cells()`](brm_archetype_successive_cells.md)
+  for how baseline interactions are centered.
 
 - covariates:
 
@@ -166,6 +172,17 @@ interest are not implicitly conditional on a subset of the data. In
 other words, preprocessing nuisance variables this way preserves the
 interpretations of the fixed effects of interest, and it ensures
 informative priors can be specified correctly.
+
+Nuisance variables which interact baseline response with discrete time
+and/or the subgroup are centered differently. Such a column is zero
+except in the cell of the data that the interaction applies to, so it is
+centered only within that cell, and it stays zero everywhere else.
+Centering these columns at their means across the whole dataset would
+leave them entangled with the variables that marginal means average
+over, which would break the relationship between the fixed effects of
+interest and the marginal means. A consequence is that a
+baseline-by-subgroup interaction centers baseline at the mean within
+each subgroup level rather than the mean of the whole dataset.
 
 ## Prior labeling
 
