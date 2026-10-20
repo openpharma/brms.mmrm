@@ -15,7 +15,7 @@ jobs:
       matrix:
         config:
           - {os: macOS-latest, r: 'release'}
-          - {os: windows-latest, r: 'release'}
+          - {os: windows-latest, r: 'release', extra-repositories: 'https://stan-dev.r-universe.dev'}
           - {os: ubuntu-latest, r: 'devel', http-user-agent: 'release'}
           - {os: ubuntu-latest, r: 'release'}
           - {os: ubuntu-latest, r: 'oldrel-1'}
@@ -35,6 +35,7 @@ jobs:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
+          extra-repositories: ${{ matrix.config.extra-repositories }}
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
