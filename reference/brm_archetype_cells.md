@@ -25,9 +25,10 @@ brm_archetype_cells(
 
 - data:
 
-  A classed data frame from [`brm_data()`](brm_data.md), or an
-  informative prior archetype from a function like
-  [`brm_archetype_successive_cells()`](brm_archetype_successive_cells.md).
+  A classed data frame from
+  [`brm_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_data.md),
+  or an informative prior archetype from a function like
+  [`brm_archetype_successive_cells()`](https://openpharma.github.io/brms.mmrm/reference/brm_archetype_successive_cells.md).
 
 - intercept:
 
@@ -47,14 +48,17 @@ brm_archetype_cells(
 
   Logical of length 1. `TRUE` to include an additive effect for baseline
   response, `FALSE` to omit. Default is `TRUE` if
-  [`brm_data()`](brm_data.md) previously declared a baseline variable in
-  the dataset. Ignored for informative prior archetypes. For informative
-  prior archetypes, this option should be set in functions like
-  [`brm_archetype_successive_cells()`](brm_archetype_successive_cells.md)
-  rather than in [`brm_formula()`](brm_formula.md) in order to make sure
-  columns are appropriately centered and the underlying model matrix has
-  full rank. See the Nuisance variables section of
-  [`brm_archetype_successive_cells()`](brm_archetype_successive_cells.md)
+  [`brm_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_data.md)
+  previously declared a baseline variable in the dataset. Ignored for
+  informative prior archetypes. For informative prior archetypes, this
+  option should be set in functions like
+  [`brm_archetype_successive_cells()`](https://openpharma.github.io/brms.mmrm/reference/brm_archetype_successive_cells.md)
+  rather than in
+  [`brm_formula()`](https://openpharma.github.io/brms.mmrm/reference/brm_formula.md)
+  in order to make sure columns are appropriately centered and the
+  underlying model matrix has full rank. See the Nuisance variables
+  section of
+  [`brm_archetype_successive_cells()`](https://openpharma.github.io/brms.mmrm/reference/brm_archetype_successive_cells.md)
   for how baseline interactions are centered.
 
 - baseline_subgroup:
@@ -65,60 +69,70 @@ brm_archetype_cells(
 
   Logical of length 1. `TRUE` to include baseline-by-subgroup-by-time
   interaction, `FALSE` to omit. Default is `TRUE` if
-  [`brm_data()`](brm_data.md) previously declared baseline and subgroup
-  variables in the dataset. Ignored for informative prior archetypes.
-  For informative prior archetypes, this option should be set in
-  functions like
-  [`brm_archetype_successive_cells()`](brm_archetype_successive_cells.md)
-  rather than in [`brm_formula()`](brm_formula.md) in order to make sure
-  columns are appropriately centered and the underlying model matrix has
-  full rank. See the Nuisance variables section of
-  [`brm_archetype_successive_cells()`](brm_archetype_successive_cells.md)
+  [`brm_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_data.md)
+  previously declared baseline and subgroup variables in the dataset.
+  Ignored for informative prior archetypes. For informative prior
+  archetypes, this option should be set in functions like
+  [`brm_archetype_successive_cells()`](https://openpharma.github.io/brms.mmrm/reference/brm_archetype_successive_cells.md)
+  rather than in
+  [`brm_formula()`](https://openpharma.github.io/brms.mmrm/reference/brm_formula.md)
+  in order to make sure columns are appropriately centered and the
+  underlying model matrix has full rank. See the Nuisance variables
+  section of
+  [`brm_archetype_successive_cells()`](https://openpharma.github.io/brms.mmrm/reference/brm_archetype_successive_cells.md)
   for how baseline interactions are centered.
 
 - baseline_time:
 
   Logical of length 1. `TRUE` to include baseline-by-time interaction,
-  `FALSE` to omit. Default is `TRUE` if [`brm_data()`](brm_data.md)
+  `FALSE` to omit. Default is `TRUE` if
+  [`brm_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_data.md)
   previously declared a baseline variable in the dataset. Ignored for
   informative prior archetypes. For informative prior archetypes, this
   option should be set in functions like
-  [`brm_archetype_successive_cells()`](brm_archetype_successive_cells.md)
-  rather than in [`brm_formula()`](brm_formula.md) in order to make sure
-  columns are appropriately centered and the underlying model matrix has
-  full rank. See the Nuisance variables section of
-  [`brm_archetype_successive_cells()`](brm_archetype_successive_cells.md)
+  [`brm_archetype_successive_cells()`](https://openpharma.github.io/brms.mmrm/reference/brm_archetype_successive_cells.md)
+  rather than in
+  [`brm_formula()`](https://openpharma.github.io/brms.mmrm/reference/brm_formula.md)
+  in order to make sure columns are appropriately centered and the
+  underlying model matrix has full rank. See the Nuisance variables
+  section of
+  [`brm_archetype_successive_cells()`](https://openpharma.github.io/brms.mmrm/reference/brm_archetype_successive_cells.md)
   for how baseline interactions are centered.
 
 - covariates:
 
   Logical of length 1. `TRUE` (default) to include any additive
   covariates declared with the `covariates` argument of
-  [`brm_data()`](brm_data.md), `FALSE` to omit. For informative prior
-  archetypes, this option is set in functions like
-  [`brm_archetype_successive_cells()`](brm_archetype_successive_cells.md)
-  rather than in [`brm_formula()`](brm_formula.md) in order to make sure
-  columns are appropriately centered and the underlying model matrix has
-  full rank.
+  [`brm_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_data.md),
+  `FALSE` to omit. For informative prior archetypes, this option is set
+  in functions like
+  [`brm_archetype_successive_cells()`](https://openpharma.github.io/brms.mmrm/reference/brm_archetype_successive_cells.md)
+  rather than in
+  [`brm_formula()`](https://openpharma.github.io/brms.mmrm/reference/brm_formula.md)
+  in order to make sure columns are appropriately centered and the
+  underlying model matrix has full rank.
 
 - clda:
 
   `TRUE` to opt into constrained longitudinal data analysis (cLDA),
   `FALSE` otherwise. To use cLDA, `reference_time` must have been
-  non-`NULL` in the call to [`brm_data()`](brm_data.md) used to
-  construct the data.
+  non-`NULL` in the call to
+  [`brm_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_data.md)
+  used to construct the data.
 
   Some archetypes cannot support cLDA (e.g.
-  [`brm_archetype_average_cells()`](brm_archetype_average_cells.md) and
-  [`brm_archetype_average_effects()`](brm_archetype_average_effects.md)).
+  [`brm_archetype_average_cells()`](https://openpharma.github.io/brms.mmrm/reference/brm_archetype_average_cells.md)
+  and
+  [`brm_archetype_average_effects()`](https://openpharma.github.io/brms.mmrm/reference/brm_archetype_average_effects.md)).
 
   In cLDA, the fixed effects parameterization is restricted such that
   all treatment groups are pooled at baseline. (If you supplied a
-  `subgroup` variable in [`brm_data()`](brm_data.md), then this
-  constraint is applied separately within each subgroup variable.) cLDA
-  may result in more precise estimates when the `time` variable has a
-  baseline level and the baseline outcomes are recorded before
-  randomization in a clinical trial.
+  `subgroup` variable in
+  [`brm_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_data.md),
+  then this constraint is applied separately within each subgroup
+  variable.) cLDA may result in more precise estimates when the `time`
+  variable has a baseline level and the baseline outcomes are recorded
+  before randomization in a clinical trial.
 
 - prefix_interest:
 
@@ -140,8 +154,9 @@ brm_archetype_cells(
 A special classed `tibble` with data tailored to the successive
 differences archetype. The dataset is augmented with extra columns with
 the `"archetype_"` prefix, as well as special attributes to tell
-downstream functions like [`brm_formula()`](brm_formula.md) what to do
-with the object.
+downstream functions like
+[`brm_formula()`](https://openpharma.github.io/brms.mmrm/reference/brm_formula.md)
+what to do with the object.
 
 ## Details
 
@@ -152,9 +167,11 @@ if applicable).
 ## Prior labeling for `brm_archetype_cells()`
 
 Within each treatment group, each model parameter is a cell mean, and
-the labeling scheme in [`brm_prior_label()`](brm_prior_label.md) and
-[`brm_prior_archetype()`](brm_prior_archetype.md) translate easily. For
-example,
+the labeling scheme in
+[`brm_prior_label()`](https://openpharma.github.io/brms.mmrm/reference/brm_prior_label.md)
+and
+[`brm_prior_archetype()`](https://openpharma.github.io/brms.mmrm/reference/brm_prior_archetype.md)
+translate easily. For example,
 `brm_prior_label(code = "normal(1.2, 5)", group = "B", time = "VISIT2")`
 declares a `normal(1.2, 5)` prior on the cell mean of treatment group
 `B` at discrete time point `VISIT2`. To confirm that you set the prior
@@ -164,7 +181,7 @@ correctly, compare the `brms` prior with the output of
 ## Nuisance variables
 
 In the presence of covariate adjustment, functions like
-[`brm_archetype_successive_cells()`](brm_archetype_successive_cells.md)
+[`brm_archetype_successive_cells()`](https://openpharma.github.io/brms.mmrm/reference/brm_archetype_successive_cells.md)
 convert nuisance factors into binary dummy variables, then center all
 those dummy variables and any continuous nuisance variables at their
 means in the data. This ensures that the main model coefficients of
@@ -203,16 +220,16 @@ However, it requires an understanding of how the labels of the priors
 map to parameters in the model. This mapping varies from archetype to
 archetype, and it is documented in the help pages of archetype-specific
 functions such as
-[`brm_archetype_successive_cells()`](brm_archetype_successive_cells.md).
+[`brm_archetype_successive_cells()`](https://openpharma.github.io/brms.mmrm/reference/brm_archetype_successive_cells.md).
 
 ## See also
 
 Other informative prior archetypes:
-[`brm_archetype_average_cells()`](brm_archetype_average_cells.md),
-[`brm_archetype_average_effects()`](brm_archetype_average_effects.md),
-[`brm_archetype_effects()`](brm_archetype_effects.md),
-[`brm_archetype_successive_cells()`](brm_archetype_successive_cells.md),
-[`brm_archetype_successive_effects()`](brm_archetype_successive_effects.md)
+[`brm_archetype_average_cells()`](https://openpharma.github.io/brms.mmrm/reference/brm_archetype_average_cells.md),
+[`brm_archetype_average_effects()`](https://openpharma.github.io/brms.mmrm/reference/brm_archetype_average_effects.md),
+[`brm_archetype_effects()`](https://openpharma.github.io/brms.mmrm/reference/brm_archetype_effects.md),
+[`brm_archetype_successive_cells()`](https://openpharma.github.io/brms.mmrm/reference/brm_archetype_successive_cells.md),
+[`brm_archetype_successive_effects()`](https://openpharma.github.io/brms.mmrm/reference/brm_archetype_successive_effects.md)
 
 ## Examples
 

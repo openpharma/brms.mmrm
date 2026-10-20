@@ -23,14 +23,16 @@ brm_prior_simple(
 
 - data:
 
-  A classed data frame from [`brm_data()`](brm_data.md), or an
-  informative prior archetype from a function like
-  [`brm_archetype_successive_cells()`](brm_archetype_successive_cells.md).
+  A classed data frame from
+  [`brm_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_data.md),
+  or an informative prior archetype from a function like
+  [`brm_archetype_successive_cells()`](https://openpharma.github.io/brms.mmrm/reference/brm_archetype_successive_cells.md).
 
 - formula:
 
   An object of class `"brmsformula"` from
-  [`brm_formula()`](brm_formula.md) or
+  [`brm_formula()`](https://openpharma.github.io/brms.mmrm/reference/brm_formula.md)
+  or
   [`brms::brmsformula()`](https://paulbuerkner.com/brms/reference/brmsformula.html).
   Should include the full mapping of the model, including fixed effects,
   residual correlation, and heterogeneity in the discrete-time-specific
@@ -113,9 +115,10 @@ effect parameters.
 
 ## See also
 
-Other priors: [`brm_prior_archetype()`](brm_prior_archetype.md),
-[`brm_prior_label()`](brm_prior_label.md),
-[`brm_prior_template()`](brm_prior_template.md)
+Other priors:
+[`brm_prior_archetype()`](https://openpharma.github.io/brms.mmrm/reference/brm_prior_archetype.md),
+[`brm_prior_label()`](https://openpharma.github.io/brms.mmrm/reference/brm_prior_label.md),
+[`brm_prior_template()`](https://openpharma.github.io/brms.mmrm/reference/brm_prior_template.md)
 
 ## Examples
 

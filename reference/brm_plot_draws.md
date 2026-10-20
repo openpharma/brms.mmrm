@@ -13,7 +13,7 @@ brm_plot_draws(draws, axis = "time", facet = c("group", "subgroup"))
 - draws:
 
   A data frame of draws from an element of the output list of
-  [`brm_marginal_summaries()`](brm_marginal_summaries.md).
+  [`brm_marginal_summaries()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_summaries.md).
 
 - axis:
 
@@ -38,7 +38,8 @@ A `ggplot` object.
 
 ## See also
 
-Other visualization: [`brm_plot_compare()`](brm_plot_compare.md)
+Other visualization:
+[`brm_plot_compare()`](https://openpharma.github.io/brms.mmrm/reference/brm_plot_compare.md)
 
 ## Examples
 

@@ -17,14 +17,16 @@ brm_transform_marginal(
 
 - data:
 
-  A classed data frame from [`brm_data()`](brm_data.md), or an
-  informative prior archetype from a function like
-  [`brm_archetype_successive_cells()`](brm_archetype_successive_cells.md).
+  A classed data frame from
+  [`brm_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_data.md),
+  or an informative prior archetype from a function like
+  [`brm_archetype_successive_cells()`](https://openpharma.github.io/brms.mmrm/reference/brm_archetype_successive_cells.md).
 
 - formula:
 
   An object of class `"brmsformula"` from
-  [`brm_formula()`](brm_formula.md) or
+  [`brm_formula()`](https://openpharma.github.io/brms.mmrm/reference/brm_formula.md)
+  or
   [`brms::brmsformula()`](https://paulbuerkner.com/brms/reference/brmsformula.html).
   Should include the full mapping of the model, including fixed effects,
   residual correlation, and heterogeneity in the discrete-time-specific
@@ -43,7 +45,7 @@ brm_transform_marginal(
   decide whether to set `average_within_subgroup` to `TRUE` or `FALSE`
   in `brm_transform_marginal()`, and then manually supply the output of
   `brm_transform_marginal()` to the `transform` argument of
-  [`brm_marginal_draws()`](brm_marginal_draws.md).
+  [`brm_marginal_draws()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_draws.md).
 
   To create marginal means, `brms.mmrm` conditions the nuisance
   covariates on their averages across the whole dataset
@@ -80,23 +82,25 @@ A matrix to transform model parameters (columns) into marginal means
 
 The matrix from `brm_transform_marginal()` is passed to the
 `transform_marginal` argument of
-[`brm_marginal_draws()`](brm_marginal_draws.md), and it transforms
-posterior draws of model parameters to posterior draws of marginal
-means. You may customize the output of `brm_transform_marginal()` before
-passing it to [`brm_marginal_draws()`](brm_marginal_draws.md). However,
-please do not modify the dimensions, row names, or column names.
+[`brm_marginal_draws()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_draws.md),
+and it transforms posterior draws of model parameters to posterior draws
+of marginal means. You may customize the output of
+`brm_transform_marginal()` before passing it to
+[`brm_marginal_draws()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_draws.md).
+However, please do not modify the dimensions, row names, or column
+names.
 
 For informative prior archetypes, `brm_transform_marginal()` assumes the
 nuisance columns are centered as the archetype recorded them.
 Recentering a nuisance variable shifts the reference level of the model,
 so please recenter with
-[`brm_recenter_nuisance()`](brm_recenter_nuisance.md), which keeps the
-recorded center in sync with the column. `brm_transform_marginal()`
-prints an informative message (once per session) if it detects a
-nuisance column that was recentered some other way. Whenever a nuisance
-variable is recentered manually, it is your responsibility to interpret
-the reference level of the model and the resulting marginal means
-appropriately.
+[`brm_recenter_nuisance()`](https://openpharma.github.io/brms.mmrm/reference/brm_recenter_nuisance.md),
+which keeps the recorded center in sync with the column.
+`brm_transform_marginal()` prints an informative message (once per
+session) if it detects a nuisance column that was recentered some other
+way. Whenever a nuisance variable is recentered manually, it is your
+responsibility to interpret the reference level of the model and the
+resulting marginal means appropriately.
 
 ## Examples
 

@@ -13,7 +13,7 @@ brm_marginal_probabilities(draws, direction = "greater", threshold = 0)
 - draws:
 
   Posterior draws of the marginal posterior obtained from
-  [`brm_marginal_draws()`](brm_marginal_draws.md).
+  [`brm_marginal_draws()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_draws.md).
 
 - direction:
 
@@ -45,11 +45,12 @@ numeric value of the estimate of the probability.
 
 ## See also
 
-Other marginals: [`brm_marginal_data()`](brm_marginal_data.md),
-[`brm_marginal_draws()`](brm_marginal_draws.md),
-[`brm_marginal_draws_average()`](brm_marginal_draws_average.md),
-[`brm_marginal_grid()`](brm_marginal_grid.md),
-[`brm_marginal_summaries()`](brm_marginal_summaries.md)
+Other marginals:
+[`brm_marginal_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_data.md),
+[`brm_marginal_draws()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_draws.md),
+[`brm_marginal_draws_average()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_draws_average.md),
+[`brm_marginal_grid()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_grid.md),
+[`brm_marginal_summaries()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_summaries.md)
 
 ## Examples
 

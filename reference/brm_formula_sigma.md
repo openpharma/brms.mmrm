@@ -1,7 +1,8 @@
 # Formula for standard deviation parameters
 
 Parameterize standard deviations using a formula for the `sigma`
-argument of [`brm_formula()`](brm_formula.md).
+argument of
+[`brm_formula()`](https://openpharma.github.io/brms.mmrm/reference/brm_formula.md).
 
 ## Usage
 
@@ -29,9 +30,10 @@ brm_formula_sigma(
 
 - data:
 
-  A classed data frame from [`brm_data()`](brm_data.md), or an
-  informative prior archetype from a function like
-  [`brm_archetype_successive_cells()`](brm_archetype_successive_cells.md).
+  A classed data frame from
+  [`brm_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_data.md),
+  or an informative prior archetype from a function like
+  [`brm_archetype_successive_cells()`](https://openpharma.github.io/brms.mmrm/reference/brm_archetype_successive_cells.md).
 
 - check_rank:
 
@@ -49,7 +51,8 @@ brm_formula_sigma(
 
   Logical of length 1. `TRUE` to include an additive effect for baseline
   response, `FALSE` to omit. If `TRUE`, then effect size will be omitted
-  from the output of [`brm_marginal_draws()`](brm_marginal_draws.md).
+  from the output of
+  [`brm_marginal_draws()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_draws.md).
 
 - baseline_subgroup:
 
@@ -60,21 +63,23 @@ brm_formula_sigma(
   Logical of length 1. `TRUE` to include baseline-by-subgroup-by-time
   interaction, `FALSE` to omit. If `TRUE`, then effect size will be
   omitted from the output of
-  [`brm_marginal_draws()`](brm_marginal_draws.md).
+  [`brm_marginal_draws()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_draws.md).
 
 - baseline_time:
 
   Logical of length 1. `TRUE` to include baseline-by-time interaction,
   `FALSE` to omit. If `TRUE`, then effect size will be omitted from the
-  output of [`brm_marginal_draws()`](brm_marginal_draws.md).
+  output of
+  [`brm_marginal_draws()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_draws.md).
 
 - covariates:
 
   Logical of length 1. `TRUE` (default) to include any additive
   covariates declared with the `covariates` argument of
-  [`brm_data()`](brm_data.md), `FALSE` to omit. If `TRUE`, then effect
-  size will be omitted from the output of
-  [`brm_marginal_draws()`](brm_marginal_draws.md).
+  [`brm_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_data.md),
+  `FALSE` to omit. If `TRUE`, then effect size will be omitted from the
+  output of
+  [`brm_marginal_draws()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_draws.md).
 
 - group:
 
@@ -123,7 +128,8 @@ a distributional parameter
 (<https://paulbuerkner.com/brms/articles/brms_distreg.html>).
 `brm_formula_sigma()` lets you control the parameterization of `sigma`.
 The output of `brm_formula_sigma()` serves as input to the `sigma`
-argument of [`brm_formula()`](brm_formula.md).
+argument of
+[`brm_formula()`](https://openpharma.github.io/brms.mmrm/reference/brm_formula.md).
 
 The default `sigma` formula is `sigma ~ 0 + time`, where `time` is the
 discrete time variable in the data. This is the usual heterogeneous
@@ -136,14 +142,15 @@ termed "homogeneous variance").
 With arguments like `baseline` and `covariates`, you can specify
 extremely complicated variance structures. However, if baseline or
 covariates are used, then the output of
-[`brm_marginal_draws()`](brm_marginal_draws.md) omit effect size due to
-the statistical challenges of calculating marginal means of draws of
-`sigma` for this uncommon scenario.
+[`brm_marginal_draws()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_draws.md)
+omit effect size due to the statistical challenges of calculating
+marginal means of draws of `sigma` for this uncommon scenario.
 
 ## See also
 
-Other models: [`brm_formula()`](brm_formula.md),
-[`brm_model()`](brm_model.md)
+Other models:
+[`brm_formula()`](https://openpharma.github.io/brms.mmrm/reference/brm_formula.md),
+[`brm_model()`](https://openpharma.github.io/brms.mmrm/reference/brm_model.md)
 
 ## Examples
 
@@ -164,12 +171,12 @@ homogeneous
 #> sigma ~ 1
 #> attr(,"brm_allow_effect_size")
 #> [1] TRUE
-#> <environment: 0x55e91313ed80>
+#> <environment: 0x555b6ac969f8>
 by_group
 #> sigma ~ group + time
 #> attr(,"brm_allow_effect_size")
 #> [1] TRUE
-#> <environment: 0x55e9132f83b0>
+#> <environment: 0x555b6ae65b98>
 brm_formula(data, sigma = homogeneous)
 #> response ~ group + group:time + time + unstr(time = time, gr = patient) 
 #> sigma ~ 1

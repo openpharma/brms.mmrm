@@ -1,7 +1,8 @@
 # Model formula
 
 Build a model formula for an MMRM, either for a generic
-[`brm_data()`](brm_data.md) dataset or an informative prior archetype.
+[`brm_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_data.md)
+dataset or an informative prior archetype.
 
 ## Usage
 
@@ -71,9 +72,10 @@ brm_formula(
 
 - data:
 
-  A classed data frame from [`brm_data()`](brm_data.md), or an
-  informative prior archetype from a function like
-  [`brm_archetype_successive_cells()`](brm_archetype_successive_cells.md).
+  A classed data frame from
+  [`brm_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_data.md),
+  or an informative prior archetype from a function like
+  [`brm_archetype_successive_cells()`](https://openpharma.github.io/brms.mmrm/reference/brm_archetype_successive_cells.md).
 
 - model_missing_outcomes:
 
@@ -84,7 +86,8 @@ brm_formula(
   begin with `y | mi() ~ ...` instead of simply `y ~ ...`. Set to
   `FALSE` (default) to forgo this kind of imputation and discard missing
   observations from the data just prior to fitting the model inside
-  [`brm_model()`](brm_model.md). See
+  [`brm_model()`](https://openpharma.github.io/brms.mmrm/reference/brm_model.md).
+  See
   <https://opensource.nibr.com/bamdd/src/02h_mmrm.html#what-estimand-does-mmrm-address>
   \#nolint to understand the standard assumptions and decisions
   regarding MMRMs and missing outcomes.
@@ -98,7 +101,8 @@ brm_formula(
 
 - sigma:
 
-  A formula produced by [`brm_formula_sigma()`](brm_formula_sigma.md).
+  A formula produced by
+  [`brm_formula_sigma()`](https://openpharma.github.io/brms.mmrm/reference/brm_formula_sigma.md).
   The formula is a base R formula with S3 class
   `"brms_mmrm_formula_sigma"`, and it controls the parameterization of
   the residual standard deviations `sigma`.
@@ -171,14 +175,15 @@ brm_formula(
 
   Logical of length 1. `TRUE` to include an additive effect for baseline
   response, `FALSE` to omit. Default is `TRUE` if
-  [`brm_data()`](brm_data.md) previously declared a baseline variable in
-  the dataset. Ignored for informative prior archetypes. For informative
-  prior archetypes, this option should be set in functions like
-  [`brm_archetype_successive_cells()`](brm_archetype_successive_cells.md)
+  [`brm_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_data.md)
+  previously declared a baseline variable in the dataset. Ignored for
+  informative prior archetypes. For informative prior archetypes, this
+  option should be set in functions like
+  [`brm_archetype_successive_cells()`](https://openpharma.github.io/brms.mmrm/reference/brm_archetype_successive_cells.md)
   rather than in `brm_formula()` in order to make sure columns are
   appropriately centered and the underlying model matrix has full rank.
   See the Nuisance variables section of
-  [`brm_archetype_successive_cells()`](brm_archetype_successive_cells.md)
+  [`brm_archetype_successive_cells()`](https://openpharma.github.io/brms.mmrm/reference/brm_archetype_successive_cells.md)
   for how baseline interactions are centered.
 
 - baseline_subgroup:
@@ -189,38 +194,40 @@ brm_formula(
 
   Logical of length 1. `TRUE` to include baseline-by-subgroup-by-time
   interaction, `FALSE` to omit. Default is `TRUE` if
-  [`brm_data()`](brm_data.md) previously declared baseline and subgroup
-  variables in the dataset. Ignored for informative prior archetypes.
-  For informative prior archetypes, this option should be set in
-  functions like
-  [`brm_archetype_successive_cells()`](brm_archetype_successive_cells.md)
+  [`brm_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_data.md)
+  previously declared baseline and subgroup variables in the dataset.
+  Ignored for informative prior archetypes. For informative prior
+  archetypes, this option should be set in functions like
+  [`brm_archetype_successive_cells()`](https://openpharma.github.io/brms.mmrm/reference/brm_archetype_successive_cells.md)
   rather than in `brm_formula()` in order to make sure columns are
   appropriately centered and the underlying model matrix has full rank.
   See the Nuisance variables section of
-  [`brm_archetype_successive_cells()`](brm_archetype_successive_cells.md)
+  [`brm_archetype_successive_cells()`](https://openpharma.github.io/brms.mmrm/reference/brm_archetype_successive_cells.md)
   for how baseline interactions are centered.
 
 - baseline_time:
 
   Logical of length 1. `TRUE` to include baseline-by-time interaction,
-  `FALSE` to omit. Default is `TRUE` if [`brm_data()`](brm_data.md)
+  `FALSE` to omit. Default is `TRUE` if
+  [`brm_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_data.md)
   previously declared a baseline variable in the dataset. Ignored for
   informative prior archetypes. For informative prior archetypes, this
   option should be set in functions like
-  [`brm_archetype_successive_cells()`](brm_archetype_successive_cells.md)
+  [`brm_archetype_successive_cells()`](https://openpharma.github.io/brms.mmrm/reference/brm_archetype_successive_cells.md)
   rather than in `brm_formula()` in order to make sure columns are
   appropriately centered and the underlying model matrix has full rank.
   See the Nuisance variables section of
-  [`brm_archetype_successive_cells()`](brm_archetype_successive_cells.md)
+  [`brm_archetype_successive_cells()`](https://openpharma.github.io/brms.mmrm/reference/brm_archetype_successive_cells.md)
   for how baseline interactions are centered.
 
 - covariates:
 
   Logical of length 1. `TRUE` (default) to include any additive
   covariates declared with the `covariates` argument of
-  [`brm_data()`](brm_data.md), `FALSE` to omit. For informative prior
-  archetypes, this option is set in functions like
-  [`brm_archetype_successive_cells()`](brm_archetype_successive_cells.md)
+  [`brm_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_data.md),
+  `FALSE` to omit. For informative prior archetypes, this option is set
+  in functions like
+  [`brm_archetype_successive_cells()`](https://openpharma.github.io/brms.mmrm/reference/brm_archetype_successive_cells.md)
   rather than in `brm_formula()` in order to make sure columns are
   appropriately centered and the underlying model matrix has full rank.
 
@@ -232,15 +239,16 @@ brm_formula(
 - group_subgroup:
 
   Logical of length 1. `TRUE` to include group-by-subgroup interaction,
-  `FALSE` to omit. Default is `TRUE` if [`brm_data()`](brm_data.md)
+  `FALSE` to omit. Default is `TRUE` if
+  [`brm_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_data.md)
   previously declared a subgroup variable in the dataset.
 
 - group_subgroup_time:
 
   Logical of length 1. `TRUE` to include group-by-subgroup-by-time
   interaction, `FALSE` to omit. Default is `TRUE` if
-  [`brm_data()`](brm_data.md) previously declared a subgroup variable in
-  the dataset.
+  [`brm_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_data.md)
+  previously declared a subgroup variable in the dataset.
 
 - group_time:
 
@@ -251,13 +259,14 @@ brm_formula(
 
   Logical of length 1. `TRUE` to include additive fixed effects for
   subgroup levels, `FALSE` to omit. Default is `TRUE` if
-  [`brm_data()`](brm_data.md) previously declared a subgroup variable in
-  the dataset.
+  [`brm_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_data.md)
+  previously declared a subgroup variable in the dataset.
 
 - subgroup_time:
 
   Logical of length 1. `TRUE` to include subgroup-by-time interaction,
-  `FALSE` to omit. Default is `TRUE` if [`brm_data()`](brm_data.md)
+  `FALSE` to omit. Default is `TRUE` if
+  [`brm_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_data.md)
   previously declared a subgroup variable in the dataset.
 
 - time:
@@ -312,18 +321,21 @@ An object of class `"brmsformula"` returned from
 It contains the fixed effect mapping, correlation structure, and
 residual variance structure.
 
-## [`brm_data()`](brm_data.md) formulas
+## [`brm_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_data.md) formulas
 
-For a [`brm_data()`](brm_data.md) dataset, `brm_formula()` builds an R
-formula for an MMRM based on the details in the data and your choice of
-mapping. Customize your mapping by toggling on or off the various
-`TRUE`/`FALSE` arguments of `brm_formula()`, such as `intercept`,
-`baseline`, and `group_time`. All plausible additive effects, two-way
-interactions, and three-way interactions can be specified. The following
-interactions are not supported:
+For a
+[`brm_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_data.md)
+dataset, `brm_formula()` builds an R formula for an MMRM based on the
+details in the data and your choice of mapping. Customize your mapping
+by toggling on or off the various `TRUE`/`FALSE` arguments of
+`brm_formula()`, such as `intercept`, `baseline`, and `group_time`. All
+plausible additive effects, two-way interactions, and three-way
+interactions can be specified. The following interactions are not
+supported:
 
 - Any interactions with the concomitant covariates you specified in the
-  `covariates` argument of [`brm_data()`](brm_data.md).
+  `covariates` argument of
+  [`brm_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_data.md).
 
 - Any interactions which include baseline response and treatment group
   together. Rationale: in a randomized controlled experiment, baseline
@@ -332,7 +344,7 @@ interactions are not supported:
 ## Formulas for informative prior archetypes
 
 Functions like
-[`brm_archetype_successive_cells()`](brm_archetype_successive_cells.md)
+[`brm_archetype_successive_cells()`](https://openpharma.github.io/brms.mmrm/reference/brm_archetype_successive_cells.md)
 tailor datasets to informative prior archetypes. For these specialized
 tailored datasets, `brm_formula()` works differently. It still applies
 the variance and correlation structure of your choosing, and it still
@@ -345,20 +357,23 @@ interpretation of the parameters, `brm_formula()` uses the `x_*` and
 
 ## Parameterization
 
-For a formula on a [`brm_data()`](brm_data.md) dataset, the formula is
-not the only factor that determines the fixed effect mapping. The
-ordering of the categorical variables in the data, as well as the
-`contrast` option in R, affect the construction of the model matrix. To
-see the model matrix that will ultimately be used in
-[`brm_model()`](brm_model.md), run
+For a formula on a
+[`brm_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_data.md)
+dataset, the formula is not the only factor that determines the fixed
+effect mapping. The ordering of the categorical variables in the data,
+as well as the `contrast` option in R, affect the construction of the
+model matrix. To see the model matrix that will ultimately be used in
+[`brm_model()`](https://openpharma.github.io/brms.mmrm/reference/brm_model.md),
+run
 [`brms::make_standata()`](https://paulbuerkner.com/brms/reference/standata.html)
 and examine the `X` element of the returned list. See the examples below
 for a demonstration.
 
 ## See also
 
-Other models: [`brm_formula_sigma()`](brm_formula_sigma.md),
-[`brm_model()`](brm_model.md)
+Other models:
+[`brm_formula_sigma()`](https://openpharma.github.io/brms.mmrm/reference/brm_formula_sigma.md),
+[`brm_model()`](https://openpharma.github.io/brms.mmrm/reference/brm_model.md)
 
 ## Examples
 
@@ -396,12 +411,12 @@ homogeneous
 #> sigma ~ 0
 #> attr(,"brm_allow_effect_size")
 #> [1] TRUE
-#> <environment: 0x55e914aa0348>
+#> <environment: 0x555b63103440>
 by_group
 #> sigma ~ group + time
 #> attr(,"brm_allow_effect_size")
 #> [1] TRUE
-#> <environment: 0x55e914c10ec8>
+#> <environment: 0x555b62eb0778>
 brm_formula(data, sigma = homogeneous)
 #> response ~ group + group:time + time + unstr(time = time, gr = patient) 
 #> sigma ~ 0

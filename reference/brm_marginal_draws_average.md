@@ -14,13 +14,14 @@ brm_marginal_draws_average(draws, data, times = NULL, label = "average")
 - draws:
 
   List of posterior draws from
-  [`brm_marginal_draws()`](brm_marginal_draws.md).
+  [`brm_marginal_draws()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_draws.md).
 
 - data:
 
-  A classed data frame from [`brm_data()`](brm_data.md), or an
-  informative prior archetype from a function like
-  [`brm_archetype_successive_cells()`](brm_archetype_successive_cells.md).
+  A classed data frame from
+  [`brm_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_data.md),
+  or an informative prior archetype from a function like
+  [`brm_archetype_successive_cells()`](https://openpharma.github.io/brms.mmrm/reference/brm_archetype_successive_cells.md).
 
 - times:
 
@@ -43,27 +44,29 @@ brm_marginal_draws_average(draws, data, times = NULL, label = "average")
 A named list of tibbles of MCMC draws of the marginal posterior
 distribution of each treatment group and time point (or
 group-by-subgroup-by-time, if applicable). See
-[`brm_marginal_draws()`](brm_marginal_draws.md) for the full details of
-the return value. The only difference is that
+[`brm_marginal_draws()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_draws.md)
+for the full details of the return value. The only difference is that
 `brm_marginal_draws_average()` returns a single pseudo-time-point to
 represent the average across multiple real time points.
 
 ## Separation string
 
-Post-processing in [`brm_marginal_draws()`](brm_marginal_draws.md) names
-each of the group-by-time marginal means with the delimiting character
-string from `Sys.getenv("BRM_SEP", unset = "|")`. Neither the column
-names nor element names of the group and time variables can contain this
-string. To set a custom string yourself, use
+Post-processing in
+[`brm_marginal_draws()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_draws.md)
+names each of the group-by-time marginal means with the delimiting
+character string from `Sys.getenv("BRM_SEP", unset = "|")`. Neither the
+column names nor element names of the group and time variables can
+contain this string. To set a custom string yourself, use
 `Sys.setenv(BRM_SEP = "YOUR_CUSTOM_STRING")`.
 
 ## See also
 
-Other marginals: [`brm_marginal_data()`](brm_marginal_data.md),
-[`brm_marginal_draws()`](brm_marginal_draws.md),
-[`brm_marginal_grid()`](brm_marginal_grid.md),
-[`brm_marginal_probabilities()`](brm_marginal_probabilities.md),
-[`brm_marginal_summaries()`](brm_marginal_summaries.md)
+Other marginals:
+[`brm_marginal_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_data.md),
+[`brm_marginal_draws()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_draws.md),
+[`brm_marginal_grid()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_grid.md),
+[`brm_marginal_probabilities()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_probabilities.md),
+[`brm_marginal_summaries()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_summaries.md)
 
 ## Examples
 

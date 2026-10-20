@@ -19,12 +19,14 @@ brm_model(
 
 - data:
 
-  A classed data frame from [`brm_data()`](brm_data.md), or an
-  informative prior archetype from a function like
-  [`brm_archetype_successive_cells()`](brm_archetype_successive_cells.md).
+  A classed data frame from
+  [`brm_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_data.md),
+  or an informative prior archetype from a function like
+  [`brm_archetype_successive_cells()`](https://openpharma.github.io/brms.mmrm/reference/brm_archetype_successive_cells.md).
   Unless you supplied `model_missing_outcomes = TRUE` in
-  [`brm_formula()`](brm_formula.md), `brm_model()` automatically rows
-  with missing outcomes just prior to fitting the model with
+  [`brm_formula()`](https://openpharma.github.io/brms.mmrm/reference/brm_formula.md),
+  `brm_model()` automatically rows with missing outcomes just prior to
+  fitting the model with
   [`brms::brm()`](https://paulbuerkner.com/brms/reference/brm.html). The
   `brms.mmrm_data` attribute in the output object is always the version
   of the data prior to removing these rows. See the `data` element of
@@ -41,7 +43,8 @@ brm_model(
 - formula:
 
   An object of class `"brmsformula"` from
-  [`brm_formula()`](brm_formula.md) or
+  [`brm_formula()`](https://openpharma.github.io/brms.mmrm/reference/brm_formula.md)
+  or
   [`brms::brmsformula()`](https://paulbuerkner.com/brms/reference/brmsformula.html).
   Should include the full mapping of the model, including fixed effects,
   residual correlation, and heterogeneity in the discrete-time-specific
@@ -79,8 +82,8 @@ brm_model(
   Posterior draws are combined automatically for downstream
   post-processing unless you set `combine = FALSE` in `brm_model()`, so
   everything at the level of
-  [`brm_marginal_draws()`](brm_marginal_draws.md) will be exactly the
-  same as a non-imputation workflow.
+  [`brm_marginal_draws()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_draws.md)
+  will be exactly the same as a non-imputation workflow.
 
   Even if you supply `imputed`, please also supply the original
   non-imputed dataset in the `data` argument to help with downstream
@@ -96,19 +99,22 @@ the `brms.mmrm_data` attribute.
 
 ## Parameterization
 
-For a formula on a [`brm_data()`](brm_data.md) dataset, the formula is
-not the only factor that determines the fixed effect mapping. The
-ordering of the categorical variables in the data, as well as the
-`contrast` option in R, affect the construction of the model matrix. To
-see the model matrix that will ultimately be used in `brm_model()`, run
+For a formula on a
+[`brm_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_data.md)
+dataset, the formula is not the only factor that determines the fixed
+effect mapping. The ordering of the categorical variables in the data,
+as well as the `contrast` option in R, affect the construction of the
+model matrix. To see the model matrix that will ultimately be used in
+`brm_model()`, run
 [`brms::make_standata()`](https://paulbuerkner.com/brms/reference/standata.html)
 and examine the `X` element of the returned list. See the examples below
 for a demonstration.
 
 ## See also
 
-Other models: [`brm_formula()`](brm_formula.md),
-[`brm_formula_sigma()`](brm_formula_sigma.md)
+Other models:
+[`brm_formula()`](https://openpharma.github.io/brms.mmrm/reference/brm_formula.md),
+[`brm_formula_sigma()`](https://openpharma.github.io/brms.mmrm/reference/brm_formula_sigma.md)
 
 ## Examples
 

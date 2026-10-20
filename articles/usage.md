@@ -48,11 +48,13 @@ fev_data <- fev_data |>
 
 ## Preprocessing
 
-We use the [`brm_data()`](../reference/brm_data.md) function to
-preprocess the raw data and express it in a special classed data frame
-for `brms.mmrm`. [`brm_data()`](../reference/brm_data.md) stores
-arguments `outcome`, `group`, `time`, etc. as attributes which the
-downstream post-processing functions will recognize.
+We use the
+[`brm_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_data.md)
+function to preprocess the raw data and express it in a special classed
+data frame for `brms.mmrm`.
+[`brm_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_data.md)
+stores arguments `outcome`, `group`, `time`, etc. as attributes which
+the downstream post-processing functions will recognize.
 
 ``` r
 
@@ -73,18 +75,18 @@ data <- brm_data(
 
 data
 #> # A tibble: 800 × 11
-#>    USUBJID AVISIT ARMCD RACE            SEX   FEV1_BL  FEV1 WEIGHT VISITN VISITN2 FEV1_CHG
-#>    <fct>   <fct>  <fct> <fct>           <fct>   <dbl> <dbl>  <dbl>  <int>   <dbl>    <dbl>
-#>  1 PT2     VIS1   PBO   Asian           Male     45.0  NA    0.465      1  0.330     NA   
-#>  2 PT2     VIS2   PBO   Asian           Male     45.0  31.5  0.233      2 -0.820    -13.6 
-#>  3 PT2     VIS3   PBO   Asian           Male     45.0  36.9  0.360      3  0.487     -8.15
-#>  4 PT2     VIS4   PBO   Asian           Male     45.0  48.8  0.507      4  0.738      3.78
-#>  5 PT3     VIS1   PBO   Black or Afric… Fema…    43.5  NA    0.682      1  0.576     NA   
-#>  6 PT3     VIS2   PBO   Black or Afric… Fema…    43.5  36.0  0.892      2 -0.305     -7.51
-#>  7 PT3     VIS3   PBO   Black or Afric… Fema…    43.5  NA    0.128      3  1.51      NA   
-#>  8 PT3     VIS4   PBO   Black or Afric… Fema…    43.5  37.2  0.222      4  0.390     -6.34
-#>  9 PT5     VIS1   PBO   Black or Afric… Male     43.6  32.3  0.411      1 -0.0162   -11.3 
-#> 10 PT5     VIS2   PBO   Black or Afric… Male     43.6  NA    0.422      2  0.944     NA   
+#>    USUBJID AVISIT ARMCD RACE                      SEX    FEV1_BL  FEV1 WEIGHT VISITN VISITN2 FEV1_CHG
+#>    <fct>   <fct>  <fct> <fct>                     <fct>    <dbl> <dbl>  <dbl>  <int>   <dbl>    <dbl>
+#>  1 PT2     VIS1   PBO   Asian                     Male      45.0  NA    0.465      1  0.330     NA   
+#>  2 PT2     VIS2   PBO   Asian                     Male      45.0  31.5  0.233      2 -0.820    -13.6 
+#>  3 PT2     VIS3   PBO   Asian                     Male      45.0  36.9  0.360      3  0.487     -8.15
+#>  4 PT2     VIS4   PBO   Asian                     Male      45.0  48.8  0.507      4  0.738      3.78
+#>  5 PT3     VIS1   PBO   Black or African American Female    43.5  NA    0.682      1  0.576     NA   
+#>  6 PT3     VIS2   PBO   Black or African American Female    43.5  36.0  0.892      2 -0.305     -7.51
+#>  7 PT3     VIS3   PBO   Black or African American Female    43.5  NA    0.128      3  1.51      NA   
+#>  8 PT3     VIS4   PBO   Black or African American Female    43.5  37.2  0.222      4  0.390     -6.34
+#>  9 PT5     VIS1   PBO   Black or African American Male      43.6  32.3  0.411      1 -0.0162   -11.3 
+#> 10 PT5     VIS2   PBO   Black or African American Male      43.6  NA    0.422      2  0.944     NA   
 #> # ℹ 790 more rows
 ```
 
@@ -134,9 +136,10 @@ str(data$AVISIT)
 ## Formula
 
 Next, choose a `brms` model formula for the fixed effect and variance
-parameters. The [`brm_formula()`](../reference/brm_formula.md) function
-from `brms.mmrm` makes this process easier. For example, here is a
-formula that omits baseline response and interaction terms.
+parameters. The
+[`brm_formula()`](https://openpharma.github.io/brms.mmrm/reference/brm_formula.md)
+function from `brms.mmrm` makes this process easier. For example, here
+is a formula that omits baseline response and interaction terms.
 
 ``` r
 
@@ -171,7 +174,8 @@ prior suitable for your analysis. The
 how its default priors are constructed and how to set your own
 priors.[^1] Once you have an R object that represents the joint prior
 distribution of your model, you can pass it to the
-[`brm_model()`](../reference/brm_model.md) function described below. The
+[`brm_model()`](https://openpharma.github.io/brms.mmrm/reference/brm_model.md)
+function described below. The
 [`get_prior()`](https://paulbuerkner.com/brms/reference/default_prior.html)
 function shows the default priors for a given dataset and model formula.
 
@@ -180,34 +184,35 @@ function shows the default priors for a given dataset and model formula.
 brms::get_prior(data = data, formula = formula) |>
   as.data.frame() |>
   select(-any_of(c("group", "resp", "nlpar", "lb", "ub", "source")))
-#>                      prior     class                       coef  dpar
-#> 1                                  b                                 
-#> 2                                  b                   ARMCDTRT      
-#> 3                                  b           ARMCDTRT:AVISIT2      
-#> 4                                  b           ARMCDTRT:AVISIT3      
-#> 5                                  b           ARMCDTRT:AVISIT4      
-#> 6                                  b                    AVISIT2      
-#> 7                                  b                    AVISIT3      
-#> 8                                  b                    AVISIT4      
-#> 9                                  b                    FEV1_BL      
-#> 10                                 b            FEV1_BL:AVISIT2      
-#> 11                                 b            FEV1_BL:AVISIT3      
-#> 12                                 b            FEV1_BL:AVISIT4      
-#> 13                                 b RACEBlackorAfricanAmerican      
-#> 14                                 b                  RACEWhite      
-#> 15                                 b                  SEXFemale      
-#> 16                  lkj(1)   cortime                                 
-#> 17 student_t(3, 1.9, 11.8) Intercept                                 
-#> 18                                 b                            sigma
-#> 19                                 b                 AVISITVIS1 sigma
-#> 20                                 b                 AVISITVIS2 sigma
-#> 21                                 b                 AVISITVIS3 sigma
+#>                      prior     class                       coef  dpar tag
+#> 1                                  b                                     
+#> 2                                  b                   ARMCDTRT          
+#> 3                                  b           ARMCDTRT:AVISIT2          
+#> 4                                  b           ARMCDTRT:AVISIT3          
+#> 5                                  b           ARMCDTRT:AVISIT4          
+#> 6                                  b                    AVISIT2          
+#> 7                                  b                    AVISIT3          
+#> 8                                  b                    AVISIT4          
+#> 9                                  b                    FEV1_BL          
+#> 10                                 b            FEV1_BL:AVISIT2          
+#> 11                                 b            FEV1_BL:AVISIT3          
+#> 12                                 b            FEV1_BL:AVISIT4          
+#> 13                                 b RACEBlackorAfricanAmerican          
+#> 14                                 b                  RACEWhite          
+#> 15                                 b                  SEXFemale          
+#> 16                  lkj(1)   cortime                                     
+#> 17 student_t(3, 1.9, 11.8) Intercept                                     
+#> 18                                 b                            sigma    
+#> 19                                 b                 AVISITVIS1 sigma    
+#> 20                                 b                 AVISITVIS2 sigma    
+#> 21                                 b                 AVISITVIS3 sigma    
 #> 22                                 b                 AVISITVIS4 sigma
 ```
 
 ## Model
 
-To run an MMRM, use the [`brm_model()`](../reference/brm_model.md)
+To run an MMRM, use the
+[`brm_model()`](https://openpharma.github.io/brms.mmrm/reference/brm_model.md)
 function. This function calls
 [`brms::brm()`](https://paulbuerkner.com/brms/reference/brm.html) behind
 the scenes, using the formula and prior you set in the `formula` and
@@ -216,8 +221,17 @@ the scenes, using the formula and prior you set in the `formula` and
 ``` r
 
 model <- brm_model(data = data, formula = formula, refresh = 0)
-#> Compiling Stan program...
 #> Start sampling
+#> Running MCMC with 4 sequential chains...
+#> 
+#> Chain 1 finished in 20.8 seconds.
+#> Chain 2 finished in 19.7 seconds.
+#> Chain 3 finished in 22.2 seconds.
+#> Chain 4 finished in 20.7 seconds.
+#> 
+#> All 4 chains finished successfully.
+#> Mean chain execution time: 20.9 seconds.
+#> Total execution time: 83.8 seconds.
 ```
 
 The result is a `brms` model object with extra list elements
@@ -237,36 +251,36 @@ model
 #> 
 #> Correlation Structures:
 #>                    Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-#> cortime(VIS1,VIS2)     0.36      0.08     0.19     0.51 1.00     5330     3117
-#> cortime(VIS1,VIS3)     0.14      0.10    -0.06     0.32 1.00     5545     2626
-#> cortime(VIS2,VIS3)     0.04      0.10    -0.15     0.24 1.00     5103     3078
-#> cortime(VIS1,VIS4)     0.16      0.12    -0.08     0.38 1.00     5353     2866
-#> cortime(VIS2,VIS4)     0.11      0.09    -0.06     0.28 1.00     6012     3087
-#> cortime(VIS3,VIS4)     0.01      0.10    -0.19     0.21 1.00     4506     2771
+#> cortime(VIS1,VIS2)     0.36      0.09     0.17     0.51 1.00     4670     3278
+#> cortime(VIS1,VIS3)     0.14      0.10    -0.06     0.33 1.00     6381     2599
+#> cortime(VIS2,VIS3)     0.05      0.10    -0.14     0.23 1.00     6054     3085
+#> cortime(VIS1,VIS4)     0.17      0.11    -0.06     0.38 1.00     5705     3217
+#> cortime(VIS2,VIS4)     0.11      0.09    -0.07     0.28 1.00     5893     2966
+#> cortime(VIS3,VIS4)     0.01      0.10    -0.20     0.21 1.00     5061     2777
 #> 
 #> Regression Coefficients:
 #>                            Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-#> Intercept                     23.32      2.57    18.30    28.46 1.00     1595     2142
-#> FEV1_BL                       -0.82      0.06    -0.93    -0.70 1.00     1720     2210
-#> ARMCDTRT                       4.04      1.07     1.97     6.20 1.00     2694     3113
-#> AVISIT2                        4.43      2.75    -1.15     9.82 1.00     2037     2470
-#> AVISIT3                       12.55      2.93     6.74    18.27 1.00     1852     2195
-#> AVISIT4                       15.59      4.23     7.38    23.91 1.00     2489     2521
-#> RACEBlackorAfricanAmerican     1.45      0.59     0.28     2.65 1.00     5262     3112
-#> RACEWhite                      5.46      0.61     4.26     6.68 1.00     5172     3218
-#> SEXFemale                      0.38      0.51    -0.62     1.40 1.00     5881     3056
-#> FEV1_BL:AVISIT2                0.01      0.06    -0.12     0.14 1.00     2069     2704
-#> FEV1_BL:AVISIT3               -0.05      0.07    -0.19     0.08 1.00     1898     2215
-#> FEV1_BL:AVISIT4               -0.01      0.10    -0.21     0.19 1.00     2596     2762
-#> ARMCDTRT:AVISIT2              -0.06      1.15    -2.31     2.17 1.00     2894     3132
-#> ARMCDTRT:AVISIT3              -1.02      1.20    -3.37     1.38 1.00     3078     3105
-#> ARMCDTRT:AVISIT4               0.35      1.88    -3.30     3.93 1.00     3810     3176
-#> sigma_AVISITVIS1               1.83      0.06     1.71     1.95 1.00     5127     3300
-#> sigma_AVISITVIS2               1.59      0.06     1.47     1.71 1.00     5574     3239
-#> sigma_AVISITVIS3               1.33      0.06     1.21     1.45 1.00     5217     3072
-#> sigma_AVISITVIS4               2.28      0.06     2.16     2.41 1.00     6592     3198
+#> Intercept                     23.41      2.59    18.40    28.55 1.00     1521     2244
+#> FEV1_BL                       -0.82      0.06    -0.93    -0.70 1.00     1537     2193
+#> ARMCDTRT                       4.01      1.07     1.91     6.16 1.00     2258     2443
+#> AVISIT2                        4.37      2.82    -1.12     9.88 1.00     1698     2257
+#> AVISIT3                       12.53      2.91     6.84    18.30 1.00     1606     2079
+#> AVISIT4                       15.49      4.34     6.79    24.38 1.00     2633     2877
+#> RACEBlackorAfricanAmerican     1.44      0.57     0.31     2.56 1.00     5055     3105
+#> RACEWhite                      5.47      0.62     4.25     6.69 1.00     4985     2990
+#> SEXFemale                      0.38      0.51    -0.57     1.36 1.00     5168     2761
+#> FEV1_BL:AVISIT2                0.01      0.07    -0.12     0.14 1.00     1739     2281
+#> FEV1_BL:AVISIT3               -0.05      0.07    -0.18     0.08 1.00     1634     2148
+#> FEV1_BL:AVISIT4               -0.01      0.10    -0.22     0.19 1.00     2657     2746
+#> ARMCDTRT:AVISIT2              -0.02      1.17    -2.32     2.24 1.00     2209     2887
+#> ARMCDTRT:AVISIT3              -0.99      1.21    -3.43     1.39 1.00     2555     2925
+#> ARMCDTRT:AVISIT4               0.42      1.93    -3.45     4.24 1.00     3560     3032
+#> sigma_AVISITVIS1               1.83      0.06     1.71     1.95 1.00     5248     3176
+#> sigma_AVISITVIS2               1.59      0.06     1.47     1.71 1.00     5004     3150
+#> sigma_AVISITVIS3               1.33      0.07     1.20     1.46 1.00     5417     2577
+#> sigma_AVISITVIS4               2.28      0.06     2.17     2.41 1.00     4863     2749
 #> 
-#> Draws were sampled using sampling(NUTS). For each parameter, Bulk_ESS
+#> Draws were sampled using sample(hmc). For each parameter, Bulk_ESS
 #> and Tail_ESS are effective sample size measures, and Rhat is the potential
 #> scale reduction factor on split chains (at convergence, Rhat = 1).
 ```
@@ -275,18 +289,18 @@ model
 
 model$brms.mmrm_data
 #> # A tibble: 800 × 11
-#>    USUBJID AVISIT ARMCD RACE            SEX   FEV1_BL  FEV1 WEIGHT VISITN VISITN2 FEV1_CHG
-#>    <fct>   <ord>  <fct> <fct>           <fct>   <dbl> <dbl>  <dbl>  <int>   <dbl>    <dbl>
-#>  1 PT2     VIS1   PBO   Asian           Male     45.0  NA    0.465      1  0.330     NA   
-#>  2 PT2     VIS2   PBO   Asian           Male     45.0  31.5  0.233      2 -0.820    -13.6 
-#>  3 PT2     VIS3   PBO   Asian           Male     45.0  36.9  0.360      3  0.487     -8.15
-#>  4 PT2     VIS4   PBO   Asian           Male     45.0  48.8  0.507      4  0.738      3.78
-#>  5 PT3     VIS1   PBO   Black or Afric… Fema…    43.5  NA    0.682      1  0.576     NA   
-#>  6 PT3     VIS2   PBO   Black or Afric… Fema…    43.5  36.0  0.892      2 -0.305     -7.51
-#>  7 PT3     VIS3   PBO   Black or Afric… Fema…    43.5  NA    0.128      3  1.51      NA   
-#>  8 PT3     VIS4   PBO   Black or Afric… Fema…    43.5  37.2  0.222      4  0.390     -6.34
-#>  9 PT5     VIS1   PBO   Black or Afric… Male     43.6  32.3  0.411      1 -0.0162   -11.3 
-#> 10 PT5     VIS2   PBO   Black or Afric… Male     43.6  NA    0.422      2  0.944     NA   
+#>    USUBJID AVISIT ARMCD RACE                      SEX    FEV1_BL  FEV1 WEIGHT VISITN VISITN2 FEV1_CHG
+#>    <fct>   <ord>  <fct> <fct>                     <fct>    <dbl> <dbl>  <dbl>  <int>   <dbl>    <dbl>
+#>  1 PT2     VIS1   PBO   Asian                     Male      45.0  NA    0.465      1  0.330     NA   
+#>  2 PT2     VIS2   PBO   Asian                     Male      45.0  31.5  0.233      2 -0.820    -13.6 
+#>  3 PT2     VIS3   PBO   Asian                     Male      45.0  36.9  0.360      3  0.487     -8.15
+#>  4 PT2     VIS4   PBO   Asian                     Male      45.0  48.8  0.507      4  0.738      3.78
+#>  5 PT3     VIS1   PBO   Black or African American Female    43.5  NA    0.682      1  0.576     NA   
+#>  6 PT3     VIS2   PBO   Black or African American Female    43.5  36.0  0.892      2 -0.305     -7.51
+#>  7 PT3     VIS3   PBO   Black or African American Female    43.5  NA    0.128      3  1.51      NA   
+#>  8 PT3     VIS4   PBO   Black or African American Female    43.5  37.2  0.222      4  0.390     -6.34
+#>  9 PT5     VIS1   PBO   Black or African American Male      43.6  32.3  0.411      1 -0.0162   -11.3 
+#> 10 PT5     VIS2   PBO   Black or African American Male      43.6  NA    0.422      2  0.944     NA   
 #> # ℹ 790 more rows
 ```
 
@@ -306,7 +320,7 @@ point of the mean of the following quantities:
 1.  Response.
 2.  Change from baseline. Only reported if you originally declared a
     baseline time point with the `reference_time` argument of
-    [`brm_data()`](../reference/brm_data.md).
+    [`brm_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_data.md).
 3.  Treatment difference. If you declared a baseline in (2), then
     treatment difference is calculated in terms of change from baseline.
     Otherwise, it is calculated in terms of raw response.
@@ -314,36 +328,36 @@ point of the mean of the following quantities:
     deviation.
 
 To derive posterior draws of these marginals, use the
-[`brm_marginal_draws()`](../reference/brm_marginal_draws.md) function.
+[`brm_marginal_draws()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_draws.md)
+function.
 
 ``` r
 
 draws <- brm_marginal_draws(model = model)
 
 names(draws)
-#> [1] "response"         "difference_time"  "difference_group" "effect"          
-#> [5] "sigma"
+#> [1] "response"         "difference_time"  "difference_group" "effect"           "sigma"
 
 draws$difference_group
 #> # A draws_df: 1000 iterations, 4 chains, and 3 variables
 #>    TRT|VIS2 TRT|VIS3 TRT|VIS4
-#> 1     0.251    -2.24    1.149
-#> 2    -0.662    -1.33   -0.804
-#> 3    -0.129    -1.57    2.736
-#> 4    -0.370    -2.00    1.231
-#> 5    -0.964    -1.91   -1.026
-#> 6    -0.939    -1.15    0.258
-#> 7    -0.026    -1.15   -0.047
-#> 8     0.052    -1.48    1.239
-#> 9    -0.929    -0.81   -0.791
-#> 10   -0.437    -1.16    2.233
+#> 1     0.439    -0.56    2.438
+#> 2    -0.421    -0.99    1.000
+#> 3    -0.753    -0.60    0.535
+#> 4    -0.332    -2.52   -2.483
+#> 5    -0.098    -0.45   -0.477
+#> 6     0.227    -1.32    2.181
+#> 7     0.514    -0.76    1.339
+#> 8     0.845     1.17    0.539
+#> 9     1.030    -0.98    0.028
+#> 10   -0.596     0.19    1.119
 #> # ... with 3990 more draws
 #> # ... hidden reserved variables {'.chain', '.iteration', '.draw'}
 ```
 
 If you need samples from these marginals averaged across time points,
 e.g. an “overall effect size”,
-[`brm_marginal_draws_average()`](../reference/brm_marginal_draws_average.md)
+[`brm_marginal_draws_average()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_draws_average.md)
 can average the draws above across discrete time points (either all or a
 user-defined subset).
 
@@ -352,27 +366,27 @@ user-defined subset).
 draws_average <- brm_marginal_draws_average(draws = draws, data = data)
 
 names(draws_average)
-#> [1] "response"         "difference_time"  "difference_group" "effect"          
-#> [5] "sigma"
+#> [1] "response"         "difference_time"  "difference_group" "effect"           "sigma"
 
 draws_average$difference_group
 #> # A draws_df: 1000 iterations, 4 chains, and 1 variables
 #>    TRT|average
-#> 1       -0.281
-#> 2       -0.932
-#> 3        0.347
-#> 4       -0.380
-#> 5       -1.300
-#> 6       -0.610
-#> 7       -0.407
-#> 8       -0.064
-#> 9       -0.845
-#> 10       0.212
+#> 1        0.773
+#> 2       -0.138
+#> 3       -0.271
+#> 4       -1.777
+#> 5       -0.341
+#> 6        0.363
+#> 7        0.365
+#> 8        0.850
+#> 9        0.027
+#> 10       0.239
 #> # ... with 3990 more draws
 #> # ... hidden reserved variables {'.chain', '.iteration', '.draw'}
 ```
 
-The [`brm_marginal_summaries()`](../reference/brm_marginal_summaries.md)
+The
+[`brm_marginal_summaries()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_summaries.md)
 function produces posterior summaries of these marginals, and it
 includes the Monte Carlo standard error (MCSE) of each estimate.
 
@@ -382,23 +396,23 @@ summaries <- brm_marginal_summaries(draws, level = 0.95)
 
 summaries
 #> # A tibble: 140 × 6
-#>    marginal         statistic group time    value   mcse
-#>    <chr>            <chr>     <chr> <chr>   <dbl>  <dbl>
-#>  1 difference_group lower     TRT   VIS2  -2.31   0.0465
-#>  2 difference_group lower     TRT   VIS3  -3.37   0.0668
-#>  3 difference_group lower     TRT   VIS4  -3.30   0.0688
-#>  4 difference_group mean      TRT   VIS2  -0.0638 0.0216
-#>  5 difference_group mean      TRT   VIS3  -1.02   0.0219
-#>  6 difference_group mean      TRT   VIS4   0.348  0.0311
-#>  7 difference_group median    TRT   VIS2  -0.0714 0.0249
-#>  8 difference_group median    TRT   VIS3  -1.02   0.0252
-#>  9 difference_group median    TRT   VIS4   0.381  0.0320
-#> 10 difference_group sd        TRT   VIS2   1.15   0.0161
+#>    marginal         statistic group time     value   mcse
+#>    <chr>            <chr>     <chr> <chr>    <dbl>  <dbl>
+#>  1 difference_group lower     TRT   VIS2  -2.32    0.0771
+#>  2 difference_group lower     TRT   VIS3  -3.43    0.0724
+#>  3 difference_group lower     TRT   VIS4  -3.45    0.147 
+#>  4 difference_group mean      TRT   VIS2  -0.0217  0.0247
+#>  5 difference_group mean      TRT   VIS3  -0.995   0.0241
+#>  6 difference_group mean      TRT   VIS4   0.420   0.0326
+#>  7 difference_group median    TRT   VIS2  -0.00595 0.0315
+#>  8 difference_group median    TRT   VIS3  -1.00    0.0287
+#>  9 difference_group median    TRT   VIS4   0.436   0.0438
+#> 10 difference_group sd        TRT   VIS2   1.17    0.0179
 #> # ℹ 130 more rows
 ```
 
 The
-[`brm_marginal_probabilities()`](../reference/brm_marginal_probabilities.md)
+[`brm_marginal_probabilities()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_probabilities.md)
 function shows posterior probabilities of the form,
 
 ``` math
@@ -425,12 +439,12 @@ brm_marginal_probabilities(
 #> # A tibble: 6 × 5
 #>   direction threshold group time  value
 #>   <chr>         <dbl> <chr> <chr> <dbl>
-#> 1 greater        -0.1 TRT   VIS2  0.511
-#> 2 greater        -0.1 TRT   VIS3  0.220
-#> 3 greater        -0.1 TRT   VIS4  0.594
-#> 4 less            0.1 TRT   VIS2  0.56 
-#> 5 less            0.1 TRT   VIS3  0.827
-#> 6 less            0.1 TRT   VIS4  0.443
+#> 1 greater        -0.1 TRT   VIS2  0.530
+#> 2 greater        -0.1 TRT   VIS3  0.22 
+#> 3 greater        -0.1 TRT   VIS4  0.615
+#> 4 less            0.1 TRT   VIS2  0.538
+#> 5 less            0.1 TRT   VIS3  0.822
+#> 6 less            0.1 TRT   VIS4  0.425
 ```
 
 Finally, `brm_marignal_data()` computes marginal means and confidence
@@ -471,13 +485,23 @@ summaries_no_baseline <- data |>
   brm_model(data = data, refresh = 0) |>
   brm_marginal_draws() |>
   brm_marginal_summaries()
-#> Compiling Stan program...
 #> Start sampling
+#> Running MCMC with 4 sequential chains...
+#> 
+#> Chain 1 finished in 5.6 seconds.
+#> Chain 2 finished in 5.9 seconds.
+#> Chain 3 finished in 5.8 seconds.
+#> Chain 4 finished in 5.7 seconds.
+#> 
+#> All 4 chains finished successfully.
+#> Mean chain execution time: 5.8 seconds.
+#> Total execution time: 23.5 seconds.
 ```
 
-The [`brm_plot_compare()`](../reference/brm_plot_compare.md) function
-compares means and intervals from different models and data sources in
-the same plot.
+The
+[`brm_plot_compare()`](https://openpharma.github.io/brms.mmrm/reference/brm_plot_compare.md)
+function compares means and intervals from different models and data
+sources in the same plot.
 
 ``` r
 
@@ -488,7 +512,9 @@ brm_plot_compare(
 )
 ```
 
-![](usage/response-1.png)
+![plot of chunk response](usage/response-1.png)
+
+plot of chunk response
 
 If you omit the marginals of the data, you can show inference on change
 from baseline or the treatment effect.
@@ -502,7 +528,9 @@ brm_plot_compare(
 )
 ```
 
-![](usage/difference-1.png)
+![plot of chunk difference](usage/difference-1.png)
+
+plot of chunk difference
 
 Additional arguments let you control the primary comparison of interest
 (the color aesthetic), the horizontal axis, and the faceting variable.
@@ -519,20 +547,24 @@ brm_plot_compare(
 )
 ```
 
-![](usage/differencecustom-1.png)
+![plot of chunk differencecustom](usage/differencecustom-1.png)
+
+plot of chunk differencecustom
 
 ### Plotting draws
 
-[`brm_plot_draws()`](../reference/brm_plot_draws.md) can plot the
-posterior draws of the response, change from baseline, or treatment
-difference.
+[`brm_plot_draws()`](https://openpharma.github.io/brms.mmrm/reference/brm_plot_draws.md)
+can plot the posterior draws of the response, change from baseline, or
+treatment difference.
 
 ``` r
 
 brm_plot_draws(draws = draws$difference_group)
 ```
 
-![](usage/draws-1.png)
+![plot of chunk draws](usage/draws-1.png)
+
+plot of chunk draws
 
 The `axis` and `facet` arguments customize the horizontal axis and
 faceting variable, respectively.
@@ -546,7 +578,9 @@ brm_plot_draws(
 )
 ```
 
-![](usage/drawscustom-1.png)
+![plot of chunk drawscustom](usage/drawscustom-1.png)
+
+plot of chunk drawscustom
 
 ### Comparing priors and posteriors
 
@@ -583,7 +617,9 @@ ggplot() +
   scale_thickness_shared()
 ```
 
-![](usage/priorvsposterior-1.png)
+![plot of chunk priorvsposterior](usage/priorvsposterior-1.png)
+
+plot of chunk priorvsposterior
 
 ## Appendix A: Contrasts
 
@@ -591,7 +627,9 @@ The formula is not the only factor that ultimately determines the fixed
 effect parameterization. The ordering of the categorical variables in
 the data, as well as the `contrast` option in R, affect the construction
 of the model matrix. To see the model matrix that will ultimately be
-used in [`brm_model()`](../reference/brm_model.md), run
+used in
+[`brm_model()`](https://openpharma.github.io/brms.mmrm/reference/brm_model.md),
+run
 [`brms::make_standata()`](https://paulbuerkner.com/brms/reference/standata.html)
 and examine the `X` element of the returned list.
 
@@ -615,27 +653,20 @@ above.
 ``` r
 
 head(brms::make_standata(formula = formula, data = data)$X)
-#>     Intercept  FEV1_BL ARMCDPBO AVISIT2 AVISIT3 AVISIT4 RACEAsian
-#> 422         1 25.27144        0       1       0       0         0
-#> 424         1 25.27144        0       0       0       1         0
-#> 2           1 45.02477        1       1       0       0         1
-#> 3           1 45.02477        1       0       1       0         1
-#> 4           1 45.02477        1       0       0       1         1
-#> 6           1 43.50070        1       1       0       0         0
-#>     RACEBlackorAfricanAmerican SEXMale FEV1_BL:AVISIT2 FEV1_BL:AVISIT3 FEV1_BL:AVISIT4
-#> 422                          1       0        25.27144         0.00000         0.00000
-#> 424                          1       0         0.00000         0.00000        25.27144
-#> 2                            0       1        45.02477         0.00000         0.00000
-#> 3                            0       1         0.00000        45.02477         0.00000
-#> 4                            0       1         0.00000         0.00000        45.02477
-#> 6                            1       0        43.50070         0.00000         0.00000
-#>     ARMCDPBO:AVISIT2 ARMCDPBO:AVISIT3 ARMCDPBO:AVISIT4
-#> 422                0                0                0
-#> 424                0                0                0
-#> 2                  1                0                0
-#> 3                  0                1                0
-#> 4                  0                0                1
-#> 6                  1                0                0
+#>     Intercept  FEV1_BL ARMCDPBO AVISIT2 AVISIT3 AVISIT4 RACEAsian RACEBlackorAfricanAmerican SEXMale
+#> 422         1 25.27144        0       1       0       0         0                          1       0
+#> 424         1 25.27144        0       0       0       1         0                          1       0
+#> 2           1 45.02477        1       1       0       0         1                          0       1
+#> 3           1 45.02477        1       0       1       0         1                          0       1
+#> 4           1 45.02477        1       0       0       1         1                          0       1
+#> 6           1 43.50070        1       1       0       0         0                          1       0
+#>     FEV1_BL:AVISIT2 FEV1_BL:AVISIT3 FEV1_BL:AVISIT4 ARMCDPBO:AVISIT2 ARMCDPBO:AVISIT3 ARMCDPBO:AVISIT4
+#> 422        25.27144         0.00000         0.00000                0                0                0
+#> 424         0.00000         0.00000        25.27144                0                0                0
+#> 2          45.02477         0.00000         0.00000                1                0                0
+#> 3           0.00000        45.02477         0.00000                0                1                0
+#> 4           0.00000         0.00000        45.02477                0                0                1
+#> 6          43.50070         0.00000         0.00000                1                0                0
 ```
 
 If you choose a different contrast method, a different model matrix may
@@ -648,31 +679,24 @@ options(
 )
 # different model matrix than before:
 head(brms::make_standata(formula = formula, data = data)$X)
-#>     Intercept  FEV1_BL ARMCDTRT AVISIT2 AVISIT3 AVISIT4 RACEBlackorAfricanAmerican
-#> 422         1 25.27144        1       1       0       0                          1
-#> 424         1 25.27144        1       0       0       1                          1
-#> 2           1 45.02477        0       1       0       0                          0
-#> 3           1 45.02477        0       0       1       0                          0
-#> 4           1 45.02477        0       0       0       1                          0
-#> 6           1 43.50070        0       1       0       0                          1
-#>     RACEWhite SEXFemale FEV1_BL:AVISIT2 FEV1_BL:AVISIT3 FEV1_BL:AVISIT4 ARMCDTRT:AVISIT2
-#> 422         0         1        25.27144         0.00000         0.00000                1
-#> 424         0         1         0.00000         0.00000        25.27144                0
-#> 2           0         0        45.02477         0.00000         0.00000                0
-#> 3           0         0         0.00000        45.02477         0.00000                0
-#> 4           0         0         0.00000         0.00000        45.02477                0
-#> 6           0         1        43.50070         0.00000         0.00000                0
-#>     ARMCDTRT:AVISIT3 ARMCDTRT:AVISIT4
-#> 422                0                0
-#> 424                0                1
-#> 2                  0                0
-#> 3                  0                0
-#> 4                  0                0
-#> 6                  0                0
+#>     Intercept  FEV1_BL ARMCDTRT AVISIT2 AVISIT3 AVISIT4 RACEBlackorAfricanAmerican RACEWhite SEXFemale
+#> 422         1 25.27144        1       1       0       0                          1         0         1
+#> 424         1 25.27144        1       0       0       1                          1         0         1
+#> 2           1 45.02477        0       1       0       0                          0         0         0
+#> 3           1 45.02477        0       0       1       0                          0         0         0
+#> 4           1 45.02477        0       0       0       1                          0         0         0
+#> 6           1 43.50070        0       1       0       0                          1         0         1
+#>     FEV1_BL:AVISIT2 FEV1_BL:AVISIT3 FEV1_BL:AVISIT4 ARMCDTRT:AVISIT2 ARMCDTRT:AVISIT3 ARMCDTRT:AVISIT4
+#> 422        25.27144         0.00000         0.00000                1                0                0
+#> 424         0.00000         0.00000        25.27144                0                0                1
+#> 2          45.02477         0.00000         0.00000                0                0                0
+#> 3           0.00000        45.02477         0.00000                0                0                0
+#> 4           0.00000         0.00000        45.02477                0                0                0
+#> 6          43.50070         0.00000         0.00000                0                0                0
 ```
 
 Recall from earlier that
-[`brm_data_chronologize()`](../reference/brm_data_chronologize.md)
+[`brm_data_chronologize()`](https://openpharma.github.io/brms.mmrm/reference/brm_data_chronologize.md)
 protects the discrete time variable (in our case, `AVISIT`) from the
 `contrasts` option by assigning a `contrasts` attribute of its own.
 
@@ -736,9 +760,10 @@ imputed_datasets <- rbmi::extract_imputed_dfs(imputation_run)
 At this point, `imputed_datasets` is a list of data frames with the
 response variable imputed with multiple imputation. Simply supply this
 list to the `imputed` argument of
-[`brm_model()`](../reference/brm_model.md). Internally,
-[`brm_model()`](../reference/brm_model.md) calls
-`brms::brm_multiple(data = imputed, formula = formula)` instead of
+[`brm_model()`](https://openpharma.github.io/brms.mmrm/reference/brm_model.md).
+Internally,
+[`brm_model()`](https://openpharma.github.io/brms.mmrm/reference/brm_model.md)
+calls `brms::brm_multiple(data = imputed, formula = formula)` instead of
 `brms::brm(data = data, formula = formula)` to fit an MMRM to each of
 the individual imputed datasets in the `imputed` object. The computation
 could take several hours because it requires many fitted MMRM.
@@ -754,20 +779,21 @@ model <- brm_model(
 ```
 
 Unless you set `combine = FALSE` in
-[`brm_model()`](../reference/brm_model.md), `brms` automatically
-combines posterior samples across imputed datasets. This means the
-downstream post-processing workflow below is exactly the same as the
-non-imputation case.
+[`brm_model()`](https://openpharma.github.io/brms.mmrm/reference/brm_model.md),
+`brms` automatically combines posterior samples across imputed datasets.
+This means the downstream post-processing workflow below is exactly the
+same as the non-imputation case.
 
 ### Imputation during model fitting
 
 Alternatively, to conduct imputation during the fitting of that model,
 set `model_missing_outcomes` to `TRUE` in
-[`brm_formula()`](../reference/brm_formula.md). This formula uses
-`response | mi()` instead of just `response` on the left-hand side to
-tell `brms` to model each missing outcome as a model parameter. To use
-this type of imputation, simply supply the returned formula object to
-the `formula` argument of [`brm_model()`](../reference/brm_model.md).
+[`brm_formula()`](https://openpharma.github.io/brms.mmrm/reference/brm_formula.md).
+This formula uses `response | mi()` instead of just `response` on the
+left-hand side to tell `brms` to model each missing outcome as a model
+parameter. To use this type of imputation, simply supply the returned
+formula object to the `formula` argument of
+[`brm_model()`](https://openpharma.github.io/brms.mmrm/reference/brm_model.md).
 
 ``` r
 

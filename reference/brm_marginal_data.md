@@ -16,9 +16,10 @@ brm_marginal_data(
 
 - data:
 
-  A classed data frame from [`brm_data()`](brm_data.md), or an
-  informative prior archetype from a function like
-  [`brm_archetype_successive_cells()`](brm_archetype_successive_cells.md).
+  A classed data frame from
+  [`brm_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_data.md),
+  or an informative prior archetype from a function like
+  [`brm_archetype_successive_cells()`](https://openpharma.github.io/brms.mmrm/reference/brm_archetype_successive_cells.md).
 
 - level:
 
@@ -66,11 +67,12 @@ The `statistic` column has the following possible values:
 
 ## See also
 
-Other marginals: [`brm_marginal_draws()`](brm_marginal_draws.md),
-[`brm_marginal_draws_average()`](brm_marginal_draws_average.md),
-[`brm_marginal_grid()`](brm_marginal_grid.md),
-[`brm_marginal_probabilities()`](brm_marginal_probabilities.md),
-[`brm_marginal_summaries()`](brm_marginal_summaries.md)
+Other marginals:
+[`brm_marginal_draws()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_draws.md),
+[`brm_marginal_draws_average()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_draws_average.md),
+[`brm_marginal_grid()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_grid.md),
+[`brm_marginal_probabilities()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_probabilities.md),
+[`brm_marginal_summaries()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_summaries.md)
 
 ## Examples
 

@@ -3,8 +3,9 @@
 ## About
 
 This vignette provides an example comparison of a Bayesian MMRM fit,
-obtained by [`brms.mmrm::brm_model()`](../reference/brm_model.md), and a
-frequentist MMRM fit, obtained by
+obtained by
+[`brms.mmrm::brm_model()`](https://openpharma.github.io/brms.mmrm/reference/brm_model.md),
+and a frequentist MMRM fit, obtained by
 [`mmrm::mmrm()`](https://openpharma.github.io/mmrm/latest-tag/reference/mmrm.html).
 An overview of parameter estimates and differences by type of MMRM is
 given in the [summary (Tables 4 and 5)](#Summary) at the end.
@@ -76,7 +77,7 @@ which we derive below and denote `FEV1_CHG`.
 
 The rest of the pre-processing steps create factors for the study arm
 and visit and apply the usual checking and standardization steps of
-[`brms.mmrm::brm_data()`](../reference/brm_data.md).
+[`brms.mmrm::brm_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_data.md).
 
 ``` r
 > fev_data <- brm_data(
@@ -214,10 +215,10 @@ baseline, study visit, race, sex, and study-arm-by-visit interaction.
 ```
 
 We fit the model using
-[`brms.mmrm::brm_model()`](../reference/brm_model.md). To ensure a good
-basis of comparison with the frequentist model, we put an extremely
-diffuse prior on the intercept. The parameters already have diffuse
-flexible priors by default.
+[`brms.mmrm::brm_model()`](https://openpharma.github.io/brms.mmrm/reference/brm_model.md).
+To ensure a good basis of comparison with the frequentist model, we put
+an extremely diffuse prior on the intercept. The parameters already have
+diffuse flexible priors by default.
 
 ``` r
 > b_mmrm_fit <- brm_model(
@@ -231,6 +232,16 @@ flexible priors by default.
 +   seed = 1,
 +   refresh = 0
 + )
+#> Running MCMC with 4 parallel chains...
+#> 
+#> Chain 2 finished in 22.6 seconds.
+#> Chain 4 finished in 23.0 seconds.
+#> Chain 1 finished in 23.4 seconds.
+#> Chain 3 finished in 23.3 seconds.
+#> 
+#> All 4 chains finished successfully.
+#> Mean chain execution time: 23.1 seconds.
+#> Total execution time: 23.5 seconds.
 ```
 
 Here is a posterior summary of model parameters, including fixed effects
@@ -242,56 +253,39 @@ and pairwise correlation among visits within patients.
 #>   Links: mu = identity; sigma = log 
 #> Formula: FEV1_CHG ~ FEV1_BL + ARMCD:AVISIT + AVISIT + RACE + SEX + unstr(time = AVISIT, gr = USUBJID) 
 #>          sigma ~ 0 + AVISIT
-#>    Data: data[!is.na(data[[attr(data, "brm_outcome")]]), ] (Number of observations: 537) 
+#>    Data: modeled_data (Number of observations: 537) 
 #>   Draws: 4 chains, each with iter = 10000; warmup = 2000; thin = 1;
 #>          total post-warmup draws = 32000
 #> 
 #> Correlation Structures:
 #>                    Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-#> cortime(VIS1,VIS2)     0.36      0.08     0.18     0.52 1.00    48758    26086
-#> cortime(VIS1,VIS3)     0.14      0.10    -0.05     0.33 1.00    49018    26172
-#> cortime(VIS2,VIS3)     0.04      0.10    -0.16     0.23 1.00    49178    25472
-#> cortime(VIS1,VIS4)     0.17      0.11    -0.06     0.38 1.00    49528    25555
-#> cortime(VIS2,VIS4)     0.11      0.09    -0.07     0.28 1.00    49509    24007
-#> cortime(VIS3,VIS4)     0.01      0.10    -0.18     0.21 1.00    45294    24353
+#> cortime(VIS1,VIS2)     0.36      0.08     0.19     0.52 1.00    55170    25674
+#> cortime(VIS1,VIS3)     0.14      0.10    -0.06     0.33 1.00    57265    24050
+#> cortime(VIS2,VIS3)     0.04      0.10    -0.15     0.23 1.00    50963    24352
+#> cortime(VIS1,VIS4)     0.17      0.11    -0.06     0.38 1.00    57250    24491
+#> cortime(VIS2,VIS4)     0.11      0.09    -0.06     0.28 1.00    57480    25753
+#> cortime(VIS3,VIS4)     0.01      0.10    -0.18     0.21 1.00    49870    24634
 #> 
 #> Regression Coefficients:
-#>                            Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS
-#> Intercept                     24.34      1.41    21.60    27.09 1.00    43678
-#> FEV1_BL                       -0.84      0.03    -0.89    -0.78 1.00    56286
-#> AVISIT2                        4.80      0.82     3.20     6.40 1.00    31792
-#> AVISIT3                       10.37      0.83     8.73    12.01 1.00    29808
-#> AVISIT4                       15.20      1.33    12.60    17.83 1.00    35293
-#> RACEBlackorAfricanAmerican     1.41      0.59     0.27     2.55 1.00    46945
-#> RACEWhite                      5.46      0.63     4.23     6.69 1.00    47801
-#> SEXFemale                      0.35      0.51    -0.64     1.36 1.00    49193
-#> AVISITVIS1:ARMCDTRT            3.98      1.07     1.89     6.06 1.00    31646
-#> AVISITVIS2:ARMCDTRT            3.93      0.83     2.31     5.55 1.00    46665
-#> AVISITVIS3:ARMCDTRT            2.98      0.68     1.65     4.31 1.00    52457
-#> AVISITVIS4:ARMCDTRT            4.41      1.68     1.06     7.71 1.00    45307
-#> sigma_AVISITVIS1               1.83      0.06     1.71     1.95 1.00    50344
-#> sigma_AVISITVIS2               1.59      0.06     1.47     1.71 1.00    48248
-#> sigma_AVISITVIS3               1.33      0.06     1.21     1.46 1.00    48058
-#> sigma_AVISITVIS4               2.28      0.06     2.16     2.41 1.00    51078
-#>                            Tail_ESS
-#> Intercept                     25394
-#> FEV1_BL                       24494
-#> AVISIT2                       24396
-#> AVISIT3                       24188
-#> AVISIT4                       24810
-#> RACEBlackorAfricanAmerican    25405
-#> RACEWhite                     23816
-#> SEXFemale                     24919
-#> AVISITVIS1:ARMCDTRT           26255
-#> AVISITVIS2:ARMCDTRT           23809
-#> AVISITVIS3:ARMCDTRT           24705
-#> AVISITVIS4:ARMCDTRT           25026
-#> sigma_AVISITVIS1              26156
-#> sigma_AVISITVIS2              24526
-#> sigma_AVISITVIS3              24328
-#> sigma_AVISITVIS4              23975
+#>                            Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+#> Intercept                     24.36      1.41    21.57    27.12 1.00    48546    25877
+#> FEV1_BL                       -0.84      0.03    -0.90    -0.79 1.00    64473    23059
+#> AVISIT2                        4.79      0.81     3.22     6.38 1.00    37872    26950
+#> AVISIT3                       10.37      0.82     8.77    12.00 1.00    34320    25281
+#> AVISIT4                       15.19      1.32    12.59    17.76 1.00    37729    25306
+#> RACEBlackorAfricanAmerican     1.41      0.59     0.25     2.57 1.00    52830    25732
+#> RACEWhite                      5.45      0.62     4.24     6.65 1.00    51233    25125
+#> SEXFemale                      0.34      0.51    -0.65     1.33 1.00    57472    26156
+#> AVISITVIS1:ARMCDTRT            3.98      1.07     1.87     6.09 1.00    35035    26023
+#> AVISITVIS2:ARMCDTRT            3.94      0.82     2.32     5.53 1.00    53609    23736
+#> AVISITVIS3:ARMCDTRT            2.98      0.68     1.65     4.31 1.00    55724    24704
+#> AVISITVIS4:ARMCDTRT            4.41      1.70     1.11     7.73 1.00    45487    25110
+#> sigma_AVISITVIS1               1.83      0.06     1.71     1.95 1.00    57928    25818
+#> sigma_AVISITVIS2               1.59      0.06     1.47     1.71 1.00    53397    23759
+#> sigma_AVISITVIS3               1.33      0.06     1.20     1.46 1.00    55513    23227
+#> sigma_AVISITVIS4               2.28      0.06     2.16     2.41 1.00    61076    23707
 #> 
-#> Draws were sampled using sampling(NUTS). For each parameter, Bulk_ESS
+#> Draws were sampled using sample(hmc). For each parameter, Bulk_ESS
 #> and Tail_ESS are effective sample size measures, and Rhat is the potential
 #> scale reduction factor on split chains (at convergence, Rhat = 1).
 ```
@@ -319,12 +313,9 @@ The parameter summaries of the frequentist model are below.
 > summary(f_mmrm_fit)
 #> mmrm fit
 #> 
-#> Formula:     
-#> FEV1_CHG ~ FEV1_BL + ARMCD:AVISIT + AVISIT + RACE + SEX + us(AVISIT |  
-#>     USUBJID)
-#> Data:        
-#> mutate(fev_data, AVISIT = factor(as.character(AVISIT), ordered = FALSE)) (used 
-#> 537 observations from 197 subjects with maximum 4 timepoints)
+#> Formula:     FEV1_CHG ~ FEV1_BL + ARMCD:AVISIT + AVISIT + RACE + SEX + us(AVISIT |      USUBJID)
+#> Data:        mutate(fev_data, AVISIT = factor(as.character(AVISIT), ordered = FALSE)) (used 537 
+#> observations from 197 subjects with maximum 4 timepoints)
 #> Covariance:  unstructured (10 variance parameters)
 #> Method:      Satterthwaite
 #> Vcov Method: Asymptotic
@@ -335,32 +326,19 @@ The parameter summaries of the frequentist model are below.
 #>   3381.4   3414.2  -1680.7   3361.4 
 #> 
 #> Coefficients: 
-#>                                Estimate Std. Error        df t value Pr(>|t|)
-#> (Intercept)                    24.35372    1.40754 257.97000  17.302  < 2e-16
-#> FEV1_BL                        -0.84022    0.02777 190.27000 -30.251  < 2e-16
-#> AVISITVIS2                      4.79036    0.79848 144.82000   5.999 1.51e-08
-#> AVISITVIS3                     10.36601    0.81318 157.08000  12.748  < 2e-16
-#> AVISITVIS4                     15.19231    1.30857 139.25000  11.610  < 2e-16
-#> RACEBlack or African American   1.41921    0.57874 169.56000   2.452 0.015211
-#> RACEWhite                       5.45679    0.61626 157.54000   8.855 1.65e-15
-#> SEXFemale                       0.33812    0.49273 166.43000   0.686 0.493529
-#> AVISITVIS1:ARMCDTRT             3.98329    1.04540 142.32000   3.810 0.000206
-#> AVISITVIS2:ARMCDTRT             3.93076    0.81351 142.26000   4.832 3.46e-06
-#> AVISITVIS3:ARMCDTRT             2.98372    0.66567 129.61000   4.482 1.61e-05
-#> AVISITVIS4:ARMCDTRT             4.40400    1.66049 132.88000   2.652 0.008970
-#>                                  
-#> (Intercept)                   ***
-#> FEV1_BL                       ***
-#> AVISITVIS2                    ***
-#> AVISITVIS3                    ***
-#> AVISITVIS4                    ***
-#> RACEBlack or African American *  
-#> RACEWhite                     ***
-#> SEXFemale                        
-#> AVISITVIS1:ARMCDTRT           ***
-#> AVISITVIS2:ARMCDTRT           ***
-#> AVISITVIS3:ARMCDTRT           ***
-#> AVISITVIS4:ARMCDTRT           ** 
+#>                                Estimate Std. Error        df t value Pr(>|t|)    
+#> (Intercept)                    24.35372    1.40754 257.97000  17.302  < 2e-16 ***
+#> FEV1_BL                        -0.84022    0.02777 190.27000 -30.251  < 2e-16 ***
+#> AVISITVIS2                      4.79036    0.79848 144.82000   5.999 1.51e-08 ***
+#> AVISITVIS3                     10.36601    0.81318 157.08000  12.748  < 2e-16 ***
+#> AVISITVIS4                     15.19231    1.30857 139.25000  11.610  < 2e-16 ***
+#> RACEBlack or African American   1.41921    0.57874 169.56000   2.452 0.015211 *  
+#> RACEWhite                       5.45679    0.61626 157.54000   8.855 1.65e-15 ***
+#> SEXFemale                       0.33812    0.49273 166.43000   0.686 0.493529    
+#> AVISITVIS1:ARMCDTRT             3.98329    1.04540 142.32000   3.810 0.000206 ***
+#> AVISITVIS2:ARMCDTRT             3.93076    0.81351 142.26000   4.832 3.46e-06 ***
+#> AVISITVIS3:ARMCDTRT             2.98372    0.66567 129.61000   4.482 1.61e-05 ***
+#> AVISITVIS4:ARMCDTRT             4.40400    1.66049 132.88000   2.652 0.008970 ** 
 #> ---
 #> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 #> 
@@ -517,28 +495,28 @@ and `mmrm`.
 
 | Variable                   | Bayesian | Frequentist | Difference | Relative |
 |----------------------------|----------|-------------|------------|----------|
-| intercept                  | 24.3351  | 24.3537     | −0.0186    | −0.0008  |
-| fev1_bl                    | −0.8399  | −0.8402     | 0.0003     | −0.0004  |
-| avisit2                    | 4.7996   | 4.7904      | 0.0093     | 0.0019   |
-| avisit3                    | 10.3730  | 10.3660     | 0.0070     | 0.0007   |
-| avisit4                    | 15.1989  | 15.1923     | 0.0066     | 0.0004   |
-| raceblackorafricanamerican | 1.4131   | 1.4192      | −0.0061    | −0.0043  |
-| racewhite                  | 5.4556   | 5.4568      | −0.0012    | −0.0002  |
-| sexfemale                  | 0.3456   | 0.3381      | 0.0075     | 0.0221   |
-| avisit1:armcdtrt           | 3.9842   | 3.9833      | 0.0009     | 0.0002   |
-| avisit2:armcdtrt           | 3.9330   | 3.9308      | 0.0023     | 0.0006   |
-| avisit3:armcdtrt           | 2.9795   | 2.9837      | −0.0042    | −0.0014  |
-| avisit4:armcdtrt           | 4.4066   | 4.4040      | 0.0026     | 0.0006   |
-| sigma_avisit1              | 6.2317   | 6.1506      | 0.0811     | 0.0132   |
-| sigma_avisit2              | 4.9146   | 4.8526      | 0.0620     | 0.0128   |
-| sigma_avisit3              | 3.7775   | 3.7153      | 0.0622     | 0.0167   |
-| sigma_avisit4              | 9.7953   | 9.6417      | 0.1536     | 0.0159   |
-| correlation_vis1_vis2      | 0.3607   | 0.3795      | −0.0187    | −0.0493  |
-| correlation_vis1_vis3      | 0.1419   | 0.1523      | −0.0104    | −0.0683  |
-| correlation_vis2_vis3      | 0.0396   | 0.0430      | −0.0034    | −0.0791  |
-| correlation_vis1_vis4      | 0.1680   | 0.1802      | −0.0121    | −0.0674  |
-| correlation_vis2_vis4      | 0.1110   | 0.1178      | −0.0067    | −0.0571  |
-| correlation_vis3_vis4      | 0.0144   | 0.0159      | −0.0015    | −0.0929  |
+| intercept                  | 24.3554  | 24.3537     | 0.0017     | 0.0001   |
+| fev1_bl                    | −0.8402  | −0.8402     | 0.0000     | −0.0001  |
+| avisit2                    | 4.7922   | 4.7904      | 0.0018     | 0.0004   |
+| avisit3                    | 10.3706  | 10.3660     | 0.0046     | 0.0004   |
+| avisit4                    | 15.1916  | 15.1923     | −0.0007    | 0.0000   |
+| raceblackorafricanamerican | 1.4121   | 1.4192      | −0.0071    | −0.0050  |
+| racewhite                  | 5.4472   | 5.4568      | −0.0096    | −0.0018  |
+| sexfemale                  | 0.3426   | 0.3381      | 0.0045     | 0.0132   |
+| avisit1:armcdtrt           | 3.9763   | 3.9833      | −0.0069    | −0.0017  |
+| avisit2:armcdtrt           | 3.9363   | 3.9308      | 0.0055     | 0.0014   |
+| avisit3:armcdtrt           | 2.9781   | 2.9837      | −0.0056    | −0.0019  |
+| avisit4:armcdtrt           | 4.4076   | 4.4040      | 0.0036     | 0.0008   |
+| sigma_avisit1              | 6.2339   | 6.1506      | 0.0833     | 0.0135   |
+| sigma_avisit2              | 4.9149   | 4.8526      | 0.0623     | 0.0128   |
+| sigma_avisit3              | 3.7760   | 3.7153      | 0.0606     | 0.0163   |
+| sigma_avisit4              | 9.8025   | 9.6417      | 0.1608     | 0.0167   |
+| correlation_vis1_vis2      | 0.3605   | 0.3795      | −0.0189    | −0.0499  |
+| correlation_vis1_vis3      | 0.1415   | 0.1523      | −0.0108    | −0.0709  |
+| correlation_vis2_vis3      | 0.0388   | 0.0430      | −0.0042    | −0.0975  |
+| correlation_vis1_vis4      | 0.1679   | 0.1802      | −0.0123    | −0.0683  |
+| correlation_vis2_vis4      | 0.1110   | 0.1178      | −0.0068    | −0.0576  |
+| correlation_vis3_vis4      | 0.0135   | 0.0159      | −0.0023    | −0.1472  |
 
 Table 4. Comparison of parameter estimates between Bayesian and
 frequentist MMRMs. {.table .gt_table quarto-disable-processing="false"
@@ -569,18 +547,18 @@ quarto-bootstrap="false"}
 
 | Variable                   | Bayesian | Frequentist | Difference | Relative |
 |----------------------------|----------|-------------|------------|----------|
-| intercept                  | 1.4125   | 1.4075      | 0.0050     | 0.0035   |
-| fev1_bl                    | 0.0279   | 0.0278      | 0.0001     | 0.0046   |
-| avisit2                    | 0.8176   | 0.7985      | 0.0191     | 0.0239   |
-| avisit3                    | 0.8335   | 0.8132      | 0.0203     | 0.0250   |
-| avisit4                    | 1.3283   | 1.3086      | 0.0198     | 0.0151   |
-| raceblackorafricanamerican | 0.5857   | 0.5787      | 0.0070     | 0.0120   |
-| racewhite                  | 0.6252   | 0.6163      | 0.0089     | 0.0144   |
-| sexfemale                  | 0.5119   | 0.4927      | 0.0192     | 0.0390   |
-| avisit1:armcdtrt           | 1.0651   | 1.0454      | 0.0197     | 0.0188   |
-| avisit2:armcdtrt           | 0.8260   | 0.8135      | 0.0125     | 0.0154   |
-| avisit3:armcdtrt           | 0.6771   | 0.6657      | 0.0114     | 0.0171   |
-| avisit4:armcdtrt           | 1.6805   | 1.6605      | 0.0200     | 0.0120   |
+| intercept                  | 1.4129   | 1.4075      | 0.0053     | 0.0038   |
+| fev1_bl                    | 0.0281   | 0.0278      | 0.0003     | 0.0104   |
+| avisit2                    | 0.8069   | 0.7985      | 0.0085     | 0.0106   |
+| avisit3                    | 0.8225   | 0.8132      | 0.0093     | 0.0115   |
+| avisit4                    | 1.3223   | 1.3086      | 0.0137     | 0.0105   |
+| raceblackorafricanamerican | 0.5886   | 0.5787      | 0.0099     | 0.0171   |
+| racewhite                  | 0.6210   | 0.6163      | 0.0047     | 0.0077   |
+| sexfemale                  | 0.5065   | 0.4927      | 0.0138     | 0.0280   |
+| avisit1:armcdtrt           | 1.0656   | 1.0454      | 0.0202     | 0.0193   |
+| avisit2:armcdtrt           | 0.8238   | 0.8135      | 0.0103     | 0.0126   |
+| avisit3:armcdtrt           | 0.6765   | 0.6657      | 0.0108     | 0.0162   |
+| avisit4:armcdtrt           | 1.7000   | 1.6605      | 0.0395     | 0.0238   |
 
 Table 5. Comparison of parameter standard errors between Bayesian and
 frequentist MMRMs. {.table .gt_table quarto-disable-processing="false"
@@ -590,13 +568,13 @@ quarto-bootstrap="false"}
 
 ``` r
 > sessionInfo()
-#> R version 4.4.0 (2024-04-24)
+#> R version 4.5.2 (2025-10-31)
 #> Platform: aarch64-apple-darwin20
-#> Running under: macOS Sonoma 14.5
+#> Running under: macOS Tahoe 26.7.1
 #> 
 #> Matrix products: default
-#> BLAS:   /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/lib/libRblas.0.dylib 
-#> LAPACK: /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.0
+#> BLAS:   /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib 
+#> LAPACK: /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
 #> 
 #> locale:
 #> [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
@@ -605,45 +583,31 @@ quarto-bootstrap="false"}
 #> tzcode source: internal
 #> 
 #> attached base packages:
-#> [1] parallel  stats     graphics  grDevices utils     datasets  methods  
-#> [8] base     
+#> [1] parallel  stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#>  [1] posterior_1.5.0      mmrm_0.3.11          brms.mmrm_1.0.1.9005
-#>  [4] purrr_1.0.2          gtsummary_1.9.9.9003 gt_0.10.1           
-#>  [7] ggplot2_3.5.1        tidyr_1.3.1          dplyr_1.1.4         
-#> [10] knitr_1.46          
+#>  [1] posterior_1.7.0      mmrm_0.3.19          purrr_1.2.2          gtsummary_2.6.1      gt_1.4.0            
+#>  [6] ggplot2_4.0.3        tidyr_1.3.2          knitr_1.52           dplyr_1.2.1          brms.mmrm_1.1.1.9001
+#> [11] brms_2.23.0          Rcpp_1.1.2          
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] tidyselect_1.2.1     svUnit_1.0.6         farver_2.1.2        
-#>  [4] loo_2.7.0            tidybayes_3.0.6      fastmap_1.2.0       
-#>  [7] TH.data_1.1-2        tensorA_0.36.2.1     digest_0.6.35       
-#> [10] estimability_1.5     lifecycle_1.0.4      StanHeaders_2.32.8  
-#> [13] processx_3.8.4       survival_3.5-8       magrittr_2.0.3      
-#> [16] compiler_4.4.0       rlang_1.1.4          sass_0.4.9          
-#> [19] tools_4.4.0          utf8_1.2.4           labeling_0.4.3      
-#> [22] bridgesampling_1.1-2 pkgbuild_1.4.4       curl_5.2.1          
-#> [25] plyr_1.8.9           xml2_1.3.6           abind_1.4-5         
-#> [28] multcomp_1.4-25      withr_3.0.0          grid_4.4.0          
-#> [31] stats4_4.4.0         fansi_1.0.6          xtable_1.8-4        
-#> [34] colorspace_2.1-0     inline_0.3.19        emmeans_1.10.1      
-#> [37] scales_1.3.0         gtools_3.9.5         MASS_7.3-60.2       
-#> [40] ggridges_0.5.6       cli_3.6.2            mvtnorm_1.2-4       
-#> [43] generics_0.1.3       RcppParallel_5.1.7   binom_1.1-1.1       
-#> [46] reshape2_1.4.4       commonmark_1.9.1     rstan_2.32.6        
-#> [49] stringr_1.5.1        splines_4.4.0        bayesplot_1.11.1    
-#> [52] matrixStats_1.3.0    brms_2.21.0          vctrs_0.6.5         
-#> [55] V8_4.4.2             Matrix_1.7-0         sandwich_3.1-0      
-#> [58] jsonlite_1.8.8       callr_3.7.6          arrayhelpers_1.1-0  
-#> [61] ggdist_3.3.2         glue_1.7.0           ps_1.7.6            
-#> [64] codetools_0.2-20     distributional_0.4.0 stringi_1.8.4       
-#> [67] gtable_0.3.5         QuickJSR_1.1.3       munsell_0.5.1       
-#> [70] tibble_3.2.1         pillar_1.9.0         htmltools_0.5.8.1   
-#> [73] Brobdingnag_1.2-9    TMB_1.9.11           R6_2.5.1            
-#> [76] Rdpack_2.6           evaluate_0.23        lattice_0.22-6      
-#> [79] highr_0.10           markdown_1.12        cards_0.1.0.9046    
-#> [82] rbibutils_2.2.16     backports_1.4.1      trialr_0.1.6        
-#> [85] rstantools_2.4.0     Rcpp_1.0.12          coda_0.19-4.1       
-#> [88] gridExtra_2.3        nlme_3.1-164         checkmate_2.3.1     
-#> [91] xfun_0.43            zoo_1.8-12           pkgconfig_2.0.3
+#>  [1] tidyselect_1.2.1     svUnit_1.0.8         farver_2.1.2         loo_2.10.1           tidybayes_3.0.7     
+#>  [6] S7_0.2.2             fastmap_1.2.0        tensorA_0.36.2.1     promises_1.5.0       digest_0.6.39       
+#> [11] estimability_2.0.0   lifecycle_1.0.5      StanHeaders_2.39.1   processx_3.9.0       magrittr_2.0.5      
+#> [16] compiler_4.5.2       sass_0.4.10          rlang_1.3.0          tools_4.5.2          utf8_1.2.6          
+#> [21] data.table_1.18.6.1  labeling_0.4.3       bridgesampling_1.2-1 pkgbuild_1.4.8       curl_8.1.0          
+#> [26] plyr_1.8.9           xml2_1.6.0           RColorBrewer_1.1-3   cmdstanr_0.9.0       abind_1.4-8         
+#> [31] withr_3.0.3          grid_4.5.2           stats4_4.5.2         xtable_1.8-8         colorspace_2.1-4    
+#> [36] inline_0.3.21        emmeans_2.0.4        scales_1.4.0         gtools_3.9.5         MASS_7.3-66         
+#> [41] ggridges_0.5.7       cli_3.6.6            mvtnorm_1.4-2        generics_0.1.4       otel_0.2.0          
+#> [46] RcppParallel_6.2.1   binom_1.1-2          reshape2_1.4.5       commonmark_2.0.0     rstan_2.32.7        
+#> [51] stringr_1.6.0        bayesplot_1.15.0     matrixStats_1.5.0    vctrs_0.7.3          V8_8.2.0            
+#> [56] Matrix_1.7-6         jsonlite_2.0.0       litedown_0.11        arrayhelpers_1.1-2   ggdist_3.3.3        
+#> [61] glue_1.8.1           mcptools_1.0.3       codetools_0.2-20     ps_1.9.3             distributional_0.9.0
+#> [66] stringi_1.8.9        gtable_0.3.6         later_1.4.8          QuickJSR_1.11.0      tibble_3.3.1        
+#> [71] pillar_1.11.1        htmltools_0.5.9      Brobdingnag_1.3-1    TMB_1.9.25           R6_2.6.1            
+#> [76] Rdpack_2.6.6         evaluate_1.0.5       lattice_0.23-1       markdown_2.0         cards_0.9.0         
+#> [81] rbibutils_2.4.1      backports_1.5.1      nanonext_1.10.3.9000 renv_1.3.1           trialr_0.1.6        
+#> [86] rstantools_2.7.1     coda_0.19-4.1        gridExtra_2.3.1      nlme_3.1-171         checkmate_2.3.4     
+#> [91] xfun_0.62            fs_2.1.0             zoo_1.9-1            pkgconfig_2.0.3
 ```

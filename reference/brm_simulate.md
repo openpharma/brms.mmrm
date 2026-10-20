@@ -1,7 +1,8 @@
 # Deprecated: simulate an MMRM.
 
 Deprecated on 2023-09-01 (version 0.0.2.9001). Use
-[`brm_simulate_simple()`](brm_simulate_simple.md) instead.
+[`brm_simulate_simple()`](https://openpharma.github.io/brms.mmrm/reference/brm_simulate_simple.md)
+instead.
 
 ## Usage
 

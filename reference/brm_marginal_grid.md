@@ -1,7 +1,7 @@
 # Marginal names grid.
 
 Describe the column names of the data frames output by
-[`brm_marginal_draws()`](brm_marginal_draws.md).
+[`brm_marginal_draws()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_draws.md).
 
 ## Usage
 
@@ -13,14 +13,16 @@ brm_marginal_grid(data, formula)
 
 - data:
 
-  A classed data frame from [`brm_data()`](brm_data.md), or an
-  informative prior archetype from a function like
-  [`brm_archetype_successive_cells()`](brm_archetype_successive_cells.md).
+  A classed data frame from
+  [`brm_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_data.md),
+  or an informative prior archetype from a function like
+  [`brm_archetype_successive_cells()`](https://openpharma.github.io/brms.mmrm/reference/brm_archetype_successive_cells.md).
 
 - formula:
 
   An object of class `"brmsformula"` from
-  [`brm_formula()`](brm_formula.md) or
+  [`brm_formula()`](https://openpharma.github.io/brms.mmrm/reference/brm_formula.md)
+  or
   [`brms::brmsformula()`](https://paulbuerkner.com/brms/reference/brmsformula.html).
   Should include the full mapping of the model, including fixed effects,
   residual correlation, and heterogeneity in the discrete-time-specific
@@ -29,9 +31,10 @@ brm_marginal_grid(data, formula)
 ## Value
 
 A data frame with a `name` column with the names of columns of data
-frames in [`brm_marginal_draws()`](brm_marginal_draws.md), along with
-metadata to describe which groups, subgroups, and time points those
-columns correspond to.
+frames in
+[`brm_marginal_draws()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_draws.md),
+along with metadata to describe which groups, subgroups, and time points
+those columns correspond to.
 
 ## Details
 
@@ -39,11 +42,12 @@ Useful for creating custom posterior summaries from the draws.
 
 ## See also
 
-Other marginals: [`brm_marginal_data()`](brm_marginal_data.md),
-[`brm_marginal_draws()`](brm_marginal_draws.md),
-[`brm_marginal_draws_average()`](brm_marginal_draws_average.md),
-[`brm_marginal_probabilities()`](brm_marginal_probabilities.md),
-[`brm_marginal_summaries()`](brm_marginal_summaries.md)
+Other marginals:
+[`brm_marginal_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_data.md),
+[`brm_marginal_draws()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_draws.md),
+[`brm_marginal_draws_average()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_draws_average.md),
+[`brm_marginal_probabilities()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_probabilities.md),
+[`brm_marginal_summaries()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_summaries.md)
 
 ## Examples
 

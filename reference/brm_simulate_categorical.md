@@ -1,7 +1,9 @@
 # Append simulated categorical covariates
 
 Simulate and append non-time-varying categorical covariates to an
-existing [`brm_data()`](brm_data.md) dataset.
+existing
+[`brm_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_data.md)
+dataset.
 
 ## Usage
 
@@ -13,8 +15,10 @@ brm_simulate_categorical(data, names, levels, probabilities = NULL)
 
 - data:
 
-  Classed `tibble` as from [`brm_data()`](brm_data.md) or
-  [`brm_simulate_outline()`](brm_simulate_outline.md).
+  Classed `tibble` as from
+  [`brm_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_data.md)
+  or
+  [`brm_simulate_outline()`](https://openpharma.github.io/brms.mmrm/reference/brm_simulate_outline.md).
 
 - names:
 
@@ -37,11 +41,14 @@ brm_simulate_categorical(data, names, levels, probabilities = NULL)
 
 ## Value
 
-A classed `tibble`, like from [`brm_data()`](brm_data.md) or
-[`brm_simulate_outline()`](brm_simulate_outline.md), but with new
-categorical covariate columns and with the names of the new covariates
-appended to the `brm_covariates` attribute. Each new categorical
-covariate column is a character vector, not the factor type in base R.
+A classed `tibble`, like from
+[`brm_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_data.md)
+or
+[`brm_simulate_outline()`](https://openpharma.github.io/brms.mmrm/reference/brm_simulate_outline.md),
+but with new categorical covariate columns and with the names of the new
+covariates appended to the `brm_covariates` attribute. Each new
+categorical covariate column is a character vector, not the factor type
+in base R.
 
 ## Details
 
@@ -55,10 +62,10 @@ that the random number generators in R work as intended).
 ## See also
 
 Other simulation:
-[`brm_simulate_continuous()`](brm_simulate_continuous.md),
-[`brm_simulate_outline()`](brm_simulate_outline.md),
-[`brm_simulate_prior()`](brm_simulate_prior.md),
-[`brm_simulate_simple()`](brm_simulate_simple.md)
+[`brm_simulate_continuous()`](https://openpharma.github.io/brms.mmrm/reference/brm_simulate_continuous.md),
+[`brm_simulate_outline()`](https://openpharma.github.io/brms.mmrm/reference/brm_simulate_outline.md),
+[`brm_simulate_prior()`](https://openpharma.github.io/brms.mmrm/reference/brm_simulate_prior.md),
+[`brm_simulate_simple()`](https://openpharma.github.io/brms.mmrm/reference/brm_simulate_simple.md)
 
 ## Examples
 

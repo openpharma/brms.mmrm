@@ -25,8 +25,9 @@ y_n \sim \text{Multivariate-Normal}\left ( \text{mean} = X_n b, \ \text{variance
 ```
 Above, $`X_n`$ is the fixed effect model matrix of patient $`n`$, and
 its specific makeup is determined by arguments such as `intercept` and
-`group` in [`brm_formula()`](../reference/brm_formula.md). $`b`$ is a
-constant-length vector of fixed effect parameters.
+`group` in
+[`brm_formula()`](https://openpharma.github.io/brms.mmrm/reference/brm_formula.md).
+$`b`$ is a constant-length vector of fixed effect parameters.
 
 The MMRM in `brms.mmrm` is a [distributional
 model](https://paulbuerkner.com/brms/articles/brms_distreg.html), which
@@ -49,29 +50,30 @@ matrix. $`Z_n`$ is a patient-specific matrix which controls how the
 parameters](https://paulbuerkner.com/brms/articles/brms_distreg.html)
 $`b_\sigma`$ map to the more intuitive standard deviation vector
 $`\sigma_n`$. The specific makeup of $`Z_n`$ is determined by the
-`sigma` argument of [`brm_formula()`](../reference/brm_formula.md),
+`sigma` argument of
+[`brm_formula()`](https://openpharma.github.io/brms.mmrm/reference/brm_formula.md),
 which in turn is produced by
-[`brm_formula_sigma()`](../reference/brm_formula_sigma.md).
+[`brm_formula_sigma()`](https://openpharma.github.io/brms.mmrm/reference/brm_formula_sigma.md).
 
 $`\Lambda`$ is a symmetric positive-definite correlation matrix with
 diagonal elements equal to 1 and off-diagonal elements between -1 and 1.
 The structure of $`\Lambda`$ depends on the `correlation` argument of
-[`brm_formula()`](../reference/brm_formula.md), which could describe an
-unstructured parameterization, ARMA, compound symmetry, etc. These
-alternative structures and priors are available directly through `brms`.
-For specific details, please consult
+[`brm_formula()`](https://openpharma.github.io/brms.mmrm/reference/brm_formula.md),
+which could describe an unstructured parameterization, ARMA, compound
+symmetry, etc. These alternative structures and priors are available
+directly through `brms`. For specific details, please consult
 <https://paulbuerkner.com/brms/reference/autocor-terms.html> and
-[`?brms.mmrm::brm_formula`](../reference/brm_formula.md).
+[`?brms.mmrm::brm_formula`](https://openpharma.github.io/brms.mmrm/reference/brm_formula.md).
 
 ## Priors
 
 The scalar components of $`b`$ are modeled as independent with
 user-defined priors specified through the `prior` argument of
-[`brm_model()`](../reference/brm_model.md). The hyperparameters of these
-priors are constant. The default priors are improper uniform for
-non-intercept terms and a data-dependent Student-t distribution for the
-intercept. The variance-related distributional parameters $`b_\sigma`$
-are given similar priors
+[`brm_model()`](https://openpharma.github.io/brms.mmrm/reference/brm_model.md).
+The hyperparameters of these priors are constant. The default priors are
+improper uniform for non-intercept terms and a data-dependent Student-t
+distribution for the intercept. The variance-related distributional
+parameters $`b_\sigma`$ are given similar priors
 
 For the correlation matrix $`\Lambda`$, the default prior in `brms.mmrm`
 is the [LKJ correlation

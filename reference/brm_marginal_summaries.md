@@ -13,7 +13,7 @@ brm_marginal_summaries(draws, level = 0.95)
 - draws:
 
   Posterior draws of the marginal posterior obtained from
-  [`brm_marginal_draws()`](brm_marginal_draws.md).
+  [`brm_marginal_draws()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_draws.md).
 
 - level:
 
@@ -25,8 +25,9 @@ brm_marginal_summaries(draws, level = 0.95)
 A tibble with one row per summary statistic and the following columns:
 
 - `marginal`: type of marginal distribution. If `outcome` was
-  `"response"` in [`brm_marginal_draws()`](brm_marginal_draws.md), then
-  possible values include `"response"` for the response on the raw
+  `"response"` in
+  [`brm_marginal_draws()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_draws.md),
+  then possible values include `"response"` for the response on the raw
   scale, `"change"` for change from baseline, and `"difference"` for
   treatment difference in terms of change from baseline. If `outcome`
   was `"change"`, then possible values include `"response"` for the
@@ -61,11 +62,12 @@ A tibble with one row per summary statistic and the following columns:
 
 ## See also
 
-Other marginals: [`brm_marginal_data()`](brm_marginal_data.md),
-[`brm_marginal_draws()`](brm_marginal_draws.md),
-[`brm_marginal_draws_average()`](brm_marginal_draws_average.md),
-[`brm_marginal_grid()`](brm_marginal_grid.md),
-[`brm_marginal_probabilities()`](brm_marginal_probabilities.md)
+Other marginals:
+[`brm_marginal_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_data.md),
+[`brm_marginal_draws()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_draws.md),
+[`brm_marginal_draws_average()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_draws_average.md),
+[`brm_marginal_grid()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_grid.md),
+[`brm_marginal_probabilities()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_probabilities.md)
 
 ## Examples
 

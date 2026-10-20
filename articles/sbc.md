@@ -41,7 +41,7 @@ source("sbc/R/response.R")
 source("sbc/R/scenarios.R")
 
 read_ranks <- function(path) {
-  fst::read_fst(path) |>
+  utils::read.csv(path, check.names = FALSE) |>
     tibble::as_tibble() |>
     pivot_longer(
       cols = everything(),
@@ -145,7 +145,7 @@ the rank statistics should be approximately uniformly distributed.
 
 ``` r
 
-ranks_subgroup <- read_ranks("sbc/results/subgroup.fst")
+ranks_subgroup <- read_ranks("sbc/results/subgroup.csv")
 ```
 
 Fixed effect parameter ranks:
@@ -225,7 +225,7 @@ SBC checking rank statistics:
 
 ``` r
 
-ranks_unstructured <- read_ranks("sbc/results/unstructured.fst")
+ranks_unstructured <- read_ranks("sbc/results/unstructured.csv")
 ```
 
 Fixed effect parameter ranks:
@@ -303,7 +303,7 @@ SBC checking rank statistics:
 ``` r
 
 ranks_autoregressive_moving_average <- read_ranks(
-  "sbc/results/autoregressive_moving_average.fst"
+  "sbc/results/autoregressive_moving_average.csv"
 )
 ```
 
@@ -372,7 +372,7 @@ SBC checking rank statistics:
 
 ``` r
 
-ranks_autoregressive <- read_ranks("sbc/results/autoregressive.fst")
+ranks_autoregressive <- read_ranks("sbc/results/autoregressive.csv")
 ```
 
 Fixed effect parameter ranks:
@@ -439,7 +439,7 @@ SBC checking rank statistics:
 
 ``` r
 
-ranks_moving_average <- read_ranks("sbc/results/moving_average.fst")
+ranks_moving_average <- read_ranks("sbc/results/moving_average.csv")
 ```
 
 Fixed effect parameter ranks:
@@ -506,7 +506,7 @@ SBC checking rank statistics:
 
 ``` r
 
-ranks_compound_symmetry <- read_ranks("sbc/results/compound_symmetry.fst")
+ranks_compound_symmetry <- read_ranks("sbc/results/compound_symmetry.csv")
 ```
 
 Fixed effect parameter ranks:
@@ -575,7 +575,7 @@ SBC checking rank statistics:
 
 ``` r
 
-ranks_diagonal <- read_ranks("sbc/results/diagonal.fst")
+ranks_diagonal <- read_ranks("sbc/results/diagonal.csv")
 ```
 
 Fixed effect parameter ranks:

@@ -14,7 +14,8 @@ brm_recenter_nuisance(data, nuisance, center)
 - data:
 
   An informative prior archetype data frame output from
-  [`brm_archetype_cells()`](brm_archetype_cells.md) or similar.
+  [`brm_archetype_cells()`](https://openpharma.github.io/brms.mmrm/reference/brm_archetype_cells.md)
+  or similar.
 
 - nuisance:
 
@@ -51,14 +52,14 @@ stays at zero.
 
 Recentering a nuisance variable shifts the reference level of the model,
 which changes the interpretation of the marginal means from
-[`brm_marginal_draws()`](brm_marginal_draws.md). It is your
-responsibility to interpret the reference level and the resulting
-marginal means appropriately. Please recenter with
+[`brm_marginal_draws()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_draws.md).
+It is your responsibility to interpret the reference level and the
+resulting marginal means appropriately. Please recenter with
 `brm_recenter_nuisance()` rather than modifying the column directly, so
 the recorded center stays in sync with the column.
-[`brm_transform_marginal()`](brm_transform_marginal.md) prints an
-informative message (once per session) if it detects a nuisance column
-that was recentered some other way.
+[`brm_transform_marginal()`](https://openpharma.github.io/brms.mmrm/reference/brm_transform_marginal.md)
+prints an informative message (once per session) if it detects a
+nuisance column that was recentered some other way.
 
 ## Examples
 

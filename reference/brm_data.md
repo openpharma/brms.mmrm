@@ -64,11 +64,12 @@ brm_data(
   `"VISIT"`. For most analyses, please ensure the time column in the
   data is an ordered factor. You can easily turn the time variable into
   an ordered factor using
-  [`brm_data_chronologize()`](brm_data_chronologize.md), either before
-  or immediately after `brm_data()` (but before any `brm_archetype_*()`
-  functions). This ensures the time points sort in chronological order,
-  which ensures the correctness of informative prior archetypes and
-  autoregressive / moving average correlation structures.
+  [`brm_data_chronologize()`](https://openpharma.github.io/brms.mmrm/reference/brm_data_chronologize.md),
+  either before or immediately after `brm_data()` (but before any
+  `brm_archetype_*()` functions). This ensures the time points sort in
+  chronological order, which ensures the correctness of informative
+  prior archetypes and autoregressive / moving average correlation
+  structures.
 
   Ordinarily, ordered factors automatically use polynomial contrasts
   from [`contr.poly()`](https://rdrr.io/r/stats/contrast.html). This is
@@ -109,10 +110,10 @@ brm_data(
   include `"Placebo"`, `"PLACEBO"`, `"PBO"`, `"PLB"`, `"CONTROL"`,
   `"CTRL"`, `"REFERENCE"`, and `"REF"`. `reference_group` only applies
   to the post-processing that happens in functions like
-  [`brm_marginal_draws()`](brm_marginal_draws.md) downstream of the
-  model. It does not control the fixed effect mapping in the model
-  matrix that `brms` derives from the formula from
-  [`brm_formula()`](brm_formula.md).
+  [`brm_marginal_draws()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_draws.md)
+  downstream of the model. It does not control the fixed effect mapping
+  in the model matrix that `brms` derives from the formula from
+  [`brm_formula()`](https://openpharma.github.io/brms.mmrm/reference/brm_formula.md).
 
 - reference_subgroup:
 
@@ -120,7 +121,7 @@ brm_data(
   reference for pairwise differences in when computing marginal means
   downstream of the model. It does not control the fixed effect mapping
   in the model matrix that `brms` derives from the formula from
-  [`brm_formula()`](brm_formula.md).
+  [`brm_formula()`](https://openpharma.github.io/brms.mmrm/reference/brm_formula.md).
 
 - reference_time:
 
@@ -129,19 +130,20 @@ brm_data(
   baseline or baseline is not included in `data[[time]]`.
 
   If `reference_time` is not `NULL`, then
-  [`brm_marginal_draws()`](brm_marginal_draws.md) will calculate change
-  from baseline, and it will calculate treatment differences as
-  differences between change-from-baseline values. If `reference_time`
-  is not `NULL`, then [`brm_marginal_draws()`](brm_marginal_draws.md)
+  [`brm_marginal_draws()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_draws.md)
+  will calculate change from baseline, and it will calculate treatment
+  differences as differences between change-from-baseline values. If
+  `reference_time` is not `NULL`, then
+  [`brm_marginal_draws()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_draws.md)
   will not calculate change from baseline, and it will calculate
   treatment differences as differences between response values.
 
   Note: `reference_time` only applies to the post-processing that
   happens in functions like
-  [`brm_marginal_draws()`](brm_marginal_draws.md) downstream of the
-  model. It does not control the fixed effect mapping in the model
-  matrix that `brms` derives from the formula from
-  [`brm_formula()`](brm_formula.md).
+  [`brm_marginal_draws()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_draws.md)
+  downstream of the model. It does not control the fixed effect mapping
+  in the model matrix that `brms` derives from the formula from
+  [`brm_formula()`](https://openpharma.github.io/brms.mmrm/reference/brm_formula.md).
 
 - role:
 
@@ -191,17 +193,19 @@ The preprocessing steps in `brm_data()` are as follows:
 
 ## Separation string
 
-Post-processing in [`brm_marginal_draws()`](brm_marginal_draws.md) names
-each of the group-by-time marginal means with the delimiting character
-string from `Sys.getenv("BRM_SEP", unset = "|")`. Neither the column
-names nor element names of the group and time variables can contain this
-string. To set a custom string yourself, use
+Post-processing in
+[`brm_marginal_draws()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_draws.md)
+names each of the group-by-time marginal means with the delimiting
+character string from `Sys.getenv("BRM_SEP", unset = "|")`. Neither the
+column names nor element names of the group and time variables can
+contain this string. To set a custom string yourself, use
 `Sys.setenv(BRM_SEP = "YOUR_CUSTOM_STRING")`.
 
 ## See also
 
-Other data: [`brm_data_change()`](brm_data_change.md),
-[`brm_data_chronologize()`](brm_data_chronologize.md)
+Other data:
+[`brm_data_change()`](https://openpharma.github.io/brms.mmrm/reference/brm_data_change.md),
+[`brm_data_chronologize()`](https://openpharma.github.io/brms.mmrm/reference/brm_data_chronologize.md)
 
 ## Examples
 

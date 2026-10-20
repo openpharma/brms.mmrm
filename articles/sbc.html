@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">brms.mmrm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -123,7 +123,7 @@ plot rank statistics:</p>
 <span><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="st">"sbc/R/scenarios.R"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">read_ranks</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">path</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu">fst</span><span class="fu">::</span><span class="fu"><a href="http://www.fstpackage.org/reference/write_fst.html" class="external-link">read_fst</a></span><span class="op">(</span><span class="va">path</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="va">path</span>, check.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span></span>
 <span>      cols <span class="op">=</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/everything.html" class="external-link">everything</a></span><span class="op">(</span><span class="op">)</span>,</span>
@@ -218,7 +218,7 @@ the prior parameter draws draws to the posterior draws. If the data
 simulation code and modeling code are both correct and consistent, then
 the rank statistics should be approximately uniformly distributed.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ranks_subgroup</span> <span class="op">&lt;-</span> <span class="fu">read_ranks</span><span class="op">(</span><span class="st">"sbc/results/subgroup.fst"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">ranks_subgroup</span> <span class="op">&lt;-</span> <span class="fu">read_ranks</span><span class="op">(</span><span class="st">"sbc/results/subgroup.csv"</span><span class="op">)</span></span></code></pre></div>
 <p>Fixed effect parameter ranks:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ranks_subgroup</span> <span class="op">|&gt;</span></span>
@@ -275,7 +275,7 @@ analysis:</p>
 <span><span class="co">#&gt; 13   normal(0.127, 2.5864)       b   timetime_4 sigma</span></span></code></pre></div>
 <p>SBC checking rank statistics:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ranks_unstructured</span> <span class="op">&lt;-</span> <span class="fu">read_ranks</span><span class="op">(</span><span class="st">"sbc/results/unstructured.fst"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">ranks_unstructured</span> <span class="op">&lt;-</span> <span class="fu">read_ranks</span><span class="op">(</span><span class="st">"sbc/results/unstructured.csv"</span><span class="op">)</span></span></code></pre></div>
 <p>Fixed effect parameter ranks:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ranks_unstructured</span> <span class="op">|&gt;</span></span>
@@ -331,7 +331,7 @@ analysis:</p>
 <p>SBC checking rank statistics:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ranks_autoregressive_moving_average</span> <span class="op">&lt;-</span> <span class="fu">read_ranks</span><span class="op">(</span></span>
-<span>  <span class="st">"sbc/results/autoregressive_moving_average.fst"</span></span>
+<span>  <span class="st">"sbc/results/autoregressive_moving_average.csv"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>Fixed effect parameter ranks:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
@@ -377,7 +377,7 @@ analysis:</p>
 <span><span class="co">#&gt; 10  normal(-0.0904, 1.322)     b   timetime_3 sigma</span></span></code></pre></div>
 <p>SBC checking rank statistics:</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ranks_autoregressive</span> <span class="op">&lt;-</span> <span class="fu">read_ranks</span><span class="op">(</span><span class="st">"sbc/results/autoregressive.fst"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">ranks_autoregressive</span> <span class="op">&lt;-</span> <span class="fu">read_ranks</span><span class="op">(</span><span class="st">"sbc/results/autoregressive.csv"</span><span class="op">)</span></span></code></pre></div>
 <p>Fixed effect parameter ranks:</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ranks_autoregressive</span> <span class="op">|&gt;</span></span>
@@ -422,7 +422,7 @@ analysis:</p>
 <span><span class="co">#&gt; 10   normal(0.057, 2.7014)     b   timetime_3 sigma</span></span></code></pre></div>
 <p>SBC checking rank statistics:</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ranks_moving_average</span> <span class="op">&lt;-</span> <span class="fu">read_ranks</span><span class="op">(</span><span class="st">"sbc/results/moving_average.fst"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">ranks_moving_average</span> <span class="op">&lt;-</span> <span class="fu">read_ranks</span><span class="op">(</span><span class="st">"sbc/results/moving_average.csv"</span><span class="op">)</span></span></code></pre></div>
 <p>Fixed effect parameter ranks:</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ranks_moving_average</span> <span class="op">|&gt;</span></span>
@@ -467,7 +467,7 @@ analysis:</p>
 <span><span class="co">#&gt; 10 normal(-0.1482, 1.6958)     b   timetime_3 sigma</span></span></code></pre></div>
 <p>SBC checking rank statistics:</p>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ranks_compound_symmetry</span> <span class="op">&lt;-</span> <span class="fu">read_ranks</span><span class="op">(</span><span class="st">"sbc/results/compound_symmetry.fst"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">ranks_compound_symmetry</span> <span class="op">&lt;-</span> <span class="fu">read_ranks</span><span class="op">(</span><span class="st">"sbc/results/compound_symmetry.csv"</span><span class="op">)</span></span></code></pre></div>
 <p>Fixed effect parameter ranks:</p>
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ranks_compound_symmetry</span> <span class="op">|&gt;</span></span>
@@ -515,7 +515,7 @@ analysis:</p>
 <span><span class="co">#&gt; 12  normal(0.0025, 1.3794) Intercept                         sigma</span></span></code></pre></div>
 <p>SBC checking rank statistics:</p>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ranks_diagonal</span> <span class="op">&lt;-</span> <span class="fu">read_ranks</span><span class="op">(</span><span class="st">"sbc/results/diagonal.fst"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">ranks_diagonal</span> <span class="op">&lt;-</span> <span class="fu">read_ranks</span><span class="op">(</span><span class="st">"sbc/results/diagonal.csv"</span><span class="op">)</span></span></code></pre></div>
 <p>Fixed effect parameter ranks:</p>
 <div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ranks_diagonal</span> <span class="op">|&gt;</span></span>

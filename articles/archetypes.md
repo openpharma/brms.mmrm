@@ -42,18 +42,18 @@ data <- fev_data |>
   brm_data_chronologize(order = "VISITN")
 data
 #> # A tibble: 800 × 10
-#>    USUBJID AVISIT ARMCD RACE                SEX   FEV1_BL  FEV1 WEIGHT VISITN VISITN2
-#>    <fct>   <ord>  <fct> <fct>               <fct>   <dbl> <dbl>  <dbl>  <int>   <dbl>
-#>  1 PT2     VIS1   PBO   Asian               Male     45.0  NA    0.465      1  0.330 
-#>  2 PT2     VIS2   PBO   Asian               Male     45.0  31.5  0.233      2 -0.820 
-#>  3 PT2     VIS3   PBO   Asian               Male     45.0  36.9  0.360      3  0.487 
-#>  4 PT2     VIS4   PBO   Asian               Male     45.0  48.8  0.507      4  0.738 
-#>  5 PT3     VIS1   PBO   Black or African A… Fema…    43.5  NA    0.682      1  0.576 
-#>  6 PT3     VIS2   PBO   Black or African A… Fema…    43.5  36.0  0.892      2 -0.305 
-#>  7 PT3     VIS3   PBO   Black or African A… Fema…    43.5  NA    0.128      3  1.51  
-#>  8 PT3     VIS4   PBO   Black or African A… Fema…    43.5  37.2  0.222      4  0.390 
-#>  9 PT5     VIS1   PBO   Black or African A… Male     43.6  32.3  0.411      1 -0.0162
-#> 10 PT5     VIS2   PBO   Black or African A… Male     43.6  NA    0.422      2  0.944 
+#>    USUBJID AVISIT ARMCD RACE                      SEX    FEV1_BL  FEV1 WEIGHT VISITN VISITN2
+#>    <fct>   <ord>  <fct> <fct>                     <fct>    <dbl> <dbl>  <dbl>  <int>   <dbl>
+#>  1 PT2     VIS1   PBO   Asian                     Male      45.0  NA    0.465      1  0.330 
+#>  2 PT2     VIS2   PBO   Asian                     Male      45.0  31.5  0.233      2 -0.820 
+#>  3 PT2     VIS3   PBO   Asian                     Male      45.0  36.9  0.360      3  0.487 
+#>  4 PT2     VIS4   PBO   Asian                     Male      45.0  48.8  0.507      4  0.738 
+#>  5 PT3     VIS1   PBO   Black or African American Female    43.5  NA    0.682      1  0.576 
+#>  6 PT3     VIS2   PBO   Black or African American Female    43.5  36.0  0.892      2 -0.305 
+#>  7 PT3     VIS3   PBO   Black or African American Female    43.5  NA    0.128      3  1.51  
+#>  8 PT3     VIS4   PBO   Black or African American Female    43.5  37.2  0.222      4  0.390 
+#>  9 PT5     VIS1   PBO   Black or African American Male      43.6  32.3  0.411      1 -0.0162
+#> 10 PT5     VIS2   PBO   Black or African American Male      43.6  NA    0.422      2  0.944 
 #> # ℹ 790 more rows
 ```
 
@@ -81,22 +81,21 @@ parameterization.
 
 archetype
 #> # A tibble: 800 × 20
-#>    x_PBO_VIS1 x_PBO_VIS2 x_PBO_VIS3 x_PBO_VIS4 x_TRT_VIS1 x_TRT_VIS2 x_TRT_VIS3
-#>  *      <dbl>      <dbl>      <dbl>      <dbl>      <dbl>      <dbl>      <dbl>
-#>  1          1          0          0          0          0          0          0
-#>  2          1          1          0          0          0          0          0
-#>  3          1          1          1          0          0          0          0
-#>  4          1          1          1          1          0          0          0
-#>  5          1          0          0          0          0          0          0
-#>  6          1          1          0          0          0          0          0
-#>  7          1          1          1          0          0          0          0
-#>  8          1          1          1          1          0          0          0
-#>  9          1          0          0          0          0          0          0
-#> 10          1          1          0          0          0          0          0
+#>    x_PBO_VIS1 x_PBO_VIS2 x_PBO_VIS3 x_PBO_VIS4 x_TRT_VIS1 x_TRT_VIS2 x_TRT_VIS3 x_TRT_VIS4 nuisance_WEIGHT
+#>  *      <dbl>      <dbl>      <dbl>      <dbl>      <dbl>      <dbl>      <dbl>      <dbl>           <dbl>
+#>  1          1          0          0          0          0          0          0          0         -0.0533
+#>  2          1          1          0          0          0          0          0          0         -0.285 
+#>  3          1          1          1          0          0          0          0          0         -0.158 
+#>  4          1          1          1          1          0          0          0          0         -0.0111
+#>  5          1          0          0          0          0          0          0          0          0.164 
+#>  6          1          1          0          0          0          0          0          0          0.373 
+#>  7          1          1          1          0          0          0          0          0         -0.391 
+#>  8          1          1          1          1          0          0          0          0         -0.297 
+#>  9          1          0          0          0          0          0          0          0         -0.108 
+#> 10          1          1          0          0          0          0          0          0         -0.0964
 #> # ℹ 790 more rows
-#> # ℹ 13 more variables: x_TRT_VIS4 <dbl>, nuisance_WEIGHT <dbl>,
-#> #   nuisance_SEX_Male <dbl>, USUBJID <fct>, AVISIT <ord>, ARMCD <fct>, RACE <fct>,
-#> #   SEX <fct>, FEV1_BL <dbl>, FEV1 <dbl>, WEIGHT <dbl>, VISITN <int>, VISITN2 <dbl>
+#> # ℹ 11 more variables: nuisance_SEX_Male <dbl>, USUBJID <fct>, AVISIT <ord>, ARMCD <fct>, RACE <fct>, SEX <fct>,
+#> #   FEV1_BL <dbl>, FEV1 <dbl>, WEIGHT <dbl>, VISITN <int>, VISITN2 <dbl>
 ```
 
 We have effects of interest to express successive differences:
@@ -104,8 +103,7 @@ We have effects of interest to express successive differences:
 ``` r
 
 attr(archetype, "brm_archetype_interest")
-#> [1] "x_PBO_VIS1" "x_PBO_VIS2" "x_PBO_VIS3" "x_PBO_VIS4" "x_TRT_VIS1" "x_TRT_VIS2"
-#> [7] "x_TRT_VIS3" "x_TRT_VIS4"
+#> [1] "x_PBO_VIS1" "x_PBO_VIS2" "x_PBO_VIS3" "x_PBO_VIS4" "x_TRT_VIS1" "x_TRT_VIS2" "x_TRT_VIS3" "x_TRT_VIS4"
 ```
 
 We also have nuisance variables. Some nuisance variables are continuous
@@ -141,8 +139,8 @@ is parameterized and what those parameters are doing.[^3]
 summary(archetype)
 #> # This is the "successive cells" informative prior archetype in brms.mmrm.
 #> # The following equations show the relationships between the
-#> # marginal means (left-hand side) and fixed effect parameters
-#> # (right-hand side).
+#> # marginal means (left-hand side) and important fixed effect parameters
+#> # (right-hand side). Nuisance parameters are omitted.
 #> # 
 #> #   PBO:VIS1 = x_PBO_VIS1
 #> #   PBO:VIS2 = x_PBO_VIS1 + x_PBO_VIS2
@@ -177,12 +175,12 @@ if applicable). This labeling mechanism is the same regardless of which
 archetype you choose, and it the way `brms.mmrm` helps you assign
 priors.
 
-[`brm_prior_label()`](../reference/brm_prior_label.md) is one way to
-create a labeling scheme. Each call to
-[`brm_prior_label()`](../reference/brm_prior_label.md) below assigns a
-univariate prior to a fixed effect parameter. Each univariate prior is a
-Stan code string. Possible choices are documented in the Stan function
-reference at
+[`brm_prior_label()`](https://openpharma.github.io/brms.mmrm/reference/brm_prior_label.md)
+is one way to create a labeling scheme. Each call to
+[`brm_prior_label()`](https://openpharma.github.io/brms.mmrm/reference/brm_prior_label.md)
+below assigns a univariate prior to a fixed effect parameter. Each
+univariate prior is a Stan code string. Possible choices are documented
+in the Stan function reference at
 <https://mc-stan.org/docs/functions-reference/unbounded_continuous_distributions.html>.
 
 ``` r
@@ -211,8 +209,8 @@ label
 ```
 
 As an alternative to
-[`brm_prior_label()`](../reference/brm_prior_label.md), you can start
-with a template and manually fill in the Stan code.
+[`brm_prior_label()`](https://openpharma.github.io/brms.mmrm/reference/brm_prior_label.md),
+you can start with a template and manually fill in the Stan code.
 
 ``` r
 
@@ -261,22 +259,22 @@ label
 ```
 
 After you have a labeling scheme,
-[`brm_prior_archetype()`](../reference/brm_prior_archetype.md) can
-create a `brms` prior for the important fixed effects.[^4]
+[`brm_prior_archetype()`](https://openpharma.github.io/brms.mmrm/reference/brm_prior_archetype.md)
+can create a `brms` prior for the important fixed effects.[^4]
 
 ``` r
 
 prior <- brm_prior_archetype(label = label, archetype = archetype)
 prior
-#>                      prior class       coef group resp dpar nlpar   lb   ub source
-#>  student_t(4, -7.57, 4.96)     b x_PBO_VIS1                       <NA> <NA>   user
-#>  student_t(4,  3.14, 7.86)     b x_PBO_VIS2                       <NA> <NA>   user
-#>  student_t(4,  8.78, 8.18)     b x_PBO_VIS3                       <NA> <NA>   user
-#>  student_t(4,  3.36, 8.10)     b x_PBO_VIS4                       <NA> <NA>   user
-#>  student_t(4, -2.96, 4.78)     b x_TRT_VIS1                       <NA> <NA>   user
-#>  student_t(4,  3.13, 7.64)     b x_TRT_VIS2                       <NA> <NA>   user
-#>  student_t(4,  7.65, 8.24)     b x_TRT_VIS3                       <NA> <NA>   user
-#>  student_t(4,  4.64, 8.21)     b x_TRT_VIS4                       <NA> <NA>   user
+#>                      prior class       coef group resp dpar nlpar   lb   ub tag source
+#>  student_t(4, -7.57, 4.96)     b x_PBO_VIS1                       <NA> <NA>       user
+#>  student_t(4,  3.14, 7.86)     b x_PBO_VIS2                       <NA> <NA>       user
+#>  student_t(4,  8.78, 8.18)     b x_PBO_VIS3                       <NA> <NA>       user
+#>  student_t(4,  3.36, 8.10)     b x_PBO_VIS4                       <NA> <NA>       user
+#>  student_t(4, -2.96, 4.78)     b x_TRT_VIS1                       <NA> <NA>       user
+#>  student_t(4,  3.13, 7.64)     b x_TRT_VIS2                       <NA> <NA>       user
+#>  student_t(4,  7.65, 8.24)     b x_TRT_VIS3                       <NA> <NA>       user
+#>  student_t(4,  4.64, 8.21)     b x_TRT_VIS4                       <NA> <NA>       user
 ```
 
 In less common situations, you may wish to assign priors to nuisance
@@ -286,8 +284,8 @@ these slopes based on high-quality historical data. This requires a
 thorough understanding of the fixed effect structure of the model, but
 it can be done directly through `brms`. First, check the formula for the
 included nuisance parameters.
-[`brm_formula()`](../reference/brm_formula.md) automatically understands
-archetypes.
+[`brm_formula()`](https://openpharma.github.io/brms.mmrm/reference/brm_formula.md)
+automatically understands archetypes.
 
 ``` r
 
@@ -344,45 +342,36 @@ model <- brm_model(
   prior = prior,
   refresh = 0
 )
-#> Compiling Stan program...
 #> Start sampling
+#> Running MCMC with 4 sequential chains...
+#> 
+#> Chain 1 finished in 5.1 seconds.
+#> Chain 2 finished in 4.9 seconds.
+#> Chain 3 finished in 4.7 seconds.
+#> Chain 4 finished in 5.1 seconds.
+#> 
+#> All 4 chains finished successfully.
+#> Mean chain execution time: 5.0 seconds.
+#> Total execution time: 20.3 seconds.
 brms::prior_summary(model)
-#>                      prior    class              coef group resp  dpar nlpar lb ub
-#>                     (flat)        b                                               
-#>                     (flat)        b nuisance_SEX_Male                             
-#>                     (flat)        b   nuisance_WEIGHT                             
-#>  student_t(4, -7.57, 4.96)        b        x_PBO_VIS1                             
-#>  student_t(4,  3.14, 7.86)        b        x_PBO_VIS2                             
-#>  student_t(4,  8.78, 8.18)        b        x_PBO_VIS3                             
-#>  student_t(4,  3.36, 8.10)        b        x_PBO_VIS4                             
-#>  student_t(4, -2.96, 4.78)        b        x_TRT_VIS1                             
-#>  student_t(4,  3.13, 7.64)        b        x_TRT_VIS2                             
-#>  student_t(4,  7.65, 8.24)        b        x_TRT_VIS3                             
-#>  student_t(4,  4.64, 8.21)        b        x_TRT_VIS4                             
-#>                     (flat)        b                              sigma            
-#>                     (flat)        b        AVISITVIS1            sigma            
-#>                     (flat)        b        AVISITVIS2            sigma            
-#>                     (flat)        b        AVISITVIS3            sigma            
-#>                     (flat)        b        AVISITVIS4            sigma            
-#>       lkj_corr_cholesky(1) Lcortime                                               
-#>        source
-#>       default
-#>  (vectorized)
-#>  (vectorized)
-#>          user
-#>          user
-#>          user
-#>          user
-#>          user
-#>          user
-#>          user
-#>          user
-#>       default
-#>  (vectorized)
-#>  (vectorized)
-#>  (vectorized)
-#>  (vectorized)
-#>       default
+#>                      prior    class              coef group resp  dpar nlpar lb ub tag       source
+#>                     (flat)        b                                                         default
+#>                     (flat)        b nuisance_SEX_Male                                  (vectorized)
+#>                     (flat)        b   nuisance_WEIGHT                                  (vectorized)
+#>  student_t(4, -7.57, 4.96)        b        x_PBO_VIS1                                          user
+#>  student_t(4,  3.14, 7.86)        b        x_PBO_VIS2                                          user
+#>  student_t(4,  8.78, 8.18)        b        x_PBO_VIS3                                          user
+#>  student_t(4,  3.36, 8.10)        b        x_PBO_VIS4                                          user
+#>  student_t(4, -2.96, 4.78)        b        x_TRT_VIS1                                          user
+#>  student_t(4,  3.13, 7.64)        b        x_TRT_VIS2                                          user
+#>  student_t(4,  7.65, 8.24)        b        x_TRT_VIS3                                          user
+#>  student_t(4,  4.64, 8.21)        b        x_TRT_VIS4                                          user
+#>                     (flat)        b                              sigma                      default
+#>                     (flat)        b        AVISITVIS1            sigma                 (vectorized)
+#>                     (flat)        b        AVISITVIS2            sigma                 (vectorized)
+#>                     (flat)        b        AVISITVIS3            sigma                 (vectorized)
+#>                     (flat)        b        AVISITVIS4            sigma                 (vectorized)
+#>       lkj_corr_cholesky(1) Lcortime                                                         default
 ```
 
 Marginal mean estimation, post-processing, and visualization
@@ -416,8 +405,8 @@ simple cell mean and treatment effect parameterizations.
 summary(brm_archetype_cells(data, intercept = FALSE))
 #> # This is the "cells" informative prior archetype in brms.mmrm.
 #> # The following equations show the relationships between the
-#> # marginal means (left-hand side) and fixed effect parameters
-#> # (right-hand side).
+#> # marginal means (left-hand side) and important fixed effect parameters
+#> # (right-hand side). Nuisance parameters are omitted.
 #> # 
 #> #   PBO:VIS1 = x_PBO_VIS1
 #> #   PBO:VIS2 = x_PBO_VIS2
@@ -434,8 +423,8 @@ summary(brm_archetype_cells(data, intercept = FALSE))
 summary(brm_archetype_effects(data, intercept = FALSE))
 #> # This is the "effects" informative prior archetype in brms.mmrm.
 #> # The following equations show the relationships between the
-#> # marginal means (left-hand side) and fixed effect parameters
-#> # (right-hand side).
+#> # marginal means (left-hand side) and important fixed effect parameters
+#> # (right-hand side). Nuisance parameters are omitted.
 #> # 
 #> #   PBO:VIS1 = x_PBO_VIS1
 #> #   PBO:VIS2 = x_PBO_VIS2
@@ -457,8 +446,8 @@ for group 1 because it is the algebraic result of simplifying
 summary(brm_archetype_average_cells(data, intercept = FALSE))
 #> # This is the "average cells" informative prior archetype in brms.mmrm.
 #> # The following equations show the relationships between the
-#> # marginal means (left-hand side) and fixed effect parameters
-#> # (right-hand side).
+#> # marginal means (left-hand side) and important fixed effect parameters
+#> # (right-hand side). Nuisance parameters are omitted.
 #> # 
 #> #   PBO:VIS1 = 4*x_PBO_VIS1 - x_PBO_VIS2 - x_PBO_VIS3 - x_PBO_VIS4
 #> #   PBO:VIS2 = x_PBO_VIS2
@@ -479,8 +468,8 @@ becomes the time-averaged treatment effect of group 2 relative to group
 summary(brm_archetype_average_effects(data, intercept = FALSE))
 #> # This is the "average effects" informative prior archetype in brms.mmrm.
 #> # The following equations show the relationships between the
-#> # marginal means (left-hand side) and fixed effect parameters
-#> # (right-hand side).
+#> # marginal means (left-hand side) and important fixed effect parameters
+#> # (right-hand side). Nuisance parameters are omitted.
 #> # 
 #> #   PBO:VIS1 = 4*x_PBO_VIS1 - x_PBO_VIS2 - x_PBO_VIS3 - x_PBO_VIS4
 #> #   PBO:VIS2 = x_PBO_VIS2
@@ -501,8 +490,8 @@ time points.
 summary(brm_archetype_successive_cells(data, intercept = FALSE))
 #> # This is the "successive cells" informative prior archetype in brms.mmrm.
 #> # The following equations show the relationships between the
-#> # marginal means (left-hand side) and fixed effect parameters
-#> # (right-hand side).
+#> # marginal means (left-hand side) and important fixed effect parameters
+#> # (right-hand side). Nuisance parameters are omitted.
 #> # 
 #> #   PBO:VIS1 = x_PBO_VIS1
 #> #   PBO:VIS2 = x_PBO_VIS1 + x_PBO_VIS2
@@ -522,8 +511,8 @@ archetype:
 summary(brm_archetype_successive_effects(data, intercept = FALSE))
 #> # This is the "successive effects" informative prior archetype in brms.mmrm.
 #> # The following equations show the relationships between the
-#> # marginal means (left-hand side) and fixed effect parameters
-#> # (right-hand side).
+#> # marginal means (left-hand side) and important fixed effect parameters
+#> # (right-hand side). Nuisance parameters are omitted.
 #> # 
 #> #   PBO:VIS1 = x_PBO_VIS1
 #> #   PBO:VIS2 = x_PBO_VIS1 + x_PBO_VIS2
@@ -545,8 +534,8 @@ means archetype.
 summary(brm_archetype_cells(data))
 #> # This is the "cells" informative prior archetype in brms.mmrm.
 #> # The following equations show the relationships between the
-#> # marginal means (left-hand side) and fixed effect parameters
-#> # (right-hand side).
+#> # marginal means (left-hand side) and important fixed effect parameters
+#> # (right-hand side). Nuisance parameters are omitted.
 #> # 
 #> #   PBO:VIS1 = x_PBO_VIS1
 #> #   PBO:VIS2 = x_PBO_VIS2
@@ -566,8 +555,8 @@ To include an intercept term which all the marginal means share, set
 summary(brm_archetype_cells(data, intercept = TRUE))
 #> # This is the "cells" informative prior archetype in brms.mmrm.
 #> # The following equations show the relationships between the
-#> # marginal means (left-hand side) and fixed effect parameters
-#> # (right-hand side).
+#> # marginal means (left-hand side) and important fixed effect parameters
+#> # (right-hand side). Nuisance parameters are omitted.
 #> # 
 #> #   PBO:VIS1 = x_PBO_VIS1
 #> #   PBO:VIS2 = x_PBO_VIS1 + x_PBO_VIS2
@@ -583,17 +572,17 @@ To set up constrained longitudinal data analysis (cLDA), set
 `clda = TRUE`. This constraint pools all treatment groups at baseline,
 and it can help model clinical trials where a baseline measurement is
 observed before randomization. Some archetypes cannot support cLDA
-(e.g. [`brm_archetype_average_cells()`](../reference/brm_archetype_average_cells.md)
+(e.g. [`brm_archetype_average_cells()`](https://openpharma.github.io/brms.mmrm/reference/brm_archetype_average_cells.md)
 and
-[`brm_archetype_average_effects()`](../reference/brm_archetype_average_effects.md)).
+[`brm_archetype_average_effects()`](https://openpharma.github.io/brms.mmrm/reference/brm_archetype_average_effects.md)).
 
 ``` r
 
 summary(brm_archetype_cells(data, clda = TRUE))
 #> # This is the "cells" informative prior archetype in brms.mmrm.
 #> # The following equations show the relationships between the
-#> # marginal means (left-hand side) and fixed effect parameters
-#> # (right-hand side).
+#> # marginal means (left-hand side) and important fixed effect parameters
+#> # (right-hand side). Nuisance parameters are omitted.
 #> # 
 #> #   PBO:VIS1 = x_PBO_VIS1
 #> #   PBO:VIS2 = x_PBO_VIS2
@@ -605,13 +594,13 @@ summary(brm_archetype_cells(data, clda = TRUE))
 #> #   TRT:VIS4 = x_TRT_VIS4
 ```
 
-[^1]: [`brm_recenter_nuisance()`](../reference/brm_recenter_nuisance.md)
+[^1]: [`brm_recenter_nuisance()`](https://openpharma.github.io/brms.mmrm/reference/brm_recenter_nuisance.md)
     can retroactively recenter a nuisance column to a fixed value other
     than its mean.
 
-[^2]: [`brm_formula()`](../reference/brm_formula.md) assigns
-    `center = FALSE` in `brmsformula()` for all informative prior
-    archetypes.
+[^2]: [`brm_formula()`](https://openpharma.github.io/brms.mmrm/reference/brm_formula.md)
+    assigns `center = FALSE` in `brmsformula()` for all inforamtive
+    prior archetypes.
 
 [^3]: [`summary()`](https://rdrr.io/r/base/summary.html) also invisibly
     returns a simple character vector with the equations below.

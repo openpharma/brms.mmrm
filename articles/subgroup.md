@@ -84,11 +84,12 @@ count(raw_data, group, subgroup, time)
 ```
 
 When you create the special classed dataset for `brms.mmrm` using
-[`brm_data()`](../reference/brm_data.md), please supply the name of the
-subgroup variable and a reference subgroup level. Post-processing
-functions will use the reference subgroup level to compare pairs of
-subgroups: for example, the treatment effect of `subgroup_2` minus the
-treatment effect of the reference subgroup level you choose.
+[`brm_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_data.md),
+please supply the name of the subgroup variable and a reference subgroup
+level. Post-processing functions will use the reference subgroup level
+to compare pairs of subgroups: for example, the treatment effect of
+`subgroup_2` minus the treatment effect of the reference subgroup level
+you choose.
 
 ``` r
 
@@ -128,8 +129,10 @@ str(data)
 
 For subgroup analysis, the formula should have terms that include the
 subgroup variable. All plausible interactions are optional via arguments
-of [`brm_formula()`](../reference/brm_formula.md). For this specific
-example, we disable all interactions except group-subgroup interaction.
+of
+[`brm_formula()`](https://openpharma.github.io/brms.mmrm/reference/brm_formula.md).
+For this specific example, we disable all interactions except
+group-subgroup interaction.
 
 ``` r
 
@@ -167,8 +170,8 @@ formula_reduced
 ## Models
 
 To run the full subgroup and reduced non-subgroup models, use
-[`brm_model()`](../reference/brm_model.md) as usual. Remember to supply
-the appropriate formula to each case.
+[`brm_model()`](https://openpharma.github.io/brms.mmrm/reference/brm_model.md)
+as usual. Remember to supply the appropriate formula to each case.
 
 ``` r
 
@@ -177,8 +180,17 @@ model_subgroup <- brm_model(
   formula = formula_subgroup,
   refresh = 0
 )
-#> Compiling Stan program...
 #> Start sampling
+#> Running MCMC with 4 sequential chains...
+#> 
+#> Chain 1 finished in 6.8 seconds.
+#> Chain 2 finished in 6.8 seconds.
+#> Chain 3 finished in 7.0 seconds.
+#> Chain 4 finished in 6.5 seconds.
+#> 
+#> All 4 chains finished successfully.
+#> Mean chain execution time: 6.8 seconds.
+#> Total execution time: 27.4 seconds.
 ```
 
 ``` r
@@ -188,16 +200,25 @@ model_reduced <- brm_model(
   formula = formula_reduced,
   refresh = 0
 )
-#> Compiling Stan program...
 #> Start sampling
+#> Running MCMC with 4 sequential chains...
+#> 
+#> Chain 1 finished in 5.6 seconds.
+#> Chain 2 finished in 5.8 seconds.
+#> Chain 3 finished in 5.7 seconds.
+#> Chain 4 finished in 5.9 seconds.
+#> 
+#> All 4 chains finished successfully.
+#> Mean chain execution time: 5.8 seconds.
+#> Total execution time: 23.5 seconds.
 ```
 
 ## Marginals
 
-[`brm_marginal_draws()`](../reference/brm_marginal_draws.md)
+[`brm_marginal_draws()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_draws.md)
 automatically produces subgroup-specific marginal means if
-[`brm_formula()`](../reference/brm_formula.md) declared
-subgroup-specific fixed effects.[^2]
+[`brm_formula()`](https://openpharma.github.io/brms.mmrm/reference/brm_formula.md)
+declared subgroup-specific fixed effects.[^2]
 
 ``` r
 
@@ -222,24 +243,21 @@ baseline) and treatment difference are now subgroup-specific.
 
 tibble::as_tibble(draws_subgroup$difference_group)
 #> # A tibble: 4,000 × 11
-#>    .chain .draw .iteration `group_2|subgroup_1|time_2` group_2|subgroup_1|time…¹
-#>     <int> <int>      <int>                       <dbl>                     <dbl>
-#>  1      1     1          1                     -0.472                    -0.534 
-#>  2      1     2          2                     -0.0221                   -0.335 
-#>  3      1     3          3                     -0.222                    -0.217 
-#>  4      1     4          4                      0.199                    -0.111 
-#>  5      1     5          5                      0.0411                   -0.165 
-#>  6      1     6          6                     -0.215                    -0.571 
-#>  7      1     7          7                      0.0821                   -0.163 
-#>  8      1     8          8                     -0.167                    -0.0113
-#>  9      1     9          9                      0.282                     0.0544
-#> 10      1    10         10                      0.321                    -0.322 
+#>    .chain .draw .iteration `group_2|subgroup_1|time_2` `group_2|subgroup_1|time_3` `group_2|subgroup_2|time_2`
+#>     <int> <int>      <int>                       <dbl>                       <dbl>                       <dbl>
+#>  1      1     1          1                      0.102                     -0.147                        0.102 
+#>  2      1     2          2                     -0.0775                     0.0971                      -0.0775
+#>  3      1     3          3                      0.350                      0.00145                      0.350 
+#>  4      1     4          4                     -0.349                     -0.381                       -0.349 
+#>  5      1     5          5                     -0.105                     -0.343                       -0.105 
+#>  6      1     6          6                     -0.224                     -0.414                       -0.224 
+#>  7      1     7          7                      0.0107                    -0.328                        0.0107
+#>  8      1     8          8                     -0.0851                    -0.0809                      -0.0851
+#>  9      1     9          9                     -0.0617                    -0.233                       -0.0617
+#> 10      1    10         10                      0.636                      0.0208                       0.636 
 #> # ℹ 3,990 more rows
-#> # ℹ abbreviated name: ¹​`group_2|subgroup_1|time_3`
-#> # ℹ 6 more variables: `group_2|subgroup_2|time_2` <dbl>,
-#> #   `group_2|subgroup_2|time_3` <dbl>, `group_3|subgroup_1|time_2` <dbl>,
-#> #   `group_3|subgroup_1|time_3` <dbl>, `group_3|subgroup_2|time_2` <dbl>,
-#> #   `group_3|subgroup_2|time_3` <dbl>
+#> # ℹ 5 more variables: `group_2|subgroup_2|time_3` <dbl>, `group_3|subgroup_1|time_2` <dbl>,
+#> #   `group_3|subgroup_1|time_3` <dbl>, `group_3|subgroup_2|time_2` <dbl>, `group_3|subgroup_2|time_3` <dbl>
 ```
 
 In addition, there is a new `difference_subgroup` table. The posterior
@@ -251,32 +269,33 @@ treatment effects in `difference_group`.
 
 tibble::as_tibble(draws_subgroup$difference_subgroup)
 #> # A tibble: 4,000 × 7
-#>    .chain .draw .iteration `group_2|subgroup_2|time_2` group_2|subgroup_2|time…¹
-#>     <int> <int>      <int>                       <dbl>                     <dbl>
-#>  1      1     1          1                    5.55e-17                         0
-#>  2      1     2          2                    4.16e-17                         0
-#>  3      1     3          3                    0                                0
-#>  4      1     4          4                   -2.78e-17                         0
-#>  5      1     5          5                    2.78e-17                         0
-#>  6      1     6          6                    0                                0
-#>  7      1     7          7                    5.55e-17                         0
-#>  8      1     8          8                    2.78e-17                         0
-#>  9      1     9          9                    0                                0
-#> 10      1    10         10                    0                                0
+#>    .chain .draw .iteration `group_2|subgroup_2|time_2` `group_2|subgroup_2|time_3` `group_3|subgroup_2|time_2`
+#>     <int> <int>      <int>                       <dbl>                       <dbl>                       <dbl>
+#>  1      1     1          1                    0                          -5.55e-17                    5.55e-17
+#>  2      1     2          2                    0                           0                           0       
+#>  3      1     3          3                    0                           5.55e-17                    0       
+#>  4      1     4          4                    5.55e-17                   -5.55e-17                    0       
+#>  5      1     5          5                    0                           0                           0       
+#>  6      1     6          6                    0                           0                           0       
+#>  7      1     7          7                    0                           0                           0       
+#>  8      1     8          8                   -1.39e-17                    0                           0       
+#>  9      1     9          9                    0                          -8.33e-17                   -2.78e-17
+#> 10      1    10         10                    0                           0                           0       
 #> # ℹ 3,990 more rows
-#> # ℹ abbreviated name: ¹​`group_2|subgroup_2|time_3`
-#> # ℹ 2 more variables: `group_3|subgroup_2|time_2` <dbl>,
-#> #   `group_3|subgroup_2|time_3` <dbl>
+#> # ℹ 1 more variable: `group_3|subgroup_2|time_3` <dbl>
 ```
 
-The [`brm_marginal_summaries()`](../reference/brm_marginal_summaries.md)
+The
+[`brm_marginal_summaries()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_summaries.md)
 and
-[`brm_marginal_probabilities()`](../reference/brm_marginal_probabilities.md)
+[`brm_marginal_probabilities()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_probabilities.md)
 are automatically aware of any subgroup-specific marginals from
-[`brm_marginal_draws()`](../reference/brm_marginal_draws.md). Notably,
-[`brm_marginal_summaries()`](../reference/brm_marginal_summaries.md)
+[`brm_marginal_draws()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_draws.md).
+Notably,
+[`brm_marginal_summaries()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_summaries.md)
 summarizes the subgroup differences in the `difference_subgroup` table
-from [`brm_marginal_draws()`](../reference/brm_marginal_draws.md).
+from
+[`brm_marginal_draws()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_draws.md).
 
 ``` r
 
@@ -294,20 +313,20 @@ summaries_subgroup
 #> # A tibble: 340 × 7
 #>    marginal         statistic group   subgroup   time     value    mcse
 #>    <chr>            <chr>     <chr>   <chr>      <chr>    <dbl>   <dbl>
-#>  1 difference_group lower     group_2 subgroup_1 time_2 -0.300  0.00952
-#>  2 difference_group lower     group_2 subgroup_1 time_3 -0.540  0.0137 
-#>  3 difference_group lower     group_2 subgroup_2 time_2 -0.300  0.00952
-#>  4 difference_group lower     group_2 subgroup_2 time_3 -0.540  0.0137 
-#>  5 difference_group lower     group_3 subgroup_1 time_2 -0.130  0.00873
-#>  6 difference_group lower     group_3 subgroup_1 time_3 -0.286  0.00976
-#>  7 difference_group lower     group_3 subgroup_2 time_2 -0.130  0.00873
-#>  8 difference_group lower     group_3 subgroup_2 time_3 -0.286  0.00976
-#>  9 difference_group mean      group_2 subgroup_1 time_2  0.0913 0.00439
-#> 10 difference_group mean      group_2 subgroup_1 time_3 -0.167  0.00403
+#>  1 difference_group lower     group_2 subgroup_1 time_2 -0.305  0.0105 
+#>  2 difference_group lower     group_2 subgroup_1 time_3 -0.538  0.00980
+#>  3 difference_group lower     group_2 subgroup_2 time_2 -0.305  0.0105 
+#>  4 difference_group lower     group_2 subgroup_2 time_3 -0.538  0.00980
+#>  5 difference_group lower     group_3 subgroup_1 time_2 -0.140  0.00870
+#>  6 difference_group lower     group_3 subgroup_1 time_3 -0.259  0.00802
+#>  7 difference_group lower     group_3 subgroup_2 time_2 -0.140  0.00870
+#>  8 difference_group lower     group_3 subgroup_2 time_3 -0.259  0.00802
+#>  9 difference_group mean      group_2 subgroup_1 time_2  0.0881 0.00452
+#> 10 difference_group mean      group_2 subgroup_1 time_3 -0.166  0.00450
 #> # ℹ 330 more rows
 ```
 
-[`brm_marginal_probabilities()`](../reference/brm_marginal_probabilities.md)
+[`brm_marginal_probabilities()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_probabilities.md)
 still focuses on treatment effects, not on differences between pairs of
 subgroup levels.
 
@@ -321,22 +340,22 @@ brm_marginal_probabilities(
 #> # A tibble: 16 × 6
 #>    direction threshold group   subgroup   time   value
 #>    <chr>         <dbl> <chr>   <chr>      <chr>  <dbl>
-#>  1 greater        -0.1 group_2 subgroup_1 time_2 0.826
-#>  2 greater        -0.1 group_2 subgroup_1 time_3 0.362
-#>  3 greater        -0.1 group_2 subgroup_2 time_2 0.826
-#>  4 greater        -0.1 group_2 subgroup_2 time_3 0.362
-#>  5 greater        -0.1 group_3 subgroup_1 time_2 0.966
-#>  6 greater        -0.1 group_3 subgroup_1 time_3 0.846
-#>  7 greater        -0.1 group_3 subgroup_2 time_2 0.966
-#>  8 greater        -0.1 group_3 subgroup_2 time_3 0.846
-#>  9 less            0.1 group_2 subgroup_1 time_2 0.515
-#> 10 less            0.1 group_2 subgroup_1 time_3 0.915
-#> 11 less            0.1 group_2 subgroup_2 time_2 0.515
-#> 12 less            0.1 group_2 subgroup_2 time_3 0.915
-#> 13 less            0.1 group_3 subgroup_1 time_2 0.204
-#> 14 less            0.1 group_3 subgroup_1 time_3 0.498
-#> 15 less            0.1 group_3 subgroup_2 time_2 0.204
-#> 16 less            0.1 group_3 subgroup_2 time_3 0.498
+#>  1 greater        -0.1 group_2 subgroup_1 time_2 0.823
+#>  2 greater        -0.1 group_2 subgroup_1 time_3 0.368
+#>  3 greater        -0.1 group_2 subgroup_2 time_2 0.823
+#>  4 greater        -0.1 group_2 subgroup_2 time_3 0.368
+#>  5 greater        -0.1 group_3 subgroup_1 time_2 0.962
+#>  6 greater        -0.1 group_3 subgroup_1 time_3 0.858
+#>  7 greater        -0.1 group_3 subgroup_2 time_2 0.962
+#>  8 greater        -0.1 group_3 subgroup_2 time_3 0.858
+#>  9 less            0.1 group_2 subgroup_1 time_2 0.526
+#> 10 less            0.1 group_2 subgroup_1 time_3 0.911
+#> 11 less            0.1 group_2 subgroup_2 time_2 0.526
+#> 12 less            0.1 group_2 subgroup_2 time_3 0.911
+#> 13 less            0.1 group_3 subgroup_1 time_2 0.209
+#> 14 less            0.1 group_3 subgroup_1 time_3 0.501
+#> 15 less            0.1 group_3 subgroup_2 time_2 0.209
+#> 16 less            0.1 group_3 subgroup_2 time_3 0.501
 ```
 
 `brm_marignal_data()` can produce either subgroup-specific or
@@ -406,9 +425,9 @@ brms::waic(model_subgroup)
 #> Computed from 4000 by 900 log-likelihood matrix.
 #> 
 #>           Estimate   SE
-#> elpd_waic  -1275.8 19.9
-#> p_waic        20.0  1.0
-#> waic        2551.6 39.9
+#> elpd_waic  -1275.9 20.0
+#> p_waic        20.2  1.0
+#> waic        2551.9 40.0
 ```
 
 ``` r
@@ -418,9 +437,9 @@ brms::waic(model_reduced)
 #> Computed from 4000 by 900 log-likelihood matrix.
 #> 
 #>           Estimate   SE
-#> elpd_waic  -1273.9 20.0
-#> p_waic        17.1  0.9
-#> waic        2547.8 40.0
+#> elpd_waic  -1274.0 20.0
+#> p_waic        17.2  0.9
+#> waic        2548.0 40.0
 ```
 
 Likewise, we can compare the models in terms of the expected log
@@ -440,12 +459,12 @@ loo_subgroup
 #> Computed from 4000 by 900 log-likelihood matrix.
 #> 
 #>          Estimate   SE
-#> elpd_loo  -1275.8 19.9
-#> p_loo        20.1  1.0
-#> looic      2551.6 39.9
+#> elpd_loo  -1276.0 20.0
+#> p_loo        20.3  1.0
+#> looic      2552.0 40.0
 #> ------
 #> MCSE of elpd_loo is 0.1.
-#> MCSE and ESS estimates assume MCMC draws (r_eff in [0.4, 1.6]).
+#> MCSE and ESS estimates assume MCMC draws (r_eff in [0.4, 1.8]).
 #> 
 #> All Pareto k estimates are good (k < 0.7).
 #> See help('pareto-k-diagnostic') for details.
@@ -460,10 +479,10 @@ loo_reduced
 #>          Estimate   SE
 #> elpd_loo  -1274.0 20.0
 #> p_loo        17.2  0.9
-#> looic      2547.9 40.0
+#> looic      2548.0 40.0
 #> ------
 #> MCSE of elpd_loo is 0.1.
-#> MCSE and ESS estimates assume MCMC draws (r_eff in [0.4, 1.8]).
+#> MCSE and ESS estimates assume MCMC draws (r_eff in [0.5, 1.7]).
 #> 
 #> All Pareto k estimates are good (k < 0.7).
 #> See help('pareto-k-diagnostic') for details.
@@ -472,22 +491,28 @@ loo_reduced
 ``` r
 
 loo::loo_compare(loo_subgroup, loo_reduced)
-#>                elpd_diff se_diff
-#> model_reduced   0.0       0.0   
-#> model_subgroup -1.9       1.6
+#>           model elpd_diff se_diff p_worse       diag_diff diag_elpd
+#>   model_reduced       0.0     0.0      NA                          
+#>  model_subgroup      -2.0     1.6    0.89 |elpd_diff| < 4
+#> 
+#> Diagnostic flags present.
+#> See ?`loo-glossary` (sections `diag_diff` and `diag_elpd`)
+#> or https://mc-stan.org/loo/reference/loo-glossary.html.
 ```
 
 ## Visualization
 
-[`brm_plot_draws()`](../reference/brm_plot_draws.md) is aware of any
-subgroup-specific marginal means.
+[`brm_plot_draws()`](https://openpharma.github.io/brms.mmrm/reference/brm_plot_draws.md)
+is aware of any subgroup-specific marginal means.
 
 ``` r
 
 brm_plot_draws(draws_subgroup$difference_group)
 ```
 
-![](subgroup/draws-1.png)
+![plot of chunk draws](subgroup/draws-1.png)
+
+plot of chunk draws
 
 You can adjust visual aesthetics to compare subgroup levels side by side
 if subgroup level is the primary comparison of interest.
@@ -501,7 +526,9 @@ brm_plot_draws(
 )
 ```
 
-![](subgroup/drawscustom-1.png)
+![plot of chunk drawscustom](subgroup/drawscustom-1.png)
+
+plot of chunk drawscustom
 
 The following function call compares the subgroup model results against
 the subgroup data.
@@ -515,7 +542,9 @@ brm_plot_compare(
 )
 ```
 
-![](subgroup/subgroup-vs-data-1.png)
+![plot of chunk subgroup-vs-data](subgroup/subgroup-vs-data-1.png)
+
+plot of chunk subgroup-vs-data
 
 You can adjust plot aesthetics to view subgroup levels side by side as
 the primary comparison of interest.
@@ -532,7 +561,10 @@ brm_plot_compare(
 )
 ```
 
-![](subgroup/subgroup-vs-data-levels-1.png)
+![plot of chunk
+subgroup-vs-data-levels](subgroup/subgroup-vs-data-levels-1.png)
+
+plot of chunk subgroup-vs-data-levels
 
 We can also visually compare the treatment effects of a subgroup level
 against the marginal treatment effects of the reduced model.
@@ -546,11 +578,14 @@ brm_plot_compare(
 )
 ```
 
-![](subgroup/reduced-model-comparison-1.png)
+![plot of chunk
+reduced-model-comparison](subgroup/reduced-model-comparison-1.png)
+
+plot of chunk reduced-model-comparison
 
 Please remember to filter on a single subgroup level. Otherwise,
-[`brm_plot_compare()`](../reference/brm_plot_compare.md) throws an
-informative error to prevent overplotting.
+[`brm_plot_compare()`](https://openpharma.github.io/brms.mmrm/reference/brm_plot_compare.md)
+throws an informative error to prevent overplotting.
 
 ``` r
 
@@ -595,4 +630,4 @@ heterogeneous treatment effects from clinical data,” *Clin Trials*, 20,
 [^2]: See the subgroup analysis section of
     <https://openpharma.github.io/brms.mmrm/articles/inference.html> for
     an explanation of `average_within_subgroup` in
-    [`brm_transform_marginal()`](../reference/brm_transform_marginal.md)
+    [`brm_transform_marginal()`](https://openpharma.github.io/brms.mmrm/reference/brm_transform_marginal.md)

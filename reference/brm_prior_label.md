@@ -31,28 +31,31 @@ brm_prior_label(label = NULL, code, group, subgroup = NULL, time)
 
   Value of length 1, level of the treatment group column in the data to
   label the prior. The treatment group column is the one you identified
-  with the `group` argument of [`brm_data()`](brm_data.md).
+  with the `group` argument of
+  [`brm_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_data.md).
 
 - subgroup:
 
   Value of length 1, level of the subgroup column in the data to label
   the prior. The subgroup column is the one you identified with the
-  `subgroup` argument of [`brm_data()`](brm_data.md), if applicable. Not
-  every dataset has a subgroup variable. If yours does not, please
-  either ignore this argument or set it to `NULL`.
+  `subgroup` argument of
+  [`brm_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_data.md),
+  if applicable. Not every dataset has a subgroup variable. If yours
+  does not, please either ignore this argument or set it to `NULL`.
 
 - time:
 
   Value of length 1, level of the discrete time column in the data to
   label the prior. The discrete time column is the one you identified
-  with the `time` argument of [`brm_data()`](brm_data.md).
+  with the `time` argument of
+  [`brm_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_data.md).
 
 ## Value
 
 A `tibble` with one row per model parameter and columns for the Stan
 code, treatment group, subgroup, and discrete time point of each
 parameter. You can supply this `tibble` to the `label` argument of
-[`brm_prior_archetype()`](brm_prior_archetype.md).
+[`brm_prior_archetype()`](https://openpharma.github.io/brms.mmrm/reference/brm_prior_archetype.md).
 
 ## Prior labeling
 
@@ -73,13 +76,14 @@ However, it requires an understanding of how the labels of the priors
 map to parameters in the model. This mapping varies from archetype to
 archetype, and it is documented in the help pages of archetype-specific
 functions such as
-[`brm_archetype_successive_cells()`](brm_archetype_successive_cells.md).
+[`brm_archetype_successive_cells()`](https://openpharma.github.io/brms.mmrm/reference/brm_archetype_successive_cells.md).
 
 ## See also
 
-Other priors: [`brm_prior_archetype()`](brm_prior_archetype.md),
-[`brm_prior_simple()`](brm_prior_simple.md),
-[`brm_prior_template()`](brm_prior_template.md)
+Other priors:
+[`brm_prior_archetype()`](https://openpharma.github.io/brms.mmrm/reference/brm_prior_archetype.md),
+[`brm_prior_simple()`](https://openpharma.github.io/brms.mmrm/reference/brm_prior_simple.md),
+[`brm_prior_template()`](https://openpharma.github.io/brms.mmrm/reference/brm_prior_template.md)
 
 ## Examples
 

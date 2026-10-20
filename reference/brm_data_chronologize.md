@@ -45,7 +45,7 @@ brm_data_chronologize(
   data. This is the variable that `brm_data_chronologize()` turns into
   an ordered factor. It needs to be specified explicitly if and only if
   the `data` argument was not produced by a call to
-  [`brm_data()`](brm_data.md).
+  [`brm_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_data.md).
 
 ## Value
 
@@ -70,28 +70,31 @@ chronologically-ordered factor levels in the `levels` argument, or
 supply the name of a time-ordered variable in the `order` argument.
 
 `brm_data_chronologize()` can be called either before or just after
-[`brm_data()`](brm_data.md), but in the former case, the discrete time
-variable needs to be specified explicitly in `time` argument. And in the
-latter, `brm_data_chronologize()` must be called before any of the
-informative prior archetype functions such as
-[`brm_archetype_successive_cells()`](brm_archetype_successive_cells.md).
+[`brm_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_data.md),
+but in the former case, the discrete time variable needs to be specified
+explicitly in `time` argument. And in the latter,
+`brm_data_chronologize()` must be called before any of the informative
+prior archetype functions such as
+[`brm_archetype_successive_cells()`](https://openpharma.github.io/brms.mmrm/reference/brm_archetype_successive_cells.md).
 
 ## Contrasts
 
 Ordinarily, ordered factors automatically use polynomial contrasts from
 [`contr.poly()`](https://rdrr.io/r/stats/contrast.html). This is
 undesirable for MMRMs, so if the time variable is an ordered factor,
-then [`brm_data()`](brm_data.md) manually sets `contrasts(data[[time]])`
-to a set of treatment contrasts using
-[`contr.treatment()`](https://rdrr.io/r/stats/contrast.html). If you
-prefer different contrasts, please manually set
+then
+[`brm_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_data.md)
+manually sets `contrasts(data[[time]])` to a set of treatment contrasts
+using [`contr.treatment()`](https://rdrr.io/r/stats/contrast.html). If
+you prefer different contrasts, please manually set
 `contrasts(data[[time]])` to something else after calling
-[`brm_data()`](brm_data.md).
+[`brm_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_data.md).
 
 ## See also
 
-Other data: [`brm_data()`](brm_data.md),
-[`brm_data_change()`](brm_data_change.md)
+Other data:
+[`brm_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_data.md),
+[`brm_data_change()`](https://openpharma.github.io/brms.mmrm/reference/brm_data_change.md)
 
 ## Examples
 

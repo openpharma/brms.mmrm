@@ -57,8 +57,10 @@ brm_simulate_outline(
 
 ## Value
 
-A classed data frame from [`brm_data()`](brm_data.md). The data frame
-has one row per patient per time point and the following columns:
+A classed data frame from
+[`brm_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_data.md).
+The data frame has one row per patient per time point and the following
+columns:
 
 - `group`: integer index of the treatment group.
 
@@ -69,10 +71,10 @@ has one row per patient per time point and the following columns:
 ## See also
 
 Other simulation:
-[`brm_simulate_categorical()`](brm_simulate_categorical.md),
-[`brm_simulate_continuous()`](brm_simulate_continuous.md),
-[`brm_simulate_prior()`](brm_simulate_prior.md),
-[`brm_simulate_simple()`](brm_simulate_simple.md)
+[`brm_simulate_categorical()`](https://openpharma.github.io/brms.mmrm/reference/brm_simulate_categorical.md),
+[`brm_simulate_continuous()`](https://openpharma.github.io/brms.mmrm/reference/brm_simulate_continuous.md),
+[`brm_simulate_prior()`](https://openpharma.github.io/brms.mmrm/reference/brm_simulate_prior.md),
+[`brm_simulate_simple()`](https://openpharma.github.io/brms.mmrm/reference/brm_simulate_simple.md)
 
 ## Examples
 

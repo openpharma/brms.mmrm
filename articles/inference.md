@@ -126,7 +126,7 @@ base_formula
 #>     AVISIT + RACE + SEX + WEIGHT
 #> attr(,"center")
 #> [1] TRUE
-#> <environment: 0x55eed81d42a8>
+#> <environment: 0x55b8ea7a6950>
 ```
 
 ``` r
@@ -149,8 +149,8 @@ interesting parameters and average out the uninteresting parameters.
 
 ## Existing capabilities
 
-[`brms.mmrm::brm_model()`](../reference/brm_model.md) returns a fitted
-[`brms`](https://paulbuerkner.com/brms/) model, and
+[`brms.mmrm::brm_model()`](https://openpharma.github.io/brms.mmrm/reference/brm_model.md)
+returns a fitted [`brms`](https://paulbuerkner.com/brms/) model, and
 [`brms`](https://paulbuerkner.com/brms/) already has tools for posterior
 inference. Through a combination of native functions and S3 methods,
 [`brms`](https://paulbuerkner.com/brms/) integrates not only with
@@ -172,7 +172,7 @@ archetypes](https://openpharma.github.io/brms.mmrm/articles/archetypes.html)
 ## How `brms.mmrm` estimates marginal means
 
 To estimate marginal means,
-[`brms.mmrm::brm_transform_marginal()`](../reference/brm_transform_marginal.md)
+[`brms.mmrm::brm_transform_marginal()`](https://openpharma.github.io/brms.mmrm/reference/brm_transform_marginal.md)
 creates a special matrix.
 
 ``` r
@@ -290,15 +290,16 @@ marginals_custom - marginals_emmeans$emmean
 ```
 
 For our Bayesian MMRMs in `brms.mmrm`, the transformation from
-[`brm_transform_marginal()`](../reference/brm_transform_marginal.md)
+[`brm_transform_marginal()`](https://openpharma.github.io/brms.mmrm/reference/brm_transform_marginal.md)
 operates on each individual draw from the joint posterior distribution.
 The transformation matrix produced by
-[`brm_transform_marginal()`](../reference/brm_transform_marginal.md) is
-the value of the `transform` argument of
-[`brm_marginal_draws()`](../reference/brm_marginal_draws.md). That way,
-[`brm_marginal_draws()`](../reference/brm_marginal_draws.md) produces an
-entire estimated posterior of each marginal mean, rather than point
-estimates that assume a normal or Student-t distribution.[^5]
+[`brm_transform_marginal()`](https://openpharma.github.io/brms.mmrm/reference/brm_transform_marginal.md)
+is the value of the `transform` argument of
+[`brm_marginal_draws()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_draws.md).
+That way,
+[`brm_marginal_draws()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_draws.md)
+produces an entire estimated posterior of each marginal mean, rather
+than point estimates that assume a normal or Student-t distribution.[^5]
 
 ## How `brm_marginal_draws()` works
 
@@ -338,16 +339,16 @@ over the data to ensure our marginal means apply to the entire patient
 population as a whole.
 
 The major challenge of
-[`brm_transform_marginal()`](../reference/brm_transform_marginal.md) is
-to condition on nuisance values that represent appropriate averages over
-the data. To calculate these nuisance values,
-[`brm_transform_marginal()`](../reference/brm_transform_marginal.md)
+[`brm_transform_marginal()`](https://openpharma.github.io/brms.mmrm/reference/brm_transform_marginal.md)
+is to condition on nuisance values that represent appropriate averages
+over the data. To calculate these nuisance values,
+[`brm_transform_marginal()`](https://openpharma.github.io/brms.mmrm/reference/brm_transform_marginal.md)
 uses a technique similar to `weights = "proportional"` in
 [`emmeans::emmeans()`](https://rvlenth.github.io/emmeans/reference/emmeans.html).
 
 To replicate
-[`brm_transform_marginal()`](../reference/brm_transform_marginal.md), we
-first create a reference grid to define the factor levels of interest
+[`brm_transform_marginal()`](https://openpharma.github.io/brms.mmrm/reference/brm_transform_marginal.md),
+we first create a reference grid to define the factor levels of interest
 and the means of continuous variables to condition on.
 
 ``` r
@@ -527,21 +528,22 @@ marginals_emmeans |>
 ```
 
 `brms.mmrm` follows the procedure above, but in a Bayesian context. The
-[`brm_transform_marginal()`](../reference/brm_transform_marginal.md)
+[`brm_transform_marginal()`](https://openpharma.github.io/brms.mmrm/reference/brm_transform_marginal.md)
 creates the matrix above, and
-[`brm_marginal_draws()`](../reference/brm_marginal_draws.md) uses it to
-transform posterior draws of `brms` model coefficients into posterior
-draws of marginal means. These posterior draws of marginal means then
-support estimation of treatment effects (via
-[`brm_marginal_draws()`](../reference/brm_marginal_draws.md) and
-[`brm_marginal_summaries()`](../reference/brm_marginal_summaries.md))
+[`brm_marginal_draws()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_draws.md)
+uses it to transform posterior draws of `brms` model coefficients into
+posterior draws of marginal means. These posterior draws of marginal
+means then support estimation of treatment effects (via
+[`brm_marginal_draws()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_draws.md)
+and
+[`brm_marginal_summaries()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_summaries.md))
 and posterior probabilities on those treatment effects (via
-[`brm_marginal_probabilities()`](../reference/brm_marginal_probabilities.md)).
+[`brm_marginal_probabilities()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_probabilities.md)).
 To fine-tune the marginal mean estimation procedure for niche use cases,
 you can modify the transformation returned from
-[`brm_transform_marginal()`](../reference/brm_transform_marginal.md) and
-then supply it to the `transform` argument of
-[`brm_marginal_draws()`](../reference/brm_marginal_draws.md).
+[`brm_transform_marginal()`](https://openpharma.github.io/brms.mmrm/reference/brm_transform_marginal.md)
+and then supply it to the `transform` argument of
+[`brm_marginal_draws()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_draws.md).
 
 ## Subgroup analysis
 
@@ -600,9 +602,9 @@ is an edifying vignette on this topic.
 
 To opt into subgroup-specific averages of nuisance variables in
 `brms.mmrm`, set `average_within_subgroup = TRUE` in
-[`brm_transform_marginal()`](../reference/brm_transform_marginal.md),
+[`brm_transform_marginal()`](https://openpharma.github.io/brms.mmrm/reference/brm_transform_marginal.md),
 then supply the output to the `transform` argument of
-[`brm_marginal_draws()`](../reference/brm_marginal_draws.md).
+[`brm_marginal_draws()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_draws.md).
 
 To replicate `brm_transform_marginal(average_within_subgroup = TRUE)`
 from scratch, first create a reference grid which includes subgroup
@@ -851,9 +853,9 @@ means,” *The American Statistician*, 34, 216–221.
 [^5]: You can then estimate the posterior of any function of marginal
     means by simply applying that function to the individual posterior
     draws from
-    [`brm_marginal_draws()`](../reference/brm_marginal_draws.md).
-    [`brm_marginal_grid()`](../reference/brm_marginal_grid.md) helps
-    identify column names for this kind of custom
+    [`brm_marginal_draws()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_draws.md).
+    [`brm_marginal_grid()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_grid.md)
+    helps identify column names for this kind of custom
     inference/post-processing.
 
 [^6]: For more context, please refer to the [`emmeans` basics

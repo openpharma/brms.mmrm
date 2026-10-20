@@ -13,8 +13,9 @@ summary(object, message = TRUE, ...)
 
 - object:
 
-  The [`brm_transform_marginal()`](brm_transform_marginal.md) matrix to
-  summarize.
+  The
+  [`brm_transform_marginal()`](https://openpharma.github.io/brms.mmrm/reference/brm_transform_marginal.md)
+  matrix to summarize.
 
 - message:
 

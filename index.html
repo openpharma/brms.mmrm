@@ -18,7 +18,7 @@
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Bayesian MMRMs using brms">
 <meta name="description" content="The mixed model for repeated measures (MMRM) is a popular model for longitudinal clinical trial data with continuous endpoints, and brms is a powerful and versatile package for fitting Bayesian regression models. The brms.mmrm R package leverages brms to run MMRMs, and it supports a simplified interfaced to reduce difficulty and align with the best practices of the life sciences. References: Bürkner (2017) &lt;doi:10.18637/jss.v080.i01&gt;, Mallinckrodt (2008) &lt;doi:10.1177/009286150804200402&gt;.">
 <meta property="og:description" content="The mixed model for repeated measures (MMRM) is a popular model for longitudinal clinical trial data with continuous endpoints, and brms is a powerful and versatile package for fitting Bayesian regression models. The brms.mmrm R package leverages brms to run MMRMs, and it supports a simplified interfaced to reduce difficulty and align with the best practices of the life sciences. References: Bürkner (2017) &lt;doi:10.18637/jss.v080.i01&gt;, Mallinckrodt (2008) &lt;doi:10.1177/009286150804200402&gt;.">
-<meta property="og:image" content="/logo.svg">
+<meta property="og:image" content="https://openpharma.github.io/brms.mmrm/logo.svg">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -28,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="index.html">brms.mmrm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -114,18 +114,18 @@
 <div class="section level2">
 <h2 id="documentation">Documentation<a class="anchor" aria-label="anchor" href="#documentation"></a>
 </h2>
-<p>The documentation website at <a href="https://openpharma.github.io/brms.mmrm/" class="external-link uri">https://openpharma.github.io/brms.mmrm/</a> has a complete function reference and tutorial vignettes.</p>
+<p>The documentation website at <a href="https://openpharma.github.io/brms.mmrm/" class="uri">https://openpharma.github.io/brms.mmrm/</a> has a complete function reference and tutorial vignettes.</p>
 </div>
 <div class="section level2">
 <h2 id="validation">Validation<a class="anchor" aria-label="anchor" href="#validation"></a>
 </h2>
 <p>To ensure the correctness of the model and its implementation, this package has been validated using simulation-based calibration and comparisons against the frequentist <a href="https://openpharma.github.io/mmrm/latest-tag/" class="external-link"><code>mmrm</code></a> package on two example datasets. The analyses and results are described in the package vignettes linked below:</p>
 <ul>
-<li><a href="https://openpharma.github.io/brms.mmrm/articles/sbc.html" class="external-link">Simulation-based calibration</a></li>
+<li><a href="https://openpharma.github.io/brms.mmrm/articles/sbc.html">Simulation-based calibration</a></li>
 <li>
-<a href="https://openpharma.github.io/brms.mmrm/articles/fev1.html" class="external-link">FEV1 data comparison between Bayesian and frequentist MMRMs</a>.</li>
+<a href="https://openpharma.github.io/brms.mmrm/articles/fev1.html">FEV1 data comparison between Bayesian and frequentist MMRMs</a>.</li>
 <li>
-<a href="https://openpharma.github.io/brms.mmrm/articles/bcva.html" class="external-link">BCVA data comparison between Bayesian and frequentist MMRMs</a>.</li>
+<a href="https://openpharma.github.io/brms.mmrm/articles/bcva.html">BCVA data comparison between Bayesian and frequentist MMRMs</a>.</li>
 </ul>
 <p>Notably, <a href="https://openpharma.github.io/mmrm/latest-tag/reference/fev_data.html" class="external-link">FEV1</a> and <a href="https://openpharma.github.io/mmrm/latest-tag/reference/bcva_data.html" class="external-link">BCVA</a> are the same datasets that <a href="https://openpharma.github.io/mmrm/latest-tag/" class="external-link"><code>mmrm</code></a> uses to compare itself against SAS in <a href="https://openpharma.github.io/mmrm/latest-tag/articles/mmrm_review_methods.html" class="external-link">this vignette</a>. For additional validation in your functional area or domain of expertise, you may choose to run similar analyses on your own datasets to compare <code>brms.mmrm</code> against <a href="https://openpharma.github.io/mmrm/latest-tag/" class="external-link"><code>mmrm</code></a> and/or SAS.</p>
 </div>

@@ -90,10 +90,10 @@ LKJ correlation prior with shape parameter `hyper_lambda`.
 ## See also
 
 Other simulation:
-[`brm_simulate_categorical()`](brm_simulate_categorical.md),
-[`brm_simulate_continuous()`](brm_simulate_continuous.md),
-[`brm_simulate_outline()`](brm_simulate_outline.md),
-[`brm_simulate_prior()`](brm_simulate_prior.md)
+[`brm_simulate_categorical()`](https://openpharma.github.io/brms.mmrm/reference/brm_simulate_categorical.md),
+[`brm_simulate_continuous()`](https://openpharma.github.io/brms.mmrm/reference/brm_simulate_continuous.md),
+[`brm_simulate_outline()`](https://openpharma.github.io/brms.mmrm/reference/brm_simulate_outline.md),
+[`brm_simulate_prior()`](https://openpharma.github.io/brms.mmrm/reference/brm_simulate_prior.md)
 
 ## Examples
 

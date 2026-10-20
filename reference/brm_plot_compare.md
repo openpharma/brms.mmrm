@@ -19,8 +19,9 @@ brm_plot_compare(
 - ...:
 
   Named `tibble`s of marginals posterior summaries from
-  [`brm_marginal_summaries()`](brm_marginal_summaries.md) and/or
-  [`brm_marginal_data()`](brm_marginal_data.md).
+  [`brm_marginal_summaries()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_summaries.md)
+  and/or
+  [`brm_marginal_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_marginal_data.md).
 
 - marginal:
 
@@ -74,7 +75,8 @@ marginal summaries have a subgroup column.
 
 ## See also
 
-Other visualization: [`brm_plot_draws()`](brm_plot_draws.md)
+Other visualization:
+[`brm_plot_draws()`](https://openpharma.github.io/brms.mmrm/reference/brm_plot_draws.md)
 
 ## Examples
 

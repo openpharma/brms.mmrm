@@ -18,14 +18,16 @@ brm_simulate_prior(
 
 - data:
 
-  A classed data frame from [`brm_data()`](brm_data.md), or an
-  informative prior archetype from a function like
-  [`brm_archetype_successive_cells()`](brm_archetype_successive_cells.md).
+  A classed data frame from
+  [`brm_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_data.md),
+  or an informative prior archetype from a function like
+  [`brm_archetype_successive_cells()`](https://openpharma.github.io/brms.mmrm/reference/brm_archetype_successive_cells.md).
 
 - formula:
 
   An object of class `"brmsformula"` from
-  [`brm_formula()`](brm_formula.md) or
+  [`brm_formula()`](https://openpharma.github.io/brms.mmrm/reference/brm_formula.md)
+  or
   [`brms::brmsformula()`](https://paulbuerkner.com/brms/reference/brmsformula.html).
   Should include the full mapping of the model, including fixed effects,
   residual correlation, and heterogeneity in the discrete-time-specific
@@ -37,11 +39,14 @@ brm_simulate_prior(
   (model coefficients), `b_sigma` (log residual standard deviations for
   each time point), and `cortime` (residual correlations among time
   points within patients). See the
-  [`brm_prior_simple()`](brm_prior_simple.md) function for an example.
+  [`brm_prior_simple()`](https://openpharma.github.io/brms.mmrm/reference/brm_prior_simple.md)
+  function for an example.
 
 - ...:
 
-  Named arguments to specific [`brm_formula()`](brm_formula.md) methods.
+  Named arguments to specific
+  [`brm_formula()`](https://openpharma.github.io/brms.mmrm/reference/brm_formula.md)
+  methods.
 
 ## Value
 
@@ -50,9 +55,9 @@ A list with the following elements:
 - `data`: a classed `tibble` with the outcome variable simulated as a
   draw from the prior predictive distribution (the final row of
   `outcome` in the output). If you simulated a missingness pattern with
-  [`brm_simulate_outline()`](brm_simulate_outline.md), then that
-  missingness pattern is applied so that the appropriate values of the
-  outcome variable are set to `NA`.
+  [`brm_simulate_outline()`](https://openpharma.github.io/brms.mmrm/reference/brm_simulate_outline.md),
+  then that missingness pattern is applied so that the appropriate
+  values of the outcome variable are set to `NA`.
 
 - `model`: the `brms` model fit object.
 
@@ -79,10 +84,10 @@ variable to all zeros before invoking
 ## See also
 
 Other simulation:
-[`brm_simulate_categorical()`](brm_simulate_categorical.md),
-[`brm_simulate_continuous()`](brm_simulate_continuous.md),
-[`brm_simulate_outline()`](brm_simulate_outline.md),
-[`brm_simulate_simple()`](brm_simulate_simple.md)
+[`brm_simulate_categorical()`](https://openpharma.github.io/brms.mmrm/reference/brm_simulate_categorical.md),
+[`brm_simulate_continuous()`](https://openpharma.github.io/brms.mmrm/reference/brm_simulate_continuous.md),
+[`brm_simulate_outline()`](https://openpharma.github.io/brms.mmrm/reference/brm_simulate_outline.md),
+[`brm_simulate_simple()`](https://openpharma.github.io/brms.mmrm/reference/brm_simulate_simple.md)
 
 ## Examples
 

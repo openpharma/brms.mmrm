@@ -5,9 +5,9 @@ There are multiple ways to simulate MMRM datasets using `brms` and
 
 ## Simple
 
-[`brm_simulate_simple()`](../reference/brm_simulate_simple.md) simulates
-a dataset from the prior predictive distribution of a simple special
-case of an MMRM.[^1]
+[`brm_simulate_simple()`](https://openpharma.github.io/brms.mmrm/reference/brm_simulate_simple.md)
+simulates a dataset from the prior predictive distribution of a simple
+special case of an MMRM.[^1]
 
 ``` r
 
@@ -21,8 +21,9 @@ sim <- brm_simulate_simple(
 ```
 
 The `data` element has a classed `tibble` you can directly supply to
-[`brm_formula()`](../reference/brm_formula.md) and
-[`brm_model()`](../reference/brm_model.md).
+[`brm_formula()`](https://openpharma.github.io/brms.mmrm/reference/brm_formula.md)
+and
+[`brm_model()`](https://openpharma.github.io/brms.mmrm/reference/brm_model.md).
 
 ``` r
 
@@ -45,8 +46,8 @@ sim$data
 
 The `parameters` element has the corresponding parameter values
 simulated from the joint prior. Arguments to
-[`brm_simulate_simple()`](../reference/brm_simulate_simple.md) control
-hyperparameters.
+[`brm_simulate_simple()`](https://openpharma.github.io/brms.mmrm/reference/brm_simulate_simple.md)
+control hyperparameters.
 
 ``` r
 
@@ -76,11 +77,11 @@ head(sim$model_matrix)
 
 ## Change from baseline
 
-[`brm_data_change()`](../reference/brm_data_change.md) can convert the
-outcome variable from raw response to change from baseline. This applies
-to real datasets passed through \[brm_data()\] as well as simulated ones
-from e.g. \[brm_simulate_simple()\]. The dataset above uses raw response
-with a baseline time point of `"time_1"`
+[`brm_data_change()`](https://openpharma.github.io/brms.mmrm/reference/brm_data_change.md)
+can convert the outcome variable from raw response to change from
+baseline. This applies to real datasets passed through \[brm_data()\] as
+well as simulated ones from e.g. \[brm_simulate_simple()\]. The dataset
+above uses raw response with a baseline time point of `"time_1"`
 
 ``` r
 
@@ -101,9 +102,9 @@ sim$data
 #> # ℹ 1,190 more rows
 ```
 
-[`brm_data_change()`](../reference/brm_data_change.md) subtracts
-baseline, replaces the raw response column with a new change from
-baseline column, adds a new column for the original baseline raw
+[`brm_data_change()`](https://openpharma.github.io/brms.mmrm/reference/brm_data_change.md)
+subtracts baseline, replaces the raw response column with a new change
+from baseline column, adds a new column for the original baseline raw
 response, and adjusts the internal attributes of the classed object
 accordingly.
 
@@ -134,9 +135,9 @@ brm_data_change(
 
 For a more nuanced simulation, build up the dataset layer by layer.
 Begin with
-[`brm_simulate_outline()`](../reference/brm_simulate_outline.md) to
-create an initial structure and a random missingness pattern. In
-[`brm_simulate_outline()`](../reference/brm_simulate_outline.md),
+[`brm_simulate_outline()`](https://openpharma.github.io/brms.mmrm/reference/brm_simulate_outline.md)
+to create an initial structure and a random missingness pattern. In
+[`brm_simulate_outline()`](https://openpharma.github.io/brms.mmrm/reference/brm_simulate_outline.md),
 missing responses can come from either transitory intercurrent events or
 from dropouts. The `missing` column indicates which outcome values will
 be missing (`NA_real_`) in a later step. The `response` column is
@@ -169,9 +170,9 @@ data
 ```
 
 Optionally add random continuous covariates
-[`brm_simulate_continuous()`](../reference/brm_simulate_continuous.md)
+[`brm_simulate_continuous()`](https://openpharma.github.io/brms.mmrm/reference/brm_simulate_continuous.md)
 and random categorical covariates using
-[`brm_simulate_categorical()`](../reference/brm_simulate_categorical.md).
+[`brm_simulate_categorical()`](https://openpharma.github.io/brms.mmrm/reference/brm_simulate_categorical.md).
 In each case, the covariates are non-time-varying, which means each
 patient gets only one unique value.
 
@@ -186,27 +187,28 @@ data <- data |>
 
 data
 #> # A tibble: 800 × 9
-#>    patient    time  group missing response biomarker1 biomarker2 status1 status2
-#>    <chr>      <chr> <chr> <lgl>      <dbl>      <dbl>      <dbl> <chr>   <chr>  
-#>  1 patient_0… time… grou… FALSE         NA      0.328     -0.655 present absent 
-#>  2 patient_0… time… grou… TRUE          NA      0.328     -0.655 present absent 
-#>  3 patient_0… time… grou… TRUE          NA      0.328     -0.655 present absent 
-#>  4 patient_0… time… grou… TRUE          NA      0.328     -0.655 present absent 
-#>  5 patient_0… time… grou… FALSE         NA      1.04      -0.779 absent  absent 
-#>  6 patient_0… time… grou… FALSE         NA      1.04      -0.779 absent  absent 
-#>  7 patient_0… time… grou… TRUE          NA      1.04      -0.779 absent  absent 
-#>  8 patient_0… time… grou… TRUE          NA      1.04      -0.779 absent  absent 
-#>  9 patient_0… time… grou… FALSE         NA      0.717     -0.954 present absent 
-#> 10 patient_0… time… grou… FALSE         NA      0.717     -0.954 present absent 
+#>    patient     time   group   missing response biomarker1 biomarker2 status1 status2
+#>    <chr>       <chr>  <chr>   <lgl>      <dbl>      <dbl>      <dbl> <chr>   <chr>  
+#>  1 patient_001 time_1 group_1 FALSE         NA      0.328     -0.655 present absent 
+#>  2 patient_001 time_2 group_1 TRUE          NA      0.328     -0.655 present absent 
+#>  3 patient_001 time_3 group_1 TRUE          NA      0.328     -0.655 present absent 
+#>  4 patient_001 time_4 group_1 TRUE          NA      0.328     -0.655 present absent 
+#>  5 patient_002 time_1 group_1 FALSE         NA      1.04      -0.779 absent  absent 
+#>  6 patient_002 time_2 group_1 FALSE         NA      1.04      -0.779 absent  absent 
+#>  7 patient_002 time_3 group_1 TRUE          NA      1.04      -0.779 absent  absent 
+#>  8 patient_002 time_4 group_1 TRUE          NA      1.04      -0.779 absent  absent 
+#>  9 patient_003 time_1 group_1 FALSE         NA      0.717     -0.954 present absent 
+#> 10 patient_003 time_2 group_1 FALSE         NA      0.717     -0.954 present absent 
 #> # ℹ 790 more rows
 ```
 
 As described in the next section, `brms.mmrm` has a convenient function
-[`brm_simulate_prior()`](../reference/brm_simulate_prior.md) to simulate
-the outcome variable `response` using the data skeleton above and the
-prior predictive distribution. However, if you prefer a full custom
-approach, you may need granular details about the parameterization,
-which requires the model matrix. Fortunately, `brms` supports a
+[`brm_simulate_prior()`](https://openpharma.github.io/brms.mmrm/reference/brm_simulate_prior.md)
+to simulate the outcome variable `response` using the data skeleton
+above and the prior predictive distribution. However, if you prefer a
+full custom approach, you may need granular details about the
+parameterization, which requires the model matrix. Fortunately, `brms`
+supports a
 [`make_standata()`](https://paulbuerkner.com/brms/reference/standata.html)
 function to provide this, given a dataset and a formula. You may need to
 temporarily set the response variable to something non-missing, and you
@@ -226,32 +228,26 @@ stan_data <- make_standata(
 )
 model_matrix <- stan_data$X
 head(model_matrix)
-#>   Intercept groupgroup_2 timetime_2 timetime_3 timetime_4 biomarker1 biomarker2
-#> 1         1            0          0          0          0  0.3283275 -0.6547971
-#> 2         1            0          1          0          0  0.3283275 -0.6547971
-#> 3         1            0          0          1          0  0.3283275 -0.6547971
-#> 4         1            0          0          0          1  0.3283275 -0.6547971
-#> 5         1            0          0          0          0  1.0385746 -0.7793828
-#> 6         1            0          1          0          0  1.0385746 -0.7793828
-#>   status1present status2present groupgroup_2:timetime_2 groupgroup_2:timetime_3
-#> 1              1              0                       0                       0
-#> 2              1              0                       0                       0
-#> 3              1              0                       0                       0
-#> 4              1              0                       0                       0
-#> 5              0              0                       0                       0
-#> 6              0              0                       0                       0
-#>   groupgroup_2:timetime_4
-#> 1                       0
-#> 2                       0
-#> 3                       0
-#> 4                       0
-#> 5                       0
-#> 6                       0
+#>   Intercept groupgroup_2 timetime_2 timetime_3 timetime_4 biomarker1 biomarker2 status1present status2present
+#> 1         1            0          0          0          0  0.3283275 -0.6547971              1              0
+#> 2         1            0          1          0          0  0.3283275 -0.6547971              1              0
+#> 3         1            0          0          1          0  0.3283275 -0.6547971              1              0
+#> 4         1            0          0          0          1  0.3283275 -0.6547971              1              0
+#> 5         1            0          0          0          0  1.0385746 -0.7793828              0              0
+#> 6         1            0          1          0          0  1.0385746 -0.7793828              0              0
+#>   groupgroup_2:timetime_2 groupgroup_2:timetime_3 groupgroup_2:timetime_4
+#> 1                       0                       0                       0
+#> 2                       0                       0                       0
+#> 3                       0                       0                       0
+#> 4                       0                       0                       0
+#> 5                       0                       0                       0
+#> 6                       0                       0                       0
 ```
 
 ## Prior
 
-Function [`brm_simulate_prior()`](../reference/brm_simulate_prior.md)
+Function
+[`brm_simulate_prior()`](https://openpharma.github.io/brms.mmrm/reference/brm_simulate_prior.md)
 simulates from the prior predictive distribution. It requires a dataset
 and a formula, and it accepts a custom prior constructed with
 [`brms::set_prior()`](https://paulbuerkner.com/brms/reference/set_prior.html).
@@ -267,11 +263,11 @@ prior <- set_prior("student_t(3, 0, 1.3)", class = "Intercept") +
   set_prior("lkj(1)", class = "cortime")
 
 prior
-#>                 prior     class coef group resp  dpar nlpar   lb   ub source
-#>  student_t(3, 0, 1.3) Intercept                             <NA> <NA>   user
-#>  student_t(3, 0, 1.2)         b                             <NA> <NA>   user
-#>  student_t(3, 0, 1.1)         b                 sigma       <NA> <NA>   user
-#>                lkj(1)   cortime                             <NA> <NA>   user
+#>                 prior     class coef group resp  dpar nlpar   lb   ub tag source
+#>  student_t(3, 0, 1.3) Intercept                             <NA> <NA>       user
+#>  student_t(3, 0, 1.2)         b                             <NA> <NA>       user
+#>  student_t(3, 0, 1.1)         b                 sigma       <NA> <NA>       user
+#>                lkj(1)   cortime                             <NA> <NA>       user
 
 sim <- brm_simulate_prior(
   data = data,
@@ -279,6 +275,16 @@ sim <- brm_simulate_prior(
   prior = prior,
   refresh = 0
 )
+#> Running MCMC with 4 sequential chains...
+#> 
+#> Chain 1 finished in 0.1 seconds.
+#> Chain 2 finished in 0.1 seconds.
+#> Chain 3 finished in 0.1 seconds.
+#> Chain 4 finished in 0.1 seconds.
+#> 
+#> All 4 chains finished successfully.
+#> Mean chain execution time: 0.1 seconds.
+#> Total execution time: 0.5 seconds.
 ```
 
 The output object `sim` has multiple draws from the prior predictive
@@ -304,18 +310,18 @@ applied so that `sim$data$response` is `NA_real_` whenever
 
 sim$data
 #> # A tibble: 800 × 9
-#>    patient    time  group missing response biomarker1 biomarker2 status1 status2
-#>    <chr>      <chr> <chr> <lgl>      <dbl>      <dbl>      <dbl> <chr>   <chr>  
-#>  1 patient_0… time… grou… FALSE      3.90       0.328     -0.655 present absent 
-#>  2 patient_0… time… grou… TRUE      NA          0.328     -0.655 present absent 
-#>  3 patient_0… time… grou… TRUE      NA          0.328     -0.655 present absent 
-#>  4 patient_0… time… grou… TRUE      NA          0.328     -0.655 present absent 
-#>  5 patient_0… time… grou… FALSE      3.46       1.04      -0.779 absent  absent 
-#>  6 patient_0… time… grou… FALSE      2.66       1.04      -0.779 absent  absent 
-#>  7 patient_0… time… grou… TRUE      NA          1.04      -0.779 absent  absent 
-#>  8 patient_0… time… grou… TRUE      NA          1.04      -0.779 absent  absent 
-#>  9 patient_0… time… grou… FALSE      5.28       0.717     -0.954 present absent 
-#> 10 patient_0… time… grou… FALSE      0.120      0.717     -0.954 present absent 
+#>    patient     time   group   missing response biomarker1 biomarker2 status1 status2
+#>    <chr>       <chr>  <chr>   <lgl>      <dbl>      <dbl>      <dbl> <chr>   <chr>  
+#>  1 patient_001 time_1 group_1 FALSE     0.200       0.328     -0.655 present absent 
+#>  2 patient_001 time_2 group_1 TRUE     NA           0.328     -0.655 present absent 
+#>  3 patient_001 time_3 group_1 TRUE     NA           0.328     -0.655 present absent 
+#>  4 patient_001 time_4 group_1 TRUE     NA           0.328     -0.655 present absent 
+#>  5 patient_002 time_1 group_1 FALSE     3.29        1.04      -0.779 absent  absent 
+#>  6 patient_002 time_2 group_1 FALSE     3.49        1.04      -0.779 absent  absent 
+#>  7 patient_002 time_3 group_1 TRUE     NA           1.04      -0.779 absent  absent 
+#>  8 patient_002 time_4 group_1 TRUE     NA           1.04      -0.779 absent  absent 
+#>  9 patient_003 time_1 group_1 FALSE     4.87        0.717     -0.954 present absent 
+#> 10 patient_003 time_2 group_1 FALSE    -0.0413      0.717     -0.954 present absent 
 #> # ℹ 790 more rows
 ```
 
@@ -327,14 +333,25 @@ functions `posteiror_predict()`,
 and
 [`pp_check()`](https://mc-stan.org/bayesplot/reference/pp_check.html).
 These can be used with a `brms` model fit object either from
-[`brm_model()`](../reference/brm_model.md) or from
-[`brm_simulate_prior()`](../reference/brm_simulate_prior.md).
+[`brm_model()`](https://openpharma.github.io/brms.mmrm/reference/brm_model.md)
+or from
+[`brm_simulate_prior()`](https://openpharma.github.io/brms.mmrm/reference/brm_simulate_prior.md).
 
 ``` r
 
 data <- sim$data
 formula <- brm_formula(data = data)
 model <- brm_model(data = data, formula = formula, refresh = 0)
+#> Running MCMC with 4 sequential chains...
+#> 
+#> Chain 1 finished in 10.8 seconds.
+#> Chain 2 finished in 11.0 seconds.
+#> Chain 3 finished in 10.1 seconds.
+#> Chain 4 finished in 10.9 seconds.
+#> 
+#> All 4 chains finished successfully.
+#> Mean chain execution time: 10.7 seconds.
+#> Total execution time: 43.3 seconds.
 outcome_draws <- posterior_predict(object = model)
 ```
 
@@ -345,7 +362,7 @@ observation (row) in the original data.
 ``` r
 
 str(outcome_draws)
-#>  num [1:4000, 1:659] 4.57 3.84 3.88 3.06 3.48 ...
+#>  num [1:4000, 1:659] 2.331 -0.056 0.187 -1.63 -1.445 ...
 
 dim(data)
 #> [1] 800   9

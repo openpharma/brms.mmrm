@@ -1,7 +1,9 @@
 # Append simulated continuous covariates
 
 Simulate and append non-time-varying continuous covariates to an
-existing [`brm_data()`](brm_data.md) dataset.
+existing
+[`brm_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_data.md)
+dataset.
 
 ## Usage
 
@@ -13,8 +15,10 @@ brm_simulate_continuous(data, names, mean = 0, sd = 1)
 
 - data:
 
-  Classed `tibble` as from [`brm_data()`](brm_data.md) or
-  [`brm_simulate_outline()`](brm_simulate_outline.md).
+  Classed `tibble` as from
+  [`brm_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_data.md)
+  or
+  [`brm_simulate_outline()`](https://openpharma.github.io/brms.mmrm/reference/brm_simulate_outline.md).
 
 - names:
 
@@ -34,10 +38,12 @@ brm_simulate_continuous(data, names, mean = 0, sd = 1)
 
 ## Value
 
-A classed `tibble`, like from [`brm_data()`](brm_data.md) or
-[`brm_simulate_outline()`](brm_simulate_outline.md), but with new
-numeric covariate columns and with the names of the new covariates
-appended to the `brm_covariates` attribute.
+A classed `tibble`, like from
+[`brm_data()`](https://openpharma.github.io/brms.mmrm/reference/brm_data.md)
+or
+[`brm_simulate_outline()`](https://openpharma.github.io/brms.mmrm/reference/brm_simulate_outline.md),
+but with new numeric covariate columns and with the names of the new
+covariates appended to the `brm_covariates` attribute.
 
 ## Details
 
@@ -50,10 +56,10 @@ intended).
 ## See also
 
 Other simulation:
-[`brm_simulate_categorical()`](brm_simulate_categorical.md),
-[`brm_simulate_outline()`](brm_simulate_outline.md),
-[`brm_simulate_prior()`](brm_simulate_prior.md),
-[`brm_simulate_simple()`](brm_simulate_simple.md)
+[`brm_simulate_categorical()`](https://openpharma.github.io/brms.mmrm/reference/brm_simulate_categorical.md),
+[`brm_simulate_outline()`](https://openpharma.github.io/brms.mmrm/reference/brm_simulate_outline.md),
+[`brm_simulate_prior()`](https://openpharma.github.io/brms.mmrm/reference/brm_simulate_prior.md),
+[`brm_simulate_simple()`](https://openpharma.github.io/brms.mmrm/reference/brm_simulate_simple.md)
 
 ## Examples
 
