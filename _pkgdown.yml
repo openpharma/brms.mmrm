@@ -1,4 +1,5 @@
 destination: docs/
+url: https://openpharma.github.io/brms.mmrm/
 template:
   bootstrap: 5
 articles:

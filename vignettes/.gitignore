@@ -1,6 +1,7 @@
 *.html
 *.R
 !sbc/*.R
+!render.R
 
 /.quarto/
 **/*.quarto_ipynb

@@ -1,7 +1,7 @@
 ---
 title: "Meta-analytic predictive priors"
-bibliography: '`r system.file("bibliography.bib", package = "brms.mmrm")`'
-csl: '`r system.file("asa.csl", package = "brms.mmrm")`'
+bibliography: '/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/brms.mmrm/bibliography.bib'
+csl: '/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/brms.mmrm/asa.csl'
 output:
   rmarkdown::html_vignette:
     toc: true
@@ -42,25 +42,21 @@ data_current <- fev_data |>
   brm_archetype_effects(intercept = FALSE)
 data_current
 #> # A tibble: 800 × 19
-#>    x_PBO_VIS1 x_PBO_VIS2 x_PBO_VIS3 x_PBO_VIS4
-#>  *      <int>      <int>      <int>      <int>
-#>  1          1          0          0          0
-#>  2          0          1          0          0
-#>  3          0          0          1          0
-#>  4          0          0          0          1
-#>  5          1          0          0          0
-#>  6          0          1          0          0
-#>  7          0          0          1          0
-#>  8          0          0          0          1
-#>  9          1          0          0          0
-#> 10          0          1          0          0
+#>    x_PBO_VIS1 x_PBO_VIS2 x_PBO_VIS3 x_PBO_VIS4 x_TRT_VIS1 x_TRT_VIS2 x_TRT_VIS3 x_TRT_VIS4 USUBJID AVISIT ARMCD
+#>  *      <int>      <int>      <int>      <int>      <int>      <int>      <int>      <int> <fct>   <ord>  <fct>
+#>  1          1          0          0          0          0          0          0          0 PT2     VIS1   PBO  
+#>  2          0          1          0          0          0          0          0          0 PT2     VIS2   PBO  
+#>  3          0          0          1          0          0          0          0          0 PT2     VIS3   PBO  
+#>  4          0          0          0          1          0          0          0          0 PT2     VIS4   PBO  
+#>  5          1          0          0          0          0          0          0          0 PT3     VIS1   PBO  
+#>  6          0          1          0          0          0          0          0          0 PT3     VIS2   PBO  
+#>  7          0          0          1          0          0          0          0          0 PT3     VIS3   PBO  
+#>  8          0          0          0          1          0          0          0          0 PT3     VIS4   PBO  
+#>  9          1          0          0          0          0          0          0          0 PT5     VIS1   PBO  
+#> 10          0          1          0          0          0          0          0          0 PT5     VIS2   PBO  
 #> # ℹ 790 more rows
-#> # ℹ 15 more variables: x_TRT_VIS1 <int>,
-#> #   x_TRT_VIS2 <int>, x_TRT_VIS3 <int>,
-#> #   x_TRT_VIS4 <int>, USUBJID <fct>, AVISIT <ord>,
-#> #   ARMCD <fct>, RACE <fct>, SEX <fct>,
-#> #   FEV1_BL <dbl>, FEV1 <dbl>, WEIGHT <dbl>,
-#> #   VISITN <int>, VISITN2 <dbl>, FEV1_CHG <dbl>
+#> # ℹ 8 more variables: RACE <fct>, SEX <fct>, FEV1_BL <dbl>, FEV1 <dbl>, WEIGHT <dbl>, VISITN <int>,
+#> #   VISITN2 <dbl>, FEV1_CHG <dbl>
 ```
 
 We are using a treatment effect informative prior archetype that invites the user to specify an informative prior on the placebo group mean at each study visit.
@@ -140,7 +136,7 @@ draws_diffuse |>
   brm_marginal_probabilities(direction = "greater", threshold = 4) |>
   filter(time == "VIS4") |>
   pull(value)
-#> [1] 0.806
+#> [1] 0.793
 ```
 
 # Constructing the robust MAP prior
@@ -167,9 +163,10 @@ Soon, we will make use of the pooled mean and standard deviation of this externa
 ``` r
 pooled_external_data_mean <- sum(data_historical_visit4$mean * data_historical_visit4$patients) /
   sum(data_historical_visit4$patients)
-pooled_external_data_sd <- sum(data_historical_visit4$sd^2 * data_historical_visit4$patients) /
-  sum(data_historical_visit4$patients) |>
-  sqrt()
+pooled_external_data_sd <- sqrt(
+  sum(data_historical_visit4$sd^2 * data_historical_visit4$patients) /
+    sum(data_historical_visit4$patients)
+)
 ```
 
 We use `gMAP()` from `RBesT` to fit this summary data with a meta-analytic predictive model, then `automixfit()` to approximate the MAP posterior as a mixture of normals, and finally `robustify()` to add a weakly informative component that protects against prior-data conflict (@schmidli2014).
@@ -202,10 +199,10 @@ map_robust <- RBesT::robustify(
 map_robust
 #> Univariate normal mixture
 #> Mixture Components:
-#>   comp1        comp2        comp3        robust      
-#> w 4.451438e-01 3.291704e-01 2.568579e-02 2.000000e-01
-#> m 7.618285e+00 7.524934e+00 8.572269e+00 7.522161e+00
-#> s 4.222427e-01 1.104931e+00 3.146753e+00 7.124200e+03
+#>   comp1      comp2      comp3      comp4      robust    
+#> w  0.3561657  0.2368396  0.1050988  0.1018959  0.2000000
+#> m  7.6740128  7.1150147  8.4044553  7.4239744  7.5221610
+#> s  0.3533997  0.5896772  0.5798142  1.6932674 11.5328175
 ```
 
 # Converting the prior for use in `brms.mmrm`
@@ -277,7 +274,7 @@ draws_map |>
   brm_marginal_probabilities(direction = "greater", threshold = 4) |>
   filter(time == "VIS4") |>
   pull(value)
-#> [1] 0.865
+#> [1] 0.86875
 ```
 
 In other trials, the MAP prior may have the opposite effect.
@@ -308,38 +305,22 @@ This is the order we will use for the components of the mean and covariance of t
 
 ``` r
 brms::prior_summary(fit_diffuse)
-#>                 prior    class       coef group resp
-#>                (flat)        b                      
-#>                (flat)        b x_PBO_VIS1           
-#>                (flat)        b x_PBO_VIS2           
-#>                (flat)        b x_PBO_VIS3           
-#>                (flat)        b x_PBO_VIS4           
-#>                (flat)        b x_TRT_VIS1           
-#>                (flat)        b x_TRT_VIS2           
-#>                (flat)        b x_TRT_VIS3           
-#>                (flat)        b x_TRT_VIS4           
-#>                (flat)        b                      
-#>                (flat)        b AVISITVIS1           
-#>                (flat)        b AVISITVIS2           
-#>                (flat)        b AVISITVIS3           
-#>                (flat)        b AVISITVIS4           
-#>  lkj_corr_cholesky(1) Lcortime                      
-#>   dpar nlpar lb ub tag       source
-#>                             default
-#>                        (vectorized)
-#>                        (vectorized)
-#>                        (vectorized)
-#>                        (vectorized)
-#>                        (vectorized)
-#>                        (vectorized)
-#>                        (vectorized)
-#>                        (vectorized)
-#>  sigma                      default
-#>  sigma                 (vectorized)
-#>  sigma                 (vectorized)
-#>  sigma                 (vectorized)
-#>  sigma                 (vectorized)
-#>                             default
+#>                 prior    class       coef group resp  dpar nlpar lb ub tag       source
+#>                (flat)        b                                                  default
+#>                (flat)        b x_PBO_VIS1                                  (vectorized)
+#>                (flat)        b x_PBO_VIS2                                  (vectorized)
+#>                (flat)        b x_PBO_VIS3                                  (vectorized)
+#>                (flat)        b x_PBO_VIS4                                  (vectorized)
+#>                (flat)        b x_TRT_VIS1                                  (vectorized)
+#>                (flat)        b x_TRT_VIS2                                  (vectorized)
+#>                (flat)        b x_TRT_VIS3                                  (vectorized)
+#>                (flat)        b x_TRT_VIS4                                  (vectorized)
+#>                (flat)        b                       sigma                      default
+#>                (flat)        b AVISITVIS1            sigma                 (vectorized)
+#>                (flat)        b AVISITVIS2            sigma                 (vectorized)
+#>                (flat)        b AVISITVIS3            sigma                 (vectorized)
+#>                (flat)        b AVISITVIS4            sigma                 (vectorized)
+#>  lkj_corr_cholesky(1) Lcortime                                                  default
 ```
 
 We assume a rigorous process of evidence synthesis estimated the following marginal means for the placebo group.

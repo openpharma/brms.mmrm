@@ -133,9 +133,10 @@ Soon, we will make use of the pooled mean and standard deviation of this externa
 ```{r}
 pooled_external_data_mean <- sum(data_historical_visit4$mean * data_historical_visit4$patients) /
   sum(data_historical_visit4$patients)
-pooled_external_data_sd <- sum(data_historical_visit4$sd^2 * data_historical_visit4$patients) /
-  sum(data_historical_visit4$patients) |>
-  sqrt()
+pooled_external_data_sd <- sqrt(
+  sum(data_historical_visit4$sd^2 * data_historical_visit4$patients) /
+    sum(data_historical_visit4$patients)
+)
 ```
 
 We use `gMAP()` from `RBesT` to fit this summary data with a meta-analytic predictive model, then `automixfit()` to approximate the MAP posterior as a mixture of normals, and finally `robustify()` to add a weakly informative component that protects against prior-data conflict (@schmidli2014).
