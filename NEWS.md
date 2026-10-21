@@ -1,3 +1,7 @@
+# brms.mmrm development version
+
+
+
 # brms.mmrm 1.1.2
 
 * Center nuisance variables which interact baseline with time and/or the subgroup within the cell of the data they apply to, rather than across the whole dataset. Centering these columns globally broke the relationship between the fixed effects of interest and the marginal means (#139, @michael-lamm).
