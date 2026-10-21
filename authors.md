@@ -19,7 +19,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/openpharma/brms.mmrm/blob/main/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/openpharma/brms.mmrm/blob/1.1.2/DESCRIPTION)
 
 Landau WM, Kunzmann K, Sidi Y, Stock C (2026). *brms.mmrm: Bayesian
 MMRMs using 'brms'*. R package version 1.1.2,
