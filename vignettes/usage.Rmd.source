@@ -364,7 +364,7 @@ Under the missing at random (MAR) assumptions, MMRMs do not require imputation (
 
 ## Imputation before model fitting
 
-To impute missing outcomes before model fitting, first use create a list of imputed datasets using the multiple imputation method of your choice. The [`rbmi`](https://insightsengineering.github.io/rbmi/main/) package is uniquely suited to the multiple imputation of continuous longitudinal clinical trial data.
+To impute missing outcomes before model fitting, first use create a list of imputed datasets using the multiple imputation method of your choice. The [`rbmi`](https://openpharma.github.io/rbmi/latest-tag/) package is uniquely suited to the multiple imputation of continuous longitudinal clinical trial data.
 
 ```{r, eval = FALSE}
 variables <- rbmi::set_vars(
