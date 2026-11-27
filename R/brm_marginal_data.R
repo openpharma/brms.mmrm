@@ -54,7 +54,7 @@ brm_marginal_data <- function(
       message = "brm_marginal_data() found no subgroup column in the data."
     )
   }
-  z <- stats::qnorm(p = (1 - level) / 2)
+  z <- stats::qnorm(p = (1 - level) / 2, lower.tail = FALSE)
   data <- tibble::tibble(
     outcome = data[[attr(data, "brm_outcome")]],
     group = data[[attr(data, "brm_group")]],
