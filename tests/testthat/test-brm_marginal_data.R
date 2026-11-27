@@ -19,7 +19,7 @@ test_that("brm_marginal_data()", {
     sort(colnames(out)),
     sort(c("statistic", "group", "time", "value"))
   )
-  z <- stats::qnorm(p = 0.05)
+  z <- stats::qnorm(p = 0.05, lower.tail = FALSE)
   for (group in unique(data$group)) {
     for (time in unique(data$time)) {
       response <- data$response[data$group == group & data$time == time]
@@ -30,6 +30,8 @@ test_that("brm_marginal_data()", {
       n_total <- length(response)
       lower <- mean - z * sd / sqrt(n_observed)
       upper <- mean + z * sd / sqrt(n_observed)
+      expect_lt(lower, mean)
+      expect_lt(mean, upper)
       exp <- list(
         mean = mean,
         median = median,
@@ -75,7 +77,7 @@ test_that("brm_marginal_data() subgroup", {
     sort(colnames(out)),
     sort(c("statistic", "group", "subgroup", "time", "value"))
   )
-  z <- stats::qnorm(p = 0.05)
+  z <- stats::qnorm(p = 0.05, lower.tail = FALSE)
   for (group in unique(data$group)) {
     for (subgroup in unique(data$subgroup)) {
       for (time in unique(data$time)) {
@@ -90,6 +92,8 @@ test_that("brm_marginal_data() subgroup", {
         n_total <- length(response)
         lower <- mean - z * sd / sqrt(n_observed)
         upper <- mean + z * sd / sqrt(n_observed)
+        expect_lt(lower, mean)
+        expect_lt(mean, upper)
         exp <- list(
           mean = mean,
           median = median,
